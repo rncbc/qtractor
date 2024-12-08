@@ -8924,7 +8924,7 @@ Length:	%3</source>
     <name>qtractorMidiEditorForm</name>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2355"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2371"/>
         <source>MIDI Editor</source>
         <translation>MIDIエディタ</translation>
     </message>
@@ -9487,7 +9487,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="839"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2600"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2616"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>
@@ -10670,7 +10670,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="352"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2390"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2406"/>
         <source>MOD</source>
         <translation>変更</translation>
     </message>
@@ -10681,7 +10681,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="360"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2395"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2411"/>
         <source>REC</source>
         <translation>記録</translation>
     </message>
@@ -10692,7 +10692,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="368"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2403"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2419"/>
         <source>MUTE</source>
         <translation type="unfinished">ミュート</translation>
     </message>
@@ -10745,17 +10745,17 @@ Do you want to save the changes?</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2370"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2386"/>
         <source>Channel %1</source>
         <translation>チャンネル %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2373"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2389"/>
         <source>Track %1</source>
         <translation>トラック %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2380"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2396"/>
         <source>[modified]</source>
         <translation>[変更されました]</translation>
     </message>

@@ -8941,7 +8941,7 @@ Duration: %4</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="352"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2390"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2406"/>
         <source>MOD</source>
         <translation>РЕЖ</translation>
     </message>
@@ -8952,7 +8952,7 @@ Duration: %4</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="360"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2395"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2411"/>
         <source>REC</source>
         <translation type="unfinished">ЗАП</translation>
     </message>
@@ -8963,7 +8963,7 @@ Duration: %4</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="368"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2403"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2419"/>
         <source>MUTE</source>
         <translation type="unfinished">ТИХО</translation>
     </message>
@@ -9023,22 +9023,22 @@ Do you want to save the changes?</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2355"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2371"/>
         <source>MIDI Editor</source>
         <translation>Редактор MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2370"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2386"/>
         <source>Channel %1</source>
         <translation>Канал %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2373"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2389"/>
         <source>Track %1</source>
         <translation>Дорожка %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2380"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2396"/>
         <source>[modified]</source>
         <translation>[изменен]</translation>
     </message>
@@ -10242,7 +10242,7 @@ Do you want to save the changes?</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="839"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2600"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2616"/>
         <source>&amp;None</source>
         <translation type="unfinished"></translation>
     </message>

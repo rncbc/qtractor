@@ -8860,7 +8860,7 @@ Länge:	%3</translation>
     <name>qtractorMidiEditorForm</name>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2355"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2371"/>
         <source>MIDI Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9423,7 +9423,7 @@ Länge:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="839"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2600"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2616"/>
         <source>&amp;None</source>
         <translation>&amp;Nichts</translation>
     </message>
@@ -10606,7 +10606,7 @@ Länge:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="352"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2390"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2406"/>
         <source>MOD</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10617,7 +10617,7 @@ Länge:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="360"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2395"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2411"/>
         <source>REC</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10628,7 +10628,7 @@ Länge:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="368"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2403"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2419"/>
         <source>MUTE</source>
         <translation type="unfinished">Stumm</translation>
     </message>
@@ -10681,17 +10681,17 @@ Möchten Sie die Änderungen speichern?</translation>
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2370"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2386"/>
         <source>Channel %1</source>
         <translation>Kanal %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2373"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2389"/>
         <source>Track %1</source>
         <translation>Spur %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2380"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2396"/>
         <source>[modified]</source>
         <translation>[verändert]</translation>
     </message>
