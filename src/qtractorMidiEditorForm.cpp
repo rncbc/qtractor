@@ -2164,8 +2164,9 @@ void qtractorMidiEditorForm::transportStepNoteBackward (void)
 		const unsigned long t0 = pNode->tickFromFrame(m_pMidiEditor->offset());
 		const unsigned long	t1 = pNode->tickFromFrame(iPlayHead);
 		const unsigned long iTime = (t1 > t0 ? t1 - t0 : 0);
+		qtractorMidiEditView *pEditView = m_pMidiEditor->editView();
 		const qtractorMidiEvent::EventType eventType
-			= m_pMidiEditor->editView()->eventType();
+			= pEditView->eventType();
 		qtractorMidiEvent *pEvent
 			= m_pMidiEditor->seekEvent(pSeq, iTime);
 		while (pEvent && pEvent->time() < iTime)
@@ -2177,9 +2178,16 @@ void qtractorMidiEditorForm::transportStepNoteBackward (void)
 		while (pEvent && pEvent->type() != eventType)
 			pEvent = pEvent->prev();
 		if (pEvent && pEvent->type() == eventType) {
-			const unsigned long t2 = t0 + pEvent->time();
+			const unsigned long iEventTime = pEvent->time();
+			const unsigned long t2 = t0 + iEventTime;
 			pNode = cursor.seekTick(t2);
 			iPlayHead = pNode->frameFromTick(t2);
+			// Select all notes with same extat on-set time...
+			m_pMidiEditor->selectAll(pEditView, false);
+			while (pEvent && pEvent->time() == iEventTime) {
+				m_pMidiEditor->selectEvent(pEvent);
+				pEvent = pEvent->prev();
+			}
 		}
 	}
 	m_pMidiEditor->setSyncViewHoldOn(false);
@@ -2208,8 +2216,9 @@ void qtractorMidiEditorForm::transportStepNoteForward (void)
 		const unsigned long t0 = pNode->tickFromFrame(m_pMidiEditor->offset());
 		const unsigned long	t1 = pNode->tickFromFrame(iPlayHead);
 		const unsigned long iTime = (t1 > t0 ? t1 - t0 : 0);
+		qtractorMidiEditView *pEditView = m_pMidiEditor->editView();
 		const qtractorMidiEvent::EventType eventType
-			= m_pMidiEditor->editView()->eventType();
+			= pEditView->eventType();
 		qtractorMidiEvent *pEvent
 			= m_pMidiEditor->seekEvent(pSeq, iTime);
 		if (pEvent && t1 >= t0 + pEvent->time())
@@ -2218,9 +2227,16 @@ void qtractorMidiEditorForm::transportStepNoteForward (void)
 		while (pEvent && pEvent->type() != eventType)
 			pEvent = pEvent->next();
 		if (pEvent && pEvent->type() == eventType) {
-			const unsigned long t2 = t0 + pEvent->time();
+			const unsigned long iEventTime = pEvent->time();
+			const unsigned long t2 = t0 + iEventTime;
 			pNode = cursor.seekTick(t2);
 			iPlayHead = pNode->frameFromTick(t2);
+			// Select all notes with same extat on-set time...
+			m_pMidiEditor->selectAll(pEditView, false);
+			while (pEvent && pEvent->time() == iEventTime) {
+				m_pMidiEditor->selectEvent(pEvent);
+				pEvent = pEvent->next();
+			}
 		}
 	}
 	m_pMidiEditor->setSyncViewHoldOn(false);
@@ -2409,7 +2425,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	m_pDurationLabel->setText(pTimeScale->textFromTick(
-		pTimeScale->tickFromFrame(m_pMidiEditor->offset()), true, pSeq->duration()));
+		pTimeScale->tickFromFrame(m_pMidiEditor->offset()), true,
+		pSeq->duration()));
 
 	qtractorSession  *pSession  = qtractorSession::getInstance();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

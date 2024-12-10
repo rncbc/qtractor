@@ -406,12 +406,12 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="85"/>
-        <location filename="../qtractorTimeScale.cpp" line="746"/>
+        <location filename="../qtractorTimeScale.cpp" line="747"/>
         <source>None</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="749"/>
+        <location filename="../qtractorTimeScale.cpp" line="750"/>
         <source>Beat</source>
         <translation>Doba</translation>
     </message>
@@ -9008,7 +9008,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="352"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2390"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2406"/>
         <source>MOD</source>
         <translation>REŽIM</translation>
     </message>
@@ -9019,7 +9019,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="360"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2395"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2411"/>
         <source>REC</source>
         <translation>NAHRÁT</translation>
     </message>
@@ -9030,7 +9030,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="368"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2403"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2419"/>
         <source>MUTE</source>
         <translation>ZTLUMIT</translation>
     </message>
@@ -9090,22 +9090,22 @@ Chcete uložit změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2355"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2371"/>
         <source>MIDI Editor</source>
         <translation>MIDI Editor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2370"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2386"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2373"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2389"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2380"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2396"/>
         <source>[modified]</source>
         <translation>(upraveno)</translation>
     </message>
@@ -9709,7 +9709,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="247"/>
         <source>&amp;Note</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nota</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="254"/>
@@ -9800,7 +9800,7 @@ Chcete uložit změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="839"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2600"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2617"/>
         <source>&amp;None</source>
         <translation>&amp;Žádný</translation>
     </message>
@@ -10541,32 +10541,32 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1674"/>
         <source>Note Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>O notu zpět</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1677"/>
         <source>Step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok o notu zpět</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1680"/>
         <source>Transport step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Přehrávat krok o notu zpět</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1688"/>
         <source>Note Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>O notu vpřed</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1691"/>
         <source>Step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok o notu vpřed</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1694"/>
         <source>Transport step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Přehrávat krok o notu vpřed</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1705"/>
@@ -11934,7 +11934,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1361"/>
         <source>Icons Theme Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář s motivy ikon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1447"/>
@@ -13081,17 +13081,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2866"/>
         <source>&amp;Icons theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Motiv &amp;ikon:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2882"/>
         <source>Custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář s vlastními motivy ikon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2924"/>
         <source>Browse for custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Procházet kvůli adresáři s vlastními motivy ikon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2943"/>
@@ -13106,7 +13106,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3001"/>
         <source>Browse for custom style sheet (*.qss)</source>
-        <translation>Procházení vlastního souboru stylů (*.qss)</translation>
+        <translation>Procházet kvůli vlastnímu souboru stylů (*.qss)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3099"/>
@@ -14142,169 +14142,169 @@ Chcete použít tyto změny?</translation>
         <translation>Adresář sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="37"/>
-        <location filename="../qtractorSessionForm.ui" line="50"/>
+        <location filename="../qtractorSessionForm.ui" line="43"/>
+        <location filename="../qtractorSessionForm.ui" line="56"/>
         <source>Session</source>
         <translation>Sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="56"/>
+        <location filename="../qtractorSessionForm.ui" line="62"/>
         <source>&amp;Name:</source>
         <translation>&amp;Název:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="72"/>
+        <location filename="../qtractorSessionForm.ui" line="78"/>
         <source>Session name</source>
         <translation>Název sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="84"/>
+        <location filename="../qtractorSessionForm.ui" line="90"/>
         <source>&amp;Directory:</source>
         <translation>&amp;Adresář:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="94"/>
+        <location filename="../qtractorSessionForm.ui" line="100"/>
         <source>Whether to auto-name the session directory</source>
         <translation>Zda automaticky pojmenovat adresář se sezením</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="97"/>
+        <location filename="../qtractorSessionForm.ui" line="103"/>
         <source>&amp;Auto</source>
         <translation>&amp;Automaticky</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="130"/>
+        <location filename="../qtractorSessionForm.ui" line="136"/>
         <source>Session directory</source>
         <translation>Adresář sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="158"/>
+        <location filename="../qtractorSessionForm.ui" line="164"/>
         <source>Browse for session directory</source>
         <translation>Procházet kvůli adresáři sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="161"/>
+        <location filename="../qtractorSessionForm.ui" line="167"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="170"/>
+        <location filename="../qtractorSessionForm.ui" line="176"/>
         <source>&amp;Description:</source>
         <translation>&amp;Popis:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="180"/>
+        <location filename="../qtractorSessionForm.ui" line="186"/>
         <source>Session description</source>
         <translation>Popis sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="188"/>
+        <location filename="../qtractorSessionForm.ui" line="194"/>
         <source>Properties</source>
         <translation>Vlastnosti</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="194"/>
+        <location filename="../qtractorSessionForm.ui" line="200"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="200"/>
+        <location filename="../qtractorSessionForm.ui" line="206"/>
         <source>Sample &amp;Rate:</source>
         <translation>Vzorkovací &amp;kmitočet:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="213"/>
+        <location filename="../qtractorSessionForm.ui" line="219"/>
         <source>Sample rate (Hz)</source>
         <translation>Vzorkovací kmitočet (Hz)</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="220"/>
+        <location filename="../qtractorSessionForm.ui" line="226"/>
         <source>44100</source>
         <translation>44100</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="225"/>
+        <location filename="../qtractorSessionForm.ui" line="231"/>
         <source>48000</source>
         <translation>48000</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="230"/>
+        <location filename="../qtractorSessionForm.ui" line="236"/>
         <source>96000</source>
         <translation>96000</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="235"/>
+        <location filename="../qtractorSessionForm.ui" line="241"/>
         <source>192000</source>
         <translation>192000</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="243"/>
+        <location filename="../qtractorSessionForm.ui" line="249"/>
         <source>&amp;Tempo:</source>
         <translation>&amp;Tempo:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="262"/>
+        <location filename="../qtractorSessionForm.ui" line="268"/>
         <source>Tempo (BPM) / Signature</source>
         <translation>Tempo (MM)/Taktové označení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="282"/>
+        <location filename="../qtractorSessionForm.ui" line="288"/>
         <source>Resolution (ticks/beat; tpqn)</source>
         <translation>Rozlišení (tiky/doby; tpqn)</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="269"/>
+        <location filename="../qtractorSessionForm.ui" line="275"/>
         <source>T&amp;icks/Beat:</source>
         <translation>T&amp;iky/doby:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="317"/>
+        <location filename="../qtractorSessionForm.ui" line="323"/>
         <source>View</source>
         <translation>Zobrazit</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="323"/>
+        <location filename="../qtractorSessionForm.ui" line="329"/>
         <source>&amp;Snap/Beat:</source>
         <translation>&amp;Zapadnout/doba:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="336"/>
+        <location filename="../qtractorSessionForm.ui" line="342"/>
         <source>Snap/beat</source>
         <translation>Zapadnout/doba</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="346"/>
+        <location filename="../qtractorSessionForm.ui" line="352"/>
         <source>&amp;Pixels/Beat:</source>
         <translation>&amp;Obrazové body/doba:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="359"/>
+        <location filename="../qtractorSessionForm.ui" line="365"/>
         <source>Pixels/beat</source>
         <translation>Obrazové body/doba</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="378"/>
+        <location filename="../qtractorSessionForm.ui" line="384"/>
         <source>&amp;Horizontal Zoom:</source>
         <translation>&amp;Vodorovné přiblížení:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="391"/>
+        <location filename="../qtractorSessionForm.ui" line="397"/>
         <source>Horizontal Zoom (%)</source>
         <translation>Vodorovné přiblížení (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="394"/>
-        <location filename="../qtractorSessionForm.ui" line="429"/>
+        <location filename="../qtractorSessionForm.ui" line="400"/>
+        <location filename="../qtractorSessionForm.ui" line="435"/>
         <source> %</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="413"/>
+        <location filename="../qtractorSessionForm.ui" line="419"/>
         <source>&amp;Vertical Zoom:</source>
         <translation>&amp;Svislé přiblížení:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="426"/>
+        <location filename="../qtractorSessionForm.ui" line="432"/>
         <source>Vertical Zoom (%)</source>
         <translation>Svislé přiblížení (%)</translation>
     </message>
@@ -14623,107 +14623,107 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTimeScale</name>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="994"/>
+        <location filename="../qtractorTimeScale.cpp" line="995"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="994"/>
+        <location filename="../qtractorTimeScale.cpp" line="995"/>
         <source>B#</source>
         <translation>His</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="995"/>
+        <location filename="../qtractorTimeScale.cpp" line="996"/>
         <source>C#</source>
         <translation>Cis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="995"/>
+        <location filename="../qtractorTimeScale.cpp" line="996"/>
         <source>Db</source>
         <translation>Des</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="996"/>
+        <location filename="../qtractorTimeScale.cpp" line="997"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="997"/>
+        <location filename="../qtractorTimeScale.cpp" line="998"/>
         <source>D#</source>
         <translation>Dis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="997"/>
+        <location filename="../qtractorTimeScale.cpp" line="998"/>
         <source>Eb</source>
         <translation>Es</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="998"/>
+        <location filename="../qtractorTimeScale.cpp" line="999"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="998"/>
+        <location filename="../qtractorTimeScale.cpp" line="999"/>
         <source>Fb</source>
         <translation>Fes</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="999"/>
+        <location filename="../qtractorTimeScale.cpp" line="1000"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="999"/>
+        <location filename="../qtractorTimeScale.cpp" line="1000"/>
         <source>E#</source>
         <translation>Eis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1000"/>
+        <location filename="../qtractorTimeScale.cpp" line="1001"/>
         <source>F#</source>
         <translation>Fis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1000"/>
+        <location filename="../qtractorTimeScale.cpp" line="1001"/>
         <source>Gb</source>
         <translation>Ges</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1001"/>
+        <location filename="../qtractorTimeScale.cpp" line="1002"/>
         <source>G</source>
         <translation>G</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1002"/>
+        <location filename="../qtractorTimeScale.cpp" line="1003"/>
         <source>G#</source>
         <translation>Gis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1002"/>
+        <location filename="../qtractorTimeScale.cpp" line="1003"/>
         <source>Ab</source>
         <translation>As</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1003"/>
+        <location filename="../qtractorTimeScale.cpp" line="1004"/>
         <source>A</source>
         <translation>A</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1004"/>
+        <location filename="../qtractorTimeScale.cpp" line="1005"/>
         <source>A#</source>
         <translation>Ais</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1004"/>
+        <location filename="../qtractorTimeScale.cpp" line="1005"/>
         <source>Bb</source>
         <translation>B</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1005"/>
+        <location filename="../qtractorTimeScale.cpp" line="1006"/>
         <source>B</source>
         <translation>H</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1005"/>
+        <location filename="../qtractorTimeScale.cpp" line="1006"/>
         <source>Cb</source>
         <translation>Ces</translation>
     </message>
