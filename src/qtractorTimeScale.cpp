@@ -600,12 +600,13 @@ QString qtractorTimeScale::textFromFrameEx (
 			unsigned long  ticks = 0;
 			Node *pNode = m_cursor.seekFrame(iFrame);
 			if (pNode) {
+				const unsigned long t0 = pNode->tickFromFrame(iFrame);
 				if (bDelta) {
-					ticks = pNode->tickFromFrame(iFrame + iDelta)
-						  - pNode->tickFromFrame(iFrame);
+					const unsigned long iFrameEnd = iFrame + iDelta;
+					pNode = m_cursor.seekFrame(iFrameEnd);
+					ticks = pNode->tickFromFrame(iFrameEnd) - t0;
 				} else {
-					ticks = pNode->tickFromFrame(iFrame)
-						  - pNode->tick;
+					ticks = t0 - pNode->tick;
 				}
 				if (ticks >= (unsigned long) pNode->ticksPerBeat) {
 					beats  = (unsigned int) (ticks / pNode->ticksPerBeat);

@@ -6,18 +6,21 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed the status-bar session and MIDI clip length BBT format, when
+  in presence of multiple tempo or time-signature changes.
+
 - Introducing MIDI clip editor (aka. piano-roll) new Transport/Step
   /Note/Backward and Forward menu actions, to move the play-head to
-  previous and next note events, respectively. (EXPERIMENTAL)
+  previous and next note events, respectively.
 
 - MIDI clip editor (aka. piano-roll) menu Edit/Select Mode/Edit On, Off
-  and Draw actions are now self-toggled when triggered. (EXPERIMENTAL)
+  and Draw actions are now self-toggled when triggered.
 
 - Plug-in presets menu: now sorted alphabetically.
 
 - When summoned from the menu, the View/Tempo Map-Markers... dialog
   positions itself to the current play-head location, instead of the
-  absolute beginning of the timeline. (GH #492)
+  absolute beginning of the timeline.
 
 - Introducing new application custom theming option: View/Options...
   /Display/Options/Custom/Icons theme (directory or folder).
@@ -25,17 +28,17 @@ GIT HEAD
 - After a shameful long time, adding a brand new audio clip via the
   Clip/New... dialog, is now finally fixed and functional.
 
-- Mixer: reduced track names up to first line break. (GH #491)
+- Mixer: reduced track names up to first line break.
 
 - Double-click on slider for default value, replicating the behavior
-  of middle-click. (GH #487)
+  of middle-click.
 
-- Fxed bug: Aux Send loses state when reordered in a strip. (GH #488)
+- Fxed bug: Aux Send loses state when reordered in a strip.
 
 - Create/Add new bus below that which is used as source in View/Buses
-  dialog. (GH #489)
+  dialog.
 
-- Mitigate truncated bus names in Aux Send Bus dialog. (GH #486)
+- Mitigate truncated bus names in Aux Send Bus dialog.
 
 - Fixed yet another old bug regarding the flush of all pending MIDI
   Note-Off events when playback stops, shuts-off or panics, especially
