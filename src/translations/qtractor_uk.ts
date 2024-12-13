@@ -7404,7 +7404,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="113"/>
         <source>Low Floor Tom</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="114"/>
@@ -9042,7 +9042,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="247"/>
         <source>&amp;Note</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Нота</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="254"/>
@@ -10377,32 +10377,32 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1674"/>
         <source>Note Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>На ноту назад</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1677"/>
         <source>Step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на ноту назад</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1680"/>
         <source>Transport step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на ноту назад</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1688"/>
         <source>Note Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>На ноту вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1691"/>
         <source>Step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на ноту вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1694"/>
         <source>Transport step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на ноту вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1705"/>
@@ -12830,17 +12830,17 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2866"/>
         <source>&amp;Icons theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема п&amp;іктограм:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2882"/>
         <source>Custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог нетипової теми піктограм</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2924"/>
         <source>Browse for custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Вказати каталог нетипової теми піктограм</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2943"/>
@@ -13248,7 +13248,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1361"/>
         <source>Icons Theme Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог нетипової теми піктограм</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1447"/>
