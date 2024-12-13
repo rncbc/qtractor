@@ -9041,7 +9041,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="247"/>
         <source>&amp;Note</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Note</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="254"/>
@@ -10368,32 +10368,32 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1674"/>
         <source>Note Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Note en arrière</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1677"/>
         <source>Step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Note d&apos;étape vers l&apos;arrière</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1680"/>
         <source>Transport step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport de la note d&apos;étape vers l&apos;arrière</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1688"/>
         <source>Note Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Note suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1691"/>
         <source>Step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Note d&apos;étape vers l&apos;avant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1694"/>
         <source>Transport step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport de la note d&apos;étape vers l&apos;avant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1705"/>
@@ -12765,17 +12765,17 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2866"/>
         <source>&amp;Icons theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Thème d&apos;&amp;icones :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2882"/>
         <source>Custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire des icônes personnalisées</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2924"/>
         <source>Browse for custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Recherche de répertoire de thème d&apos;icônes personnalisées</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2943"/>
@@ -13250,7 +13250,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1361"/>
         <source>Icons Theme Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire de thèmes d&apos;icônes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1447"/>
