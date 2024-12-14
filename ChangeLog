@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Clip/Cross Fade may now apply to all (multiple) selected clips.
+
 - Fixed the status-bar session and MIDI clip length BBT format, when
   in presence of multiple tempo or time-signature changes.
 
