@@ -35,7 +35,7 @@ ChangeLog
 - Double-click on slider for default value, replicating the behavior
   of middle-click.
 
-- Fxed bug: Aux Send loses state when reordered in a strip.
+- Fixed bug: Aux Send loses state when reordered in a strip.
 
 - Create/Add new bus below that which is used as source in View/Buses
   dialog.
