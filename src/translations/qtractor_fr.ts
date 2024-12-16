@@ -9041,7 +9041,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="247"/>
         <source>&amp;Note</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Note</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="254"/>
@@ -10368,32 +10368,32 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1674"/>
         <source>Note Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Note en arrière</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1677"/>
         <source>Step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Note d&apos;étape vers l&apos;arrière</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1680"/>
         <source>Transport step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport de la note d&apos;étape vers l&apos;arrière</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1688"/>
         <source>Note Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Note suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1691"/>
         <source>Step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Note d&apos;étape vers l&apos;avant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1694"/>
         <source>Transport step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport de la note d&apos;étape vers l&apos;avant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1705"/>
@@ -12765,17 +12765,17 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2866"/>
         <source>&amp;Icons theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Thème d&apos;&amp;icones :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2882"/>
         <source>Custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire des icônes personnalisées</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2924"/>
         <source>Browse for custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Recherche de répertoire de thème d&apos;icônes personnalisées</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2943"/>
@@ -13250,7 +13250,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1361"/>
         <source>Icons Theme Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire de thèmes d&apos;icônes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1447"/>
@@ -15655,7 +15655,7 @@ Longueur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1085"/>
-        <location filename="../qtractorTracks.cpp" line="3111"/>
+        <location filename="../qtractorTracks.cpp" line="3129"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Importation fichier audio&quot;%1&quot; sur %2 %3.
@@ -15663,13 +15663,13 @@ Longueur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1090"/>
-        <location filename="../qtractorTracks.cpp" line="3116"/>
+        <location filename="../qtractorTracks.cpp" line="3134"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Importation fichier audio: &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1120"/>
-        <location filename="../qtractorTracks.cpp" line="2965"/>
+        <location filename="../qtractorTracks.cpp" line="2983"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>Importation fichier MIDI &quot;%1&quot; piste-canal %2 sur %3 %4.
@@ -15677,7 +15677,7 @@ Longueur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1126"/>
-        <location filename="../qtractorTracks.cpp" line="2971"/>
+        <location filename="../qtractorTracks.cpp" line="2989"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Importation fichier MIDI: &quot;%1&quot;, piste-canal: %2.</translation>
     </message>
@@ -15723,27 +15723,27 @@ Longueur:	%3</translation>
         <translation>Fusion/Exportation clip MIDI: &quot;%1&quot; terminée.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1925"/>
+        <location filename="../qtractorTracks.cpp" line="1921"/>
         <source>clip cross-fade</source>
         <translation>clip fondu-enchaîné</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2180"/>
+        <location filename="../qtractorTracks.cpp" line="2198"/>
         <source>Insert Range</source>
         <translation>Insérer plage</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2201"/>
+        <location filename="../qtractorTracks.cpp" line="2219"/>
         <source>insert track range</source>
         <translation>Insérer plage de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2405"/>
+        <location filename="../qtractorTracks.cpp" line="2423"/>
         <source>Remove Range</source>
         <translation>Enlever plage</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2200"/>
+        <location filename="../qtractorTracks.cpp" line="2218"/>
         <source>insert range</source>
         <translation>Insérer plage</translation>
     </message>
@@ -15763,22 +15763,22 @@ Longueur:	%3</translation>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2425"/>
+        <location filename="../qtractorTracks.cpp" line="2443"/>
         <source>remove range</source>
         <translation>enlever plage</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2426"/>
+        <location filename="../qtractorTracks.cpp" line="2444"/>
         <source>remove track range</source>
         <translation>enlever la plage de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2723"/>
+        <location filename="../qtractorTracks.cpp" line="2741"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2724"/>
+        <location filename="../qtractorTracks.cpp" line="2742"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -15791,14 +15791,14 @@ Are you sure?</source>
 Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3222"/>
+        <location filename="../qtractorTracks.cpp" line="3240"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Importation fichier MIDI &quot;%1&quot; sur %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3227"/>
+        <location filename="../qtractorTracks.cpp" line="3245"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Importation fichier MIDI: &quot;%1&quot;.</translation>
     </message>

@@ -4,7 +4,9 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.5.0  2024-12-16  An End-of-Year'24 Release.
+
+- Clip/Cross Fade may now apply to all (multiple) selected clips.
 
 - Fixed the status-bar session and MIDI clip length BBT format, when
   in presence of multiple tempo or time-signature changes.

@@ -1912,10 +1912,6 @@ bool qtractorTracks::crossFadeClip ( qtractorClip *pClip )
 	if (pClip == nullptr)
 		return false;
 
-	qtractorTrack *pTrack = pClip->track();
-	if (pTrack == nullptr)
-		return false;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return false;
@@ -1924,40 +1920,62 @@ bool qtractorTracks::crossFadeClip ( qtractorClip *pClip )
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("clip cross-fade"));
 
-	const unsigned long iClipStart = pClip->clipStart();
-	const unsigned long iClipEnd = iClipStart + pClip->clipLength();
+	QList<qtractorClip *> clips;
 
-	qtractorClip *pClip2 = pTrack->clips().first();
+	// Multiple clip selection...
+	if (isClipSelected()) {
+		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+		const qtractorClipSelect::ItemList& items = pClipSelect->items();
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			// Make sure it's legal selection...
+			pClip = iter.key();
+			if (pClip->track() && pClip->isClipSelected())
+				clips.append(pClip);
+		}
+	}	// Single, current clip instead?
+	else clips.append(pClip);
 
-	while (pClip2 && pClip2->clipStart() < iClipEnd) {
-		// Avoid cross-fading over the very self...
-		const unsigned long iClipStart2 = pClip2->clipStart();
-		const unsigned long iClipEnd2 = iClipStart2 + pClip2->clipLength();
-		if (iClipEnd2 > iClipStart && iClipStart > iClipStart2) {
-			const unsigned long iCrossFadeLength = iClipEnd2 - iClipStart;
-			if (pClip2->fadeOutLength() != iCrossFadeLength) {
-				pClipCommand->fadeOutClip(pClip2,
-					iCrossFadeLength, pClip2->fadeOutType());
+	QListIterator clip_iter(clips);
+	while (clip_iter.hasNext()) {
+		pClip = clip_iter.next();
+		qtractorTrack *pTrack = pClip->track();
+		if (pTrack == nullptr)
+			continue;
+		const unsigned long iClipStart = pClip->clipStart();
+		const unsigned long iClipEnd = iClipStart + pClip->clipLength();
+		qtractorClip *pClip2 = pTrack->clips().first();
+		while (pClip2 && pClip2->clipStart() < iClipEnd) {
+			// Avoid cross-fading over the very self...
+			const unsigned long iClipStart2 = pClip2->clipStart();
+			const unsigned long iClipEnd2 = iClipStart2 + pClip2->clipLength();
+			if (iClipEnd2 > iClipStart && iClipStart > iClipStart2) {
+				const unsigned long iCrossFadeLength = iClipEnd2 - iClipStart;
+				if (pClip2->fadeOutLength() != iCrossFadeLength) {
+					pClipCommand->fadeOutClip(pClip2,
+						iCrossFadeLength, pClip2->fadeOutType());
+				}
+				if (pClip->fadeInLength() != iCrossFadeLength) {
+					pClipCommand->fadeInClip(pClip,
+						iCrossFadeLength, pClip->fadeInType());
+				}
 			}
-			if (pClip->fadeInLength() != iCrossFadeLength) {
-				pClipCommand->fadeInClip(pClip,
-					iCrossFadeLength, pClip->fadeInType());
+			else
+			if (iClipStart2 < iClipEnd && iClipEnd < iClipEnd2) {
+				const unsigned long iCrossFadeLength = iClipEnd - iClipStart2;
+				if (pClip->fadeOutLength() != iCrossFadeLength) {
+					pClipCommand->fadeOutClip(pClip,
+						iCrossFadeLength, pClip->fadeOutType());
+				}
+				if (pClip2->fadeInLength() != iCrossFadeLength) {
+					pClipCommand->fadeInClip(pClip2,
+						iCrossFadeLength, pClip2->fadeInType());
+				}
 			}
+			// Move forward...
+			pClip2 = pClip2->next();
 		}
-		else
-		if (iClipStart2 < iClipEnd && iClipEnd < iClipEnd2) {
-			const unsigned long iCrossFadeLength = iClipEnd - iClipStart2;
-			if (pClip->fadeOutLength() != iCrossFadeLength) {
-				pClipCommand->fadeOutClip(pClip,
-					iCrossFadeLength, pClip->fadeOutType());
-			}
-			if (pClip2->fadeInLength() != iCrossFadeLength) {
-				pClipCommand->fadeInClip(pClip2,
-					iCrossFadeLength, pClip2->fadeInType());
-			}
-		}
-		// Move forward...
-		pClip2 = pClip2->next();
 	}
 
 	// Check if valid...
