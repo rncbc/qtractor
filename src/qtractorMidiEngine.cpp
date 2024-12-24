@@ -1288,9 +1288,14 @@ unsigned int qtractorMidiEngine::readAhead (void) const
 // Audio/MIDI sync-check and cursor predicate.
 qtractorSessionCursor *qtractorMidiEngine::midiCursorSync ( bool bStart )
 {
+	// Must have a valid session...
+	qtractorSession *pSession = session();
+	if (pSession == nullptr)
+		return nullptr;
+
 	// We'll need access to master audio engine...
 	qtractorSessionCursor *pAudioCursor
-		= session()->audioEngine()->sessionCursor();
+		= pSession->audioEngine()->sessionCursor();
 	if (pAudioCursor == nullptr)
 		return nullptr;
 
@@ -3360,6 +3365,10 @@ void qtractorMidiEngine::processMetro (
 	if (m_pMetroCursor == nullptr)
 		return;
 
+	qtractorSession *pSession = session();
+	if (pSession == nullptr)
+		return;
+
 	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameEnd);
 
 	// Take this moment to check for tempo changes...
@@ -3374,7 +3383,7 @@ void qtractorMidiEngine::processMetro (
 		// the time playback/queue started...
 		const unsigned long tick
 			= (long(iTime) > m_iTimeStart ? iTime - m_iTimeStart : 0);
-		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
+		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, pSession->timep(tick));
 		ev.type = SND_SEQ_EVENT_TEMPO;
 		ev.data.queue.queue = m_iAlsaQueue;
 		ev.data.queue.param.value
@@ -3439,7 +3448,7 @@ void qtractorMidiEngine::processMetro (
 				if (iTimeClock >= iTimeStart) {
 					const unsigned long tick
 						= (long(iTimeClock) > m_iTimeStart ? iTimeClock - m_iTimeStart : 0);
-					snd_seq_ev_schedule_tick(&ev_clock, m_iAlsaQueue, 0, tick);
+					snd_seq_ev_schedule_tick(&ev_clock, m_iAlsaQueue, 0, pSession->timep(tick));
 					snd_seq_event_output(m_pAlsaSeq, &ev_clock);
 				}
 				iTimeClock += iTicksPerClock;
@@ -3452,7 +3461,7 @@ void qtractorMidiEngine::processMetro (
 			// Set proper event schedule time...
 			const unsigned long tick
 				= (long(iTimeOffset) > m_iTimeStart ? iTimeOffset - m_iTimeStart : 0);
-			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
+			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, pSession->timep(tick));
 			// Set proper event data...
 			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;
@@ -3554,6 +3563,10 @@ void qtractorMidiEngine::processCountIn (
 	if (m_iCountIn < 1)
 		return;
 
+	qtractorSession *pSession = session();
+	if (pSession == nullptr)
+		return;
+
 	// Register the next metronome/clock beat slot.
 	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameEnd);
 	const unsigned long iTimeEnd = pNode->tickFromFrame(iFrameEnd);
@@ -3586,7 +3599,7 @@ void qtractorMidiEngine::processCountIn (
 			const unsigned long tick
 				= (long(iTimeOffset) > m_iCountInTimeStart
 				? iTimeOffset - m_iCountInTimeStart : 0);
-			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
+			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, pSession->timep(tick));
 			// Set proper event data...
 			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;

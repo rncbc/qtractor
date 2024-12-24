@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed/corrected and awefully bad MIDI metronome and clock timing,
+  a reminiscence from the higher resolution MIDI queueing (in place
+  since v0.9.30, meaning a two year long disgrace :().
+
+
 1.5.0  2024-12-16  An End-of-Year'24 Release.
 
 - Clip/Cross Fade may now apply to all (multiple) selected clips.
