@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -5625,9 +5625,7 @@ void qtractorMainForm::transportRewind (void)
 
 	// Toggle rolling backward...
 	if (setRolling(iRolling) < 0) {
-		// Send MMC STOP command...
-		m_pSession->midiEngine()->sendMmcCommand(
-			qtractorMmcEvent::STOP);
+		setPlaying(false);
 	} else {
 		// Send MMC REWIND command...
 		m_pSession->midiEngine()->sendMmcCommand(
@@ -5657,9 +5655,7 @@ void qtractorMainForm::transportFastForward (void)
 
 	// Toggle rolling backward...
 	if (setRolling(iRolling) > 0) {
-		// Send MMC STOP command...
-		m_pSession->midiEngine()->sendMmcCommand(
-			qtractorMmcEvent::STOP);
+		setPlayingEx(false);
 	} else {
 		// Send MMC FAST_FORWARD command...
 		m_pSession->midiEngine()->sendMmcCommand(
@@ -5873,13 +5869,7 @@ void qtractorMainForm::transportStop (void)
 		return;
 
 	// Stop playing...
-	if (setPlaying(false)) {
-		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-		if (pMidiEngine) {
-			// Send MMC PLAY/STOP command...
-			pMidiEngine->sendMmcCommand(qtractorMmcEvent::STOP);
-			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_STOP);
-		}
+	if (setPlayingEx(false)) {
 		// Auto-backward reset feature...
 		if (m_ui.transportAutoBackwardAction->isChecked())
 			m_pSession->setPlayHead(m_pSession->playHeadAutoBackward());
@@ -5902,19 +5892,7 @@ void qtractorMainForm::transportPlay (void)
 
 	// Toggle playing...
 	const bool bPlaying = !m_pSession->isPlaying();
-	if (setPlaying(bPlaying)) {
-		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-		if (pMidiEngine) {
-			// Send MMC PLAY/STOP command...
-			pMidiEngine->sendMmcCommand(bPlaying
-				? qtractorMmcEvent::PLAY
-				: qtractorMmcEvent::STOP);
-			pMidiEngine->sendSppCommand(bPlaying
-				? (m_pSession->playHead() > 0
-					? SND_SEQ_EVENT_CONTINUE
-					: SND_SEQ_EVENT_START)
-				: SND_SEQ_EVENT_STOP);
-		}
+	if (setPlayingEx(bPlaying)) {
 		// Save auto-backward return position...
 		if (bPlaying) {
 			const unsigned long iPlayHead = m_pSession->playHead();
@@ -6433,6 +6411,37 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	}
 
 	// Done with playback switch...
+	return true;
+}
+
+
+bool qtractorMainForm::setPlayingEx ( bool bPlaying )
+{
+	if (!setPlaying(bPlaying))
+		return false;
+
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine) {
+		// Avoid double update (owhile n fastTimerSlot...)
+		m_iPlayHead = m_pSession->playHead();
+		// Send MMC PLAY/STOP command...
+		pMidiEngine->sendMmcCommand(bPlaying
+			? qtractorMmcEvent::PLAY
+			: qtractorMmcEvent::STOP);
+		pMidiEngine->sendSppCommand(bPlaying
+			? (m_iPlayHead > 0
+				? SND_SEQ_EVENT_CONTINUE
+				: SND_SEQ_EVENT_START)
+			: SND_SEQ_EVENT_STOP);
+		// Send MMC LOCATE and MIDI SPP commands on stop/pause...
+		if (!bPlaying) {
+			pMidiEngine->sendMmcLocate(
+				m_pSession->locateFromFrame(m_iPlayHead));
+			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS,
+				m_pSession->songPosFromFrame(m_iPlayHead));
+		}
+	}
+
 	return true;
 }
 
@@ -7991,12 +8000,12 @@ void qtractorMainForm::fastTimerSlot (void)
 		// Update transport status anyway...
 		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
 			++m_iTransportUpdate;
-			// Send MMC LOCATE command...
+			// Send MMC LOCATE and MIDI SPP command...
 			if (!pAudioEngine->isFreewheel()) {
 				pMidiEngine->sendMmcLocate(
-					m_pSession->locateFromFrame(iPlayHead));
+						m_pSession->locateFromFrame(iPlayHead));
 				pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS,
-					m_pSession->songPosFromFrame(iPlayHead));
+						m_pSession->songPosFromFrame(iPlayHead));
 			}
 		}
 		else
@@ -8005,6 +8014,8 @@ void qtractorMainForm::fastTimerSlot (void)
 			// Send MMC LOCATE command...
 			pMidiEngine->sendMmcLocate(
 				m_pSession->locateFromFrame(iPlayHead));
+			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS,
+				m_pSession->songPosFromFrame(iPlayHead));
 		}
 		// Current position update...
 		m_iPlayHead = iPlayHead;
@@ -8033,11 +8044,7 @@ void qtractorMainForm::fastTimerSlot (void)
 				iPlayHead = 0;
 				m_iTransportUpdate = 0;
 				// Stop playback for sure...
-				if (setPlaying(false)) {
-					// Send MMC STOP command...
-					pMidiEngine->sendMmcCommand(qtractorMmcEvent::STOP);
-					pMidiEngine->sendSppCommand(SND_SEQ_EVENT_STOP);
-				}
+				setPlaying(false);
 			}
 			// Make it thru...
 			m_pSession->setPlayHead(iPlayHead);

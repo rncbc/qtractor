@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed missing MIDI SPP in some cases. (EXPERIMENTAL)
+
+
 1.5.1  2024-12-30  An(other) End-of-Year'24 Release.
 
 - Fixed/corrected and awefully bad MIDI metronome and clock timing,

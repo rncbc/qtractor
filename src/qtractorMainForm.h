@@ -1,7 +1,7 @@
 // qtractorMainForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -401,6 +401,7 @@ protected:
 	bool checkRestartSession();
 
 	bool setPlaying(bool bPlaying);
+	bool setPlayingEx(bool bPlaying);
 	bool setRecording(bool bRecording);
 
 	int setRolling(int iRolling);
