@@ -1,7 +1,7 @@
 // qtractorOptions.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -366,8 +366,8 @@ public:
 	void saveActionShortcuts(QObject *pObject);
 
 	// Action MIDI observers persistence helper methods.
-	void loadActionControl(QObject *pObject);
-	void saveActionControl(QObject *pObject);
+	void loadActionControls(QObject *pObject);
+	void saveActionControls(QObject *pObject);
 
 	// Singleton instance accessor.
 	static qtractorOptions *getInstance();

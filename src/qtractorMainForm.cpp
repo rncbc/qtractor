@@ -1557,7 +1557,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Load (action) keyboard shortcuts...
 	m_pOptions->loadActionShortcuts(this);
-	m_pOptions->loadActionControl(this);
+	m_pOptions->loadActionControls(this);
 
 	// Initial thumb-view background (empty)
 	m_pThumbView->updateContents();
@@ -6186,8 +6186,8 @@ void qtractorMainForm::helpShortcuts (void)
 	if (shortcutForm.exec()) {
 		if (shortcutForm.isDirtyActionShortcuts())
 			m_pOptions->saveActionShortcuts(this);
-		if (shortcutForm.isDirtyActionControl())
-			m_pOptions->saveActionControl(this);
+		if (shortcutForm.isDirtyActionControls())
+			m_pOptions->saveActionControls(this);
 	}
 }
 

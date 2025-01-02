@@ -6,13 +6,15 @@ ChangeLog
 
 GIT HEAD
 
+- Help/Shortcuts... search tool gets implemented. (EXPERIMENTAL)
+
 - Fixed missing MIDI SPP in some cases. (EXPERIMENTAL)
 
 
 1.5.1  2024-12-30  An(other) End-of-Year'24 Release.
 
-- Fixed/corrected and awefully bad MIDI metronome and clock timing,
-  a reminiscence from the higher resolution MIDI queueing (in place
+- Fixed/corrected an awfully bad MIDI metronome and clock timing,
+  reminiscent from the higher resolution MIDI queueing (in place
   since v0.9.30, meaning a two year long disgrace :().
 
 
