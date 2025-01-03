@@ -6,7 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- Help/Shortcuts... search tool gets implemented. (EXPERIMENTAL)
+- Help/Shortcuts... Search tool gets implemented; all changed MIDI
+  controller shortcuts are reverted to their previous settings, when
+  discarding or dismissing the dialog. (EXPERIMENTAL)
 
 - Fixed missing MIDI SPP in some cases. (EXPERIMENTAL)
 

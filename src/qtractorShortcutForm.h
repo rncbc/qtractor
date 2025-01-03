@@ -24,6 +24,8 @@
 
 #include "ui_qtractorShortcutForm.h"
 
+#include "qtractorActionControl.h"
+
 #include <QHash>
 
 #include <QItemDelegate>
@@ -31,9 +33,6 @@
 
 
 // Forward decls.
-class qtractorActionControl;
-
-class QAction;
 class QToolButton;
 
 
@@ -194,6 +193,7 @@ protected slots:
 	void actionControlMenuRequested(const QPoint&);
 	void actionControlActivated();
 	void actionControlAccepted();
+	void actionControlRejected();
 
 	void refresh();
 
@@ -222,6 +222,10 @@ private:
 
 	QHash<QAction *, QString> m_dirty_shortcuts;
 	QHash<QAction *, QString> m_dirty_controls;
+
+	typedef qtractorActionControl::MidiObserver MidiObserver;
+
+	QHash<QAction *, MidiObserver *> m_dirty_observers;
 
 	QTreeWidgetItem *m_pActionControlItem;
 };
