@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Unique track names resolve to the first line only. (EXPERIMENTAL)
+
 - Help/Shortcuts... Search tool gets implemented; all changed MIDI
   controller shortcuts are reverted to their previous settings, when
   discarding or dismissing the dialog. (EXPERIMENTAL)

@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,8 +35,6 @@
 #include "qtractorMidiEditCommand.h"
 #include "qtractorTimeScaleCommand.h"
 
-#include "qtractorTrackButton.h"
-
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioBuffer.h"
 #include "qtractorAudioClip.h"
@@ -50,7 +48,6 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorTrackForm.h"
-#include "qtractorClipForm.h"
 
 #include "qtractorExportForm.h"
 
@@ -533,7 +530,7 @@ bool qtractorTracks::newClip (void)
 		if (pMidiClip) {
 			// Create a clip filename from scratch...
 			const QString& sFilename
-				= pSession->createFilePath(pTrack->trackName(), "mid");
+				= pSession->createFilePath(pTrack->shortTrackName(), "mid");
 			// Create the SMF for good...
 			if (!pMidiClip->createMidiFile(sFilename)) {
 				delete pClip;
@@ -1259,7 +1256,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	exportForm.setExportTitle(tr("Merge/Export"));
 	exportForm.setExportType(qtractorTrack::Audio);
 	const QString& sExt = exportForm.exportExt();
-	QString sFilename = pSession->createFilePath(pTrack->trackName(), sExt);
+	QString sFilename = pSession->createFilePath(pTrack->shortTrackName(), sExt);
 	exportForm.setExportPath(sFilename);
 	if (!exportForm.exec())
 		return false;
@@ -1547,7 +1544,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	exportForm.setExportTitle(tr("Merge/Export"));
 	exportForm.setExportType(qtractorTrack::Midi);
 	const QString& sExt = exportForm.exportExt();
-	QString sFilename = pSession->createFilePath(pTrack->trackName(), sExt);
+	QString sFilename = pSession->createFilePath(pTrack->shortTrackName(), sExt);
 	exportForm.setExportPath(sFilename);
 	if (!exportForm.exec())
 		return false;
@@ -1661,7 +1658,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		file.writeTrack(nullptr);
 
 	// Setup merge sequence...
-	qtractorMidiSequence seq(pTrack->trackName(), 0, iTicksPerBeat);
+	qtractorMidiSequence seq(pTrack->shortTrackName(), 0, iTicksPerBeat);
 	seq.setChannel(pTrack->midiChannel());
 	seq.setBankSelMethod(pTrack->midiBankSelMethod());
 	seq.setBank(pTrack->midiBank());
@@ -2742,7 +2739,7 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 			tr("About to remove track:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
-			.arg(pTrack->trackName()),
+			.arg(pTrack->shortTrackName()),
 			QMessageBox::Ok | QMessageBox::Cancel)
 			== QMessageBox::Cancel)
 			return false;
@@ -2823,8 +2820,7 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	qtractorTrack *pNewTrack = new qtractorTrack(pSession, pTrack->trackType());
 	pNewTrack->setProperties(pTrack->properties());
 	// Find an incremental/next track name...
-	pNewTrack->setTrackName(
-		pSession->uniqueTrackName(pTrack->trackName()));
+	pNewTrack->setTrackName(pSession->uniqueTrackName(pTrack->trackName()));
 	pNewTrack->setBackground(color);
 	pNewTrack->setForeground(color.darker());
 	pNewTrack->setZoomHeight(pTrack->zoomHeight());

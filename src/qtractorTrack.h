@@ -1,7 +1,7 @@
 // qtractorTrack.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,7 +81,10 @@ public:
 	// Track name accessors.
 	void setTrackName(const QString& sTrackName);
 	const QString& trackName() const;
+	QString shortTrackName() const;
 	void updateTrackName();
+
+	static QString shortTrackName(const QString& sTrackName);
 
 	// Track icon (filename) accessors.
 	void setTrackIcon(const QString& sTrackIcon);

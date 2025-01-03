@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -590,7 +590,7 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	}
 
 	if (m_iRevision == 0 || bForce) {
-		sFilename = pSession->createFilePath(pTrack->trackName(), "mid");
+		sFilename = pSession->createFilePath(pTrack->shortTrackName(), "mid");
 		sFilename = qtractorMidiFile::createFilePathRevision(sFilename);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorMidiClip::createFilePathRevision(%d): \"%s\" (%d)",

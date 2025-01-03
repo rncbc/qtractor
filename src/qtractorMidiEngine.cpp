@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3871,12 +3871,12 @@ bool qtractorMidiEngine::fileExport (
 			QString sName = pSeq->name();
 			if (!sName.isEmpty())
 				sName += "; ";
-			pSeq->setName(sName + pTrack->trackName());
+			pSeq->setName(sName + pTrack->shortTrackName());
 		} else {
 			// SMF Format 1
 			++iTracks;
 			pSeq = new qtractorMidiSequence(
-				pTrack->trackName(), iTracks, iTicksPerBeat);
+				pTrack->shortTrackName(), iTracks, iTicksPerBeat);
 			pSeq->setChannel(pTrack->midiChannel());
 			seqs.append(pSeq);
 		}

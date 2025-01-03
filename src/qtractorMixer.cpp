@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -641,7 +641,7 @@ void qtractorMixerStrip::updateName (void)
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
 		meterType = m_pTrack->trackType();
-		sName = m_pTrack->trackName();
+		sName = m_pTrack->shortTrackName();
 		QPalette pal(m_pLabel->palette());
 		const QColor& bg = m_pTrack->foreground().lighter();
 		QColor fg = m_pTrack->background().lighter();

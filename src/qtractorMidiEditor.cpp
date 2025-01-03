@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1003,7 +1003,8 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 			for (pTrack = pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (pTrack->trackType() == qtractorTrack::Midi
-					&& pTrack->trackName() == sGhostTrackName) {
+					&& (pTrack->trackName() == sGhostTrackName ||
+						pTrack->shortTrackName() == sGhostTrackName)) {
 					m_pGhostTrack = pTrack;
 					break;
 				}
@@ -1315,7 +1316,7 @@ void qtractorMidiEditor::setGhostTrack ( qtractorTrack *pGhostTrack )
 	if (m_pMidiClip) {
 		QString sGhostTrackName;
 		if (m_pGhostTrack)
-			sGhostTrackName = m_pGhostTrack->trackName();
+			sGhostTrackName = m_pGhostTrack->shortTrackName();
 		m_pMidiClip->setGhostTrackName(sGhostTrackName);
 	}
 }

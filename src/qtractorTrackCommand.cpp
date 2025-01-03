@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -793,7 +793,7 @@ bool qtractorEditTrackCommand::redo (void)
 		pMainForm->appendMessagesError(
 			QObject::tr("Track assignment failed:\n\n"
 				"Track: \"%1\" Input: \"%2\" Output: \"%3\"")
-				.arg(m_pTrack->trackName())
+				.arg(m_pTrack->shortTrackName())
 				.arg(m_pTrack->inputBusName())
 				.arg(m_pTrack->outputBusName()));
 	}

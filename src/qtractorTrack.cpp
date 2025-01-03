@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -683,12 +683,18 @@ void qtractorTrack::setTrackName ( const QString& sTrackName )
 }
 
 
+QString qtractorTrack::shortTrackName (void) const
+{
+	return shortTrackName(m_props.trackName);
+}
+
+
 void qtractorTrack::updateTrackName (void)
 {
 	const int iMaxLength = 12;
 	const QString sEllipsis(3, '.');
 
-	QString sTrackName = m_props.trackName.simplified();
+	QString sTrackName = shortTrackName();
 	if (sTrackName.length() >= iMaxLength + sEllipsis.length())
 		sTrackName = sTrackName.left(iMaxLength).trimmed() + sEllipsis;
 
@@ -710,6 +716,13 @@ void qtractorTrack::updateTrackName (void)
 	}
 
 	m_pPluginList->setName(sTrackName);
+}
+
+
+QString qtractorTrack::shortTrackName ( const QString& sTrackName )
+{
+	QString sShortTrackName = sTrackName;
+	return sShortTrackName.remove(QRegularExpression("\n.*$")).simplified();
 }
 
 
@@ -1846,8 +1859,7 @@ bool qtractorTrack::loadElement (
 	if (m_pSession == nullptr)
 		return false;
 
-	qtractorTrack::setTrackName(
-		m_pSession->uniqueTrackName(pElement->attribute("name")));
+	qtractorTrack::setTrackName(pElement->attribute("name"));
 	qtractorTrack::setTrackType(
 		qtractorTrack::trackTypeFromText(pElement->attribute("type")));
 
@@ -2505,7 +2517,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	if (pCurveFile->isEmpty())
 		return;
 
-	const QString sBaseName(trackName() + "_curve");
+	const QString sBaseName(shortTrackName() + "_curve");
 	const bool bTemporary = pDocument->isTemporary();
 	const QString& sFilename
 		= pSession->createFilePath(sBaseName, "mid", !bTemporary);

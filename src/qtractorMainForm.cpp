@@ -4477,7 +4477,7 @@ void qtractorMainForm::trackCurveClearAll (void)
 			tr("About to clear all automation:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
-			.arg(pTrack->trackName()),
+			.arg(pTrack->shortTrackName()),
 			QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
 	}
@@ -6718,7 +6718,7 @@ void qtractorMainForm::stabilizeForm (void)
 	updateTransportTime(iPlayHead);
 
 	if (pTrack)
-		m_statusItems[StatusName]->setText(pTrack->trackName().simplified());
+		m_statusItems[StatusName]->setText(pTrack->shortTrackName());
 	else
 		m_statusItems[StatusName]->clear();
 

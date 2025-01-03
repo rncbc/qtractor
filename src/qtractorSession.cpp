@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1546,34 +1546,38 @@ QString qtractorSession::sanitize ( const QString& s )
 // append an incremental numerical suffix...
 QString qtractorSession::uniqueTrackName ( const QString& sTrackName ) const
 {
-	if (!findTrack(sTrackName))
+	QString sNewTrackName = sTrackName;
+	const QString& sShortTrackName
+		= qtractorTrack::shortTrackName(sTrackName);
+	if (!findTrack(sShortTrackName))
 		return sTrackName;
 
-	QString sOldTrackName = sTrackName;
-	QString sNewTrackName;
+	QString sOldShortTrackName = sShortTrackName;
+	QString sNewShortTrackName;
 	QRegularExpression rxTrackNo("([0-9]+)$");
-	QRegularExpressionMatch match = rxTrackNo.match(sOldTrackName);
+	QRegularExpressionMatch match = rxTrackNo.match(sOldShortTrackName);
 	int iTrackNo = 0;
 	if (match.hasMatch()) {
 		iTrackNo = match.captured(1).toInt();
-		sOldTrackName.remove(rxTrackNo);
+		sOldShortTrackName.remove(rxTrackNo);
 	}
-	else sOldTrackName += ' ';
+	else sOldShortTrackName += ' ';
 
-	do { sNewTrackName = sOldTrackName + QString::number(++iTrackNo); }
-	while (findTrack(sNewTrackName));
+	do { sNewShortTrackName = sOldShortTrackName + QString::number(++iTrackNo); }
+	while (findTrack(sNewShortTrackName));
 
-	return sNewTrackName;
+	return sNewTrackName.replace(sShortTrackName, sNewShortTrackName);
 }
+
 
 void qtractorSession::acquireTrackName ( qtractorTrack *pTrack )
 {
-	if (pTrack) m_trackNames.insert(pTrack->trackName(), pTrack);
+	if (pTrack) m_trackNames.insert(pTrack->shortTrackName(), pTrack);
 }
 
 void qtractorSession::releaseTrackName ( qtractorTrack *pTrack )
 {
-	if (pTrack) m_trackNames.remove(pTrack->trackName());
+	if (pTrack) m_trackNames.remove(pTrack->shortTrackName());
 }
 
 
@@ -1696,7 +1700,7 @@ void qtractorSession::trackRecord (
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorSession::trackRecord(\"%s\", %d, %lu, %lu)",
-		pTrack->trackName().toUtf8().constData(), int(bRecord),
+		pTrack->shortTrackName().toUtf8().constData(), int(bRecord),
 		iClipStart, iFrameTime);
 #endif
 
@@ -1753,7 +1757,7 @@ void qtractorSession::trackRecord (
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setClipStart(iClipStart);
 		pAudioClip->openAudioFile(
-			createFilePath(pTrack->trackName(),
+			createFilePath(pTrack->shortTrackName(),
 				qtractorAudioFileFactory::defaultExt(), true),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
@@ -1777,7 +1781,7 @@ void qtractorSession::trackRecord (
 		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 		pMidiClip->setClipStart(iClipStart);
 		pMidiClip->openMidiFile(
-			createFilePath(pTrack->trackName(), "mid", true),
+			createFilePath(pTrack->shortTrackName(), "mid", true),
 			pTrack->midiChannel(),
 			qtractorMidiFile::Write);
 		pTrack->setClipRecord(pMidiClip);
