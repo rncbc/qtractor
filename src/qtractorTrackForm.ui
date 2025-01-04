@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -62,17 +62,17 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0" colspan="5">
+         <item row="1" column="0" colspan="5" rowspan="2">
           <widget class="QTextEdit" name="TrackNameTextEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>280</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>32767</width>
              <height>48</height>
             </size>
            </property>
@@ -85,8 +85,8 @@
           <widget class="QToolButton" name="TrackIconToolButton">
            <property name="minimumSize">
             <size>
-             <width>32</width>
-             <height>32</height>
+             <width>48</width>
+             <height>48</height>
             </size>
            </property>
            <property name="maximumSize">
@@ -102,6 +102,22 @@
             <string>Track icon</string>
            </property>
           </widget>
+         </item>
+         <item row="2" column="5">
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint">
+            <size>
+             <width>8</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
