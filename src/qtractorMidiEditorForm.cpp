@@ -2398,7 +2398,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 
 	m_ui.viewEventsAction->setChecked(m_pMidiEventList->isVisible());
 
-	m_pTrackNameLabel->setText(pTrack->shortTrackName());
+	m_pTrackNameLabel->setText(pTrack->trackName().simplified());
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));
 

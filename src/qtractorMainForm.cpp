@@ -6718,7 +6718,7 @@ void qtractorMainForm::stabilizeForm (void)
 	updateTransportTime(iPlayHead);
 
 	if (pTrack)
-		m_statusItems[StatusName]->setText(pTrack->shortTrackName());
+		m_statusItems[StatusName]->setText(pTrack->trackName().simplified());
 	else
 		m_statusItems[StatusName]->clear();
 

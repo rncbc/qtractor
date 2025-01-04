@@ -721,8 +721,7 @@ void qtractorTrack::updateTrackName (void)
 
 QString qtractorTrack::shortTrackName ( const QString& sTrackName )
 {
-	QString sShortTrackName = sTrackName;
-	return sShortTrackName.remove(QRegularExpression("\n.*$")).simplified();
+	return QString(sTrackName).remove(QRegularExpression("\n.+")).simplified();
 }
 
 
