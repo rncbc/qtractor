@@ -707,17 +707,17 @@ MIDI:	</translation>
         <translation>альтернативна назва додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="870"/>
+        <location filename="../qtractorPluginCommand.cpp" line="879"/>
         <source>dedicated audio outputs</source>
         <translation>визначені виходи звуку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="915"/>
+        <location filename="../qtractorPluginCommand.cpp" line="924"/>
         <source>direct access param</source>
         <translation>параметр безпосереднього доступу</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="947"/>
+        <location filename="../qtractorPluginCommand.cpp" line="956"/>
         <source>import plugins</source>
         <translation>імпортувати додатки</translation>
     </message>

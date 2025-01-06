@@ -571,17 +571,17 @@ MIDI:	</translation>
         <translation>alis de greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="870"/>
+        <location filename="../qtractorPluginCommand.cpp" line="879"/>
         <source>dedicated audio outputs</source>
         <translation>sorties audio dédiées</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="915"/>
+        <location filename="../qtractorPluginCommand.cpp" line="924"/>
         <source>direct access param</source>
         <translation>paramètre accès direct</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="947"/>
+        <location filename="../qtractorPluginCommand.cpp" line="956"/>
         <source>import plugins</source>
         <translation>importer des greffons</translation>
     </message>

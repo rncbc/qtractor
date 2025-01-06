@@ -1788,8 +1788,8 @@ void qtractorPluginParamWidget::propertyChanged (void)
 		if (pSession) {
 			pSession->execute(
 				new qtractorPluginPropertyCommand(pProp, value));
+		//	pPlugin->setLastUpdatedProperty(pProp);
 		}
-		pPlugin->setLastUpdatedProperty(pProp);
 	}
 }
 

@@ -686,10 +686,10 @@ bool qtractorPluginAliasCommand::undo (void)
 qtractorPluginParamCommand::qtractorPluginParamCommand (
 	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 	: qtractorCommand(pParam->name()),
-		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate)
+		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate),
+		m_pLastUpdatedParam(pParam)
 {
 	setRefresh(false);
-
 }
 
 
@@ -702,12 +702,15 @@ bool qtractorPluginParamCommand::redo (void)
 
 	// Set plugin parameter value...
 	const float fValue = m_pParam->value();
-
 	m_pParam->setValue(m_fValue, m_bUpdate);
 
 	// Set undo value...
-	m_fValue     = fValue;
-	m_bUpdate    = true;
+	m_fValue  = fValue;
+	m_bUpdate = true;
+
+	qtractorPlugin::Param *pLastUpdatedParam = pPlugin->lastUpdatedParam();
+	pPlugin->setLastUpdatedParam(m_pLastUpdatedParam);
+	m_pLastUpdatedParam = pLastUpdatedParam;
 
 	// Update the form, showing it up as necessary...
 	pPlugin->updateFormDirtyCount();
@@ -760,7 +763,7 @@ void qtractorPluginParamValuesCommand::updateParamValue (
 	} else {
 		m_paramCommands.append(
 			new qtractorPluginParamCommand(pParam, fValue, bUpdate));
-		pPlugin->setLastUpdatedParam(pParam);
+	//	pPlugin->setLastUpdatedParam(pParam);
 	}
 }
 
@@ -805,7 +808,9 @@ bool qtractorPluginParamValuesCommand::undo (void)
 // Constructor.
 qtractorPluginPropertyCommand::qtractorPluginPropertyCommand (
 	qtractorPlugin::Property *pProp, const QVariant& value )
-	: qtractorCommand(pProp->name()), m_pProp(pProp), m_value(value)
+	: qtractorCommand(pProp->name()),
+		m_pProp(pProp), m_value(value),
+		m_pLastUpdatedProperty(pProp)
 {
 	setRefresh(false);
 }
@@ -825,6 +830,10 @@ bool qtractorPluginPropertyCommand::redo (void)
 
 	// Set undo value.
 	m_value = value;
+
+	qtractorPlugin::Property *pLastUpdatedProperty = pPlugin->lastUpdatedProperty();
+	pPlugin->setLastUpdatedProperty(m_pLastUpdatedProperty);
+	m_pLastUpdatedProperty = pLastUpdatedProperty;
 
 #ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_PATCH

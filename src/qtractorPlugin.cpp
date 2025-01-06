@@ -1766,7 +1766,7 @@ void qtractorPlugin::Param::updateValue ( float fValue, bool bUpdate )
 	if (pSession) {
 		pSession->execute(
 			new qtractorPluginParamCommand(this, fValue, bUpdate));
-		m_pPlugin->setLastUpdatedParam(this);
+	//	m_pPlugin->setLastUpdatedParam(this);
 	}
 }
 

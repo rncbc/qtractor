@@ -358,6 +358,8 @@ private:
 
 	float m_fValue;
 	bool  m_bUpdate;
+
+	qtractorPlugin::Param *m_pLastUpdatedParam;
 };
 
 
@@ -414,6 +416,8 @@ private:
 	qtractorPlugin::Property *m_pProp;
 
 	QVariant m_value;
+
+	qtractorPlugin::Property *m_pLastUpdatedProperty;
 };
 
 

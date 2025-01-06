@@ -304,6 +304,9 @@ public:
 	// Last updated parameter accessors.
 	void setLastUpdatedParam(Param *pLastUpdatedParam)
 		{ m_pLastUpdatedParam = pLastUpdatedParam; }
+	Param *lastUpdatedParam() const
+		{ return m_pLastUpdatedParam; }
+
 	bool isLastUpdatedParam(Param *pParam) const
 		{ return (pParam == m_pLastUpdatedParam); }
 
@@ -329,6 +332,9 @@ public:
 	// Last updated property accessors.
 	void setLastUpdatedProperty(Property *pLastUpdatedProp)
 		{ m_pLastUpdatedProperty = pLastUpdatedProp; }
+	Property *lastUpdatedProperty() const
+		{ return m_pLastUpdatedProperty; }
+
 	bool isLastUpdatedProperty(Property *pProp) const
 		{ return (pProp == m_pLastUpdatedProperty); }
 

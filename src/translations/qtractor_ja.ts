@@ -571,17 +571,17 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="870"/>
+        <location filename="../qtractorPluginCommand.cpp" line="879"/>
         <source>dedicated audio outputs</source>
         <translation>音声出力専用</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="915"/>
+        <location filename="../qtractorPluginCommand.cpp" line="924"/>
         <source>direct access param</source>
         <translation>ダイレクトアクセスパラメーター</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="947"/>
+        <location filename="../qtractorPluginCommand.cpp" line="956"/>
         <source>import plugins</source>
         <translation>プラグインのインポート</translation>
     </message>
