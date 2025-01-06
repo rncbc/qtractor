@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1751,6 +1751,10 @@ void qtractorPluginParamWidget::propertyChanged (void)
 	if (pProp == nullptr)
 		return;
 
+	qtractorPlugin *pPlugin = pProp->plugin();
+	if (pPlugin == nullptr)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginParamWidget[%p]::propertyChanged()", this);
 #endif
@@ -1774,11 +1778,19 @@ void qtractorPluginParamWidget::propertyChanged (void)
 	if (!value.isValid())
 		return;
 
-	// Make it as an undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pSession->execute(
-			new qtractorPluginPropertyCommand(pProp, value));
+	if (pProp->isAutomatable() && pPlugin->isLastUpdatedProperty(pProp)) {
+		pProp->setVariant(value, true);
+		pPlugin->updateFormDirtyCount();
+		pPlugin->refreshForm();
+	} else {
+		// Make it as an undoable command...
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			pSession->execute(
+				new qtractorPluginPropertyCommand(pProp, value));
+		}
+		pPlugin->setLastUpdatedProperty(pProp);
+	}
 }
 
 

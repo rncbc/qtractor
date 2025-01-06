@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Immediate and consecutive plugin parameter changes are now merged
+  into a single undo-able command, reflecting only the first value
+  change in the series, dropping the previous old algorithm, which
+  was dead wrong if not utterly defective. (EXPERIMENTAL)
+  
 - Unique track names resolve to the first line only. (EXPERIMENTAL)
 
 - Help/Shortcuts... Search tool gets implemented; all changed MIDI

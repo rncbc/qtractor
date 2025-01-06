@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -256,6 +256,7 @@ qtractorPlugin::qtractorPlugin (
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
 		m_iActivated(0), m_bActivated(false), m_bAutoDeactivated(false),
 		m_activateObserver(this), m_iActivateSubjectIndex(0),
+		m_pLastUpdatedParam(nullptr), m_pLastUpdatedProperty(nullptr),
 		m_pForm(nullptr), m_iEditorType(-1),
 		m_iDirectAccessParamIndex(-1)
 {
@@ -1753,11 +1754,19 @@ void qtractorPlugin::Param::updateValue ( float fValue, bool bUpdate )
 	qDebug("qtractorPlugin::Param[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
 #endif
 
+	// If immediately the same, make it directly dirty...
+	if (m_pPlugin->isLastUpdatedParam(this)) {
+		setValue(fValue, bUpdate);
+		m_pPlugin->updateFormDirtyCount();
+		return;
+	}
+
 	// Make it a undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		pSession->execute(
 			new qtractorPluginParamCommand(this, fValue, bUpdate));
+		m_pPlugin->setLastUpdatedParam(this);
 	}
 }
 

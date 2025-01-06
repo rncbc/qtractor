@@ -1,7 +1,7 @@
 // qtractorPluginCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -351,15 +351,6 @@ public:
 	bool redo();
 	bool undo();
 
-	// Plugin-port accessor.
-	qtractorPlugin::Param *param() const { return m_pParam; }
-
-	// Plugin-port value retrieval.
-	float value() const { return m_fValue; }
-
-	// Last known panning predicate.
-	float prevValue() const { return m_fPrevValue; }
-
 private:
 
 	// Instance variables.
@@ -367,7 +358,6 @@ private:
 
 	float m_fValue;
 	bool  m_bUpdate;
-	float m_fPrevValue;
 };
 
 

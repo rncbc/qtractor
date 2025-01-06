@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -686,37 +686,10 @@ bool qtractorPluginAliasCommand::undo (void)
 qtractorPluginParamCommand::qtractorPluginParamCommand (
 	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 	: qtractorCommand(pParam->name()),
-		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate),
-		m_fPrevValue(pParam->prevValue())
+		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate)
 {
 	setRefresh(false);
 
-	// Try replacing an previously equivalent command...
-	static qtractorPluginParamCommand *s_pPrevParamCommand = nullptr;
-	if (s_pPrevParamCommand) {
-		qtractorSession *pSession = qtractorSession::getInstance();
-		qtractorCommand *pLastCommand
-			= (pSession->commands())->lastCommand();
-		qtractorCommand *pPrevCommand
-			= static_cast<qtractorCommand *> (s_pPrevParamCommand);
-		if (pPrevCommand == pLastCommand
-			&& s_pPrevParamCommand->param() == pParam) {
-			qtractorPluginParamCommand *pLastParamCommand
-				= static_cast<qtractorPluginParamCommand *> (pLastCommand);
-			if (pLastParamCommand) {
-				// Equivalence means same (sign) direction too...
-				const float fPrevValue = pLastParamCommand->prevValue();
-				const float fLastValue = pLastParamCommand->value();
-				const int   iPrevSign  = (fPrevValue > fLastValue ? +1 : -1);
-				const int   iCurrSign  = (fPrevValue < m_fValue   ? +1 : -1);
-				if (iPrevSign == iCurrSign || m_fValue == m_fPrevValue) {
-					m_fPrevValue = fLastValue;
-					(pSession->commands())->removeLastCommand();
-				}
-			}
-		}
-	}
-	s_pPrevParamCommand = this;
 }
 
 
@@ -728,12 +701,11 @@ bool qtractorPluginParamCommand::redo (void)
 		return false;
 
 	// Set plugin parameter value...
-	const float fValue = m_fPrevValue;
+	const float fValue = m_pParam->value();
 
 	m_pParam->setValue(m_fValue, m_bUpdate);
 
 	// Set undo value...
-	m_fPrevValue = m_fValue;
 	m_fValue     = fValue;
 	m_bUpdate    = true;
 
@@ -778,8 +750,18 @@ qtractorPluginParamValuesCommand::~qtractorPluginParamValuesCommand (void)
 void qtractorPluginParamValuesCommand::updateParamValue (
 	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 {
-	m_paramCommands.append(
-		new qtractorPluginParamCommand(pParam, fValue, bUpdate));
+	qtractorPlugin *pPlugin = pParam->plugin();
+	if (pPlugin == nullptr)
+		return;
+
+	if (pPlugin->isLastUpdatedParam(pParam)) {
+		pParam->setValue(fValue, bUpdate);
+		pPlugin->updateFormDirtyCount();
+	} else {
+		m_paramCommands.append(
+			new qtractorPluginParamCommand(pParam, fValue, bUpdate));
+		pPlugin->setLastUpdatedParam(pParam);
+	}
 }
 
 
