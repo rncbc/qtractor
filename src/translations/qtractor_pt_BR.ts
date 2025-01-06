@@ -65,7 +65,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>(Todos)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="574"/>
+        <location filename="../qtractorPlugin.cpp" line="575"/>
         <source>Aux Send: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -479,7 +479,7 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="965"/>
+        <location filename="../qtractorPluginCommand.cpp" line="947"/>
         <source>import plugins</source>
         <translation>importar plugins</translation>
     </message>
@@ -533,7 +533,7 @@ MIDI:	</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="888"/>
+        <location filename="../qtractorPluginCommand.cpp" line="870"/>
         <source>dedicated audio outputs</source>
         <translation>saídas de áudio dedicadas</translation>
     </message>
@@ -558,7 +558,7 @@ MIDI:	</translation>
         <translation>resetar controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="933"/>
+        <location filename="../qtractorPluginCommand.cpp" line="915"/>
         <source>direct access param</source>
         <translation>acesso direto a parâmetros</translation>
     </message>
@@ -891,7 +891,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>remover marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="271"/>
+        <location filename="../qtractorPlugin.cpp" line="272"/>
         <source>Activate</source>
         <translation>Ativar</translation>
     </message>
@@ -901,7 +901,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2417"/>
+        <location filename="../qtractorPlugin.cpp" line="2426"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>

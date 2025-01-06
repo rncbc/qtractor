@@ -792,7 +792,7 @@ bool qtractorPluginParamValuesCommand::undo (void)
 	QListIterator<qtractorPluginParamCommand *> iter(m_paramCommands);
 	iter.toBack();
 	while (bUndo && iter.hasPrevious())
-	    bUndo = iter.previous()->undo();
+		bUndo = iter.previous()->undo();
 
 	return bUndo;
 }

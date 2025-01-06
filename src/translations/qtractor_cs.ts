@@ -290,17 +290,17 @@ MIDI:	</translation>
         <translation>(Jakýkoli)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="271"/>
+        <location filename="../qtractorPlugin.cpp" line="272"/>
         <source>Activate</source>
         <translation>Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="574"/>
+        <location filename="../qtractorPlugin.cpp" line="575"/>
         <source>Aux Send: %1</source>
         <translation>Aux Send: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2417"/>
+        <location filename="../qtractorPlugin.cpp" line="2426"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
     </message>
@@ -360,17 +360,17 @@ MIDI:	</translation>
         <translation>Přezdívka přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="888"/>
+        <location filename="../qtractorPluginCommand.cpp" line="870"/>
         <source>dedicated audio outputs</source>
         <translation>Jednoúčelové zvukové výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="933"/>
+        <location filename="../qtractorPluginCommand.cpp" line="915"/>
         <source>direct access param</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="965"/>
+        <location filename="../qtractorPluginCommand.cpp" line="947"/>
         <source>import plugins</source>
         <translation>Přídavné moduly k zavedení</translation>
     </message>
