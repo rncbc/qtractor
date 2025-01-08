@@ -700,12 +700,12 @@ unsigned int qtractorSession::pixelSnap ( unsigned int x )
 
 
 // Frame/locate (SMPTE) conversion.
-unsigned long qtractorSession::frameFromLocate ( unsigned long iLocate ) const
+unsigned long qtractorSession::frameFromLocate ( unsigned int iLocate ) const
 {
 	return (iLocate * m_props.timeScale.sampleRate()) / 30;
 }
 
-unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
+unsigned int qtractorSession::locateFromFrame ( unsigned long iFrame ) const
 {
 	return (30 * iFrame) / m_props.timeScale.sampleRate();
 }
@@ -713,12 +713,12 @@ unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
 
 
 // Song position pointer (SPP=MIDI beats) to frame converters.
-unsigned long qtractorSession::frameFromSongPos ( unsigned short iSongPos )
+unsigned long qtractorSession::frameFromSongPos ( unsigned int iSongPos )
 {
 	return frameFromTick((iSongPos * ticksPerBeat()) >> 2);
 }
 
-unsigned short qtractorSession::songPosFromFrame ( unsigned long iFrame )
+unsigned int qtractorSession::songPosFromFrame ( unsigned long iFrame )
 {
 	return ((tickFromFrame(iFrame) << 2) / ticksPerBeat());
 }

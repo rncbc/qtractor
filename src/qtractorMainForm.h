@@ -406,13 +406,13 @@ protected:
 
 	int setRolling(int iRolling);
 
-	void setLocate(unsigned long iLocate);
+	void setLocate(unsigned int iLocate);
 	void setShuttle(float fShuttle);
 	void setStep(int iStep);
 
 	void setTrack(int scmd, int iTrack, bool bOn);
 
-	void setSongPos(unsigned short iSongPos);
+	void setSongPos(unsigned int iSongPos);
 
 	void updateSessionPre();
 	void updateSessionPost();

@@ -256,7 +256,7 @@ public:
 		unsigned char *pMmcData = nullptr, unsigned short iMmcData = 0) const;
 
 	// SPP dispatch special command.
-	void sendSppCommand(int iCmdType, unsigned short iSongPos = 0) const;
+	void sendSppCommand(int iCmdType, unsigned int iSongPos = 0) const;
 
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);

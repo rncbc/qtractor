@@ -3117,7 +3117,7 @@ void qtractorMidiEngine::sendMmcCommand (
 
 // SPP dispatch special command.
 void qtractorMidiEngine::sendSppCommand (
-	int iCmdType, unsigned short iSongPos ) const
+	int iCmdType, unsigned int iSongPos ) const
 {
 	// Do we have SPP output enabled?
 	if ((m_sppMode & qtractorBus::Output) == 0)

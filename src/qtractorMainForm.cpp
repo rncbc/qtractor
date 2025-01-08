@@ -6525,7 +6525,7 @@ int qtractorMainForm::setRolling ( int iRolling )
 }
 
 
-void qtractorMainForm::setLocate ( unsigned long iLocate )
+void qtractorMainForm::setLocate ( unsigned int iLocate )
 {
 	m_pSession->setPlayHead(m_pSession->frameFromLocate(iLocate));
 	++m_iTransportUpdate;
@@ -6584,7 +6584,7 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 }
 
 
-void qtractorMainForm::setSongPos ( unsigned short iSongPos )
+void qtractorMainForm::setSongPos ( unsigned int iSongPos )
 {
 	m_pSession->setPlayHead(m_pSession->frameFromSongPos(iSongPos));
 	++m_iTransportUpdate;
