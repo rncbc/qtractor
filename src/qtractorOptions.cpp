@@ -190,6 +190,10 @@ void qtractorOptions::loadOptions (void)
 	bMidiResetAllControllers = m_settings.value("/ResetAllControllers", false).toBool();
 	m_settings.endGroup();
 
+	// HACK: Correct MIDI Clock mode (avoid Duplex...)
+	if (iMidiClockMode > 2)
+		iMidiClockMode = 0;
+
 	// Metronome options group.
 	m_settings.beginGroup("/Metronome");
 	// Audio metronome...
@@ -227,7 +231,7 @@ void qtractorOptions::loadOptions (void)
 	bAutoMonitor    = m_settings.value("/AutoMonitor", true).toBool();
 	bAutoDeactivate = m_settings.value("/AutoDeactivate", false).toBool();
 	iSnapPerBeat    = m_settings.value("/SnapPerBeat", 4).toInt();
-	fTempo    = float(m_settings.value("/Tempo", 120.0).toDouble());
+	fTempo          = float(m_settings.value("/Tempo", 120.0).toDouble());
 	iBeatsPerBar    = m_settings.value("/BeatsPerBar", 4).toInt();
 	iBeatDivisor    = m_settings.value("/BeatDivisor", 2).toInt();
 	iLoopRecordingMode = m_settings.value("/LoopRecordingMode", 0).toInt();
@@ -246,8 +250,8 @@ void qtractorOptions::loadOptions (void)
 	iExportRangeStart = (unsigned long) m_settings.value("/ExportRangeStart", 0).toUInt();
 	iExportRangeEnd = (unsigned long) m_settings.value("/ExportRangeEnd", 0).toUInt();
 	bExportAddTrack = m_settings.value("/ExportAddTrack", false).toBool();
-	sMarkerColor = m_settings.value("/MarkerColor").toString();
-	sCurveColor = m_settings.value("/CurveColor").toString();
+	sMarkerColor    = m_settings.value("/MarkerColor").toString();
+	sCurveColor     = m_settings.value("/CurveColor").toString();
 	bAutoBackgroundColor = m_settings.value("/AutoBackgroundColor", false).toBool();
 	m_settings.endGroup();
 

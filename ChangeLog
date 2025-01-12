@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Duplex MIDI Clock mode is not allowed anymore.
+
 - Immediate and consecutive plugin parameter changes are now merged
   into a single undo-able command, reflecting only the first value
   change in the series, dropping the previous old algorithm, which
