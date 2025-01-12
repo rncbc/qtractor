@@ -14031,7 +14031,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="91"/>
         <source>Plugin search string (regular expression)</source>
-        <translation>Vyhledávací řetězec pro přídavný modul (řádný výraz)</translation>
+        <translation>Vyhledávací řetězec pro přídavný modul (regulární výraz)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="107"/>
@@ -14313,7 +14313,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="359"/>
         <source>Search shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Hledat klávesové zkratky</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="462"/>
@@ -14358,7 +14358,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="49"/>
         <source>Shortcut search string (regular expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyhledávací řetězec pro klávesovou zkratku (regulární výraz)</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="96"/>
