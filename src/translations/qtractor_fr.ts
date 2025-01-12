@@ -14316,7 +14316,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="49"/>
         <source>Shortcut search string (regular expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaîne de recherche raccourcie (expression régulière)</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="96"/>
@@ -14341,7 +14341,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="359"/>
         <source>Search shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourcis de recherche</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="462"/>
