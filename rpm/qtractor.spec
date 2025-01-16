@@ -1,7 +1,7 @@
 #
 # spec file for package qtractor
 #
-# Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+# Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -17,8 +17,8 @@
 
 Summary:	An Audio/MIDI multi-track sequencer
 Name:		qtractor
-Version:	1.5.1
-Release:	8.1
+Version:	1.5.2
+Release:	9.1
 License:	GPL-2.0-or-later
 Group:		Productivity/Multimedia/Sound/Midi
 Source:		%{name}-%{version}.tar.gz
@@ -192,6 +192,8 @@ cmake --install build
 
 
 %changelog
+* Fri Jan 17 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.2
+- A New-Year'25 Release.
 * Mon Dec 30 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.5.1
 - An(other) End-of-Year'24 Release.
 * Mon Dec 16 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.5.0

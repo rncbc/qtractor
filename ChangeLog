@@ -4,22 +4,22 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.5.2  2025-01-17  A New-Year'25 Release.
 
 - Duplex MIDI Clock mode is not allowed anymore.
 
 - Immediate and consecutive plugin parameter changes are now merged
   into a single undo-able command, reflecting only the first value
   change in the series, dropping the previous old algorithm, which
-  was dead wrong if not utterly defective. (EXPERIMENTAL)
+  was dead wrong if not utterly defective.
   
-- Unique track names resolve to the first line only. (EXPERIMENTAL)
+- Unique track names resolve to the first line only.
 
 - Help/Shortcuts... Search tool gets implemented; all changed MIDI
   controller shortcuts are reverted to their previous settings, when
-  discarding or dismissing the dialog. (EXPERIMENTAL)
+  discarding or dismissing the dialog.
 
-- Fixed missing MIDI SPP in some cases. (EXPERIMENTAL)
+- Fixed missing MIDI SPP in some cases.
 
 
 1.5.1  2024-12-30  An(other) End-of-Year'24 Release.
