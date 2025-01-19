@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -346,9 +346,6 @@ public:
 	// LV2 UI resize control (host->ui).
 	void lv2_ui_resize(const QSize& size);
 
-	// Whether LV2 UI no-user-resize feature is being requested.
-	bool lv2_ui_no_user_resize() const;
-
 	// GUI editor closed state.
 	void setEditorClosed(bool bClosed)
 		{ m_bEditorClosed = bClosed; }
@@ -585,6 +582,9 @@ private:
 	// Common UI instantiation stuff.
 	LV2UI_Handle   m_lv2_ui_handle;
 	LV2UI_Widget   m_lv2_ui_widget;
+
+	// Whether LV2 UI no-user-resize feature is being requested.
+	bool m_lv2_ui_no_user_resize;
 
 #ifdef CONFIG_LIBSUIL
 	SuilHost      *m_suil_host;

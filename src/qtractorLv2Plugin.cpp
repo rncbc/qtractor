@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2274,6 +2274,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_lv2_ui_descriptor(nullptr)
 		, m_lv2_ui_handle(nullptr)
 		, m_lv2_ui_widget(nullptr)
+		, m_lv2_ui_no_user_resize(false)
 	#ifdef CONFIG_LIBSUIL
 		, m_suil_host(nullptr)
 		, m_suil_instance(nullptr)
@@ -3539,6 +3540,24 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 	qDebug("qtractorLv2Plugin[%p]::openEditor(\"%s\")", this, ui_type_uri);
 #endif
 
+	// Whether LV2 UI no-user-resize feature is being requested.
+	const LilvNode *ui_uri_node = lilv_ui_get_uri(m_lv2_ui);
+	lilv_world_load_resource(g_lv2_world, ui_uri_node);
+	LilvNode *core_optional_feature_uri_node
+		= lilv_new_uri(g_lv2_world, LV2_CORE__optionalFeature);
+	LilvNode *ui_no_user_resize_uri_node
+		= lilv_new_uri(g_lv2_world, LV2_UI__noUserResize);
+	m_lv2_ui_no_user_resize
+		= lilv_world_ask(g_lv2_world, ui_uri_node,
+			g_lv2_extension_data_hint, ui_no_user_resize_uri_node)
+		||lilv_world_ask(g_lv2_world, ui_uri_node,
+			core_optional_feature_uri_node, ui_no_user_resize_uri_node);
+	lilv_node_free(ui_no_user_resize_uri_node);
+	lilv_node_free(core_optional_feature_uri_node);
+#ifdef CONFIG_LILV_WORLD_UNLOAD_RESOURCE
+	lilv_world_unload_resource(g_lv2_world, ui_uri_node);
+#endif
+
 	// What style do we create tool childs?
 	Qt::WindowFlags wflags = Qt::Window;
 #if 0//QTRACTOR_LV2_EDITOR_TOOL
@@ -3555,7 +3574,7 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 	const char *ui_host_uri = LV2_UI_HOST_URI;
 	const char *plugin_uri
 		= lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin()));
-	const char *ui_uri = lilv_node_as_uri(lilv_ui_get_uri(m_lv2_ui));
+	const char *ui_uri = lilv_node_as_uri(ui_uri_node);
 
 	const char *ui_bundle_uri = lilv_node_as_uri(lilv_ui_get_bundle_uri(m_lv2_ui));
 	const char *ui_binary_uri = lilv_node_as_uri(lilv_ui_get_binary_uri(m_lv2_ui));
@@ -3618,7 +3637,10 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		if (!size.isValid() || size.isNull())
 			size = m_pQtWidget->size();
 		if (size.isValid() && !size.isNull()) {
-			m_pQtWidget->setMinimumSize(size);
+			if (m_lv2_ui_no_user_resize)
+				m_pQtWidget->setFixedSize(size);
+			else
+				m_pQtWidget->setMinimumSize(size);
 			lv2_ui_resize(size);
 		}
 	//	m_pQtWidget->show();
@@ -3683,7 +3705,10 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		if (!size.isValid() || size.isNull())
 			size = m_pQtWidget->size();
 		if (size.isValid() && !size.isNull()) {
-			m_pQtWidget->setMinimumSize(size);
+			if (m_lv2_ui_no_user_resize)
+				m_pQtWidget->setFixedSize(size);
+			else
+				m_pQtWidget->setMinimumSize(size);
 			lv2_ui_resize(size);
 		}
 	//	m_pQtWidget->show();
@@ -3803,6 +3828,8 @@ void qtractorLv2Plugin::closeEditor (void)
 		lilv_uis_free(m_lv2_uis);
 		m_lv2_uis = nullptr;
 	}
+
+	m_lv2_ui_no_user_resize = false;
 
 	m_lv2_ui_widget = nullptr;
 	m_lv2_ui_handle = nullptr;
@@ -4314,7 +4341,7 @@ LV2_ControlInputPort_Change_Status qtractorLv2Plugin::lv2_port_change_request (
 // LV2 UI resize control (host->ui).
 void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 {
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG//_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_resize(%d, %d)",
 		this, size.width(), size.height());
 #endif
@@ -4346,33 +4373,6 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 			handle = m_lv2_ui_handle;
 		(*resize->ui_resize)(handle, size.width(), size.height());
 	}
-}
-
-
-// Whether LV2 UI no-user-resize feature is being requested.
-bool qtractorLv2Plugin::lv2_ui_no_user_resize (void) const
-{
-	if (m_lv2_ui == nullptr)
-		return false;
-
-	const LilvNode *ui_uri = lilv_ui_get_uri(m_lv2_ui);
-	lilv_world_load_resource(g_lv2_world, ui_uri);
-	LilvNode *optional_feature_uri
-		= lilv_new_uri(g_lv2_world, LV2_CORE__optionalFeature);
-	LilvNode *ui_no_user_resize_uri
-		= lilv_new_uri(g_lv2_world, LV2_UI__noUserResize);
-	const bool ui_no_user_resize
-		= lilv_world_ask(g_lv2_world, ui_uri,
-			g_lv2_extension_data_hint, ui_no_user_resize_uri)
-		||lilv_world_ask(g_lv2_world, ui_uri,
-			optional_feature_uri, ui_no_user_resize_uri);
-	lilv_node_free(ui_no_user_resize_uri);
-	lilv_node_free(optional_feature_uri);
-#ifdef CONFIG_LILV_WORLD_UNLOAD_RESOURCE
-	lilv_world_unload_resource(g_lv2_world, ui_uri);
-#endif
-
-	return ui_no_user_resize;
 }
 
 
@@ -4561,7 +4561,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 		QWidget *pQtWidget = new QWidget(pParent, wflags);
 		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		// Add/prepare some needed features...
-		if (!lv2_ui_no_user_resize()) {
+		if (!m_lv2_ui_no_user_resize) {
 			m_lv2_ui_resize.handle = pQtWidget;
 			m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;
 			m_lv2_ui_resize_feature.URI = LV2_UI__resize;

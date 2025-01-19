@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Enforce a fixed size when LV2 plug-in UI no-user-resize feature
+  is explicitly requested. (EXPERIMENTAL)
+
+
 1.5.2  2025-01-17  A New-Year'25 Release.
 
 - Duplex MIDI Clock mode is not allowed anymore.
