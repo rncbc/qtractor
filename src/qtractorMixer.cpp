@@ -775,6 +775,12 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 {
 	m_bSelected = bSelected;
 
+	QStyle *pStyle = QFrame::style();
+	if (pStyle)
+		pStyle->unpolish(this);
+
+	QFrame::setProperty("selected", m_bSelected);
+
 	QPalette pal;
 	QColor rgbBase;
 	if (m_bSelected) {
@@ -802,6 +808,7 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 		grad.setColorAt(0.6, rgbBase.lighter(105));
 		grad.setColorAt(1.0, rgbBase.darker(130));
 	}
+
 	const QBrush brush
 		= pal.brush(QPalette::Window);
 	pal.setBrush(QPalette::Window, grad);
@@ -830,6 +837,11 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	if (m_pSoloButton)
 		m_pSoloButton->observer()->update(true);
 #endif
+
+	if (pStyle)
+		pStyle->polish(this);
+
+//	QFrame::update();
 }
 
 
