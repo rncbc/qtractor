@@ -11772,22 +11772,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1475"/>
+        <location filename="../qtractorMixer.cpp" line="1487"/>
         <source>Inputs</source>
         <translation>Пристрої введення</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1476"/>
+        <location filename="../qtractorMixer.cpp" line="1488"/>
         <source>Tracks</source>
         <translation>Доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1477"/>
+        <location filename="../qtractorMixer.cpp" line="1489"/>
         <source>Outputs</source>
         <translation>Виходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1484"/>
+        <location filename="../qtractorMixer.cpp" line="1496"/>
         <source>Mixer</source>
         <translation>Мікшер</translation>
     </message>
@@ -11803,22 +11803,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1118"/>
+        <location filename="../qtractorMixer.cpp" line="1130"/>
         <source>&amp;Inputs</source>
         <translation>В&amp;ходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1122"/>
+        <location filename="../qtractorMixer.cpp" line="1134"/>
         <source>&amp;Outputs</source>
         <translation>В&amp;иходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1128"/>
+        <location filename="../qtractorMixer.cpp" line="1140"/>
         <source>&amp;Monitor</source>
         <translation>Сп&amp;остерігати</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1137"/>
+        <location filename="../qtractorMixer.cpp" line="1149"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Шини...</translation>
     </message>

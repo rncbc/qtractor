@@ -9370,7 +9370,9 @@ QString qtractorMainForm::styleSheet ( const QString& sFilename )
 	if (!sStyleSheet.isEmpty()) {
 		QStringList subs;
 		const QDir& dir = QFileInfo(sFilename).absoluteDir();
-		QRegularExpression rx("url\\([\"\\s]*([^\\\")]+)[\"\\s]*\\)");
+		const QRegularExpression rx(
+			"url\\([\\s]?[\"']?([^\"')]+)[\"']?[\\s]?\\)",
+			QRegularExpression::CaseInsensitiveOption);
 		QRegularExpressionMatchIterator iter = rx.globalMatch(sStyleSheet);
 		while (iter.hasNext()) {
 			const QRegularExpressionMatch& match = iter.next();
