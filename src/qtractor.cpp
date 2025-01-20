@@ -576,11 +576,8 @@ int main ( int argc, char **argv )
 
 	// Custom style sheet (QSS)...
 	if (!options.sCustomStyleSheet.isEmpty()) {
-		QFile file(options.sCustomStyleSheet);
-		if (file.open(QFile::ReadOnly)) {
-			app.setStyleSheet(QString::fromUtf8(file.readAll()));
-			file.close();
-		}
+		app.setStyleSheet(
+			qtractorMainForm::styleSheet(options.sCustomStyleSheet));
 	}
 
 	// Custom style theme...

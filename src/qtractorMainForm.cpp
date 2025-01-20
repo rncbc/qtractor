@@ -7916,17 +7916,7 @@ void qtractorMainForm::updateCustomStyleSheet (void)
 	if (m_pOptions == nullptr)
 		return;
 
-	QString sStyleSheet;
-
-	if (!m_pOptions->sCustomStyleSheet.isEmpty()) {
-		QFile file(m_pOptions->sCustomStyleSheet);
-		if (file.open(QFile::ReadOnly)) {
-			sStyleSheet = QString::fromUtf8(file.readAll());
-			file.close();
-		}
-	}
-
-	qApp->setStyleSheet(sStyleSheet);
+	qApp->setStyleSheet(styleSheet(m_pOptions->sCustomStyleSheet));
 }
 
 
@@ -9360,6 +9350,48 @@ void qtractorMainForm::transportTimeFinished (void)
 void qtractorMainForm::transportTempoContextMenu ( const QPoint& /*pos*/ )
 {
 	viewTempoMap();
+}
+
+
+// Open and retrieve style-sheet from file (*.qss).
+QString qtractorMainForm::styleSheet ( const QString& sFilename )
+{
+	QString sStyleSheet;
+
+	if (sFilename.isEmpty())
+		return sStyleSheet;
+
+	QFile file(sFilename);
+	if (file.open(QFile::ReadOnly)) {
+		sStyleSheet = QString::fromUtf8(file.readAll());
+		file.close();
+	}
+
+	if (!sStyleSheet.isEmpty()) {
+		QStringList subs;
+		const QDir& dir = QFileInfo(sFilename).absoluteDir();
+		QRegularExpression rx("url\\([\"\\s]*([^\\\")]+)[\"\\s]*\\)");
+		QRegularExpressionMatchIterator iter = rx.globalMatch(sStyleSheet);
+		while (iter.hasNext()) {
+			const QRegularExpressionMatch& match = iter.next();
+			const QString& sPath = match.captured(1).trimmed();
+			if (sPath.isEmpty())
+				continue;
+			const QFileInfo info(dir, sPath);
+			if (!info.exists())
+				continue;
+			const QString& sBefore
+				= match.captured(0);
+			if (!subs.contains(sBefore)) {
+				QString sAfter = sBefore;
+				sAfter.replace(sPath, info.absoluteFilePath());
+				sStyleSheet.replace(sBefore, sAfter);
+				subs.append(sBefore);
+			}
+		}
+	}
+
+	return sStyleSheet;
 }
 
 

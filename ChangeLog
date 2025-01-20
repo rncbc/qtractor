@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Custom Style Sheet files (*.qss): all url() paths are considered
+  relative to style-sheet file location. (EXPERIMENTAL)
+
 - Enforce a fixed size when LV2 plug-in UI no-user-resize feature
   is explicitly requested. (EXPERIMENTAL)
 
