@@ -5624,13 +5624,12 @@ void qtractorMainForm::transportRewind (void)
 	const int iRolling = (bShiftKeyModifier ? -3 : -1);
 
 	// Toggle rolling backward...
-	if (setRolling(iRolling) < 0) {
-		setPlaying(false);
-	} else {
+	if (setRolling(iRolling) >= 0) {
 		// Send MMC REWIND command...
 		m_pSession->midiEngine()->sendMmcCommand(
 			qtractorMmcEvent::REWIND);
 	}
+//	else setPlayingEx(false);
 
 	++m_iStabilizeTimer;
 }
@@ -5654,13 +5653,12 @@ void qtractorMainForm::transportFastForward (void)
 	const int iRolling = (bShiftKeyModifier ? +3 : +1);
 
 	// Toggle rolling backward...
-	if (setRolling(iRolling) > 0) {
-		setPlayingEx(false);
-	} else {
+	if (0 >= setRolling(iRolling)) {
 		// Send MMC FAST_FORWARD command...
 		m_pSession->midiEngine()->sendMmcCommand(
 			qtractorMmcEvent::FAST_FORWARD);
 	}
+//	else setPlayingEx(false);
 
 	++m_iStabilizeTimer;
 }

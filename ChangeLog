@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Resume normal playback state if rolling when transport rewind or
+  fast-forward is disengaged.
+  
 - Custom Style Sheet files (*.qss): all url() paths are considered
   relative to style-sheet file location. (EXPERIMENTAL)
 
