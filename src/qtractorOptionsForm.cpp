@@ -266,6 +266,16 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.AudioWsolaQuickSeekCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+#ifdef CONFIG_LIBRUBBERBAND
+	QObject::connect(m_ui.AudioRubberBandFormantCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+#ifdef CONFIG_LIBRUBBERBAND_R3
+	QObject::connect(m_ui.AudioRubberBandFinerR3CheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+#endif
+#endif
 	QObject::connect(m_ui.AudioPlayerBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -627,9 +637,17 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioAutoTimeStretchCheckBox->setChecked(m_pOptions->bAudioAutoTimeStretch);
 #ifdef CONFIG_LIBRUBBERBAND
 	m_ui.AudioWsolaTimeStretchCheckBox->setChecked(m_pOptions->bAudioWsolaTimeStretch);
+	m_ui.AudioRubberBandFormantCheckBox->setChecked(m_pOptions->bAudioRubberBandFormant);
+#ifdef CONFIG_LIBRUBBERBAND_R3
+	m_ui.AudioRubberBandFinerR3CheckBox->setChecked(m_pOptions->bAudioRubberBandFinerR3);
+#else
+	m_ui.AudioRubberBandFinerR3CheckBox->hide();
+#endif
 #else
 	m_ui.AudioWsolaTimeStretchCheckBox->setChecked(true);
 	m_ui.AudioWsolaTimeStretchCheckBox->setEnabled(false);
+	m_ui.AudioRubberBandFormantCheckBox->hide();
+	m_ui.AudioRubberBandFinerR3CheckBox->hide();
 #endif
 	m_ui.AudioWsolaQuickSeekCheckBox->setChecked(m_pOptions->bAudioWsolaQuickSeek);
 	m_ui.AudioPlayerBusCheckBox->setChecked(m_pOptions->bAudioPlayerBus);
@@ -919,6 +937,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bAudioAutoTimeStretch = m_ui.AudioAutoTimeStretchCheckBox->isChecked();
 		m_pOptions->bAudioWsolaTimeStretch = m_ui.AudioWsolaTimeStretchCheckBox->isChecked();
 		m_pOptions->bAudioWsolaQuickSeek = m_ui.AudioWsolaQuickSeekCheckBox->isChecked();
+		m_pOptions->bAudioRubberBandFormant = m_ui.AudioRubberBandFormantCheckBox->isChecked();
+		m_pOptions->bAudioRubberBandFinerR3 = m_ui.AudioRubberBandFinerR3CheckBox->isChecked();
 		m_pOptions->bAudioPlayerBus      = m_ui.AudioPlayerBusCheckBox->isChecked();
 		m_pOptions->bAudioPlayerAutoConnect = m_ui.AudioPlayerAutoConnectCheckBox->isChecked();
 		// Audio metronome options.

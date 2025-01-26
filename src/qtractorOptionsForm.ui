@@ -952,6 +952,22 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="2" colspan="4">
+           <widget class="QCheckBox" name="AudioRubberBandFormantCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to use RubberBand formant preserve</string>
+            </property>
+            <property name="text">
+             <string>RubberBand &amp;formant preserve</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0">
            <widget class="QCheckBox" name="AudioWsolaQuickSeekCheckBox">
             <property name="font">
@@ -965,6 +981,22 @@
             </property>
             <property name="text">
              <string>WSOLA quic&amp;k seek</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" colspan="4">
+           <widget class="QCheckBox" name="AudioRubberBandFinerR3CheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to use RubberBand R3 finer engine</string>
+            </property>
+            <property name="text">
+             <string>RubberBand R&amp;3 finer engine</string>
             </property>
            </widget>
           </item>
@@ -4297,11 +4329,13 @@
   <tabstop>AudioCaptureFormatComboBox</tabstop>
   <tabstop>AudioCaptureQualitySpinBox</tabstop>
   <tabstop>AudioAutoTimeStretchCheckBox</tabstop>
+  <tabstop>AudioResampleTypeComboBox</tabstop>
   <tabstop>AudioWsolaTimeStretchCheckBox</tabstop>
   <tabstop>AudioWsolaQuickSeekCheckBox</tabstop>
+  <tabstop>AudioRubberBandFormantCheckBox</tabstop>
+  <tabstop>AudioRubberBandFinerR3CheckBox</tabstop>
   <tabstop>AudioPlayerBusCheckBox</tabstop>
   <tabstop>AudioPlayerAutoConnectCheckBox</tabstop>
-  <tabstop>AudioResampleTypeComboBox</tabstop>
   <tabstop>AudioMetronomeCheckBox</tabstop>
   <tabstop>MetroBarFilenameComboBox</tabstop>
   <tabstop>MetroBarFilenameToolButton</tabstop>

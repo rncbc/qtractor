@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -202,19 +202,13 @@ public:
 	void setPeakFile(qtractorAudioPeakFile *pPeakFile);
 	qtractorAudioPeakFile *peakFile() const;
 
-	// WSOLA time-stretch modes (local options).
-	void setWsolaTimeStretch(bool bWsolaTimeStretch);
-	bool isWsolaTimeStretch() const;
+	// Buffer engines flags accessors (local option)
+	void setStretcherFlags(unsigned int iStretcherFlags);
+	unsigned int stretcherFlags() const;
 
-	void setWsolaQuickSeek(bool bWsolaQuickSeek);
-	bool isWsolaQuickSeek() const;
-
-	// WSOLA time-stretch modes (global options).
-	static void setDefaultWsolaTimeStretch(bool bWsolaTimeStretch);
-	static bool isDefaultWsolaTimeStretch();
-
-	static void setDefaultWsolaQuickSeek(bool bWsolaQuickSeek);
-	static bool isDefaultWsolaQuickSeek();
+	// Buffer engines flags accessors (local option)
+	static void setDefaultStretcherFlags(unsigned int iStretcherFlags);
+	static unsigned int defaultStretcherFlags();
 
 	// Sample-rate converter type accessor (global option).
 	static void setDefaultResampleType(int iResampleType);
@@ -311,16 +305,13 @@ private:
 
 	qtractorAudioPeakFile *m_pPeakFile;
 
-	// Time-stretch mode local options.
-	bool           m_bWsolaTimeStretch;
-	bool           m_bWsolaQuickSeek;
+	// Buffer engine mode flags.
+	unsigned int   m_iStretcherFlags;
 
-	// Time-stretch mode global options.
-	static bool    g_bDefaultWsolaTimeStretch;
-	static bool    g_bDefaultWsolaQuickSeek;
+	static unsigned int g_iDefaultStretcherFlags;
 
 	// Sample-rate converter type global option.
-	static int     g_iDefaultResampleType;
+	static int g_iDefaultResampleType;
 };
 
 

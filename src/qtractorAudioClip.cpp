@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,8 @@
 #include "qtractorAudioClip.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioPeak.h"
+
+#include "qtractorTimeStretcher.h"
 
 #include "qtractorDocument.h"
 
@@ -144,8 +146,7 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	m_fTimeStretch = 1.0f;
 	m_fPitchShift  = 1.0f;
 
-	m_bWsolaTimeStretch = qtractorAudioBuffer::isDefaultWsolaTimeStretch();
-	m_bWsolaQuickSeek = qtractorAudioBuffer::isDefaultWsolaQuickSeek();
+	m_iStretcherFlags = qtractorAudioBuffer::defaultStretcherFlags();
 
 	m_iOverlap = 0;
 
@@ -163,8 +164,7 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	m_fTimeStretch = clip.timeStretch();
 	m_fPitchShift  = clip.pitchShift();
 
-	m_bWsolaTimeStretch = clip.isWsolaTimeStretch();
-	m_bWsolaQuickSeek   = clip.isWsolaQuickSeek();
+	m_iStretcherFlags = clip.stretcherFlags();
 
 	m_iOverlap = clip.overlap();
 
@@ -315,8 +315,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	pBuff->setPanning(clipPanning());
 	pBuff->setTimeStretch(m_fTimeStretch);
 	pBuff->setPitchShift(m_fPitchShift);
-	pBuff->setWsolaTimeStretch(m_bWsolaTimeStretch);
-	pBuff->setWsolaQuickSeek(m_bWsolaQuickSeek);
+	pBuff->setStretcherFlags(m_iStretcherFlags);
 
 	if (!pBuff->open(sFilename, iMode)) {
 		delete m_pData;
@@ -789,12 +788,25 @@ bool qtractorAudioClip::loadClipElement (
 		else if (eChild.tagName() == "pitch-shift")
 			qtractorAudioClip::setPitchShift(eChild.text().toFloat());
 		else if (eChild.tagName() == "wsola-time-stretch")
-			qtractorAudioClip::setWsolaTimeStretch(
+			qtractorAudioClip::setStretcherFlag(
+				qtractorTimeStretcher::WsolaTimeStretch,
 				qtractorDocument::boolFromText(eChild.text()));
 		else if (eChild.tagName() == "wsola-quick-seek")
-			qtractorAudioClip::setWsolaQuickSeek(
+			qtractorAudioClip::setStretcherFlag(
+				qtractorTimeStretcher::WsolaQuickSeek,
 				qtractorDocument::boolFromText(eChild.text()));
-
+	#ifdef CONFIG_LIBRUBBERBAND
+		else if (eChild.tagName() == "rubberband-formant")
+			qtractorAudioClip::setStretcherFlag(
+				qtractorTimeStretcher::RubberBandFormant,
+				qtractorDocument::boolFromText(eChild.text()));
+	#ifdef CONFIG_LIBRUBBERBAND_R3
+		else if (eChild.tagName() == "rubberband-finer-r3")
+			qtractorAudioClip::setStretcherFlag(
+				qtractorTimeStretcher::RubberBandFinerR3,
+				qtractorDocument::boolFromText(eChild.text()));
+	#endif
+	#endif
 	}
 
 	return true;
@@ -813,10 +825,24 @@ bool qtractorAudioClip::saveClipElement (
 		QString::number(qtractorAudioClip::pitchShift()), &eAudioClip);
 	pDocument->saveTextElement("wsola-time-stretch",
 		qtractorDocument::textFromBool(
-			qtractorAudioClip::isWsolaTimeStretch()), &eAudioClip);
+			qtractorAudioClip::isStretcherFlag(
+				qtractorTimeStretcher::WsolaTimeStretch)), &eAudioClip);
 	pDocument->saveTextElement("wsola-quick-seek",
 		qtractorDocument::textFromBool(
-			qtractorAudioClip::isWsolaQuickSeek()), &eAudioClip);
+			qtractorAudioClip::isStretcherFlag(
+				qtractorTimeStretcher::WsolaQuickSeek)), &eAudioClip);
+#ifdef CONFIG_LIBRUBBERBAND
+	pDocument->saveTextElement("rubberband-formant",
+		qtractorDocument::textFromBool(
+			qtractorAudioClip::isStretcherFlag(
+				qtractorTimeStretcher::RubberBandFormant)), &eAudioClip);
+#ifdef CONFIG_LIBRUBBERBAND_R3
+	pDocument->saveTextElement("rubberband-finer-r3",
+		qtractorDocument::textFromBool(
+			qtractorAudioClip::isStretcherFlag(
+				qtractorTimeStretcher::RubberBandFinerR3)), &eAudioClip);
+#endif
+#endif
 	pElement->appendChild(eAudioClip);
 
 	return true;

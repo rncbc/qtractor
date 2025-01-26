@@ -1,7 +1,7 @@
 // qtractorTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,11 +21,9 @@
 
 #include "qtractorTimeStretcher.h"
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-
+#include "qdebug.h"
 // Constructor.
 qtractorTimeStretcher::qtractorTimeStretcher (
 	unsigned short iChannels, unsigned int iSampleRate,
@@ -79,10 +77,17 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 			fTimeStretch = 1.0f;
 		if (fPitchShift  < 1e-3f)
 			fPitchShift  = 1.0f;
+		RubberBand::RubberBandStretcher::Options options
+			= RubberBand::RubberBandStretcher::OptionProcessRealTime;
+		if (iFlags & RubberBandFormant)
+			options |= RubberBand::RubberBandStretcher::OptionFormantPreserved;
+	#ifdef CONFIG_LIBRUBBERBAND_R3
+		if (iFlags & RubberBandFinerR3)
+			options |= RubberBand::RubberBandStretcher::OptionEngineFiner;
+	#endif
 		m_pRubberBandStretcher
 			= new RubberBand::RubberBandStretcher(
-				iSampleRate, iChannels,
-				RubberBand::RubberBandStretcher::OptionProcessRealTime,
+				iSampleRate, iChannels, options,
 				fTimeStretch, fPitchShift);
 		m_pRubberBandStretcher->setMaxProcessSize(iBufferSize);
 		m_ppRubberBandBuffer = new float * [m_iRubberBandChannels];

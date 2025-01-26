@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -571,7 +571,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="4">
+      <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="WsolaTimeStretchCheckBox">
         <property name="font">
          <font>
@@ -587,7 +587,23 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="4">
+      <item row="1" column="3" colspan="2">
+       <widget class="QCheckBox" name="RubberBandFormantCheckBox">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Whether to use RubberBand formant preserve</string>
+        </property>
+        <property name="text">
+         <string>RubberBand &amp;formant preserve</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="WsolaQuickSeekCheckBox">
         <property name="font">
          <font>
@@ -600,6 +616,22 @@
         </property>
         <property name="text">
          <string>WSOLA quic&amp;k seek</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" colspan="2">
+       <widget class="QCheckBox" name="RubberBandFinerR3CheckBox">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Whether to use RubberBand R3 finer engine</string>
+        </property>
+        <property name="text">
+         <string>RubberBand R&amp;3 finer engine</string>
         </property>
        </widget>
       </item>
@@ -656,6 +688,8 @@
   <tabstop>PitchShiftSpinBox</tabstop>
   <tabstop>WsolaTimeStretchCheckBox</tabstop>
   <tabstop>WsolaQuickSeekCheckBox</tabstop>
+  <tabstop>RubberBandFormantCheckBox</tabstop>
+  <tabstop>RubberBandFinerR3CheckBox</tabstop>
   <tabstop>ClipMuteCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>

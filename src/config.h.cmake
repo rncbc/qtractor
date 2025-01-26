@@ -65,6 +65,9 @@
 /* Define if RUBBERBAND library is available. */
 #cmakedefine CONFIG_LIBRUBBERBAND @CONFIG_LIBRUBBERBAND@
 
+/* Define if RUBBERBAND_R3 library is available. */
+#cmakedefine CONFIG_LIBRUBBERBAND_R3 @CONFIG_LIBRUBBERBAND_R3@
+
 /* Define if AUBIO library is available. */
 #cmakedefine CONFIG_LIBAUBIO @CONFIG_LIBAUBIO@
 

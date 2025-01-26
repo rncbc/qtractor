@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -345,12 +345,11 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 }
 
 
-void qtractorClipCommand::wsolaClip ( qtractorClip *pClip,
-	bool bWsolaTimeStretch, bool bWsolaQuickSeek )
+void qtractorClipCommand::stretcherFlagsClip ( qtractorClip *pClip,
+	unsigned int iStretcherFlags )
 {
-	Item *pItem = new Item(WsolaClip, pClip, pClip->track());
-	pItem->wsolaTimeStretch = bWsolaTimeStretch;
-	pItem->wsolaQuickSeek = bWsolaQuickSeek;
+	Item *pItem = new Item(StretcherFlagsClip, pClip, pClip->track());
+	pItem->stretcherFlags = iStretcherFlags;
 	m_items.append(pItem);
 
 	if (isAudioClip(pClip))
@@ -862,17 +861,14 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		#endif
 			break;
 		}
-		case WsolaClip: {
+		case StretcherFlagsClip: {
 			qtractorAudioClip *pAudioClip = nullptr;
 			if (pTrack->trackType() == qtractorTrack::Audio)
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip) {
-				const bool bOldWsolaTimeStretch = pAudioClip->isWsolaTimeStretch();
-				const bool bOldWsolaQuickSeek = pAudioClip->isWsolaQuickSeek();
-				pAudioClip->setWsolaTimeStretch(pItem->wsolaTimeStretch);
-				pAudioClip->setWsolaQuickSeek(pItem->wsolaQuickSeek);
-				pItem->wsolaTimeStretch = bOldWsolaTimeStretch;
-				pItem->wsolaQuickSeek = bOldWsolaQuickSeek;
+				const unsigned int bOldStretcherFlags = pAudioClip->stretcherFlags();
+				pAudioClip->setStretcherFlags(pItem->stretcherFlags);
+				pItem->stretcherFlags = bOldStretcherFlags;
 			}
 			break;
 		}

@@ -66,6 +66,8 @@ option (CONFIG_LIBSAMPLERATE "Enable libsamplerate interface (default=yes)" 1)
 # Enable librubberband availability.
 option (CONFIG_LIBRUBBERBAND "Enable librubberband interface (default=yes)" 1)
 
+option (CONFIG_LIBRUBBERBAND_R3 "Enable librubberband-R3 interface (default=yes)" 1)
+
 # Enable libaudio support.
 option (CONFIG_LIBAUBIO "Enable libaubio interface support (default=yes)" 1)
 
@@ -390,8 +392,16 @@ if (CONFIG_LIBSAMPLERATE)
 endif ()
 
 # Check for RUBBERBAND libraries.
+if (CONFIG_LIBRUBBERBAND_R3)
+  pkg_check_modules (RUBBERBAND IMPORTED_TARGET rubberband>=3.0.0)
+  if (NOT RUBBERBAND_FOUND)
+    set (CONFIG_LIBRUBBERBAND_R3 0)
+    set (CONFIG_LIBRUBBERBAND 1)
+  endif ()
+endif ()
+
 if (CONFIG_LIBRUBBERBAND)
-  pkg_check_modules (RUBBERBAND IMPORTED_TARGET rubberband)
+  pkg_check_modules (RUBBERBAND IMPORTED_TARGET rubberband>=3.0.0)
   if (NOT RUBBERBAND_FOUND)
     message (WARNING "*** RUBBERBAND library not found.")
     set (CONFIG_LIBRUBBERBAND 0)

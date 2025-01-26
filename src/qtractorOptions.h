@@ -119,6 +119,8 @@ public:
 	bool    bAudioAutoTimeStretch;
 	bool    bAudioWsolaTimeStretch;
 	bool    bAudioWsolaQuickSeek;
+	bool    bAudioRubberBandFormant;
+	bool    bAudioRubberBandFinerR3;
 	bool    bAudioPlayerBus;
 	bool    bAudioMetroBus;
 	bool    bAudioMetronome;

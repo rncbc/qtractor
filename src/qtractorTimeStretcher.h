@@ -1,7 +1,7 @@
 // qtractorTimeStretcher.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,7 +39,16 @@ class qtractorTimeStretcher
 public:
 
 	// Constructor flags.
-	enum Flags { None = 0, WsolaTimeStretch = 1, WsolaQuickSeek = 2 };
+	enum Flags { None     = 0,
+		WsolaTimeStretch  = 1,
+		WsolaQuickSeek    = 2,
+	#ifdef CONFIG_LIBRUBBERBAND
+		RubberBandFormant = 4,
+	#ifdef CONFIG_LIBRUBBERBAND_R3
+		RubberBandFinerR3 = 8
+	#endif
+	#endif
+	};
 
 	// Constructor.
 	qtractorTimeStretcher(

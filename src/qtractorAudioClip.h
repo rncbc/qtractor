@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,16 +57,22 @@ public:
 	float pitchShift() const
 		{ return m_fPitchShift; }
 
-	// WSOLA time-stretch modes (local options).
-	void setWsolaTimeStretch(bool bWsolaTimeStretch)
-		 { m_bWsolaTimeStretch = bWsolaTimeStretch; }
-	bool isWsolaTimeStretch() const
-		 { return m_bWsolaTimeStretch; }
+	// Time-stretch/pitch-shifting engine mode flags.
+	void setStretcherFlags(unsigned int iStretcherFlags)
+		 { m_iStretcherFlags = iStretcherFlags; }
+	unsigned int stretcherFlags() const
+		 { return m_iStretcherFlags; }
 
-	void setWsolaQuickSeek(bool bWsolaQuickSeek)
-		 { m_bWsolaQuickSeek = bWsolaQuickSeek; }
-	bool isWsolaQuickSeek() const
-		 { return m_bWsolaQuickSeek; }
+	void setStretcherFlag(unsigned int iStretcherFlag, bool bOn)
+	{
+		if (bOn)
+			m_iStretcherFlags |=  iStretcherFlag;
+		else
+			m_iStretcherFlags &= ~iStretcherFlag;
+	}
+
+	bool isStretcherFlag (unsigned int iStretcherFlag) const
+		{ return (m_iStretcherFlags & iStretcherFlag); }
 
 	// Alternating overlap tag.
 	unsigned int overlap() const
@@ -225,8 +231,7 @@ private:
 	float m_fTimeStretch;
 	float m_fPitchShift;
 
-	bool  m_bWsolaTimeStretch;
-	bool  m_bWsolaQuickSeek;
+	unsigned int m_iStretcherFlags;
 
 	// Alternate overlap tag.
 	unsigned int m_iOverlap;

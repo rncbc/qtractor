@@ -158,6 +158,8 @@ void qtractorOptions::loadOptions (void)
 	bAudioAutoTimeStretch = m_settings.value("/AutoTimeStretch", false).toBool();
 	bAudioWsolaTimeStretch = m_settings.value("/WsolaTimeStretch", true).toBool();
 	bAudioWsolaQuickSeek = m_settings.value("/WsolaQuickSeek", false).toBool();
+	bAudioRubberBandFormant = m_settings.value("/RubberBandFormant", false).toBool();
+	bAudioRubberBandFinerR3 = m_settings.value("/RubberBandFinerR3", false).toBool();
 	bAudioPlayerBus      = m_settings.value("/PlayerBus", false).toBool();
 	bAudioMetroBus       = m_settings.value("/MetroBus", false).toBool();
 	bAudioMetronome      = m_settings.value("/Metronome", false).toBool();
@@ -494,6 +496,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/AutoTimeStretch", bAudioAutoTimeStretch);
 	m_settings.setValue("/WsolaTimeStretch", bAudioWsolaTimeStretch);
 	m_settings.setValue("/WsolaQuickSeek", bAudioWsolaQuickSeek);
+	m_settings.setValue("/RubberBandFormant", bAudioRubberBandFormant);
+	m_settings.setValue("/RubberBandFinerR3", bAudioRubberBandFinerR3);
 	m_settings.setValue("/PlayerBus", bAudioPlayerBus);
 	m_settings.setValue("/MetroBus", bAudioMetroBus);
 	m_settings.setValue("/Metronome", bAudioMetronome);

@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Specific to (lib)RubberBand time-stretching and pitch-shifting,
+  formant preserve and finer (R3) engine processing are now added
+  to audio clip/playback options. (EXPERIMENTAL)
+
 - Resume normal playback state if rolling when transport rewind or
   fast-forward is disengaged.
   

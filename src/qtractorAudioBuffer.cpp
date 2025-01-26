@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -259,10 +259,8 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 
 	m_pPeakFile      = nullptr;
 
-	// Time-stretch mode local options.
-	m_bWsolaTimeStretch = g_bDefaultWsolaTimeStretch;
-	m_bWsolaQuickSeek   = g_bDefaultWsolaQuickSeek;
-
+	// Buffer engine modes flags.
+	m_iStretcherFlags = g_iDefaultStretcherFlags;
 }
 
 // Default destructor.
@@ -398,13 +396,8 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 
 	// Allocate time-stretch engine whether needed...
 	if (m_bTimeStretch || m_bPitchShift) {
-		unsigned int iFlags = qtractorTimeStretcher::None;
-		if (m_bWsolaTimeStretch)
-			iFlags |= qtractorTimeStretcher::WsolaTimeStretch;
-		if (m_bWsolaQuickSeek)
-			iFlags |= qtractorTimeStretcher::WsolaQuickSeek;
 		m_pTimeStretcher = new qtractorTimeStretcher(iBuffers, iSampleRate,
-			m_fTimeStretch, m_fPitchShift, iFlags, m_iBufferSize);
+			m_fTimeStretch, m_fPitchShift, m_iStretcherFlags, m_iBufferSize);
 	}
 
 #ifdef CONFIG_LIBSAMPLERATE
@@ -442,7 +435,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	if (fPan < 0.499f || fPan > 0.501f) {
 		afGains[0] = ::cosf(fPan * M_PI_2);
 		afGains[1] = ::sinf(fPan * M_PI_2);
-    }
+	}
 
 	// Apply to multi-channel gain array (paired fashion)...
 	const unsigned short k = (iBuffers - (iBuffers & 1));
@@ -1695,26 +1688,31 @@ qtractorAudioPeakFile *qtractorAudioBuffer::peakFile (void) const
 }
 
 
-// WSOLA time-stretch modes (local options).
-void qtractorAudioBuffer::setWsolaTimeStretch ( bool bWsolaTimeStretch )
+// Buffer engines flags accessors (local option)
+void qtractorAudioBuffer::setStretcherFlags (
+	unsigned int iStretcherFlags )
 {
-	m_bWsolaTimeStretch = bWsolaTimeStretch;
+	m_iStretcherFlags = iStretcherFlags;
 }
 
-bool qtractorAudioBuffer::isWsolaTimeStretch (void) const
+unsigned int qtractorAudioBuffer::stretcherFlags (void) const
 {
-	return m_bWsolaTimeStretch;
+	return m_iStretcherFlags;
 }
 
 
-void qtractorAudioBuffer::setWsolaQuickSeek ( bool bWsolaQuickSeek )
+// Buffer engines flags accessors (global option)
+unsigned int qtractorAudioBuffer::g_iDefaultStretcherFlags = qtractorTimeStretcher::WsolaTimeStretch;
+
+void qtractorAudioBuffer::setDefaultStretcherFlags (
+	unsigned int iStretcherFlags )
 {
-	m_bWsolaQuickSeek = bWsolaQuickSeek;
+	g_iDefaultStretcherFlags = iStretcherFlags;
 }
 
-bool qtractorAudioBuffer::isWsolaQuickSeek (void) const
+unsigned int qtractorAudioBuffer::defaultStretcherFlags (void)
 {
-	return m_bWsolaQuickSeek;
+	return g_iDefaultStretcherFlags;
 }
 
 
@@ -1729,32 +1727,6 @@ void qtractorAudioBuffer::setDefaultResampleType ( int iResampleType )
 int qtractorAudioBuffer::defaultResampleType (void)
 {
 	return g_iDefaultResampleType;
-}
-
-
-// WSOLA time-stretch modes (global options).
-bool qtractorAudioBuffer::g_bDefaultWsolaTimeStretch = true;
-bool qtractorAudioBuffer::g_bDefaultWsolaQuickSeek   = false;
-
-void qtractorAudioBuffer::setDefaultWsolaTimeStretch ( bool bWsolaTimeStretch )
-{
-	g_bDefaultWsolaTimeStretch = bWsolaTimeStretch;
-}
-
-bool qtractorAudioBuffer::isDefaultWsolaTimeStretch (void)
-{
-	return g_bDefaultWsolaTimeStretch;
-}
-
-
-void qtractorAudioBuffer::setDefaultWsolaQuickSeek ( bool bWsolaQuickSeek )
-{
-	g_bDefaultWsolaQuickSeek = bWsolaQuickSeek;
-}
-
-bool qtractorAudioBuffer::isDefaultWsolaQuickSeek (void)
-{
-	return g_bDefaultWsolaQuickSeek;
 }
 
 

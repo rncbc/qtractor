@@ -44,6 +44,8 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorTimeStretcher.h"
+
 #include "qtractorSessionCommand.h"
 #include "qtractorTimeScaleCommand.h"
 #include "qtractorClipCommand.h"
@@ -1545,10 +1547,22 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setDefaultResampleType(
 		m_pOptions->iAudioResampleType);
-	qtractorAudioBuffer::setDefaultWsolaTimeStretch(
-		m_pOptions->bAudioWsolaTimeStretch);
-	qtractorAudioBuffer::setDefaultWsolaQuickSeek(
-		m_pOptions->bAudioWsolaQuickSeek);
+
+	unsigned int iStretcherFlags = 0;
+	if (m_pOptions->bAudioWsolaTimeStretch)
+		iStretcherFlags |= qtractorTimeStretcher::WsolaTimeStretch;
+	if (m_pOptions->bAudioWsolaQuickSeek)
+		iStretcherFlags |= qtractorTimeStretcher::WsolaQuickSeek;
+#ifdef CONFIG_LIBRUBBERBAND
+	if (m_pOptions->bAudioRubberBandFormant)
+		iStretcherFlags |= qtractorTimeStretcher::RubberBandFormant;
+#ifdef CONFIG_LIBRUBBERBAND_R3
+	if (m_pOptions->bAudioRubberBandFinerR3)
+		iStretcherFlags |= qtractorTimeStretcher::RubberBandFinerR3;
+#endif
+#endif
+	qtractorAudioBuffer::setDefaultStretcherFlags(iStretcherFlags);
+
 	qtractorTrack::setTrackColorSaturation(
 		m_pOptions->iTrackColorSaturation);
 
@@ -5283,6 +5297,8 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldResampleType       = m_pOptions->iAudioResampleType;
 	const bool    bOldWsolaTimeStretch   = m_pOptions->bAudioWsolaTimeStretch;
 	const bool    bOldWsolaQuickSeek     = m_pOptions->bAudioWsolaQuickSeek;
+	const bool    bOldRubberBandFormant  = m_pOptions->bAudioRubberBandFormant;
+	const bool    bOldRubberBandFinerR3  = m_pOptions->bAudioRubberBandFinerR3;
 	const bool    bOldAudioPlayerAutoConnect = m_pOptions->bAudioPlayerAutoConnect;
 	const bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	const bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
@@ -5342,16 +5358,28 @@ void qtractorMainForm::viewOptions (void)
 				m_pOptions->iAudioResampleType);
 			iNeedRestart |= RestartSession;
 		}
-		if (( bOldWsolaTimeStretch && !m_pOptions->bAudioWsolaTimeStretch) ||
-			(!bOldWsolaTimeStretch &&  m_pOptions->bAudioWsolaTimeStretch)) {
-			qtractorAudioBuffer::setDefaultWsolaTimeStretch(
-				m_pOptions->bAudioWsolaTimeStretch);
-			iNeedRestart |= RestartSession;
-		}
-		if (( bOldWsolaQuickSeek && !m_pOptions->bAudioWsolaQuickSeek) ||
-			(!bOldWsolaQuickSeek &&  m_pOptions->bAudioWsolaQuickSeek)) {
-			qtractorAudioBuffer::setDefaultWsolaQuickSeek(
-				m_pOptions->bAudioWsolaQuickSeek);
+		if (( bOldWsolaTimeStretch  && !m_pOptions->bAudioWsolaTimeStretch)  ||
+			(!bOldWsolaTimeStretch  &&  m_pOptions->bAudioWsolaTimeStretch)  ||
+			( bOldWsolaQuickSeek    && !m_pOptions->bAudioWsolaQuickSeek)    ||
+			(!bOldWsolaQuickSeek    &&  m_pOptions->bAudioWsolaQuickSeek)    ||
+			( bOldRubberBandFormant && !m_pOptions->bAudioRubberBandFormant) ||
+			(!bOldRubberBandFormant &&  m_pOptions->bAudioRubberBandFormant) ||
+			( bOldRubberBandFinerR3 && !m_pOptions->bAudioRubberBandFinerR3) ||
+			(!bOldRubberBandFinerR3 &&  m_pOptions->bAudioRubberBandFinerR3)) {
+			unsigned int iStretcherFlags = 0;
+			if (m_pOptions->bAudioWsolaTimeStretch)
+				iStretcherFlags |= qtractorTimeStretcher::WsolaTimeStretch;
+			if (m_pOptions->bAudioWsolaQuickSeek)
+				iStretcherFlags |= qtractorTimeStretcher::WsolaQuickSeek;
+		#ifdef CONFIG_LIBRUBBERBAND
+			if (m_pOptions->bAudioRubberBandFormant)
+				iStretcherFlags |= qtractorTimeStretcher::RubberBandFormant;
+		#ifdef CONFIG_LIBRUBBERBAND_R3
+			if (m_pOptions->bAudioRubberBandFinerR3)
+				iStretcherFlags |= qtractorTimeStretcher::RubberBandFinerR3;
+		#endif
+		#endif
+			qtractorAudioBuffer::setDefaultStretcherFlags(iStretcherFlags);
 			iNeedRestart |= RestartSession;
 		}
 		// Audio engine control modes...
