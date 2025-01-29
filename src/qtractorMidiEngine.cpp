@@ -3119,6 +3119,10 @@ void qtractorMidiEngine::sendMmcCommand (
 void qtractorMidiEngine::sendSppCommand (
 	int iCmdType, unsigned int iSongPos ) const
 {
+	qtractorSession *pSession = session();
+	if (pSession == nullptr)
+		return;
+
 	// Do we have SPP output enabled?
 	if ((m_sppMode & qtractorBus::Output) == 0)
 		return;
@@ -3135,9 +3139,6 @@ void qtractorMidiEngine::sendSppCommand (
 	snd_seq_ev_set_source(&ev, m_pOControlBus->alsaPort());
 	snd_seq_ev_set_subs(&ev);
 
-	// The event will be direct...
-	snd_seq_ev_set_direct(&ev);
-
 	// Set command parameters...
 	// - SND_SEQ_EVENT_START
 	// - SND_SEQ_EVENT_STOP
@@ -3146,8 +3147,20 @@ void qtractorMidiEngine::sendSppCommand (
 	ev.type = snd_seq_event_type(iCmdType);
 	ev.data.control.value = iSongPos;
 
-	// Bail out...
-	snd_seq_event_output_direct(m_pAlsaSeq, &ev);
+	// The event will be either direct or scheduled...
+	if (iCmdType != SND_SEQ_EVENT_SONGPOS && iSongPos > 0) {
+		// Scheduled (account for the time playback/queue started)...
+		const unsigned long iTime
+			= (iSongPos * pSession->ticksPerBeat()) >> 2;
+		const unsigned long tick
+			= (long(iTime) > m_iTimeStart ? iTime - m_iTimeStart : 0);
+		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, pSession->timep(tick));
+		snd_seq_event_output(m_pAlsaSeq, &ev);
+	} else {
+		// Direct (immediate)...
+		snd_seq_ev_set_direct(&ev);
+		snd_seq_event_output_direct(m_pAlsaSeq, &ev);
+	}
 }
 
 

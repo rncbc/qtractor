@@ -6448,19 +6448,24 @@ bool qtractorMainForm::setPlayingEx ( bool bPlaying )
 
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine) {
-		// Avoid double update (owhile n fastTimerSlot...)
+		// Avoid double update (while on fastTimerSlot...)
 		m_iPlayHead = m_pSession->playHead();
 		// Send MMC PLAY/STOP command...
 		pMidiEngine->sendMmcCommand(bPlaying
 			? qtractorMmcEvent::PLAY
 			: qtractorMmcEvent::STOP);
-		pMidiEngine->sendSppCommand(bPlaying
-			? (m_iPlayHead > 0
-				? SND_SEQ_EVENT_CONTINUE
-				: SND_SEQ_EVENT_START)
-			: SND_SEQ_EVENT_STOP);
 		// Send MMC LOCATE and MIDI SPP commands on stop/pause...
-		if (!bPlaying) {
+		if (bPlaying) {
+			if (m_iPlayHead > 0) {
+				const unsigned int iSongPos // Schedule ahead...
+					= m_pSession->songPosFromFrame(m_iPlayHead) + 1;
+				pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS, iSongPos);
+				pMidiEngine->sendSppCommand(SND_SEQ_EVENT_CONTINUE, iSongPos);
+			} else {
+				pMidiEngine->sendSppCommand(SND_SEQ_EVENT_START);
+			}
+		} else {
+			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_STOP);
 			pMidiEngine->sendMmcLocate(
 				m_pSession->locateFromFrame(m_iPlayHead));
 			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS,
@@ -8019,9 +8024,9 @@ void qtractorMainForm::fastTimerSlot (void)
 			// Send MMC LOCATE and MIDI SPP command...
 			if (!pAudioEngine->isFreewheel()) {
 				pMidiEngine->sendMmcLocate(
-						m_pSession->locateFromFrame(iPlayHead));
+					m_pSession->locateFromFrame(iPlayHead));
 				pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS,
-						m_pSession->songPosFromFrame(iPlayHead));
+					m_pSession->songPosFromFrame(iPlayHead));
 			}
 		}
 		else
