@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Attempt to improve MIDI SPP accuracy by postponing MIDI Continue
+  command in one 16th note at playback (re)start. (EXPERIMENTAL)
+
 - Specific to (lib)RubberBand time-stretching and pitch-shifting,
   formant preserve and finer (R3) engine processing are now added
   to audio clip/playback options. (EXPERIMENTAL)

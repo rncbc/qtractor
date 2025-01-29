@@ -679,8 +679,19 @@ void qtractorClipForm::stabilizeForm (void)
 	m_ui.FadeOutTypeComboBox->setEnabled(
 		m_ui.FadeOutLengthSpinBox->value() > 0);
 	m_ui.FadeOutLengthSpinBox->setMaximum(iClipLength);
-	m_ui.WsolaQuickSeekCheckBox->setEnabled(
-		m_ui.WsolaTimeStretchCheckBox->isChecked());
+
+	const bool bTimeStretch
+		= (qAbs(float(m_ui.TimeStretchSpinBox->value()) - 100.0f) > 0.0f);
+	const bool bWsolaTimeStretch
+		= bTimeStretch && m_ui.WsolaTimeStretchCheckBox->isChecked();
+	m_ui.WsolaTimeStretchCheckBox->setEnabled(bTimeStretch);
+	m_ui.WsolaQuickSeekCheckBox->setEnabled(bWsolaTimeStretch);
+
+	const bool bPitchShift
+		= (qAbs(float(m_ui.PitchShiftSpinBox->value())) > 0.0f);
+	m_ui.RubberBandFormantCheckBox->setEnabled(bPitchShift);
+	m_ui.RubberBandFinerR3CheckBox->setEnabled(bPitchShift
+		|| (bTimeStretch && !bWsolaTimeStretch));
 
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.ClipNameLineEdit->text().isEmpty();

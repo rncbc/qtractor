@@ -5643,6 +5643,9 @@ void qtractorMainForm::transportRewind (void)
 
 	// Make sure session is activated?...
 	//checkRestartSession();
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == nullptr)
+		return;
 
 	// Rolling direction and speed (negative)...
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
@@ -5654,10 +5657,22 @@ void qtractorMainForm::transportRewind (void)
 	// Toggle rolling backward...
 	if (setRolling(iRolling) >= 0) {
 		// Send MMC REWIND command...
-		m_pSession->midiEngine()->sendMmcCommand(
-			qtractorMmcEvent::REWIND);
+		pMidiEngine->sendMmcCommand(qtractorMmcEvent::REWIND);
 	}
-//	else setPlayingEx(false);
+	else
+	if (m_pSession->isPlaying()) {
+		// setPlayingEx(false);
+		// Avoid double update (while on fastTimerSlot...)
+		m_iPlayHead = m_pSession->playHead();
+		if (m_iPlayHead > 0) {
+			const unsigned int iSongPos // Schedule ahead...
+				= m_pSession->songPosFromFrame(m_iPlayHead) + 1;
+			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS, iSongPos);
+			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_CONTINUE, iSongPos);
+		}
+		pMidiEngine->sendMmcLocate(
+			m_pSession->locateFromFrame(m_iPlayHead));
+	}
 
 	++m_iStabilizeTimer;
 }
@@ -5672,6 +5687,9 @@ void qtractorMainForm::transportFastForward (void)
 
 	// Make sure session is activated?...
 	//checkRestartSession();
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == nullptr)
+		return;
 
 	// Rolling direction and speed (positive)...
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
@@ -5683,10 +5701,22 @@ void qtractorMainForm::transportFastForward (void)
 	// Toggle rolling backward...
 	if (0 >= setRolling(iRolling)) {
 		// Send MMC FAST_FORWARD command...
-		m_pSession->midiEngine()->sendMmcCommand(
-			qtractorMmcEvent::FAST_FORWARD);
+		pMidiEngine->sendMmcCommand(qtractorMmcEvent::FAST_FORWARD);
 	}
-//	else setPlayingEx(false);
+	else
+	if (m_pSession->isPlaying()) {
+		// setPlayingEx(false);
+		// Avoid double update (while on fastTimerSlot...)
+		m_iPlayHead = m_pSession->playHead();
+		if (m_iPlayHead > 0) {
+			const unsigned int iSongPos // Schedule ahead...
+				= m_pSession->songPosFromFrame(m_iPlayHead) + 1;
+			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS, iSongPos);
+			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_CONTINUE, iSongPos);
+		}
+		pMidiEngine->sendMmcLocate(
+			m_pSession->locateFromFrame(m_iPlayHead));
+	}
 
 	++m_iStabilizeTimer;
 }
