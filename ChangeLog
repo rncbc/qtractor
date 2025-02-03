@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor (aka. piano-roll): mouse cursor pointer now
+  follows the current edit/draw mode permanently. (EXPERIMENTAL)
+
 - Attempt to improve MIDI SPP accuracy by postponing MIDI Continue
   command in one 16th note at playback (re)start. (EXPERIMENTAL)
 

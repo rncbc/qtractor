@@ -1207,10 +1207,10 @@ bool qtractorMidiEditor::isDrumMode (void) const
 // Edit (creational) mode.
 void qtractorMidiEditor::setEditMode ( bool bEditMode )
 {
-	resetDragState(nullptr);
-
 	m_bEditMode = bEditMode;
 
+	resetDragState(nullptr);
+	unsetEditCursor();
 //	updateContents();
 }
 
@@ -1224,6 +1224,8 @@ bool qtractorMidiEditor::isEditMode (void) const
 void qtractorMidiEditor::setEditModeDraw ( bool bEditModeDraw )
 {
 	m_bEditModeDraw = bEditModeDraw;
+
+	unsetEditCursor();
 }
 
 bool qtractorMidiEditor::isEditModeDraw (void) const
@@ -2112,9 +2114,7 @@ void qtractorMidiEditor::pasteClipboard (
 	m_pDragStep = pScrollView;
 
 	// It doesn't matter which one, both pasteable views are due...
-	const QCursor cursr(QIcon::fromTheme("editPaste").pixmap(22), 12, 12);
-	m_pEditView->setCursor(cursr);
-	m_pEditEvent->setCursor(cursr);
+	setEditCursor(QCursor(QIcon::fromTheme("editPaste").pixmap(22), 12, 12));
 
 	// Make sure the mouse pointer is properly located...
 	const QPoint& pos = pScrollView->viewportToContents(
@@ -3216,12 +3216,12 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 			m_dragCursor = DragRescale;
 		else
 			m_dragCursor = DragResize;
-		pScrollView->setCursor(QCursor(shape));
+		setEditCursor(QCursor(shape));
 	}
 	else
 	if (m_dragState == DragNone) {
 		m_dragCursor = DragNone;
-		pScrollView->unsetCursor();
+		unsetEditCursor();
 	}
 
 	return pEvent;
@@ -3263,16 +3263,15 @@ void qtractorMidiEditor::dragMoveStart (
 		m_dragCursor = m_dragState;
 		m_pEventDrag = dragEditEvent(pScrollView, m_posDrag, modifiers);
 		m_bEventDragEdit = (m_pEventDrag != nullptr);
-		pScrollView->setCursor(QCursor(QIcon::fromTheme(
-			m_bEditModeDraw ? "editModeDraw" : "editModeOn").pixmap(22), 5, 18));
+		unsetEditCursor();
 	} else if (m_resizeMode == ResizeNone) {
 		m_dragCursor = m_dragState;
 		if (m_pEventDrag) {
-			pScrollView->setCursor(QCursor(
+			setEditCursor(QCursor(
 				static_cast<qtractorScrollView *> (m_pEditView)	== pScrollView
 				? Qt::SizeAllCursor : Qt::SizeHorCursor));
 		} else {
-			pScrollView->setCursor(QCursor(Qt::CrossCursor));
+			setEditCursor(QCursor(Qt::CrossCursor));
 		}
 	}
 
@@ -3517,7 +3516,7 @@ bool qtractorMidiEditor::dragMoveFilter (
 			m_dragState != DragPaste &&
 			m_dragState != DragStep) {
 			m_dragCursor = DragNone;
-			pScrollView->unsetCursor();
+			unsetEditCursor();
 			m_pEditList->dragNoteOff();
 			return true;
 		}
@@ -5036,7 +5035,7 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 	if (pScrollView) {
 		if (m_dragState != DragNone) {
 			m_dragCursor = DragNone;
-			pScrollView->unsetCursor();
+			unsetEditCursor();
 		}
 		if (m_dragState == DragMove    ||
 			m_dragState == DragResize  ||
@@ -5398,6 +5397,26 @@ int qtractorMidiEditor::safePitchBend ( int iPitchBend ) const
 }
 
 
+// (Un)set edit mode cursors.
+void qtractorMidiEditor::setEditCursor ( const QCursor& cursr )
+{
+	m_pEditView->viewport()->setCursor(cursr);
+	m_pEditEvent->viewport()->setCursor(cursr);
+}
+
+
+void qtractorMidiEditor::unsetEditCursor (void)
+{
+	if (m_bEditMode) {
+		setEditCursor(QCursor(QIcon::fromTheme(m_bEditModeDraw
+			? "editModeDraw" : "editModeOn").pixmap(22), 5, 18));
+	} else {
+		m_pEditView->viewport()->unsetCursor();
+		m_pEditEvent->viewport()->unsetCursor();
+	}
+}
+
+
 // MIDI event tool tip helper.
 QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 	long iTimeDelta, int iNoteDelta, int iValueDelta ) const
@@ -5639,8 +5658,7 @@ bool qtractorMidiEditor::keyStep ( qtractorScrollView *pScrollView,
 			const int h2 = (h1 >> 1);
 			m_posDrag += QPoint(+h1, +h2);
 		}
-		m_pEditView->setCursor(Qt::SizeAllCursor);
-		m_pEditEvent->setCursor(Qt::SizeAllCursor);
+		setEditCursor(Qt::SizeAllCursor);
 	}
 
 	// Now to say the truth...

@@ -495,6 +495,10 @@ protected:
 	int safeValue14(int iValue14) const;
 	int safePitchBend(int iPitchBend) const;
 
+	// (Un)set edit mode cursors.
+	void setEditCursor(const QCursor& cursr);
+	void unsetEditCursor();
+
 	// Apply the event drag-resize (also editing).
 	void resizeEvent(qtractorMidiEvent *pEvent,
 		long iTimeDelta, int iValueDelta,
