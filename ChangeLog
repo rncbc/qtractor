@@ -6,24 +6,24 @@ ChangeLog
 
 GIT HEAD
 
-- MIDI clip editor (aka. piano-roll): mouse cursor pointer now
-  follows the current edit/draw mode permanently. (EXPERIMENTAL)
+- MIDI clip editor (aka. piano-roll): mouse cursor pointer shape
+  now follows the current edit/draw mode permanently.
 
 - Attempt to improve MIDI SPP accuracy by postponing MIDI Continue
-  command in one 16th note at playback (re)start. (EXPERIMENTAL)
+  command in one 16th note at playback (re)start.
 
 - Specific to (lib)RubberBand time-stretching and pitch-shifting,
   formant preserve and finer (R3) engine processing are now added
-  to audio clip/playback options. (EXPERIMENTAL)
+  to audio clip/playback options.
 
 - Resume normal playback state if rolling when transport rewind or
   fast-forward is disengaged.
   
 - Custom Style Sheet files (*.qss): all url() paths are considered
-  relative to style-sheet file location. (EXPERIMENTAL)
+  relative to style-sheet file location.
 
 - Enforce a fixed size when LV2 plug-in UI no-user-resize feature
-  is explicitly requested. (EXPERIMENTAL)
+  is explicitly requested.)
 
 
 1.5.2  2025-01-17  A New-Year'25 Release.
