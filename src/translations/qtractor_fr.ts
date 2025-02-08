@@ -1564,12 +1564,12 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="599"/>
         <source>Whether to use RubberBand formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisation ou non de la préservation des formants RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="602"/>
         <source>RubberBand &amp;formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>Préservation des &amp;formants RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="615"/>
@@ -1584,12 +1584,12 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="631"/>
         <source>Whether to use RubberBand R3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisation ou non du moteur plus fin RubberBand R3</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="634"/>
         <source>RubberBand R&amp;3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Moteur plus fin RubberBand R&amp;3</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="646"/>
@@ -12297,12 +12297,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="964"/>
         <source>Whether to use RubberBand formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisation ou non de la préservation des formants RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="967"/>
         <source>RubberBand &amp;formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>Préservation des &amp;formants RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="983"/>
@@ -12312,12 +12312,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="996"/>
         <source>Whether to use RubberBand R3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisation ou non du moteur plus fin RubberBand R3</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="999"/>
         <source>RubberBand R&amp;3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Moteur plus fin RubberBand R&amp;3</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1012"/>
