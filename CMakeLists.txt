@@ -401,7 +401,7 @@ if (CONFIG_LIBRUBBERBAND_R3)
 endif ()
 
 if (CONFIG_LIBRUBBERBAND)
-  pkg_check_modules (RUBBERBAND IMPORTED_TARGET rubberband>=3.0.0)
+  pkg_check_modules (RUBBERBAND IMPORTED_TARGET rubberband)
   if (NOT RUBBERBAND_FOUND)
     message (WARNING "*** RUBBERBAND library not found.")
     set (CONFIG_LIBRUBBERBAND 0)
