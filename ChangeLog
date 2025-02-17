@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed command line parsing (QCommandLineParser/Option) to not
+  exiting the application with a segfault when showing help and
+  version information.
+
+
 1.5.3  2025-02-09  A Mid-Winter'29 Release.
 
 - MIDI clip editor (aka. piano-roll): mouse cursor pointer shape

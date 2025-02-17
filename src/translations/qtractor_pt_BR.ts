@@ -165,8 +165,8 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>[arquivo do projeto]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="813"/>
-        <location filename="../qtractorOptions.cpp" line="856"/>
+        <location filename="../qtractorOptions.cpp" line="835"/>
+        <location filename="../qtractorOptions.cpp" line="878"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation>Opção -s requer argumento (uuid).</translation>
     </message>

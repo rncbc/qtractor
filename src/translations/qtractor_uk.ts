@@ -626,8 +626,8 @@ MIDI:	</translation>
         <translation>[файл-сеансу]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="813"/>
-        <location filename="../qtractorOptions.cpp" line="856"/>
+        <location filename="../qtractorOptions.cpp" line="835"/>
+        <location filename="../qtractorOptions.cpp" line="878"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation>Параметр -s потребує аргументу (uuid).</translation>
     </message>

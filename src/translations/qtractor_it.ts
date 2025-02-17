@@ -456,8 +456,8 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="813"/>
-        <location filename="../qtractorOptions.cpp" line="856"/>
+        <location filename="../qtractorOptions.cpp" line="835"/>
+        <location filename="../qtractorOptions.cpp" line="878"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation type="unfinished"></translation>
     </message>

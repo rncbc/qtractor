@@ -799,12 +799,34 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 	parser.addOption({{"s", "session-id"},
 		QObject::tr("Set session identification (uuid)"), "uuid"});
 #endif
-	parser.addHelpOption();
-	parser.addVersionOption();
+	const QCommandLineOption& helpOption = parser.addHelpOption();
+	const QCommandLineOption& versionOption = parser.addVersionOption();
 	parser.addPositionalArgument("session-file",
 		QObject::tr("Session file (.qtr)"),
 		QObject::tr("[session-file]"));
-	parser.process(args);
+
+	if (!parser.parse(args)) {
+		show_error(parser.errorText());
+		return false;
+	}
+
+	if (parser.isSet(helpOption)) {
+		show_error(parser.helpText());
+		return false;
+	}
+
+	if (parser.isSet(versionOption)) {
+		QString sVersion = QString("%1 %2\n")
+			.arg(QTRACTOR_TITLE)
+			.arg(QCoreApplication::applicationVersion());
+		sVersion += QString("Qt: %1").arg(qVersion());
+	#if defined(QT_STATIC)
+		sVersion += "-static";
+	#endif
+		sVersion += '\n';
+		show_error(sVersion);
+		return false;
+	}
 
 #ifdef CONFIG_JACK_SESSION
 	if (parser.isSet("session-id")) {
@@ -867,14 +889,14 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			return false;
 		}
 		else if (sArg == "-v" || sArg == "--version") {
+			out << QString("%1: %2\n")
+				.arg(QTRACTOR_TITLE)
+				.arg(PROJECT_VERSION);
 			out << QString("Qt: %1").arg(qVersion());
 		#if defined(QT_STATIC)
 			out << "-static";
 		#endif
 			out << '\n';
-			out << QString("%1: %2\n")
-				.arg(QTRACTOR_TITLE)
-				.arg(PROJECT_VERSION);
 			return false;
 		} else {
 			// If we don't have one by now,
