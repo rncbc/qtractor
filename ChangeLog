@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- In addition to clips and markers, automation curves and tempo-
+  -map nodes now also contribute to the total session length and
+  status. (EXPERIMENTAL)
+
 - Fixed command line parsing (QCommandLineParser/Option) to not
   exiting the application with a segfault when showing help and
   version information.

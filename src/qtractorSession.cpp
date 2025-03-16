@@ -408,10 +408,10 @@ void qtractorSession::updateSession (
 	m_iSessionStart = iSessionStart;
 	m_iSessionEnd   = iSessionEnd;
 
-	// Find the last and longest clip frame position...
 	int i = 0;
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
+		// Find the first and last or longest clip frame position...
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
 			const unsigned long iClipStart = pClip->clipStart();
@@ -422,7 +422,31 @@ void qtractorSession::updateSession (
 				m_iSessionEnd = iClipEnd;
 			++i;
 		}
+		// Find the first and last automation curve frame position...
+		qtractorCurveList *pCurveList = pTrack->curveList();
+		if (pCurveList == nullptr)
+			continue;
+		for (qtractorCurve *pCurve = pCurveList->first();
+				pCurve; pCurve = pCurve->next()) {
+			qtractorCurve::Node *pCurveNode = pCurve->nodes().first();
+			if (pCurveNode && (
+				m_iSessionStart > pCurveNode->frame || i == 0)) {
+				m_iSessionStart = pCurveNode->frame;
+			}
+			pCurveNode = pCurve->nodes().last();
+			if (pCurveNode &&
+				m_iSessionEnd < pCurveNode->frame) {
+				m_iSessionEnd = pCurveNode->frame;
+			}
+		}
 	}
+
+	// Account for the last tempo-map node
+	qtractorTimeScale::Node *pNode
+		= m_props.timeScale.nodes().last();
+	if (pNode &&
+		m_iSessionEnd < pNode->frame)
+		m_iSessionEnd = pNode->frame;
 
 	// Account for the last marker
 	qtractorTimeScale::Marker *pMarker

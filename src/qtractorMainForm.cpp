@@ -5183,7 +5183,6 @@ void qtractorMainForm::viewRefresh (void)
 	// Update the whole session view dependables...
 	m_pTempoCursor->clear();
 	m_pSession->updateTimeScale();
-	m_pSession->updateSession();
 
 	// Initialize toolbar widgets...
 //	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);
@@ -5211,6 +5210,9 @@ void qtractorMainForm::viewRefresh (void)
 		m_pMixer->updateBuses();
 		m_pMixer->updateTracks();
 	}
+
+	// FIXME: must be after Mixer updateTracks()...
+	m_pSession->updateSession();
 
 	if (m_pThumbView)
 		m_pThumbView->updateContents();
