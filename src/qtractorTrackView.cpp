@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2185,6 +2185,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// for immediate visual feedback...
 			if (m_pCurveEditCommand && !m_pCurveEditCommand->isEmpty()) {
 				pSession->commands()->push(m_pCurveEditCommand);
+				pSession->updateSession();
 				m_pCurveEditCommand = nullptr;
 				m_pTracks->dirtyChangeNotify();
 			} else {
@@ -5495,6 +5496,7 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 		delete pCurveEditCommand;
 	} else {
 		pSession->commands()->push(pCurveEditCommand);
+		pSession->updateSession();
 		m_pTracks->dirtyChangeNotify();
 	}
 
@@ -5600,6 +5602,7 @@ void qtractorTrackView::pasteCurveSelect ( const QPoint& pos )
 		delete pCurveEditCommand;
 	} else {
 		pSession->commands()->push(pCurveEditCommand);
+		pSession->updateSession();
 		m_pTracks->dirtyChangeNotify();
 	}
 

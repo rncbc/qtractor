@@ -1,7 +1,7 @@
 // qtractorTimeScaleCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -148,6 +148,7 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 			pSession->audioEngine()->resetTimebase();
 	}
 
+	pSession->updateSession();
 	pSession->unlock();
 
 	return true;
@@ -250,6 +251,7 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 			pSession->audioEngine()->resetTimebase();
 	}
 
+	pSession->updateSession();
 	pSession->unlock();
 
 	return true;
@@ -343,6 +345,7 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 			pSession->audioEngine()->resetTimebase();
 	}
 
+	pSession->updateSession();
 	pSession->unlock();
 
 	return true;

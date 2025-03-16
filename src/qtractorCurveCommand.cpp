@@ -1,7 +1,7 @@
 // qtractorCurveCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -56,8 +56,11 @@ bool qtractorCurveBaseCommand::undo (void)
 bool qtractorCurveBaseCommand::execute ( bool /*bRedo*/ )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && !pSession->isPlaying())
-		pSession->process_curve(pSession->playHead());
+	if (pSession) {
+		pSession->updateSession();
+		if (!pSession->isPlaying())
+			pSession->process_curve(pSession->playHead());
+	}
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {

@@ -1596,9 +1596,6 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 			pStrip->setTrack(pTrack);
 	}
 
-	pTrack->mapControllers();
-	pTrack->applyCurveFile(pTrack->curveFile());
-
 	qtractorCurveList *pCurveList = pTrack->curveList();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pCurveList && pMainForm && pMainForm->tracks()) {

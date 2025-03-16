@@ -623,6 +623,13 @@ bool qtractorTrack::open (void)
 	// Ah, at least make new name feedback...
 	updateTrackName();
 
+	// Formerly on mixer track strip update,
+	// but now where it surely belongs, here...
+	//
+	mapControllers();
+
+	applyCurveFile(m_pCurveFile);
+
 	// Done.
 	return (m_pMonitor != nullptr);
 }
