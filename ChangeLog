@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor (aka. piano-roll): simply allow a MIDI track
+  to be a ghost of itself. (EXPERIMENTAL)
+
 - In addition to clips and markers, automation curves and tempo-
   -map nodes now also contribute to the total session length and
   status. (EXPERIMENTAL)

@@ -2608,7 +2608,7 @@ void qtractorMidiEditorForm::updateGhostTrackMenu (void)
 			pAction->setChecked(pGhostTrack == pTrack);
 			data.setValue(static_cast<void *> (pTrack));
 			pAction->setData(data);
-			pAction->setEnabled(pTrack != pMidiClip->track());
+		//	pAction->setEnabled(pTrack != pMidiClip->track());
 		}
 	}
 
