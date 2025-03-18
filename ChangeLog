@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed all empty/void audio clips that are created when aborting
+  an armed recording session. (EXPERIMENTAL)
+
 - MIDI clip editor (aka. piano-roll): simply allow a MIDI track
   to be a ghost of itself. (EXPERIMENTAL)
 

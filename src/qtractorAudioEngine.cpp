@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1138,7 +1138,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				pAudioBus->process_commit(nframes);
 		}
 		// Done as idle...
-		pAudioCursor->process(nframes);
 		g_bProcessing = false;
 		pSession->release();
 		return 0;
@@ -1146,7 +1145,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Bail out if the MIDI-metronome is under count-in...
 	if (pSession->midiEngine()->countIn(nframes) > 0) {
-	//	pAudioCursor->process(nframes);
 		g_bProcessing = false;
 		pSession->release();
 		return 0;
@@ -1197,7 +1195,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (m_iCountIn > 0) {
 			m_iCountInFrame += nframes;
 			if (m_iCountInFrame < m_iCountInFrameEnd) {
-			//	pAudioCursor->process(nframes);
 				g_bProcessing = false;
 				pSession->release();
 				return 0;
