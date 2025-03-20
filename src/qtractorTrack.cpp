@@ -1319,6 +1319,13 @@ void qtractorTrack::removeClip ( qtractorClip *pClip )
 	if (m_props.trackType == qtractorTrack::Midi)
 		m_pSession->files()->removeClipItem(qtractorFileList::Midi, pClip);
 
+	if (m_bClipRecordEx && m_pClipRecord == pClip) {
+		m_bClipRecordEx = false;
+		m_pClipRecord = nullptr;
+		m_iClipRecordStart = 0;
+		setRecord(false);
+	}
+
 	pClip->setActive(false);
 
 	m_clips.unlink(pClip);

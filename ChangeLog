@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed MIDI track state when clips under record/overdubbing are
+  simply removed.
+
 - Fixed all empty/void audio clips that are created when aborting
   an armed recording session. (EXPERIMENTAL)
 
@@ -1851,7 +1854,7 @@ GIT HEAD
 - Generic plugin form widget position is now also preserved across
   open/save session cycles.
 
-- MIDI clip editor resilience is about to get an improvement, fe. it
+- MIDI clip editor resilience is about to get an improvement, re. it
   doesn't close on stopping record/overdub anymore.
 
 - Introducing (JACK) Timebase master setting as an option to Transport
