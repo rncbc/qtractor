@@ -1913,9 +1913,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Make sure it falls inside the recording clip...
 						const unsigned long iClipStartTime
 							= pMidiClip->clipStartTime();
-						const unsigned long iClipEndTime
-							= iClipStartTime + pMidiClip->clipLengthTime();
-						if (iTime >= iClipStartTime && iTime < iClipEndTime)
+						if (iTime >= iClipStartTime)
 							tick = iTime - iClipStartTime + pMidiClip->clipOffsetTime();
 						else
 						if (type != qtractorMidiEvent::NOTEOFF)
@@ -4128,16 +4126,18 @@ void qtractorMidiEngine::processInpEvents (void)
 
 	QMutexLocker locker(&m_inpMutex);
 
-	InpEvents::ConstIterator iter = m_inpEvents.constBegin();
-	const InpEvents::ConstIterator& iter_end = m_inpEvents.constEnd();
-	for ( ; iter != iter_end; ++iter) {
-		qtractorMidiClip *pMidiClip = iter.key();
+	QList<qtractorMidiClip *> keys; // Avoid duplicates...
+	QListIterator<qtractorMidiClip *> iter(m_inpEvents.keys());
+	while (iter.hasNext()) {
+		qtractorMidiClip *pMidiClip = iter.next();
+		if (keys.contains(pMidiClip))
+			continue;
 		qtractorMidiEditCommand *pMidiEditCommand
 			= new qtractorMidiEditCommand(pMidiClip, "step input");
 		unsigned short iInpEvents = 0;
 		const QList<qtractorMidiEvent *>& events
 			= m_inpEvents.values(pMidiClip);
-		QListIterator<qtractorMidiEvent *> iter2(events);
+			QListIterator<qtractorMidiEvent *> iter2(events);
 		while (iter2.hasNext()) {
 			qtractorMidiEvent *pEvent = iter2.next();
 			if (pEvent->type() == qtractorMidiEvent::NOTEON
@@ -4159,6 +4159,7 @@ void qtractorMidiEngine::processInpEvents (void)
 			// No events to apply...
 			delete pMidiEditCommand;
 		}
+		keys.append(pMidiClip);
 	}
 
 	m_inpEvents.clear();

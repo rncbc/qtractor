@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Allow MIDI step input to extend the clip length automatically;
+  also avoid step input event duplicates (eg. plauing chords in
+  quick succession) leading to potential double-free segfault or
+  crash. (EXPERTIMENTAL)
+
 - Fixed MIDI track state when clips under record/overdubbing are
   simply removed.
 
