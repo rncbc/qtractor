@@ -150,7 +150,7 @@ public:
 	unsigned long length() const;
 
 	// Clip recording/overdub status.
-	bool isClipRecord() const;
+	bool isClipRecordEx() const;
 
 	// Ghost track accessors.
 	void setGhostTrack(qtractorTrack *pGhostTrack);

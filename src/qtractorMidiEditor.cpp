@@ -1337,10 +1337,11 @@ int qtractorMidiEditor::minEventWidth (void) const
 
 
 // Clip recording/overdub status.
-bool qtractorMidiEditor::isClipRecord (void) const
+bool qtractorMidiEditor::isClipRecordEx (void) const
 {
 	qtractorTrack *pTrack = (m_pMidiClip ? m_pMidiClip->track() : nullptr);
-	return (pTrack ? pTrack->clipRecord() == m_pMidiClip : false);
+	return (pTrack && pTrack->isClipRecordEx() &&
+			pTrack->clipRecord() == m_pMidiClip);
 }
 
 
