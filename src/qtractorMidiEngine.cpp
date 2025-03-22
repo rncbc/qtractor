@@ -4140,8 +4140,7 @@ void qtractorMidiEngine::processInpEvents (void)
 			QListIterator<qtractorMidiEvent *> iter2(events);
 		while (iter2.hasNext()) {
 			qtractorMidiEvent *pEvent = iter2.next();
-			if (pEvent->type() == qtractorMidiEvent::NOTEON
-				&& pMidiClip->findStepInputEvent(pEvent)) {
+			if (pMidiClip->findStepInputEvent(pEvent)) {
 				delete pEvent;
 				pEvent = nullptr;
 			}

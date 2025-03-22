@@ -1665,10 +1665,12 @@ void qtractorMidiClip::setStepInputLast ( unsigned long iStepInputLast )
 			= m_iStepInputHead
 			+ iStepInputLast
 			- m_iStepInputLast;
-		if (iStepInputFrame > m_iStepInputTail)
+		if (iStepInputFrame > m_iStepInputTail) {
 			advanceStepInput();
+			m_iStepInputLast = iStepInputLast;
+		}
 	}
-
+	else
 	m_iStepInputLast = iStepInputLast;
 }
 
