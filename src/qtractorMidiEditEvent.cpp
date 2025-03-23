@@ -622,7 +622,7 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			pNode = cursor.seekTick(t2);
 			int w1 = (t1 >= t2 && m_pEditor->isClipRecordEx()
 				? m_pEditor->playHeadX()
-				: pNode->pixelFromTick(t2) - dx) - x;
+				: pNode->pixelFromTick(t2)) - dx - x;
 			if (w1 < wm || !m_pEditor->isNoteDuration() || bDrumMode)
 				w1 = wm;
 			if (eventType == qtractorMidiEvent::NOTEON ||

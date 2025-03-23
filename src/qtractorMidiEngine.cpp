@@ -1844,7 +1844,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	}
 
 	// Take care of recording, if any...
-	bool bRecording = (pSession->isRecording() && isPlaying());
+	const bool bPlaying = isPlaying();
+
+	bool bRecording = (pSession->isRecording() && bPlaying);
 	if (bRecording) {
 		// Take care of punch-in/out-range...
 		bRecording = (!pSession->isPunching() ||
@@ -1868,7 +1870,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	qtractorMidiManager *pMidiManager;
 
-	// Whether to notify any step input...
+	// Whether to notify any step input/overdub...
 	unsigned short iInpEvents = 0;
 
 	// Now check which bus and track we're into...
@@ -1896,7 +1898,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						pSeq = pMidiClip->sequence();
 					if (pMidiClip && pSeq && pTrack->isClipRecordEx()) {
 						// Account for step-input recording...
-						if (!isPlaying()) {
+						if (!bPlaying) {
 							// Check step-input auto-advance...
 							if (type != qtractorMidiEvent::NOTEOFF) {
 								pMidiClip->setStepInputLast(
@@ -1913,14 +1915,16 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Make sure it falls inside the recording clip...
 						const unsigned long iClipStartTime
 							= pMidiClip->clipStartTime();
-						if (iTime >= iClipStartTime)
+						const unsigned long iClipEndTime
+							= iClipStartTime + pMidiClip->clipLengthTime();
+						if (iTime >= iClipStartTime && (!bPlaying || iTime < iClipEndTime))
 							tick = iTime - iClipStartTime + pMidiClip->clipOffsetTime();
 						else
 						if (type != qtractorMidiEvent::NOTEOFF)
 							pSeq = nullptr;
 					}
 					else
-					if (!isPlaying())
+					if (!bPlaying)
 						pSeq = nullptr;
 					// Yep, maybe we have a new MIDI event on record...
 					if (pSeq) {
@@ -1928,14 +1932,15 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							tick, type, param, value, duration);
 						if (pSysex)
 							pEvent->setSysex(pSysex, iSysex);
-						if (isPlaying()) {
-							pSeq->addEvent(pEvent);
-						} else {
+						if (pTrack->isClipRecordEx()) {
 							m_inpMutex.lock();
 							m_inpEvents.insert(pMidiClip, pEvent);
 							m_inpMutex.unlock();
 							++iInpEvents;
 						}
+						else
+						if (bPlaying)
+							pSeq->addEvent(pEvent);
 					}
 				}
 				// Track input monitoring...
@@ -2595,7 +2600,7 @@ void qtractorMidiEngine::deactivate (void)
 // Device engine cleanup method.
 void qtractorMidiEngine::clean (void)
 {
-	// Clean any (pending?) step-input events...
+	// Clean any (pending?) step-input/overdub events...
 	m_inpEvents.clear();
 
 	// Clean control/metronome buses...
@@ -4117,7 +4122,7 @@ bool qtractorMidiEngine::isResetAllControllers (void) const
 }
 
 
-// Process pending step-input events...
+// Process pending step-input/overdub events...
 void qtractorMidiEngine::processInpEvents (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -4126,18 +4131,37 @@ void qtractorMidiEngine::processInpEvents (void)
 
 	QMutexLocker locker(&m_inpMutex);
 
+	const bool bPlaying = isPlaying();
 	QList<qtractorMidiClip *> keys; // Avoid duplicates...
 	QListIterator<qtractorMidiClip *> iter(m_inpEvents.keys());
 	while (iter.hasNext()) {
 		qtractorMidiClip *pMidiClip = iter.next();
 		if (keys.contains(pMidiClip))
 			continue;
+		keys.append(pMidiClip);
+		qtractorMidiSequence *pSeq = pMidiClip->sequence();
+		if (pSeq == nullptr)
+			continue;
+		// Obverdubbing?...
+		if (bPlaying) {
+			const QList<qtractorMidiEvent *>& events
+				= m_inpEvents.values(pMidiClip);
+			QListIterator<qtractorMidiEvent *> iter2(events);
+			while (iter2.hasNext()) {
+				qtractorMidiEvent *pEvent = iter2.next();
+				pSeq->addEvent(pEvent);
+			}
+			pMidiClip->setDirtyEx(true);
+			pMidiClip->updateEditorContents(); // FIXME: ?...
+			continue;
+		}
+		// Step input?...
 		qtractorMidiEditCommand *pMidiEditCommand
 			= new qtractorMidiEditCommand(pMidiClip, "step input");
 		unsigned short iInpEvents = 0;
 		const QList<qtractorMidiEvent *>& events
 			= m_inpEvents.values(pMidiClip);
-			QListIterator<qtractorMidiEvent *> iter2(events);
+		QListIterator<qtractorMidiEvent *> iter2(events);
 		while (iter2.hasNext()) {
 			qtractorMidiEvent *pEvent = iter2.next();
 			if (pMidiClip->findStepInputEvent(pEvent)) {
@@ -4158,7 +4182,6 @@ void qtractorMidiEngine::processInpEvents (void)
 			// No events to apply...
 			delete pMidiEditCommand;
 		}
-		keys.append(pMidiClip);
 	}
 
 	m_inpEvents.clear();
