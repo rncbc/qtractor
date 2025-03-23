@@ -6636,8 +6636,8 @@ sia avviato ed in esecuzione, poi riavvia la sessione.</translation>
         <translation>%1 BPM</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9021"/>
-        <location filename="../qtractorMainForm.cpp" line="9081"/>
+        <location filename="../qtractorMainForm.cpp" line="9022"/>
+        <location filename="../qtractorMainForm.cpp" line="9082"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Riproduzione &quot;%1&quot;...</translation>
     </message>

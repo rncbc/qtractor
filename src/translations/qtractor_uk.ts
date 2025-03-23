@@ -6647,8 +6647,8 @@ is highly recommended.</source>
         <translation>%1 такт/хв</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9021"/>
-        <location filename="../qtractorMainForm.cpp" line="9081"/>
+        <location filename="../qtractorMainForm.cpp" line="9022"/>
+        <location filename="../qtractorMainForm.cpp" line="9082"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Відтворюємо «%1»...</translation>
     </message>

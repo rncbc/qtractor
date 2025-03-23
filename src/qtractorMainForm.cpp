@@ -8938,7 +8938,8 @@ void qtractorMainForm::midiInpNotify ( unsigned short flags )
 
 	// Update current step-input location
 	// for all the in-recording clips out there...
-	if (flags & (qtractorMidiEngine::InpReset | qtractorMidiEngine::InpEvent)) {
+	if (!m_pSession->isPlaying() && (
+		flags & (qtractorMidiEngine::InpReset | qtractorMidiEngine::InpEvent))) {
 		const unsigned long iStepInputHead = m_pSession->playHead();
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {

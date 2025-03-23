@@ -3613,8 +3613,8 @@ sezením znovu.</translation>
         <translation>SLEDOVÁNÍ STOPY %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9021"/>
-        <location filename="../qtractorMainForm.cpp" line="9081"/>
+        <location filename="../qtractorMainForm.cpp" line="9022"/>
+        <location filename="../qtractorMainForm.cpp" line="9082"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Přehrává &quot;%1&quot;...</translation>
     </message>

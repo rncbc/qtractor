@@ -6646,8 +6646,8 @@ est près et en fonctionnement puis redémarrez la session.</translation>
         <translation>%1 BPM</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9021"/>
-        <location filename="../qtractorMainForm.cpp" line="9081"/>
+        <location filename="../qtractorMainForm.cpp" line="9022"/>
+        <location filename="../qtractorMainForm.cpp" line="9082"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Joue &quot;%1&quot;...</translation>
     </message>
