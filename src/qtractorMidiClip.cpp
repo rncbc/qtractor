@@ -1226,6 +1226,8 @@ void qtractorMidiClip::updateEditorContents (void)
 	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
 	if (pMidiEditor)
 		pMidiEditor->updateContents();
+
+	m_pMidiEditorForm->stabilizeForm();
 }
 
 
@@ -1781,14 +1783,17 @@ qtractorMidiEvent *qtractorMidiClip::findStepInputEvent (
 // Submit a command to the clip editor, if available.
 bool qtractorMidiClip::execute ( qtractorMidiEditCommand *pMidiEditCommand )
 {
-	if (m_pMidiEditorForm == nullptr)
-		return false;
+	qtractorCommandList *pCommandList = nullptr;
 
-	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
-	if (pMidiEditor == nullptr)
-		return false;
+	if (m_pMidiEditorForm == nullptr) {
+		qtractorTrack *pTrack = track();
+		if (pTrack && pTrack->session())
+			pCommandList = pTrack->session()->commands();
+	} else {
+		pCommandList = commands();
+	}
 
-	return pMidiEditor->execute(pMidiEditCommand);
+	return (pCommandList ? pCommandList->exec(pMidiEditCommand) : false);
 }
 
 

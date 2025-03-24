@@ -4142,7 +4142,7 @@ void qtractorMidiEngine::processInpEvents (void)
 		qtractorMidiSequence *pSeq = pMidiClip->sequence();
 		if (pSeq == nullptr)
 			continue;
-		// Obverdubbing?...
+		// Overdubbing?...
 		if (bPlaying) {
 			const QList<qtractorMidiEvent *>& events
 				= m_inpEvents.values(pMidiClip);
@@ -4152,12 +4152,14 @@ void qtractorMidiEngine::processInpEvents (void)
 				pSeq->addEvent(pEvent);
 			}
 			pMidiClip->setDirtyEx(true);
+			pMidiClip->update();
 			pMidiClip->updateEditorContents(); // FIXME: ?...
+		//	trackMute(pMidiClip->track(), false);
 			continue;
 		}
-		// Step input?...
+		// Step input...
 		qtractorMidiEditCommand *pMidiEditCommand
-			= new qtractorMidiEditCommand(pMidiClip, "step input");
+			= new qtractorMidiEditCommand(pMidiClip, QObject::tr("step input"));
 		unsigned short iInpEvents = 0;
 		const QList<qtractorMidiEvent *>& events
 			= m_inpEvents.values(pMidiClip);
@@ -4166,20 +4168,16 @@ void qtractorMidiEngine::processInpEvents (void)
 			qtractorMidiEvent *pEvent = iter2.next();
 			if (pMidiClip->findStepInputEvent(pEvent)) {
 				delete pEvent;
-				pEvent = nullptr;
+				continue;
 			}
-			if (pEvent) {
-				pMidiEditCommand->insertEvent(pEvent);
-				++iInpEvents;
-			}
+			pMidiEditCommand->insertEvent(pEvent);
+			++iInpEvents;
 		}
 		if (iInpEvents > 0) {
 			// Apply to MIDI clip *iif* its editor is there...
 			// otherwise make it global to session.
-			if (!pMidiClip->execute(pMidiEditCommand))
-				pSession->execute(pMidiEditCommand);
+			pMidiClip->execute(pMidiEditCommand);
 		} else {
-			// No events to apply...
 			delete pMidiEditCommand;
 		}
 	}

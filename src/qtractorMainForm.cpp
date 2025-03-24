@@ -6450,7 +6450,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		}
 		// Stop transport rolling, immediately...
 		setRolling(0);
-		// Session tracks automation recording.
+		// Session tracks automation/overdub recording...
 		qtractorCurveCaptureListCommand *pCurveCommand = nullptr;
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
@@ -6464,6 +6464,8 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		}
 		if (pCurveCommand)
 			m_pSession->commands()->push(pCurveCommand);
+		if (m_pTracks)
+			m_pTracks->updateContents(true);
 	}
 
 	// Done with playback switch...
