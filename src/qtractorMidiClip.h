@@ -342,7 +342,7 @@ public:
 		qtractorMidiEvent *pStepInputEvent) const;
 
 	// Submit a command to the clip editor, if available.
-	bool execute(qtractorMidiEditCommand *pMidiEditCommand);
+	bool execute(qtractorMidiEditCommand *pMidiEditCommand, bool bPush = false);
 
 protected:
 

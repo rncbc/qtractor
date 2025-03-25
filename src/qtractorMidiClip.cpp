@@ -1781,7 +1781,8 @@ qtractorMidiEvent *qtractorMidiClip::findStepInputEvent (
 
 
 // Submit a command to the clip editor, if available.
-bool qtractorMidiClip::execute ( qtractorMidiEditCommand *pMidiEditCommand )
+bool qtractorMidiClip::execute (
+	qtractorMidiEditCommand *pMidiEditCommand, bool bPush )
 {
 	qtractorCommandList *pCommandList = nullptr;
 
@@ -1793,7 +1794,13 @@ bool qtractorMidiClip::execute ( qtractorMidiEditCommand *pMidiEditCommand )
 		pCommandList = commands();
 	}
 
-	return (pCommandList ? pCommandList->exec(pMidiEditCommand) : false);
+	if (pCommandList == nullptr)
+		return false;
+
+	if (bPush)
+		return pCommandList->push(pMidiEditCommand);
+	else
+		return pCommandList->exec(pMidiEditCommand);
 }
 
 

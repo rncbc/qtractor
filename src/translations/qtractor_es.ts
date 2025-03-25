@@ -37,16 +37,16 @@ Audio:	%1 canales, %2 Hz</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3084"/>
         <location filename="../qtractorAudioEngine.cpp" line="3376"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4389"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4965"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4408"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4984"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3093"/>
         <location filename="../qtractorAudioEngine.cpp" line="3376"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4398"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4965"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4417"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4984"/>
         <source>%1 Out</source>
         <translation>%1 Salida</translation>
     </message>
@@ -749,13 +749,18 @@ MIDI:	</translation>
         <translation>cambiar compás.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4162"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4165"/>
         <source>step input</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4391"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4400"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4165"/>
+        <source>overdub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEngine.cpp" line="4410"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4419"/>
         <location filename="../qtractorTrack.cpp" line="716"/>
         <source>%1 Volume</source>
         <translation>%1 Volumen</translation>
@@ -770,8 +775,8 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3088"/>
         <location filename="../qtractorAudioEngine.cpp" line="3097"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4393"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4402"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4412"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4421"/>
         <location filename="../qtractorTrack.cpp" line="722"/>
         <source>%1 Pan</source>
         <translation>%1 Panorámica</translation>
