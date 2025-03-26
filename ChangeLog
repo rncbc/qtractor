@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip step input and overdubbing now fully undo/redo-able.
+  (EXPERTIMENTAL)
+
 - Allow MIDI step input to extend the clip length automatically;
   also avoid step input event duplicates (eg. plauing chords in
   quick succession) leading to potential double-free segfault or

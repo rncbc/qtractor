@@ -4820,11 +4820,13 @@ void qtractorMidiBus::sendNote (
 	}
 
 	// Attempt to capture the playing note as well...
-	if (bForce && pTrack->isRecord()) {
+	if (bForce && pTrack->isRecord() && pTrack->session()) {
+		const unsigned long tick
+			= (pTrack->session())->timep(pMidiEngine->queueTime());
 		snd_seq_ev_set_dest(&ev,
 			pMidiEngine->alsaClient(), m_iAlsaPort);
 		snd_seq_ev_schedule_tick(&ev,
-			pMidiEngine->alsaQueue(), 0, pMidiEngine->queueTime());
+			pMidiEngine->alsaQueue(), 0, tick);
 		pMidiEngine->capture(&ev);
 	}
 }
