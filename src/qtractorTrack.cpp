@@ -818,6 +818,9 @@ void qtractorTrack::setRecord ( bool bRecord )
 		const unsigned long iFrameTime = m_pSession->frameTimeEx();
 		m_pSession->trackRecord(this, bRecord, iClipStart, iFrameTime);
 	}
+	else
+	if (!bRecord)
+		m_pSession->trackRecord(this, false, 0, 0);
 }
 
 bool qtractorTrack::isRecord (void) const

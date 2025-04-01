@@ -4131,7 +4131,7 @@ void qtractorMidiEngine::processInpEvents (void)
 
 	QMutexLocker locker(&m_inpMutex);
 
-	const bool bPlaying = isPlaying();
+	const bool bOverdub = isPlaying();
 	QList<qtractorMidiClip *> keys; // Avoid duplicates...
 	QListIterator<qtractorMidiClip *> iter(m_inpEvents.keys());
 	while (iter.hasNext()) {
@@ -4139,66 +4139,12 @@ void qtractorMidiEngine::processInpEvents (void)
 		if (keys.contains(pMidiClip))
 			continue;
 		keys.append(pMidiClip);
-		qtractorMidiSequence *pSeq = pMidiClip->sequence();
-		if (pSeq == nullptr)
-			continue;
-	#if 0//DEBUG>
-		// Overdubbing?...
-		if (bPlaying) {
-			const QList<qtractorMidiEvent *>& events
-				= m_inpEvents.values(pMidiClip);
-			QListIterator<qtractorMidiEvent *> iter2(events);
-			while (iter2.hasNext()) {
-				qtractorMidiEvent *pEvent = iter2.next();
-				pSeq->addEvent(pEvent);
-			}
-			pMidiClip->setDirtyEx(true);
-			pMidiClip->update();
-			pMidiClip->updateEditorContents(); // FIXME: ?...
-		//	trackMute(pMidiClip->track(), false);
-			continue;
-		}
-	#endif
-		// Step input...
-		qtractorMidiEditCommand *pMidiEditCommand
-			= new qtractorMidiEditCommand(pMidiClip, bPlaying
-				? QObject::tr("overdub") : QObject::tr("step input"));
-		unsigned short iInpEvents = 0;
+		// Step input/overdub control...
 		const QList<qtractorMidiEvent *>& events
 			= m_inpEvents.values(pMidiClip);
-		QListIterator<qtractorMidiEvent *> iter2(events);
-		while (iter2.hasNext()) {
-			qtractorMidiEvent *pEvent = iter2.next();
-			const bool bNoteOff
-				= (pEvent->type() == qtractorMidiEvent::NOTEOFF);
-			if (bPlaying)
-				pSeq->addEvent(pEvent);
-			else
-			if (pMidiClip->findStepInputEvent(pEvent)) {
-				delete pEvent;
-				continue;
-			}
-			if (!bNoteOff) {
-				pMidiEditCommand->insertEvent(pEvent);
-				++iInpEvents;
-			}
-		}
 		// Apply command *iif* MIDI clip editor is up there,
 		// otherwise make it global to session...
-		if (iInpEvents > 0) {
-			if (bPlaying)
-				pMidiEditCommand->adjust();
-			pMidiClip->execute(pMidiEditCommand, bPlaying);
-		} else {
-			delete pMidiEditCommand;
-		}
-		// Overdubbing: post- updates...
-		if (bPlaying && !events.isEmpty()) {
-			pMidiClip->setDirtyEx(true);
-			pMidiClip->update();
-			pMidiClip->updateEditorContents();
-		//	trackMute(pMidiClip->track(), false);
-		}
+		pMidiClip->processInpEvents(events, bOverdub);
 	}
 
 	m_inpEvents.clear();

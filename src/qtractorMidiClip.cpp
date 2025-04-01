@@ -195,6 +195,8 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_iStepInputHeadTime = 0;
 	m_iStepInputTailTime = 0;
 	m_iStepInputLast = 0;
+
+	clearInpEvents();
 }
 
 
@@ -547,6 +549,8 @@ bool qtractorMidiClip::openMidiFile (
 // Private cleanup.
 void qtractorMidiClip::closeMidiFile (void)
 {
+	clearInpEvents();
+
 	if (m_pData) {
 		m_pData->detach(this);
 		if (m_pData->count() < 1) {
@@ -1780,12 +1784,16 @@ qtractorMidiEvent *qtractorMidiClip::findStepInputEvent (
 }
 
 
-// Submit a command to the clip editor, if available.
-bool qtractorMidiClip::execute (
-	qtractorMidiEditCommand *pMidiEditCommand, bool bPush )
+// Step-input/overdub command control methods...
+//
+bool qtractorMidiClip::processInpEvents (
+	const QList<qtractorMidiEvent *>& events, bool bOverdub )
 {
-	qtractorCommandList *pCommandList = nullptr;
+	qtractorMidiSequence *pSeq = sequence();
+	if (pSeq == nullptr)
+		return false;
 
+	qtractorCommandList *pCommandList = nullptr;
 	if (m_pMidiEditorForm == nullptr) {
 		qtractorTrack *pTrack = track();
 		if (pTrack && pTrack->session())
@@ -1797,10 +1805,63 @@ bool qtractorMidiClip::execute (
 	if (pCommandList == nullptr)
 		return false;
 
-	if (bPush)
-		return pCommandList->push(pMidiEditCommand);
-	else
-		return pCommandList->exec(pMidiEditCommand);
+	qtractorMidiEditCommand *pLastCommand
+		= static_cast<qtractorMidiEditCommand *> (pCommandList->lastCommand());
+	if (( m_pInpEventsCommand && pLastCommand &&
+		  m_pInpEventsCommand != pLastCommand) ||
+		( m_bInpEventsOverdub && !bOverdub) ||
+		(!m_bInpEventsOverdub &&  bOverdub)) {
+		clearInpEvents();
+	}
+
+	if (m_pInpEventsCommand == nullptr) {
+		m_pInpEventsCommand = new qtractorMidiEditCommand(this,
+			bOverdub ? QObject::tr("overdub") : QObject::tr("step input"));
+		m_iInpEventsCommand = 0;
+		m_bInpEventsOverdub = bOverdub;
+	}
+
+	QListIterator<qtractorMidiEvent *> iter(events);
+	while (iter.hasNext()) {
+		qtractorMidiEvent *pEvent = iter.next();
+		const bool bNoteOff
+			= (pEvent->type() == qtractorMidiEvent::NOTEOFF);
+		if (!m_bInpEventsOverdub && findStepInputEvent(pEvent)) {
+			delete pEvent;
+			continue;
+		}
+		if (m_bInpEventsOverdub)
+			pSeq->addEvent(pEvent);
+		else
+			pSeq->insertEvent(pEvent);
+		if (!bNoteOff)
+			m_pInpEventsCommand->insertEvent(pEvent);
+	}
+
+	if (m_pInpEventsCommand->isEmpty()) {
+		delete m_pInpEventsCommand;
+		clearInpEvents();
+		return false;
+	}
+
+	m_pInpEventsCommand->adjust();
+
+	setDirtyEx(true);
+	update();
+	updateEditorContents();
+
+	if (++m_iInpEventsCommand > 1)
+		return true;
+
+	return pCommandList->push(m_pInpEventsCommand);
+}
+
+
+void qtractorMidiClip::clearInpEvents (void)
+{
+	m_pInpEventsCommand = nullptr;
+	m_iInpEventsCommand = 0;
+	m_bInpEventsOverdub = false;
 }
 
 

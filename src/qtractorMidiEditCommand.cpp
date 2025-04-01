@@ -137,6 +137,13 @@ bool qtractorMidiEditCommand::findEvent ( qtractorMidiEvent *pEvent,
 }
 
 
+// Tell whether there are any items to edit.
+bool qtractorMidiEditCommand::isEmpty (void) const
+{
+	return m_items.isEmpty();
+}
+
+
 // Common executive method.
 bool qtractorMidiEditCommand::execute ( bool bRedo )
 {

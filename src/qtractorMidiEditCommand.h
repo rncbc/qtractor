@@ -83,6 +83,9 @@ public:
 	// Check whether the event is already in chain.
 	bool findEvent(qtractorMidiEvent *pEvent, CommandType cmd) const;
 
+	// Tell whether there are any items to edit.
+	bool isEmpty() const;
+
 	// Virtual command methods.
 	bool redo();
 	bool undo();

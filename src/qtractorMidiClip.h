@@ -341,8 +341,9 @@ public:
 	qtractorMidiEvent *findStepInputEvent(
 		qtractorMidiEvent *pStepInputEvent) const;
 
-	// Submit a command to the clip editor, if available.
-	bool execute(qtractorMidiEditCommand *pMidiEditCommand, bool bPush = false);
+	// Step-input/overdub recording control methods...
+	bool processInpEvents(const QList<qtractorMidiEvent *>& events, bool bOverdub);
+	void clearInpEvents();
 
 protected:
 
@@ -414,6 +415,11 @@ private:
 	unsigned long m_iStepInputHeadTime;
 	unsigned long m_iStepInputTailTime;
 	unsigned long m_iStepInputLast;
+
+	// Step-input/overdub recording control variables...
+	qtractorMidiEditCommand *m_pInpEventsCommand;
+	unsigned int             m_iInpEventsCommand;
+	bool                     m_bInpEventsOverdub;
 
 	// Default MIDI file format (for capture/record)
 	static unsigned short g_iDefaultFormat;
