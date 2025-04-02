@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed non-zero clip offset conversion on tempo(BPM) time-scale
+  changes. (EXPERIMENTAL)
+
 - MIDI clip step input and overdubbing now aggregated and fully
   undo/redo-able. (EXPERIMENTAL)
 
