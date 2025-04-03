@@ -4,31 +4,31 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.5.4  2025-04-04  An Early Spring'25 Release.
 
 - Fixed non-zero clip offset conversion on tempo(BPM) time-scale
-  changes. (EXPERIMENTAL)
+  changes.
 
 - MIDI clip step input and overdubbing now aggregated and fully
-  undo/redo-able. (EXPERIMENTAL)
+  undo/redo-able.
 
 - Allow MIDI step input to extend the clip length automatically;
-  also avoid step input event duplicates (eg. plauing chords in
+  also avoid step input event duplicates (eg. playing chords in
   quick succession) leading to potential double-free segfault or
-  crash. (EXPERTIMENTAL)
+  crash.
 
 - Fixed MIDI track state when clips under record/overdubbing are
   simply removed.
 
 - Fixed all empty/void audio clips that are created when aborting
-  an armed recording session. (EXPERIMENTAL)
+  an armed recording session.
 
 - MIDI clip editor (aka. piano-roll): simply allow a MIDI track
-  to be a ghost of itself. (EXPERIMENTAL)
+  to be a ghost of itself.
 
 - In addition to clips and markers, automation curves and tempo-
   -map nodes now also contribute to the total session length and
-  status. (EXPERIMENTAL)
+  status.
 
 - Fixed command line parsing (QCommandLineParser/Option) to not
   exiting the application with a segfault when showing help and
