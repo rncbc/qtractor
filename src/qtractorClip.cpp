@@ -152,7 +152,12 @@ QString qtractorClip::shortClipName ( const QString& sClipName ) const
 
 QString qtractorClip::clipTitle (void) const
 {
-	QString sClipTitle(m_sClipName);
+	QString sClipTitle;
+
+	if (m_bMute)
+		sClipTitle += QObject::tr("[Mute] ");
+
+	sClipTitle += m_sClipName;
 
 	if (m_pTakeInfo && m_pTakeInfo->partClip(this) != TakeInfo::ClipHead) {
 		const int iCurrentTake = m_pTakeInfo->currentTake();
@@ -162,9 +167,6 @@ QString qtractorClip::clipTitle (void) const
 				.arg(iCurrentTake + 1).arg(iTakeCount);
 		}
 	}
-
-	if (m_bMute)
-		sClipTitle += QObject::tr(" [Mute]");
 
 	return sClipTitle;
 }
