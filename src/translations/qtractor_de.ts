@@ -92,29 +92,29 @@ Audio:	%1 Kanäle, %2 Hz</translation>
         <translation>Freie Position</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="161"/>
+        <location filename="../qtractorClip.cpp" line="166"/>
         <source> (take %1/%2)</source>
         <translation> (Aufnahme %1/%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="167"/>
-        <source> [Mute]</source>
+        <location filename="../qtractorClip.cpp" line="158"/>
+        <source>[Mute] </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="561"/>
+        <location filename="../qtractorClip.cpp" line="563"/>
         <source>Name:	%1</source>
         <translation>Name:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="569"/>
+        <location filename="../qtractorClip.cpp" line="571"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Anfang:	%1	Versatz:	%2
 Ende:	%3	Länge:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="577"/>
+        <location filename="../qtractorClip.cpp" line="579"/>
         <source>File:	%1</source>
         <translation>Datei:	%1</translation>
     </message>
