@@ -320,6 +320,10 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	if (!pBuff->open(sFilename, iMode)) {
 		delete m_pData;
 		m_pData = nullptr;
+		if (m_pFractGains) {
+			delete [] m_pFractGains;
+			m_pFractGains = nullptr;
+		}
 		return false;
 	}
 
@@ -659,6 +663,9 @@ void qtractorAudioClip::draw (
 {
 	qtractorSession *pSession = track()->session();
 	if (pSession == nullptr)
+		return;
+
+	if (m_pFractGains == nullptr)
 		return;
 
 	// Cache some peak data...
