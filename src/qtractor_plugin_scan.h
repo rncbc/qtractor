@@ -93,6 +93,8 @@ private:
 
 #ifdef CONFIG_DSSI
 
+#include <alsa/asoundlib.h>
+
 #include <dssi.h>
 
 //----------------------------------------------------------------------
