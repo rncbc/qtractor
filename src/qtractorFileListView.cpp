@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -339,9 +339,6 @@ qtractorFileListView::qtractorFileListView (
 	QObject::connect(this,
 		SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
 		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
-//	QObject::connect(this,
-//		SIGNAL(itemActivated(QTreeWidgetItem*,int)),
-//		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
 	QObject::connect(this,
 		SIGNAL(itemExpanded(QTreeWidgetItem*)),
 		SLOT(itemExpandedSlot(QTreeWidgetItem*)));
@@ -1026,18 +1023,19 @@ void qtractorFileListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	dragLeaveEvent(nullptr);
 
-	m_posDrag   = pMouseEvent->pos();
-	m_pDragItem = QTreeWidget::itemAt(m_posDrag);
-
-	if (pMouseEvent->button() == Qt::LeftButton
-		&& (pMouseEvent->modifiers()
+	if (pMouseEvent->button() == Qt::LeftButton) {
+		m_posDrag   = pMouseEvent->pos();
+		m_pDragItem = QTreeWidget::itemAt(m_posDrag);
+	#if 0//NO_SINGLE_SELECTION_MODE
+		if ((pMouseEvent->modifiers()
 			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
-		QTreeWidget::clearSelection();
-		QTreeWidget::setSelectionMode(
-			QAbstractItemView::SingleSelection);
+			QTreeWidget::clearSelection();
+			QTreeWidget::setSelectionMode(
+				QAbstractItemView::SingleSelection);
+		}
+		QTreeWidget::setCurrentItem(m_pDragItem);
+	#endif
 	}
-
-	QTreeWidget::setCurrentItem(m_pDragItem);
 
 	QTreeWidget::mousePressEvent(pMouseEvent);
 }
@@ -1112,8 +1110,10 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pDrag->exec(Qt::LinkAction);
 			// We've dragged and maybe dropped it by now...
 			// QTreeWidget::reset();
+		#if 0//NO_SINGLE_SELECTION_MODE
 			QTreeWidget::setSelectionMode(
 				QAbstractItemView::ExtendedSelection);
+		#endif
 			dragLeaveEvent(nullptr);
 			m_pDragItem = nullptr;
 		}
@@ -1124,10 +1124,10 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 void qtractorFileListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	QTreeWidget::mouseReleaseEvent(pMouseEvent);
-
+#if 0//NO_SINGLE_SELECTION_MODE
 	QTreeWidget::setSelectionMode(
 		QAbstractItemView::ExtendedSelection);
-
+#endif
 	dragLeaveEvent(nullptr);
 	m_pDragItem = nullptr;
 }

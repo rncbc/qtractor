@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Files item selection mode switching corrected. (EXPERIMENTAL)
+
 - Mitigate or postpone a 'too many open files' condition as much 
   as possible. (EXPERIMENTAL)
 
