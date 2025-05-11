@@ -275,6 +275,7 @@ qtractorMainForm::qtractorMainForm (
 	m_bNsmDirty  = false;
 
 	m_iAudioPropertyChange = 0;
+	m_iAudioSelfConnected = 0;
 
 	m_iStabilizeTimer = 0;
 
@@ -314,6 +315,9 @@ qtractorMainForm::qtractorMainForm (
 		QObject::connect(pAudioEngineProxy,
 			SIGNAL(propEvent()),
 			SLOT(audioPropNotify()));
+		QObject::connect(pAudioEngineProxy,
+			SIGNAL(selfEvent()),
+			SLOT(audioSelfNotify()));
 	}
 
 	// Configure the MIDI engine event handling...
@@ -6911,6 +6915,7 @@ bool qtractorMainForm::startSession (void)
 	m_iPlayerTimer = 0;
 
 	m_iAudioPropertyChange = 0;
+	m_iAudioSelfConnected = 0;
 
 	m_iStabilizeTimer = 0;
 
@@ -8310,6 +8315,30 @@ void qtractorMainForm::slowTimerSlot (void)
 			} else {
 				m_pConnections->connectForm()->audioRefresh();
 			}
+			if (m_iAudioSelfConnected > 0) {
+				m_iAudioSelfConnected = 0;
+				const QString& sTitle = tr("Warning");
+				const QString& sText
+					= tr("Self connections are NOT ADVISABLE!");
+			#if 1
+				QMessageBox::warning(this, sTitle, sText);
+			#else
+				if (m_pOptions->bAudioSelfConnected) {
+					QMessageBox mbox(this);
+					mbox.setIcon(QMessageBox::Warning);
+					mbox.setWindowTitle(sTitle);
+					mbox.setText(sText);
+					mbox.setStandardButtons(QMessageBox::Ok);
+					QCheckBox cbox(tr("Don't show this again"));
+					cbox.setChecked(false);
+					cbox.blockSignals(true);
+					mbox.addButton(&cbox, QMessageBox::ActionRole);
+					mbox.exec();// == QMessageBox::Ok
+					if (cbox.isChecked())
+						m_pOptions->bAudioSelfConnected = false;
+				}
+			#endif
+			}
 		}
 	}
 
@@ -8671,6 +8700,18 @@ void qtractorMainForm::audioPropNotify (void)
 
 	// Mark that a complete refresh is needed...
 	++m_iAudioPropertyChange;
+}
+
+
+// Custom (JACK) audio port selft-connect event handler.
+void qtractorMainForm::audioSelfNotify (void)
+{
+	// An Audio port connection was made to ourselves;
+	// try to postpone the event effect a little more...
+	if (m_iAudioRefreshTimer < 2) ++m_iAudioRefreshTimer;
+
+	// Mark that a complete refresh is needed...
+	++m_iAudioSelfConnected;
 }
 
 

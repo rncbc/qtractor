@@ -69,6 +69,8 @@ public:
 		{ emit syncEvent(iPlayHead, bPlaying); }
 	void notifyPropEvent()
 		{ emit propEvent(); }
+	void notifySelfEvent()
+		{ emit selfEvent(); }
 
 signals:
 	
@@ -80,6 +82,7 @@ signals:
 	void sessEvent(void *pvSessionArg);
 	void syncEvent(unsigned long iPlayHead, bool bPlaying);
 	void propEvent();
+	void selfEvent();
 };
 
 
@@ -108,6 +111,7 @@ public:
 	void notifySessEvent(void *pvSessionArg);
 	void notifySyncEvent(unsigned long iPlayHead, bool bPlaying);
 	void notifyPropEvent();
+	void notifySelfEvent();
 
 	// JACK client descriptor accessor.
 	jack_client_t *jackClient() const;

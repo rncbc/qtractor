@@ -77,6 +77,7 @@ public:
 	bool    bPeakAutoRemove;
 	bool    bKeepToolsOnTop;
 	bool    bKeepEditorsOnTop;
+	bool    bAudioSelfConnected;
 	int     iDisplayFormat;
 	int     iBaseFontSize;
 

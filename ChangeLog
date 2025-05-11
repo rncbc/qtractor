@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- A warning is now issued when an audio self connection is made
+  (eg. connecting an output bus (or insert send) directly into
+  an input bus (or an insert return). (EXPERIMENTAL)
+  
 - Files item selection mode switching corrected. (EXPERIMENTAL)
 
 - Mitigate or postpone a 'too many open files' condition as much 

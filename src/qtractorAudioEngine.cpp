@@ -369,10 +369,20 @@ static void qtractorAudioEngine_port_registration (
 //
 
 static void qtractorAudioEngine_port_connect (
-	jack_port_id_t, jack_port_id_t, int, void *pvArg )
+	jack_port_id_t port_id1, jack_port_id_t port_id2, int, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient) {
+		jack_port_t *port1 = ::jack_port_by_id(pJackClient, port_id1);
+		jack_port_t *port2 = ::jack_port_by_id(pJackClient, port_id2);
+		if (::jack_port_is_mine(pJackClient, port1) &&
+			::jack_port_is_mine(pJackClient, port2)) {
+			pAudioEngine->notifySelfEvent();
+		}
+	}
 
 	pAudioEngine->notifyPortEvent();
 }
@@ -631,6 +641,11 @@ void qtractorAudioEngine::notifySyncEvent ( unsigned long iPlayHead, bool bPlayi
 void qtractorAudioEngine::notifyPropEvent (void)
 {
 	m_proxy.notifyPropEvent();
+}
+
+void qtractorAudioEngine::notifySelfEvent (void)
+{
+	m_proxy.notifySelfEvent();
 }
 
 

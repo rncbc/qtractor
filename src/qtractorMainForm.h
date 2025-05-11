@@ -322,6 +322,7 @@ protected slots:
 	void audioSessNotify(void *pvSessionArg);
 	void audioSyncNotify(unsigned long iPlayHead, bool bPlaying);
 	void audioPropNotify();
+	void audioSelfNotify();
 
 	void midiMmcNotify(const qtractorMmcEvent& mmce);
 	void midiCtlNotify(const qtractorCtlEvent& ctle);
@@ -519,6 +520,7 @@ private:
 	int m_iAutoSaveTimer;
 	int m_iAutoSavePeriod;
 	int m_iAudioPropertyChange;
+	int m_iAudioSelfConnected;
 	int m_iStabilizeTimer;
 
 	qtractorTempoCursor *m_pTempoCursor;
