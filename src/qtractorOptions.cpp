@@ -107,7 +107,6 @@ void qtractorOptions::loadOptions (void)
 	bPeakAutoRemove = m_settings.value("/PeakAutoRemove", true).toBool();
 	bKeepToolsOnTop = m_settings.value("/KeepToolsOnTop", true).toBool();
 	bKeepEditorsOnTop = m_settings.value("/KeepEditorsOnTop", false).toBool();
-	bAudioSelfConnected = m_settings.value("/AudioSelfConnected", true).toBool();
 	iDisplayFormat  = m_settings.value("/DisplayFormat", 1).toInt();
 	iMaxRecentFiles = m_settings.value("/MaxRecentFiles", 5).toInt();
 	iBaseFontSize   = m_settings.value("/BaseFontSize", 0).toInt();
@@ -169,6 +168,7 @@ void qtractorOptions::loadOptions (void)
 	bAudioMasterAutoConnect = m_settings.value("/MasterAutoConnect", true).toBool();
 	bAudioPlayerAutoConnect = m_settings.value("/PlayerAutoConnect", true).toBool();
 	bAudioMetroAutoConnect = m_settings.value("/MetroAutoConnect", true).toBool();
+	bAudioSelfConnected = m_settings.value("/SelfConnected", true).toBool();
 	iAudioMetroOffset  = (unsigned long) m_settings.value("/MetroOffset", 0).toUInt();
 	m_settings.endGroup();
 
@@ -446,7 +446,6 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/PeakAutoRemove", bPeakAutoRemove);
 	m_settings.setValue("/KeepToolsOnTop", bKeepToolsOnTop);
 	m_settings.setValue("/KeepEditorsOnTop", bKeepEditorsOnTop);
-	m_settings.setValue("/AudioSelfConnected", bAudioSelfConnected);
 	m_settings.setValue("/DisplayFormat", iDisplayFormat);
 	m_settings.setValue("/MaxRecentFiles", iMaxRecentFiles);
 	m_settings.setValue("/BaseFontSize", iBaseFontSize);
@@ -508,6 +507,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MasterAutoConnect", bAudioMasterAutoConnect);
 	m_settings.setValue("/PlayerAutoConnect", bAudioPlayerAutoConnect);
 	m_settings.setValue("/MetroAutoConnect", bAudioMetroAutoConnect);
+	m_settings.setValue("/SelfConnected", bAudioSelfConnected);
 	m_settings.setValue("/MetroOffset", uint(iAudioMetroOffset));
 	m_settings.endGroup();
 

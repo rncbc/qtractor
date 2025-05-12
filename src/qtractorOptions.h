@@ -77,7 +77,6 @@ public:
 	bool    bPeakAutoRemove;
 	bool    bKeepToolsOnTop;
 	bool    bKeepEditorsOnTop;
-	bool    bAudioSelfConnected;
 	int     iDisplayFormat;
 	int     iBaseFontSize;
 
@@ -129,6 +128,8 @@ public:
 	bool    bAudioMasterAutoConnect;
 	bool    bAudioPlayerAutoConnect;
 	bool    bAudioMetroAutoConnect;
+
+	bool    bAudioSelfConnected;
 
 	// Audio metronome latency offset compensation.
 	unsigned long iAudioMetroOffset;

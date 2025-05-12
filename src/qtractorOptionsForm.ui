@@ -1049,6 +1049,53 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="AudioConnectionsGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Connections</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="AudioSelfConnectedCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to warn about audio self-connections</string>
+            </property>
+            <property name="text">
+             <string>&amp;Warn about self-connections</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -4336,6 +4383,7 @@
   <tabstop>AudioRubberBandFinerR3CheckBox</tabstop>
   <tabstop>AudioPlayerBusCheckBox</tabstop>
   <tabstop>AudioPlayerAutoConnectCheckBox</tabstop>
+  <tabstop>AudioSelfConnectedCheckBox</tabstop>
   <tabstop>AudioMetronomeCheckBox</tabstop>
   <tabstop>MetroBarFilenameComboBox</tabstop>
   <tabstop>MetroBarFilenameToolButton</tabstop>

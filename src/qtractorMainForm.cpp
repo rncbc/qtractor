@@ -8319,8 +8319,11 @@ void qtractorMainForm::slowTimerSlot (void)
 				m_iAudioSelfConnected = 0;
 				const QString& sTitle = tr("Warning");
 				const QString& sText
-					= tr("Self connections are NOT ADVISABLE!");
-			#if 1
+					= tr("Audio self-connection detected!\n\n"
+					"In general, connecting an output bus (or insert send),\n"
+					"directly into any input bus (or insert return),\n"
+					"is not advisable. It often doesn't work, if at all.\n");
+			#if 0
 				QMessageBox::warning(this, sTitle, sText);
 			#else
 				if (m_pOptions->bAudioSelfConnected) {

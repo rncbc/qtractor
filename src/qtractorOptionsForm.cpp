@@ -282,6 +282,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.AudioPlayerAutoConnectCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioSelfConnectedCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMetronomeCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -652,6 +655,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioWsolaQuickSeekCheckBox->setChecked(m_pOptions->bAudioWsolaQuickSeek);
 	m_ui.AudioPlayerBusCheckBox->setChecked(m_pOptions->bAudioPlayerBus);
 	m_ui.AudioPlayerAutoConnectCheckBox->setChecked(m_pOptions->bAudioPlayerAutoConnect);
+	m_ui.AudioSelfConnectedCheckBox->setChecked(m_pOptions->bAudioSelfConnected);
 
 #ifndef CONFIG_LIBSAMPLERATE
 	m_ui.AudioResampleTypeTextLabel->setEnabled(false);
@@ -941,6 +945,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bAudioRubberBandFinerR3 = m_ui.AudioRubberBandFinerR3CheckBox->isChecked();
 		m_pOptions->bAudioPlayerBus      = m_ui.AudioPlayerBusCheckBox->isChecked();
 		m_pOptions->bAudioPlayerAutoConnect = m_ui.AudioPlayerAutoConnectCheckBox->isChecked();
+		m_pOptions->bAudioSelfConnected  = m_ui.AudioSelfConnectedCheckBox->isChecked();
 		// Audio metronome options.
 		m_pOptions->bAudioMetronome      = m_ui.AudioMetronomeCheckBox->isChecked();
 		m_pOptions->iAudioCountInMode    = m_ui.AudioCountInModeComboBox->currentIndex();
