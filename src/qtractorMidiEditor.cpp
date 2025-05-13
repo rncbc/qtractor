@@ -5772,9 +5772,9 @@ void qtractorMidiEditor::showToolTip (
 		return;
 
 	const unsigned long iFrameStart = frameSnap(
-		m_iOffset + m_pTimeScale->frameFromPixel(rect.left()));
+		m_iOffset + m_pTimeScale->frameFromPixel(qMax(0, rect.left())));
 	const unsigned long iFrameEnd = frameSnap(
-		iFrameStart + m_pTimeScale->frameFromPixel(rect.width()));
+		m_iOffset + m_pTimeScale->frameFromPixel(qMax(0, rect.right())));
 
 	QToolTip::showText(
 		QCursor::pos(),

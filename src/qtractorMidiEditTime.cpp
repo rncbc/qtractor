@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -978,10 +978,10 @@ void qtractorMidiEditTime::showToolTip ( const QRect& rect ) const
 	if (pTimeScale == nullptr)
 		return;
 
-	const unsigned long iFrameStart
-		= m_pEditor->frameSnap(pTimeScale->frameFromPixel(rect.left()));
-	const unsigned long iFrameEnd
-		= m_pEditor->frameSnap(pTimeScale->frameFromPixel(rect.right()));
+	const unsigned long iFrameStart = m_pEditor->frameSnap(
+		pTimeScale->frameFromPixel(qMax(0, rect.left())));
+	const unsigned long iFrameEnd = m_pEditor->frameSnap(
+		pTimeScale->frameFromPixel(qMax(0, rect.right())));
 
 	QToolTip::showText(QCursor::pos(),
 		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")

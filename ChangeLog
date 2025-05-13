@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed negative time values displayed in tool-tips, when dragging
+  the rubber-band (lasso) to the left, over the absolute beginning
+  of the timeline.
+
 - A warning is now issued when an audio self connection is made
   (eg. connecting an output bus (or insert send) directly into
   an input bus (or insert return). (EXPERIMENTAL)

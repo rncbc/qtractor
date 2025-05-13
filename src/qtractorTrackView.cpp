@@ -3241,9 +3241,9 @@ void qtractorTrackView::showToolTip ( const QRect& rect, int dx ) const
 		return;
 
 	const unsigned long iFrameStart = frameSnap(
-		pTimeScale->frameFromPixel(rect.left() + dx));
+		pTimeScale->frameFromPixel(qMax(0, rect.left()) + dx));
 	const unsigned long iFrameEnd = frameSnap(
-		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
+		pTimeScale->frameFromPixel(qMax(0, rect.right()) + dx));
 
 	QToolTip::showText(
 		QCursor::pos(),

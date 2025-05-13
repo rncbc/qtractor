@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -959,9 +959,9 @@ void qtractorTrackTime::showToolTip ( const QRect& rect ) const
 		return;
 
 	const unsigned long iFrameStart = pTrackView->frameSnap(
-		pTimeScale->frameFromPixel(rect.left()));
+		pTimeScale->frameFromPixel(qMax(0, rect.left())));
 	const unsigned long iFrameEnd = pTrackView->frameSnap(
-		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
+		pTimeScale->frameFromPixel(qMax(0, rect.right())));
 
 	QToolTip::showText(QCursor::pos(),
 		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
