@@ -6508,8 +6508,13 @@ Saving into another session file is highly recommended.</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8322"/>
-        <source>Self connections are NOT ADVISABLE!</source>
-        <translation>НЕ РАДИМО використовувати самоз&apos;єднання!</translation>
+        <source>Audio self-connection detected!
+
+In general, connecting an output bus (or insert send),
+directly into any input bus (or insert return),
+is not advisable. It often doesn&apos;t work, if at all.
+</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8335"/>
