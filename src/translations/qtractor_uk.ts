@@ -6514,7 +6514,12 @@ In general, connecting an output bus (or insert send),
 directly into any input bus (or insert return),
 is not advisable. It often doesn&apos;t work, if at all.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Виявлено самоз&apos;єднання звукових даних!
+
+Загалом, з&apos;єднаня каналу виведення (або надсилання вставлення)
+безпосереднього з будь-яким каналом вхідних даних (або повернення вставлення)
+є тим, що ми не радимо робити. Часто такі з&apos;єднання непрацездатні, якщо взагалі можливі.
+</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8335"/>
@@ -12352,17 +12357,17 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1060"/>
         <source>Connections</source>
-        <translation type="unfinished">З&apos;єднання</translation>
+        <translation>З&apos;єднання</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1075"/>
         <source>Whether to warn about audio self-connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід попереджати про самоз&apos;єднання звукових каналів</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1078"/>
         <source>&amp;Warn about self-connections</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Попереджати про самоз&apos;єднання</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1120"/>
