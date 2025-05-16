@@ -7455,7 +7455,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="114"/>
         <source>Closed Hi-Hat</source>
-        <translation type="unfinished"></translation>
+        <translation>Закритий гай-гет</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="115"/>
@@ -14395,7 +14395,8 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="49"/>
         <source>Shortcut search string (regular expression)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Рядок для пошуку скорочень (формальний вираз)</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="96"/>
@@ -14420,7 +14421,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="359"/>
         <source>Search shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Шукати скорочення</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="462"/>
