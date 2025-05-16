@@ -1581,12 +1581,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="599"/>
         <source>Whether to use RubberBand formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід використовувати збереження форманти RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="602"/>
         <source>RubberBand &amp;formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберігати &amp;форманту RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="615"/>
@@ -1601,12 +1601,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="631"/>
         <source>Whether to use RubberBand R3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід використовувати точніший рушій R3 RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="634"/>
         <source>RubberBand R&amp;3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Точніший рушій R&amp;3 RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="646"/>
@@ -12302,12 +12302,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="964"/>
         <source>Whether to use RubberBand formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід використовувати збереження форманти RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="967"/>
         <source>RubberBand &amp;formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>З&amp;берігати форманту RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="980"/>
@@ -12322,12 +12322,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="996"/>
         <source>Whether to use RubberBand R3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід використовувати точніший рушій R3 RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="999"/>
         <source>RubberBand R&amp;3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Точніший рушій R&amp;3 RubberBand</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1012"/>
@@ -14395,8 +14395,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="49"/>
         <source>Shortcut search string (regular expression)</source>
-        <translatorcomment>Рядок для пошуку скорочень (формальний вираз)</translatorcomment>
-        <translation></translation>
+        <translation>Критерій пошуку рядка скорочення (формальний вираз)</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="96"/>
@@ -14421,7 +14420,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="359"/>
         <source>Search shortcuts</source>
-        <translation>Шукати скорочення</translation>
+        <translation>Пошук скорочень</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="462"/>
