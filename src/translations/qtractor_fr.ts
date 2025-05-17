@@ -98,7 +98,7 @@ Audio :	%1 canaux, %2 Hz</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="158"/>
         <source>[Mute] </source>
-        <translation type="unfinished"></translation>
+        <translation>[Muet] </translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="563"/>
@@ -668,12 +668,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1819"/>
         <source>step input</source>
-        <translation type="unfinished"></translation>
+        <translation>entrée par pas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1819"/>
         <source>overdub</source>
-        <translation type="unfinished"></translation>
+        <translation>overdub</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="4356"/>
@@ -6294,7 +6294,7 @@ Sauvegarder dans un autre fichier session est fortement recommandé.</translatio
     <message>
         <location filename="../qtractorMainForm.cpp" line="8335"/>
         <source>Don&apos;t show this again</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne plus montrer ceci</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8530"/>
@@ -6536,7 +6536,13 @@ In general, connecting an output bus (or insert send),
 directly into any input bus (or insert return),
 is not advisable. It often doesn&apos;t work, if at all.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Autoconnexion audio détectée !
+
+En général, il n&apos;est pas conseillé de connecter
+un bus de sortie (ou un envoi d&apos;insert),
+directement à un bus d&apos;entrée (ou un retour
+d&apos;insert). Souvent, cela ne fonctionne pas.
+</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8353"/>
@@ -12368,17 +12374,17 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1060"/>
         <source>Connections</source>
-        <translation type="unfinished">Connexions</translation>
+        <translation>Connexions</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1075"/>
         <source>Whether to warn about audio self-connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Avertir ou non de l&apos;existence d&apos;autoconnexions audio</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1078"/>
         <source>&amp;Warn about self-connections</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;vertir des autoconnexions</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1120"/>
