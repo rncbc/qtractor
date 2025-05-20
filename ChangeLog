@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.5.5  2025-05-21  A Mid-Spring'25 Release.
 
 - Fixed negative time values displayed in tool-tips, when dragging
   the rubber-band (lasso) to the left, over the absolute beginning
@@ -12,12 +12,12 @@ GIT HEAD
 
 - A warning is now issued when an audio self connection is made
   (eg. connecting an output bus (or insert send) directly into
-  an input bus (or insert return). (EXPERIMENTAL)
+  an input bus (or insert return).
   
-- Files item selection mode switching corrected. (EXPERIMENTAL)
+- Files item selection mode switching corrected.
 
 - Mitigate or postpone a 'too many open files' condition as much 
-  as possible. (EXPERIMENTAL)
+  as possible.
 
 - Let muted clips show the "[Mute]" tag as the name label prefix,
   so that it's visible even on small clips.
