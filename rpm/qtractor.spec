@@ -192,7 +192,7 @@ cmake --install build
 
 
 %changelog
-* Wed May 20 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.5
+* Wed May 21 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.5
 - A Mid-Spring'25 Release.
 * Fri Apr  4 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.4
 - An Early Spring'25 Release.
