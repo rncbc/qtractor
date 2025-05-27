@@ -28,10 +28,12 @@
 #include "qtractorPluginListView.h"
 
 #include "qtractorInsertPlugin.h"
+#include "qtractorMidiControlPlugin.h"
 
 #include "qtractorObserverWidget.h"
 
 #include "qtractorMidiControlObserverForm.h"
+#include "qtractorMidiControlPluginWidget.h"
 
 #include "qtractorSpinBox.h"
 
@@ -102,6 +104,8 @@ qtractorPluginForm::qtractorPluginForm (
 	m_pPlugin     = nullptr;
 	m_iDirtyCount = 0;
 	m_iUpdate     = 0;
+
+	m_pMidiControlPluginWidget = nullptr;
 
 	m_pDirectAccessParamMenu = new QMenu();
 	m_ui.DirectAccessParamPushButton->setMenu(m_pDirectAccessParamMenu);
@@ -298,6 +302,19 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	int iRow = 0;
 	int iColumn = 0;
 
+	const bool bMidiControlPlugin
+		= (typeHint == qtractorPluginType::Control);
+	if (bMidiControlPlugin) {
+		m_pMidiControlPluginWidget = new qtractorMidiControlPluginWidget(this);
+		m_pMidiControlPluginWidget->setMidiControlPlugin(
+			static_cast<qtractorMidiControlPlugin *> (m_pPlugin));
+		QObject::connect(m_pMidiControlPluginWidget,
+			SIGNAL(bipolarChanged()),
+			SLOT(updateParamRangeSlot()));
+		pGridLayout->addWidget(m_pMidiControlPluginWidget, iRow, iColumn);
+		++iRow;
+	}
+
 	iColumnsPerPage += (iColumnsPerPage - 1); // Plus gap columns!
 	if (!m_paramWidgets.isEmpty())
 		pGridLayout->setColumnStretch(iColumn, 1);
@@ -335,7 +352,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Show insert tool options...
 	const bool bInsertPlugin = (typeHint == qtractorPluginType::Insert);
-	if (bInsertPlugin) {
+	if (bInsertPlugin || bMidiControlPlugin) {
 		if (pType->index() > 0) { // index == channels > 0 => Audio insert.
 			m_ui.SendsToolButton->setIcon(QIcon::fromTheme("itemAudioPortOut"));
 			m_ui.ReturnsToolButton->setIcon(QIcon::fromTheme("itemAudioPortIn"));
@@ -344,7 +361,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			m_ui.ReturnsToolButton->setIcon(QIcon::fromTheme("itemMidiPortIn"));
 		}
 	}
-	m_ui.SendsToolButton->setVisible(bInsertPlugin);
+	m_ui.SendsToolButton->setVisible(bInsertPlugin || bMidiControlPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
 
 	// Show aux-send tool options...
@@ -1074,6 +1091,23 @@ void qtractorPluginForm::changeDirectAccessParamSlot (void)
 }
 
 
+void qtractorPluginForm::updateParamRangeSlot (void)
+{
+	if (m_pPlugin == nullptr)
+		return;
+
+	if (m_pMidiControlPluginWidget == nullptr)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	QListIterator<qtractorPluginParamWidget *> iter(m_paramWidgets);
+	while (iter.hasNext())
+		iter.next()->updateParamRange();
+}
+
+
 // Parameter-widget refreshner-loader.
 void qtractorPluginForm::refresh (void)
 {
@@ -1176,6 +1210,11 @@ void qtractorPluginForm::clear (void)
 	m_paramWidgets.clear();
 
 	m_pDirectAccessParamMenu->clear();
+
+	if (m_pMidiControlPluginWidget) {
+		delete m_pMidiControlPluginWidget;
+		m_pMidiControlPluginWidget = nullptr;
+	}
 }
 
 
@@ -1593,6 +1632,27 @@ void qtractorPluginParamWidget::refresh (void)
 	}
 
 	updateCurveButton();
+}
+
+
+// Special range updater.
+void qtractorPluginParamWidget::updateParamRange (void)
+{
+	const float fValue = m_pParam->value();
+
+	if (m_pSpinBox) {
+		const bool bSpinBox = m_pSpinBox->blockSignals(true);
+		m_pSpinBox->setMinimum(m_pParam->minValue());
+		m_pSpinBox->setMaximum(m_pParam->maxValue());
+		m_pSpinBox->setValue(fValue);
+		m_pSpinBox->blockSignals(bSpinBox);
+	}
+
+	if (m_pSlider) {
+		const bool bSlider = m_pSlider->blockSignals(true);
+		m_pSlider->setValue(m_pSlider->scaleFromValue(fValue));
+		m_pSlider->blockSignals(bSlider);
+	}
 }
 
 

@@ -34,6 +34,7 @@ class qtractorPluginParamWidget;
 class qtractorPluginPropertyWidget;
 
 class qtractorMidiControlObserver;
+class qtractorMidiControlPluginWidget;
 
 class qtractorObserverCheckBox;
 class qtractorObserverSlider;
@@ -108,6 +109,8 @@ protected slots:
 	void updateDirectAccessParamSlot();
 	void changeDirectAccessParamSlot();
 
+	void updateParamRangeSlot();
+
 protected:
 
 	void stabilize();
@@ -139,6 +142,8 @@ private:
 
 	QList<qtractorPluginParamWidget *> m_paramWidgets;
 
+	qtractorMidiControlPluginWidget *m_pMidiControlPluginWidget;
+
 	QMenu *m_pDirectAccessParamMenu;
 
 	int m_iDirtyCount;
@@ -169,6 +174,9 @@ public:
 
 	// Refreshner-loader method.
 	void refresh();
+
+	// Special range updater.
+	void updateParamRange();
 
 protected slots:
 

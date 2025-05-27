@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- MIDI Controller Observer: 'Hook' attribute is now on by default.
+
+- MIDI Controller Send pseudo-plugin introduced: accessible from
+  plugins menu/Inserts/MIDI/Add Controller... (EXPERIMENTAL)
+
+
 1.5.5  2025-05-21  A Mid-Spring'25 Release.
 
 - Fixed negative time values displayed in tool-tips, when dragging

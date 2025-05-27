@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,6 +39,7 @@
 #include "qtractorConnections.h"
 
 #include "qtractorInsertPlugin.h"
+#include "qtractorMidiControlPlugin.h"
 
 #include <QItemDelegate>
 #include <QPainter>
@@ -1155,6 +1156,37 @@ void qtractorPluginListView::addMidiAuxSendPlugin (void)
 }
 
 
+// Add a MIDI Controller pseudo-plugin slot.
+void qtractorPluginListView::addMidiControlPlugin (void)
+{
+	if (m_pPluginList == nullptr)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Create our special pseudo-plugin type...
+	qtractorPlugin *pPlugin
+		= qtractorMidiControlPluginType::createPlugin(m_pPluginList);
+
+	if (pPlugin) {
+		// Make it a undoable command...
+		pSession->execute(new qtractorAddMidiControlPluginCommand(pPlugin));
+		// Show the plugin form right away...
+		pPlugin->openForm();
+	}
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
+}
+
+
 // Send/return insert specific slots.
 void qtractorPluginListView::insertPluginOutputs (void)
 {
@@ -1207,6 +1239,23 @@ void qtractorPluginListView::insertPluginBus (
 			if (pMainForm && pMainForm->connections()) {
 				(pMainForm->connections())->showBus(
 					pInsertPluginBus, qtractorBus::BusMode(iBusMode));
+			}
+		}
+	}
+	else
+	if (pType->typeHint() == qtractorPluginType::Control) {
+		// Should be a MIDI controller pseudo-plugin...
+		qtractorBus *pMidiControlPluginBus = nullptr;
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= static_cast<qtractorMidiControlPlugin *> (pPlugin);
+		if (pMidiControlPlugin)
+			pMidiControlPluginBus = pMidiControlPlugin->midiBus();
+		// Show MIDI Controller send-bus connections...
+		if (pMidiControlPluginBus) {
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm && pMainForm->connections()) {
+				(pMainForm->connections())->showBus(
+					pMidiControlPluginBus, qtractorBus::BusMode(iBusMode));
 			}
 		}
 	}
@@ -1812,17 +1861,26 @@ void qtractorPluginListView::contextMenuEvent (
 		tr("&Returns"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bAudioInsertPlugin);
 
+	const bool bMidiPluginList = m_pPluginList->isMidi();
+	const bool bMidiControlPlugin = (pType
+		&& pType->typeHint() == qtractorPluginType::Control
+		&& pType->index() == 0);
+
 	QMenu *pMidiInsertsMenu = pInsertsMenu->addMenu(
 		QIcon::fromTheme("trackMidi"), tr("&MIDI"));
-	pMidiInsertsMenu->setEnabled(m_pPluginList->isMidi());
+//	pMidiInsertsMenu->setEnabled(bMidiPluginList);
 	pAction = pMidiInsertsMenu->addAction(
 		QIcon::fromTheme("formAdd"),
 		tr("Add &Insert"), this, SLOT(addMidiInsertPlugin()));
+	pAction->setEnabled(bMidiPluginList);
 	pAction = pMidiInsertsMenu->addAction(
 		QIcon::fromTheme("formAdd"),
 		tr("Add &Aux Send"), this, SLOT(addMidiAuxSendPlugin()));
-//	pAction->setEnabled(
-//		m_pPluginList->flags() != qtractorPluginList::MidiOutBus);
+	pAction->setEnabled(bMidiPluginList);
+	pMidiInsertsMenu->addSeparator();
+	pAction = pMidiInsertsMenu->addAction(
+		QIcon::fromTheme("formAdd"),
+		tr("Add &Controller"), this, SLOT(addMidiControlPlugin()));
 	pMidiInsertsMenu->addSeparator();
 	const bool bMidiInsertPlugin = (pType
 		&& pType->typeHint() == qtractorPluginType::Insert
@@ -1830,7 +1888,7 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction = pMidiInsertsMenu->addAction(
 		QIcon::fromTheme("itemMidiPortOut"),
 		tr("&Sends"), this, SLOT(insertPluginOutputs()));
-	pAction->setEnabled(bMidiInsertPlugin);
+	pAction->setEnabled(bMidiInsertPlugin || bMidiControlPlugin);
 	pAction = pMidiInsertsMenu->addAction(
 		QIcon::fromTheme("itemMidiPortIn"),
 		tr("&Returns"), this, SLOT(insertPluginInputs()));

@@ -184,6 +184,30 @@ bool qtractorAddAuxSendPluginCommand::undo (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorAddMidiControlPluginCommand - implementation
+//
+
+// Constructor.
+qtractorAddMidiControlPluginCommand::qtractorAddMidiControlPluginCommand (
+	qtractorPlugin *pPlugin ) : qtractorPluginCommand(
+		QObject::tr("add MIDI controller"), pPlugin)
+{
+}
+
+
+// Plugin insertion command methods.
+bool qtractorAddMidiControlPluginCommand::redo (void)
+{
+	return addPlugins();
+}
+
+bool qtractorAddMidiControlPluginCommand::undo (void)
+{
+	return removePlugins();
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorAuxSendPluginCommand - implementation
 //
 

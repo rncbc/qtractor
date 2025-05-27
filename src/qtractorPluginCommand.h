@@ -123,6 +123,23 @@ public:
 
 
 //----------------------------------------------------------------------
+// class qtractorAddMidiControlPluginCommand - declaration.
+//
+
+class qtractorAddMidiControlPluginCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorAddMidiControlPluginCommand(qtractorPlugin *pPlugin = nullptr);
+
+	// Plugin insertion command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorAuxSendPluginCommand - declaration.
 //
 

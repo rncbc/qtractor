@@ -208,6 +208,9 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	if (sText == "AuxSend")
 		return AuxSend;
 	else
+	if (sText == "Control")
+		return Control;
+	else
 		return Any;
 }
 
@@ -237,6 +240,9 @@ QString qtractorPluginType::textFromHint (
 	else
 	if (typeHint == AuxSend)
 		return "AuxSend";
+	else
+	if (typeHint == Control)
+		return "Control";
 	else
 		return QObject::tr("(Any)");
 }
@@ -378,7 +384,8 @@ bool qtractorPlugin::canBeConnectedToOtherTracks (void) const
 {
 	const qtractorPluginType::Hint hint = m_pType->typeHint();
 	return hint == qtractorPluginType::Insert
-		|| hint == qtractorPluginType::AuxSend;
+		|| hint == qtractorPluginType::AuxSend
+		|| hint == qtractorPluginType::Control;
 }
 
 
@@ -398,7 +405,7 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 		if (!bActivated && m_iActivated == 0)
 			deactivate();
 		// Auto-plugin-deactivation overrides standard-activation for plugins
-		// without connections to other tracks (Inserts/AuxSends)
+		// without connections to other tracks (Inserts/AuxSends/Controllers)
 		// otherwise user could (de)activate plugin without getting feedback
 		const bool bIsConnectedToOtherTracks = canBeConnectedToOtherTracks();
 		if (!m_bAutoDeactivated || bIsConnectedToOtherTracks) {
@@ -2629,7 +2636,8 @@ bool qtractorPluginList::checkPluginFile (
 	// Care of internal pseudo-plugins...
 	if (sFilename.isEmpty()) {
 		return (typeHint == qtractorPluginType::Insert)
-			|| (typeHint == qtractorPluginType::AuxSend);
+			|| (typeHint == qtractorPluginType::AuxSend)
+			|| (typeHint == qtractorPluginType::Control);
 	}
 
 	// LV2 plug-ins are identified by URI...

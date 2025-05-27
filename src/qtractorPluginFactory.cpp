@@ -1,7 +1,7 @@
 // qtractorPluginFactory.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,6 +42,7 @@
 #endif
 
 #include "qtractorInsertPlugin.h"
+#include "qtractorMidiControlPlugin.h"
 
 #include "qtractorOptions.h"
 
@@ -759,6 +760,9 @@ qtractorPlugin *qtractorPluginFactory::createPlugin (
 		else
 		if (typeHint == qtractorPluginType::AuxSend)
 			return qtractorAuxSendPluginType::createPlugin(pList, iIndex);
+		else
+		if (typeHint == qtractorPluginType::Control)
+			return qtractorMidiControlPluginType::createPlugin(pList);
 		else
 		// Don't bother with anything else.
 		return nullptr;
