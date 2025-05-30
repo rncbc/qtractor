@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI Tools: Normalize now finally fixed to an absolute Value,
+  ie. without a Percent(age) factor applied.
+
 - MIDI Controller Observer: 'Hook' attribute is now on by default.
 
 - MIDI Controller Send pseudo-plugin introduced: accessible from
