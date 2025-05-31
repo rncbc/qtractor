@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -159,7 +159,7 @@ public:
 	// Audio specific accessor.
 	qtractorAudioBus *audioBus() const;
 
-	// Override title/name captioon.
+	// Override title/name caption.
 	QString title() const;
 
 protected:
@@ -219,7 +219,7 @@ public:
 	// MIDI specific accessor.
 	qtractorMidiBus *midiBus() const;
 
-	// Override title/name captioon.
+	// Override title/name caption.
 	QString title() const;
 
 protected:
@@ -369,7 +369,7 @@ public:
 	// Audio bus to appear on plugin lists.
 	void updateAudioBusName() const;
 
-	// Override title/name captioon.
+	// Override title/name caption.
 	QString title() const;
 
 protected:
@@ -428,7 +428,7 @@ public:
 	// Audio bus to appear on plugin lists.
 	void updateMidiBusName() const;
 
-	// Override title/name captioon.
+	// Override title/name caption.
 	QString title() const;
 
 protected:

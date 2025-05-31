@@ -272,6 +272,7 @@ Fim:	%3	Tamanho:	%4</translation>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1081"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1701"/>
+        <location filename="../qtractorMidiControlPlugin.cpp" line="495"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
     </message>
@@ -958,8 +959,8 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="74"/>
-        <source>MIDI Controller</source>
-        <translation type="unfinished">Controlador MIDI</translation>
+        <source>Control (MIDI)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="107"/>

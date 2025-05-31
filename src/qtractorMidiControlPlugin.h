@@ -115,6 +115,9 @@ public:
 	void setControlBipolar(bool bBipolar);
 	bool isControlBipolar() const;
 
+	// Override title/name caption.
+	QString title() const;
+
 	// Forward decls.
 	class Param;
 

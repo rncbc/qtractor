@@ -71,7 +71,7 @@ bool qtractorMidiControlPluginType::open (void)
 #endif
 
 	// Pseudo-plugin type names.
-	m_sName  = QObject::tr("MIDI Controller");
+	m_sName  = QObject::tr("Control (MIDI)");
 	m_sLabel = "MidiControl";
 //	m_sLabel.remove(' ');
 
@@ -483,6 +483,22 @@ void qtractorMidiControlPlugin::updateControlBipolar (void)
 			pCurve->update();
 		}
 	}
+}
+
+
+// Override title/name caption.
+QString qtractorMidiControlPlugin::title (void) const
+{
+	QString sTitle;
+
+	if (m_pMidiBus && qtractorPlugin::alias().isEmpty()) {
+		sTitle = QObject::tr("%1 (MIDI)").arg(m_pMidiBus->busName());
+		sTitle.replace('_', ' ');
+	} else {
+		sTitle = qtractorPlugin::title();
+	}
+
+	return sTitle;
 }
 
 

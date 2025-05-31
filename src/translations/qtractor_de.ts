@@ -310,6 +310,7 @@ Ende:	%3	Länge:	%4</translation>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1081"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1701"/>
+        <location filename="../qtractorMidiControlPlugin.cpp" line="495"/>
         <source>%1 (MIDI)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -955,7 +956,7 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="74"/>
-        <source>MIDI Controller</source>
+        <source>Control (MIDI)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
