@@ -36,6 +36,7 @@ static const char *ControlChannelKey     = "ControlChannel";
 static const char *ControlLogarithmicKey = "ControlLogarithmic";
 static const char *ControlInvertKey      = "ControlInvert";
 static const char *ControlBipolarKey     = "ControlBipolar";
+static const char *ControlAutoConnectKey = "ControlAutoConnect";
 static const char *ControlSendKey        = "ControlSend";
 
 
@@ -127,7 +128,8 @@ qtractorMidiControlPlugin::qtractorMidiControlPlugin (
 			m_iControlParam(0), m_iControlChannel(0),
 			m_bControlLogarithmic(false),
 			m_bControlInvert(false),
-			m_bControlBipolar(false)
+			m_bControlBipolar(false),
+			m_bControlAutoConnect(false)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiControlPlugin[%p] channels=%u",
@@ -298,6 +300,11 @@ void qtractorMidiControlPlugin::configure (
 		return;
 	}
 
+	if (sKey == ControlAutoConnectKey) {
+		setControlAutoConnect(sValue.toInt() > 0);
+		return;
+	}
+
 	qtractorBus::ConnectItem *pItem = new qtractorBus::ConnectItem;
 
 	pItem->index = sValue.section('|', 0, 0).toUShort();
@@ -343,6 +350,7 @@ void qtractorMidiControlPlugin::freezeConfigs (void)
 	setConfig(ControlLogarithmicKey, QString::number(int(m_bControlLogarithmic)));
 	setConfig(ControlInvertKey, QString::number(int(m_bControlInvert)));
 	setConfig(ControlBipolarKey, QString::number(int(m_bControlBipolar)));
+	setConfig(ControlAutoConnectKey, QString::number(int(m_bControlAutoConnect)));
 
 	if (m_pMidiBus == nullptr)
 		return;
@@ -483,6 +491,72 @@ void qtractorMidiControlPlugin::updateControlBipolar (void)
 			pCurve->update();
 		}
 	}
+}
+
+
+void qtractorMidiControlPlugin::setControlAutoConnect ( bool bAutoConnect )
+{
+	m_bControlAutoConnect = bAutoConnect;
+
+	updateControlAutoConnect();
+}
+
+bool qtractorMidiControlPlugin::isControlAutoConnect (void) const
+{
+	return m_bControlAutoConnect;
+}
+
+
+void qtractorMidiControlPlugin::updateControlAutoConnect (void)
+{
+	if (m_pMidiBus == nullptr)
+		return;
+
+	// We'll need this globals...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine == nullptr)
+		return;
+
+	qtractorMidiBus *pIControlBus = nullptr;
+	if (pMidiEngine->isControlBus())
+		pIControlBus = pMidiEngine->controlBus_in();
+	if (pIControlBus == nullptr) {
+		for (qtractorBus *pBus = pMidiEngine->buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Input) {
+				pIControlBus = static_cast<qtractorMidiBus *> (pBus);
+				break;
+			}
+		}
+	}
+
+	if (pIControlBus == nullptr)
+		return;
+
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == nullptr)
+		return;
+
+	snd_seq_port_subscribe_t *pAlsaSubs;
+	snd_seq_addr_t seq_addr;
+	snd_seq_port_subscribe_alloca(&pAlsaSubs);
+
+	seq_addr.client = pMidiEngine->alsaClient();
+	seq_addr.port   = m_pMidiBus->alsaPort();
+	snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+
+	seq_addr.client = pMidiEngine->alsaClient();
+	seq_addr.port   = pIControlBus->alsaPort();
+	snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+
+	if (m_bControlAutoConnect)
+		snd_seq_subscribe_port(pAlsaSeq, pAlsaSubs);
+	else
+		snd_seq_unsubscribe_port(pAlsaSeq, pAlsaSubs);
 }
 
 

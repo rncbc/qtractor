@@ -303,6 +303,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="AutoConnectCheckBox">
+       <property name="text">
+        <string>Auto-connect</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="AuxSendBusNameLabel">
        <property name="text">
         <string>Aux Send Bus:</string>
@@ -399,6 +406,7 @@
   <tabstop>ActivateToolButton</tabstop>
   <tabstop>SendsToolButton</tabstop>
   <tabstop>ReturnsToolButton</tabstop>
+  <tabstop>AutoConnectCheckBox</tabstop>
   <tabstop>AuxSendBusNameComboBox</tabstop>
   <tabstop>AuxSendBusNameToolButton</tabstop>
   <tabstop>DirectAccessParamPushButton</tabstop>

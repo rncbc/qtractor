@@ -1348,6 +1348,34 @@ void qtractorPluginListView::audioOutputAutoConnect (void)
 }
 
 
+void qtractorPluginListView::midiControlAutoConnect (void)
+{
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
+	if (pItem == nullptr)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	if (pType->typeHint() == qtractorPluginType::Control
+		&& pType->index() == 0) {
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= static_cast<qtractorMidiControlPlugin *> (pPlugin);
+		if (pMidiControlPlugin) {
+			pMidiControlPlugin->setControlAutoConnect(
+				!pMidiControlPlugin->isControlAutoConnect()); // Toggle!
+			pMidiControlPlugin->updateMidiControlAutoConnect();
+		}
+	}
+}
+
+
 // Show an existing plugin form slot.
 void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 {
@@ -1813,7 +1841,7 @@ void qtractorPluginListView::contextMenuEvent (
 	if (pSession == nullptr)
 		return;
 
-	QMenu menu(this);
+	QMenu menu;
 	QAction *pAction;
 
 	const int iItemCount = QListWidget::count();
@@ -1893,6 +1921,18 @@ void qtractorPluginListView::contextMenuEvent (
 		QIcon::fromTheme("itemMidiPortIn"),
 		tr("&Returns"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bMidiInsertPlugin);
+	pMidiInsertsMenu->addSeparator();
+	pAction = pMidiInsertsMenu->addAction(
+		tr("&Auto-connect"), this, SLOT(midiControlAutoConnect()));
+	pAction->setCheckable(true);
+	pAction->setEnabled(bMidiControlPlugin);
+	if (bMidiControlPlugin) {
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= static_cast<qtractorMidiControlPlugin *> (pPlugin);
+		if (pMidiControlPlugin)
+			pAction->setChecked(pMidiControlPlugin->isControlAutoConnect());
+	}
+
 	menu.addSeparator();
 
 	const bool bAutoDeactivated = m_pPluginList->isAutoDeactivated();

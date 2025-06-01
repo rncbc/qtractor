@@ -115,6 +115,9 @@ public:
 	void setControlBipolar(bool bBipolar);
 	bool isControlBipolar() const;
 
+	void setControlAutoConnect(bool bAutoConnect);
+	bool isControlAutoConnect() const;
+
 	// Override title/name caption.
 	QString title() const;
 
@@ -124,6 +127,7 @@ public:
 protected:
 
 	void updateControlBipolar();
+	void updateControlAutoConnect();
 
 	// Parameter update method (virtual).
 	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
@@ -139,6 +143,7 @@ private:
 	bool m_bControlLogarithmic;
 	bool m_bControlInvert;
 	bool m_bControlBipolar;
+	bool m_bControlAutoConnect;
 
 	Param *m_pControlValueParam;
 };

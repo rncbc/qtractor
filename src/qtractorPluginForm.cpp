@@ -157,6 +157,9 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.ReturnsToolButton,
 		SIGNAL(clicked()),
 		SLOT(returnsSlot()));
+	QObject::connect(m_ui.AutoConnectCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(autoConnectSlot(bool)));
 	QObject::connect(m_ui.AuxSendBusNameComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAuxSendBusNameSlot(int)));
@@ -302,16 +305,18 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	int iRow = 0;
 	int iColumn = 0;
 
-	const bool bMidiControlPlugin
-		= (typeHint == qtractorPluginType::Control);
-	if (bMidiControlPlugin) {
+	qtractorMidiControlPlugin *pMidiControlPlugin = nullptr;
+	if (typeHint == qtractorPluginType::Control && pType->index() == 0)
+		pMidiControlPlugin = static_cast<qtractorMidiControlPlugin *> (m_pPlugin);
+	if (pMidiControlPlugin) {
 		m_pMidiControlPluginWidget = new qtractorMidiControlPluginWidget(this);
-		m_pMidiControlPluginWidget->setMidiControlPlugin(
-			static_cast<qtractorMidiControlPlugin *> (m_pPlugin));
+		m_pMidiControlPluginWidget->setMidiControlPlugin(pMidiControlPlugin);
 		QObject::connect(m_pMidiControlPluginWidget,
 			SIGNAL(bipolarChanged()),
 			SLOT(updateParamRangeSlot()));
 		pGridLayout->addWidget(m_pMidiControlPluginWidget, iRow, iColumn);
+		m_ui.AutoConnectCheckBox->setChecked(
+			pMidiControlPlugin->isControlAutoConnect());
 		++iRow;
 	}
 
@@ -352,6 +357,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Show insert tool options...
 	const bool bInsertPlugin = (typeHint == qtractorPluginType::Insert);
+	const bool bMidiControlPlugin = (pMidiControlPlugin != nullptr);
 	if (bInsertPlugin || bMidiControlPlugin) {
 		if (pType->index() > 0) { // index == channels > 0 => Audio insert.
 			m_ui.SendsToolButton->setIcon(QIcon::fromTheme("itemAudioPortOut"));
@@ -363,6 +369,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	}
 	m_ui.SendsToolButton->setVisible(bInsertPlugin || bMidiControlPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
+	m_ui.AutoConnectCheckBox->setVisible(bMidiControlPlugin);
 
 	// Show aux-send tool options...
 	const bool bAuxSendPlugin = (typeHint == qtractorPluginType::AuxSend);
@@ -474,6 +481,38 @@ void qtractorPluginForm::updateDirtyCount (void)
 	// Sure is dirty...
 	++m_iDirtyCount;
 	stabilize();
+}
+
+
+// Update specific MIDI Controller send auto-connect state.
+void qtractorPluginForm::updateMidiControlAutoConnect (void)
+{
+	if (m_pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	bool bAutoConnect = false;;
+
+	if (pType->typeHint() == qtractorPluginType::Control
+		&& pType->index() == 0) {
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= static_cast<qtractorMidiControlPlugin *> (m_pPlugin);
+		if (pMidiControlPlugin) {
+			const bool bOldAutoConnect
+				= m_ui.AutoConnectCheckBox->isChecked();
+			bAutoConnect = pMidiControlPlugin->isControlAutoConnect();
+			if (m_pMidiControlPluginWidget &&
+				( bAutoConnect && !bOldAutoConnect) ||
+				(!bAutoConnect &&  bOldAutoConnect)) {
+				m_pMidiControlPluginWidget->dirtyNotify();
+			}
+		}
+	}
+
+	m_ui.AutoConnectCheckBox->setChecked(bAutoConnect);
 }
 
 
@@ -960,6 +999,20 @@ void qtractorPluginForm::sendsSlot (void)
 void qtractorPluginForm::returnsSlot (void)
 {
 	qtractorPluginListView::insertPluginBus(m_pPlugin, qtractorBus::Input);
+}
+
+
+// Auto-connect (MIDI Controller Send) slot.
+void qtractorPluginForm::autoConnectSlot ( bool bOn )
+{
+	if (m_pMidiControlPluginWidget) {
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= m_pMidiControlPluginWidget->midiControlPlugin();
+		if (pMidiControlPlugin) {
+			pMidiControlPlugin->setControlAutoConnect(bOn);
+			m_pMidiControlPluginWidget->dirtyNotify();
+		}
+	}
 }
 
 

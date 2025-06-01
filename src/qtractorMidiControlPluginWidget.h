@@ -48,6 +48,8 @@ public:
 	void setMidiControlPlugin(qtractorMidiControlPlugin *pMidiControlPlugin);
 	qtractorMidiControlPlugin *midiControlPlugin() const;
 
+	void dirtyNotify();
+
 protected slots:
 
 	void changed();
@@ -56,10 +58,6 @@ protected slots:
 signals:
 
 	void bipolarChanged();
-
-protected:
-
-	void dirtyNotify();
 
 private:
 

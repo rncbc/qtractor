@@ -162,6 +162,8 @@ protected slots:
 	void insertPluginOutputs();
 	void insertPluginInputs();
 
+	void midiControlAutoConnect();
+
 	// Audio specific slots.
 	void audioOutputs();
 	void audioOutputBus();

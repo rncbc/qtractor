@@ -731,9 +731,16 @@ void qtractorPlugin::updateFormDirtyCount (void)
 }
 
 
+void qtractorPlugin::updateMidiControlAutoConnect (void)
+{
+	if (m_pForm)
+		m_pForm->updateMidiControlAutoConnect();
+}
+
+
 void qtractorPlugin::updateFormAuxSendBusName (void)
 {
-	if (m_pForm && m_pForm->isVisible())
+	if (m_pForm)
 		m_pForm->updateAuxSendBusName();
 }
 

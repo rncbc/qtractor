@@ -75,6 +75,8 @@ public:
 	void updateActivated();
 	void updateDirtyCount();
 
+	void updateMidiControlAutoConnect();
+
 	void updateAuxSendBusName();
 
 	void toggleEditor(bool bOn);
@@ -99,6 +101,8 @@ protected slots:
 
 	void sendsSlot();
 	void returnsSlot();
+
+	void autoConnectSlot(bool bOn);
 
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);

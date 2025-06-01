@@ -492,9 +492,9 @@ void qtractorMidiOutputThread::run (void)
 	while (m_bRunState) {
 		// Wait for sync...
 		m_cond.wait(&m_mutex);
-#ifdef CONFIG_DEBUG_0
+	#ifdef CONFIG_DEBUG_0
 		qDebug("qtractorMidiOutputThread[%p]::run(): waked.", this);
-#endif
+	#endif
 		// Only if playing, the output process cycle.
 		if (m_pMidiEngine->isPlaying())
 			m_pMidiEngine->process();
@@ -5104,13 +5104,13 @@ int qtractorMidiBus::updateConnects (
 			seq_addr.port   = pItem->port;
 			snd_seq_port_subscribe_set_dest(pPortSubs, &seq_addr);
 		}
-#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG
 		const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
 		qDebug("qtractorMidiBus[%p]::updateConnects(%d): "
 			"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, int(busMode),
 				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
 				pItem->client, pItem->portName.toUtf8().constData());
-#endif
+	#endif
 		if (snd_seq_subscribe_port(pAlsaSeq, pPortSubs) == 0) {
 			const int iItem = connects.indexOf(pItem);
 			if (iItem >= 0) {
