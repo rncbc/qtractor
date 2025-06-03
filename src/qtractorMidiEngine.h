@@ -538,6 +538,10 @@ public:
 	void sendNote(qtractorTrack *pTrack,
 		int iNote, int iVelocity, bool bForce) const;
 
+	// Schedule MIDI note helper.
+	void sendNoteEx(qtractorTrack *pTrack,
+		int iNote, int iVelocity, unsigned long iDuration) const;
+
 	// Direct SysEx helpers.
 	void sendSysex(unsigned char *pSysex, unsigned int iSysex) const;
 	void sendSysexList() const;

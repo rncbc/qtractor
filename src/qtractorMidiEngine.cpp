@@ -4708,6 +4708,10 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 void qtractorMidiBus::sendNote (
 	qtractorTrack *pTrack, int iNote, int iVelocity, bool bForce ) const
 {
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
@@ -4723,8 +4727,8 @@ void qtractorMidiBus::sendNote (
 	const unsigned short iChannel = pTrack->midiChannel();
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiBus[%p]::sendNote(%d, %d, %d)",
-		this, iChannel, iNote, iVelocity);
+	qDebug("qtractorMidiBus[%p]::sendNote(%d, %d, %d, %d)",
+		this, iChannel, iNote, iVelocity, int(bForce));
 #endif
 
 	// Initialize sequencer event...
@@ -4766,15 +4770,93 @@ void qtractorMidiBus::sendNote (
 	}
 
 	// Attempt to capture the playing note as well...
-	if (bForce && pTrack->isRecord() && pTrack->session()) {
+	if (bForce && pTrack->isRecord()) {
 		const unsigned long tick
-			= (pTrack->session())->timep(pMidiEngine->queueTime());
+			= pSession->timep(pMidiEngine->queueTime());
 		snd_seq_ev_set_dest(&ev,
 			pMidiEngine->alsaClient(), m_iAlsaPort);
 		snd_seq_ev_schedule_tick(&ev,
 			pMidiEngine->alsaQueue(), 0, tick);
 		pMidiEngine->capture(&ev);
 	}
+}
+
+
+// Scheduled MIDI note helper.
+void qtractorMidiBus::sendNoteEx (
+	qtractorTrack *pTrack, int iNote, int iVelocity, unsigned long iDuration ) const
+{
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	// We always need our MIDI engine reference...
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == nullptr)
+		return;
+
+	// Don't do anything else if engine
+	// has not been activated...
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == nullptr)
+		return;
+
+	const unsigned short iChannel = pTrack->midiChannel();
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiBus[%p]::sendNoteEx(%d, %d, %d, %lu)",
+		this, iChannel, iNote, iVelocity, iDuration);
+#endif
+
+	// Initialize sequencer event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	// Addressing...
+	snd_seq_ev_set_source(&ev, m_iAlsaPort);
+	snd_seq_ev_set_subs(&ev);
+
+	// The event will be direct...
+	const unsigned long tick
+		= pSession->timep(pMidiEngine->queueTime());
+	snd_seq_ev_set_dest(&ev,
+		pMidiEngine->alsaClient(), m_iAlsaPort);
+	snd_seq_ev_schedule_tick(&ev,
+		pMidiEngine->alsaQueue(), 0, tick);
+
+	// Set event parameters...
+	ev.type = SND_SEQ_EVENT_NOTE;
+	ev.data.note.channel  = iChannel;
+	ev.data.note.note     = iNote;
+	ev.data.note.velocity = iVelocity;
+	ev.data.note.duration = iDuration;
+	snd_seq_event_output(pAlsaSeq, &ev);
+
+	// Do it for the MIDI plugins too...
+	const unsigned long t1 = pSession->playHead();
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(t1);
+	const unsigned long iTime = pNode->tickFromFrame(t1);
+	const unsigned long iTimeOff = iTime + (iDuration - 1);
+	pNode = cursor.seekTick(iTimeOff);
+	const unsigned long t2 = pNode->frameFromTick(iTimeOff);
+	if ((pTrack->pluginList())->midiManager())
+		(pTrack->pluginList())->midiManager()->queued(&ev, t1, t2);
+	if (pluginList_out() && pluginList_out()->midiManager())
+		(pluginList_out()->midiManager())->queued(&ev, t1, t2);
+
+	pMidiEngine->flush();
+
+	// Bus/track output monitoring...
+	// Bus output monitoring...
+	if (m_pOMidiMonitor)
+		m_pOMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
+	// Track output monitoring...
+	qtractorMidiMonitor *pMidiMonitor
+		= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+	if (pMidiMonitor)
+		pMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
 }
 
 

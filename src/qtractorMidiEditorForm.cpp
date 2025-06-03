@@ -2155,6 +2155,11 @@ void qtractorMidiEditorForm::transportStepNoteBackward (void)
 	if (pTimeScale == nullptr)
 		return;
 
+	const bool bSendNotes
+		= m_pMidiEditor->isSendNotesEx();
+	const unsigned long iMaxDuration
+		= pSession->ticksPerBeat();
+
 	unsigned long iPlayHead = pSession->playHead();
 	qtractorMidiSequence *pSeq = m_pMidiEditor->sequence();
 	if (pSeq) {
@@ -2182,10 +2187,16 @@ void qtractorMidiEditorForm::transportStepNoteBackward (void)
 			const unsigned long t2 = t0 + iEventTime;
 			pNode = cursor.seekTick(t2);
 			iPlayHead = pNode->frameFromTick(t2);
-			// Select all notes with same extat on-set time...
+			// Select all notes with same exact on-set time...
 			m_pMidiEditor->selectAll(pEditView, false);
 			while (pEvent && pEvent->time() == iEventTime) {
-				m_pMidiEditor->selectEvent(pEvent);
+				if (pEvent->type() == eventType) {
+					m_pMidiEditor->selectEvent(pEvent);
+					if (bSendNotes && eventType == qtractorMidiEvent::NOTEON) {
+						sendNoteEx(pEvent->note(), pEvent->velocity(),
+							qMax(pEvent->duration(), iMaxDuration));
+					}
+				}
 				pEvent = pEvent->prev();
 			}
 		}
@@ -2206,6 +2217,11 @@ void qtractorMidiEditorForm::transportStepNoteForward (void)
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	if (pTimeScale == nullptr)
 		return;
+
+	const bool bSendNotes
+		= m_pMidiEditor->isSendNotesEx();
+	const unsigned long iMaxDuration
+		= pSession->ticksPerBeat();
 
 	unsigned long iPlayHead = pSession->playHead();
 	qtractorMidiSequence *pSeq = m_pMidiEditor->sequence();
@@ -2231,10 +2247,16 @@ void qtractorMidiEditorForm::transportStepNoteForward (void)
 			const unsigned long t2 = t0 + iEventTime;
 			pNode = cursor.seekTick(t2);
 			iPlayHead = pNode->frameFromTick(t2);
-			// Select all notes with same extat on-set time...
+			// Select all notes with same exact on-set time...
 			m_pMidiEditor->selectAll(pEditView, false);
 			while (pEvent && pEvent->time() == iEventTime) {
-				m_pMidiEditor->selectEvent(pEvent);
+				if (pEvent->type() == eventType) {
+					m_pMidiEditor->selectEvent(pEvent);
+					if (bSendNotes && eventType == qtractorMidiEvent::NOTEON) {
+						sendNoteEx(pEvent->note(), pEvent->velocity(),
+							qMax(pEvent->duration(), iMaxDuration));
+					}
+				}
 				pEvent = pEvent->next();
 			}
 		}
@@ -2299,6 +2321,27 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity, bool bForce )
 		return;
 
 	pMidiBus->sendNote(pTrack, iNote, iVelocity, bForce);
+}
+
+
+// Schedule note to respective output bus.
+void qtractorMidiEditorForm::sendNoteEx (
+	int iNote, int iVelocity, unsigned long iDuration )
+{
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip == nullptr)
+		return;
+
+	qtractorTrack *pTrack = pMidiClip->track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+	if (pMidiBus == nullptr)
+		return;
+
+	pMidiBus->sendNoteEx(pTrack, iNote, iVelocity, iDuration);
 }
 
 
