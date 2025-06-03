@@ -65,6 +65,8 @@
 #include <QLabel>
 #include <QUrl>
 
+#include <QTimer>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
 #define horizontalAdvance  width
 #endif
@@ -2157,8 +2159,6 @@ void qtractorMidiEditorForm::transportStepNoteBackward (void)
 
 	const bool bSendNotes
 		= m_pMidiEditor->isSendNotesEx();
-	const unsigned long iMaxDuration
-		= pSession->ticksPerBeat();
 
 	unsigned long iPlayHead = pSession->playHead();
 	qtractorMidiSequence *pSeq = m_pMidiEditor->sequence();
@@ -2193,8 +2193,9 @@ void qtractorMidiEditorForm::transportStepNoteBackward (void)
 				if (pEvent->type() == eventType) {
 					m_pMidiEditor->selectEvent(pEvent);
 					if (bSendNotes && eventType == qtractorMidiEvent::NOTEON) {
-						sendNoteEx(pEvent->note(), pEvent->velocity(),
-							qMax(pEvent->duration(), iMaxDuration));
+						sendNoteEx(pEvent->note(),
+							pEvent->velocity(),
+							pEvent->duration());
 					}
 				}
 				pEvent = pEvent->prev();
@@ -2220,8 +2221,6 @@ void qtractorMidiEditorForm::transportStepNoteForward (void)
 
 	const bool bSendNotes
 		= m_pMidiEditor->isSendNotesEx();
-	const unsigned long iMaxDuration
-		= pSession->ticksPerBeat();
 
 	unsigned long iPlayHead = pSession->playHead();
 	qtractorMidiSequence *pSeq = m_pMidiEditor->sequence();
@@ -2253,8 +2252,9 @@ void qtractorMidiEditorForm::transportStepNoteForward (void)
 				if (pEvent->type() == eventType) {
 					m_pMidiEditor->selectEvent(pEvent);
 					if (bSendNotes && eventType == qtractorMidiEvent::NOTEON) {
-						sendNoteEx(pEvent->note(), pEvent->velocity(),
-							qMax(pEvent->duration(), iMaxDuration));
+						sendNoteEx(pEvent->note(),
+							pEvent->velocity(),
+							pEvent->duration());
 					}
 				}
 				pEvent = pEvent->next();
@@ -2328,20 +2328,27 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity, bool bForce )
 void qtractorMidiEditorForm::sendNoteEx (
 	int iNote, int iVelocity, unsigned long iDuration )
 {
-	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip == nullptr)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
 		return;
 
-	qtractorTrack *pTrack = pMidiClip->track();
-	if (pTrack == nullptr)
-		return;
-
-	qtractorMidiBus *pMidiBus
-		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-	if (pMidiBus == nullptr)
-		return;
-
-	pMidiBus->sendNoteEx(pTrack, iNote, iVelocity, iDuration);
+	const unsigned int srate = pSession->sampleRate();
+	if (srate > 0) {
+		// Direct note-on...
+		sendNote(iNote, iVelocity, false);
+		// Schedule  note-off...
+		const unsigned long f1 = pSession->playHead();
+		qtractorTimeScale::Cursor cursor(pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(f1);
+		const unsigned long iMaxDuration
+			= pSession->ticksPerBeat() * pNode->beatsPerBar2();
+		const unsigned long t1 = pNode->tickFromFrame(f1);
+		const unsigned long t2 = t1 + qMin(iDuration, iMaxDuration);
+		pNode = cursor.seekTick(t2);
+		const unsigned long f2 = pNode->frameFromTick(t2);
+		const unsigned int msecs = (1000 * (f2 - f1)) / srate;
+		QTimer::singleShot(msecs, [=]{ sendNote(iNote, 0, false); });
+	}
 }
 
 
