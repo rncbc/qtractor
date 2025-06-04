@@ -963,7 +963,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="108"/>
         <source>MIDI Controller Send pseudo-plugin</source>
-        <translation>pseudo-greffon d'envoi de contrôleur MIDI</translation>
+        <translation>pseudo-greffon d&apos;envoi de contrôleur MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="141"/>
