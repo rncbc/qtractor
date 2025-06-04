@@ -534,7 +534,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="193"/>
         <source>add MIDI controller</source>
-        <translation type="unfinished"></translation>
+        <translation>ajouter un controleur MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="217"/>
@@ -958,17 +958,17 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="75"/>
         <source>Control (MIDI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Conrôle (MIDI)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="108"/>
         <source>MIDI Controller Send pseudo-plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>pseudo-greffon d&apos;envoi de contrôleur MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="141"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
 </context>
 <context>
@@ -7295,47 +7295,47 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="29"/>
         <source>&amp;Type:</source>
-        <translation type="unfinished">&amp;Type :</translation>
+        <translation>&amp;Type :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="42"/>
         <source>MIDI event type</source>
-        <translation type="unfinished">MIDI Type d&apos;évènement</translation>
+        <translation>MIDI Type d&apos;évènement</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="62"/>
         <source>Cha&amp;nnel:</source>
-        <translation type="unfinished">Ca&amp;nal :</translation>
+        <translation>Ca&amp;nal :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="75"/>
         <source>MIDI channel</source>
-        <translation type="unfinished">Canal MIDI</translation>
+        <translation>Canal MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="91"/>
         <source>&amp;Parameter:</source>
-        <translation type="unfinished">&amp;Paramètre :</translation>
+        <translation>&amp;Paramètre :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="104"/>
         <source>MIDI parameter</source>
-        <translation type="unfinished">Paramètre MIDI</translation>
+        <translation>Paramètre MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="111"/>
         <source>&amp;Logarithmic</source>
-        <translation type="unfinished">&amp;Logarithmique</translation>
+        <translation>&amp;Logarithmique</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="118"/>
         <source>In&amp;vert</source>
-        <translation type="unfinished">In&amp;verser</translation>
+        <translation>In&amp;verser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="125"/>
         <source>&amp;Bipolar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bipolaire</translation>
     </message>
 </context>
 <context>
@@ -13805,7 +13805,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="308"/>
         <source>Auto-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto-connexion</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="315"/>
@@ -14065,7 +14065,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1911"/>
         <source>Add &amp;Controller</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un &amp;contrôleur</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1940"/>
