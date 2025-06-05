@@ -322,7 +322,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="193"/>
         <source>add MIDI controller</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat ovladač MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="217"/>
@@ -959,17 +959,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="75"/>
         <source>Control (MIDI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovladač (MIDI)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="108"/>
         <source>MIDI Controller Send pseudo-plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepravý přídavný modul pro odeslání ovladače MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="141"/>
         <source>Value</source>
-        <translation type="unfinished">Hodnota</translation>
+        <translation>Hodnota</translation>
     </message>
 </context>
 <context>
@@ -3253,7 +3253,11 @@ In general, connecting an output bus (or insert send),
 directly into any input bus (or insert return),
 is not advisable. It often doesn&apos;t work, if at all.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Zjištěno vlastní připojení zvuku!
+
+Obecně platí, že připojení výstupní sběrnice (nebo insert send),
+přímo do libovolné vstupní sběrnice (nebo insert return),
+se nedoporučuje. Často to nefunguje, pokud vůbec.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8889"/>
@@ -7291,47 +7295,47 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="29"/>
         <source>&amp;Type:</source>
-        <translation type="unfinished">&amp;Typ:</translation>
+        <translation>&amp;Typ:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="42"/>
         <source>MIDI event type</source>
-        <translation type="unfinished">Typ události MIDI</translation>
+        <translation>Typ události MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="62"/>
         <source>Cha&amp;nnel:</source>
-        <translation type="unfinished">&amp;Kanál:</translation>
+        <translation>&amp;Kanál:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="75"/>
         <source>MIDI channel</source>
-        <translation type="unfinished">Kanál MIDI</translation>
+        <translation>Kanál MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="91"/>
         <source>&amp;Parameter:</source>
-        <translation type="unfinished">&amp;Parametr:</translation>
+        <translation>&amp;Parametr:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="104"/>
         <source>MIDI parameter</source>
-        <translation type="unfinished">Parametr MIDI</translation>
+        <translation>Parametr MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="111"/>
         <source>&amp;Logarithmic</source>
-        <translation type="unfinished">&amp;Logaritmický</translation>
+        <translation>&amp;Logaritmický</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="118"/>
         <source>In&amp;vert</source>
-        <translation type="unfinished">&amp;Obrátit</translation>
+        <translation>&amp;Obrátit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="125"/>
         <source>&amp;Bipolar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bipolární</translation>
     </message>
 </context>
 <context>
@@ -13124,17 +13128,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1060"/>
         <source>Connections</source>
-        <translation type="unfinished">Připojení</translation>
+        <translation>Připojení</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1075"/>
         <source>Whether to warn about audio self-connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda upozorňovat na vlastní připojení zvuku</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1078"/>
         <source>&amp;Warn about self-connections</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Upozorňovat na vlastní připojení zvuku</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1151"/>
@@ -13893,7 +13897,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="308"/>
         <source>Auto-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojit automaticky</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="315"/>
@@ -14055,7 +14059,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1911"/>
         <source>Add &amp;Controller</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat &amp;ovladač</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1940"/>
