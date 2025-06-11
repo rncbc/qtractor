@@ -93,6 +93,10 @@
 #include "qtractorVst3Plugin.h"
 #endif
 
+#ifdef CONFIG_CLAP
+#include "qtractorClapPlugin.h"
+#endif
+
 #ifdef CONFIG_LV2
 #include "qtractorLv2Plugin.h"
 #endif
@@ -2198,7 +2202,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();
 		}
-		// Always avoid to store session on extracted direactories...
+		// Always avoid to store session on extracted directories...
 		sFilename = sessionArchivePath(sFilename);
 		// Try to rename as if a backup is about...
 		sFilename = sessionBackupPath(sFilename);
@@ -2668,6 +2672,8 @@ bool qtractorMainForm::saveSessionFileEx (
 #ifdef CONFIG_LIBZ
 	if (sSuffix == qtractorDocument::archiveExt()) {
 		iFlags |= qtractorDocument::Archive;
+		// Warn when saving an archive session with
+		// same name of an existing directory...
 		info.setFile(info.path() + QDir::separator() + info.completeBaseName());
 		if (info.exists() && info.isDir() &&
 			!qtractorDocument::extractedArchives().contains(info.filePath())) {
@@ -2706,6 +2712,45 @@ bool qtractorMainForm::saveSessionFileEx (
 			if (!bConfirmArchive)
 				return false;
 		}
+	}
+	// Warn when saving any type of session
+	// into an extracted archive directory...
+	info.setFile(info.path());
+	if (info.exists() && info.isDir() &&
+		qtractorDocument::extractedArchives().contains(info.filePath())) {
+		bool bConfirmArchive = true;
+		if  (m_pOptions && m_pOptions->bConfirmArchive) {
+			const QString& sTitle
+				= tr("Warning");
+			const QString& sText = tr(
+				"The directory is an extracted archive:\n\n"
+				"\"%1\"\n\n"
+				"This directory will be removed,\n"
+				"erased from all its current data,\n"
+				"when closing this session.\n\n"
+				"Do you want to continue?")
+				.arg(info.filePath());
+		#if 0
+			bConfirmArchive (QMessageBox::warning(this, sTitle, sText,
+				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+		#else
+			QMessageBox mbox(this);
+			mbox.setIcon(QMessageBox::Warning);
+			mbox.setWindowTitle(sTitle);
+			mbox.setText(sText);
+			mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+			QCheckBox cbox(tr("Don't ask this again"));
+			cbox.setChecked(false);
+			cbox.blockSignals(true);
+			mbox.addButton(&cbox, QMessageBox::ActionRole);
+			bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
+			if (cbox.isChecked())
+				m_pOptions->bConfirmArchive = false;
+		#endif
+		}
+		// Aborting?...
+		if (!bConfirmArchive)
+			return false;
 	}
 #endif
 

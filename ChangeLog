@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Warn when saving any type of session into an extracted archive
+  directory.
+
+
 1.5.6  2025-06-06  An End-of-Spring'25 Release.
 
 - MIDI clip editor (aka. piano-roll): Transport/Step/Note/Backward,
