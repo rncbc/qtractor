@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Draw all audio clip peaks+rms waveforms slightly compressed, so
+  that low-level signals have improved visibility. (EXPERIMENTAL)
+
 - Warn when saving any type of session into an extracted archive
   directory.
 
