@@ -2433,9 +2433,10 @@ bool qtractorSession::saveElement (
 	// Save session properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
 	if (!pDocument->isArchive()) {
-		pDocument->saveTextElement("directory",
-			QDir::current().relativeFilePath(
-				qtractorSession::sessionDir()), &eProps);
+		const QString& sSessionDir
+			= QDir().relativeFilePath(qtractorSession::sessionDir());
+		if (!sSessionDir.isEmpty() && sSessionDir != '.')
+			pDocument->saveTextElement("directory", sSessionDir, &eProps);
 	}
 	pDocument->saveTextElement("description",
 		qtractorSession::description(), &eProps);
