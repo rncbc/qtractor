@@ -1516,10 +1516,11 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		}
 		else
 		if (m_pParam->isInteger()) {
+			int iCol = 0;
 			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-			pGridLayout->addWidget(pLabel, 0, 0);
+			pGridLayout->addWidget(pLabel, 0, iCol++);
 			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
-			m_pSpinBox->setMinimumWidth(64);
+			m_pSpinBox->setMinimumWidth(52);
 			m_pSpinBox->setMaximumWidth(96);
 			m_pSpinBox->setDecimals(0);
 			m_pSpinBox->setMinimum(m_pParam->minValue());
@@ -1527,16 +1528,16 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pSpinBox->setAlignment(pProp ? Qt::AlignRight : Qt::AlignHCenter);
 			m_pSpinBox->setSubject(m_pParam->subject());
 		//	m_pSpinBox->setValue(int(m_pParam->value()));
-			pGridLayout->addWidget(m_pSpinBox, 0, 1,
-				Qt::AlignRight | Qt::AlignVCenter);
-			pGridLayout->setColumnStretch(1, 2);
+			pGridLayout->setColumnStretch(iCol, 2);
 			if (m_pParam->isDisplay()) {
 				m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
-				m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+				m_pDisplay->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			//	m_pDisplay->setText(m_pParam->display());
 				m_pDisplay->setMinimumWidth(64);
-				pGridLayout->addWidget(m_pDisplay, 0, 2);
+				pGridLayout->addWidget(m_pDisplay, 0, iCol++);
 			}
+			pGridLayout->addWidget(m_pSpinBox, 0, iCol,
+				Qt::AlignRight | Qt::AlignVCenter);
 		} else {
 			if (m_pParam->isDisplay()) {
 				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);

@@ -14059,7 +14059,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1821"/>
+        <location filename="../qtractorPluginForm.cpp" line="1822"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>
