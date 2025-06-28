@@ -166,6 +166,9 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.AuxSendBusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(clickAuxSendBusNameSlot()));
+	QObject::connect(m_ui.AuxSendIOMatrixToolButton,
+		SIGNAL(clicked()),
+		SLOT(clickAuxSendIOMatrixSlot()));
 
 	QObject::connect(m_pDirectAccessParamMenu,
 		SIGNAL(aboutToShow()),
@@ -373,9 +376,11 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Show aux-send tool options...
 	const bool bAuxSendPlugin = (typeHint == qtractorPluginType::AuxSend);
+	const bool bAudioAuxSendPlugin = (bAuxSendPlugin && pType->index() > 0);
 	m_ui.AuxSendBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameLabel->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameToolButton->setVisible(bAuxSendPlugin);
+	m_ui.AuxSendIOMatrixToolButton->setVisible(bAudioAuxSendPlugin);
 
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
@@ -559,7 +564,7 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 			if (pBus->busMode() & qtractorBus::Output) {
 				qtractorAudioBus *pAudioBus
 					= static_cast<qtractorAudioBus *> (pBus);
-				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels()) {
+				if (pAudioBus) {
 					if (bAudioOutBus && // Skip current or cyclic buses...
 						pAudioBus->pluginList_out() == pPluginList) {
 						cyclicAudioOutBuses.append(
@@ -622,6 +627,8 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 	m_ui.AuxSendBusNameComboBox->setCurrentIndex(iIndex);
 
 	m_pPlugin->updateEditorTitle();
+
+	stabilize();
 }
 
 
@@ -1084,6 +1091,54 @@ void qtractorPluginForm::clickAuxSendBusNameSlot (void)
 }
 
 
+// Audio bus I/O matrix (aux-send) edit slot.
+void qtractorPluginForm::clickAuxSendIOMatrixSlot (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	if (m_pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	if (pType->index() == 0) // index == 0 => MIDI aux-send.
+		return;
+
+	qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+		= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
+	if (pAudioAuxSendPlugin == nullptr)
+		return;
+
+	qtractorAudioBus *pAudioBus = pAudioAuxSendPlugin->audioBus();
+	if (pAudioBus == nullptr)
+		return;
+
+	// TODO: Show audio bus I/O matrix editor...
+	//
+	//qtractorAuxSendIOMatrixForm dialog(this);
+	//dialog.setChannels(pAudioAuxSendPlugin->channels(), pAudioBus->channels());
+	//dialog.setMatrix(pAudioAuxSendPlugin->matrix());
+	//dialog.refresh();
+	//if (dialog.exec() == QDialog::Accepted) {
+	//	pAudioAuxSendPlugin->setMatrix(dialog.matrix);
+	//}
+	QMessageBox::information(this,
+		tr("Information"),
+		tr("Aux-Send I/O Matrix (%1 x %2)\n\n"
+		"Not implemented yet!\n")
+		.arg(pAudioAuxSendPlugin->channels())
+		.arg(pAudioBus->channels()),
+		QMessageBox::Ok);
+}
+
+
 // Direct access parameter slots
 void qtractorPluginForm::updateDirectAccessParamSlot (void)
 {
@@ -1250,6 +1305,16 @@ void qtractorPluginForm::stabilize (void)
 		bEnabled && (!bExists || m_iDirtyCount > 0));
 	m_ui.DeletePresetToolButton->setEnabled(
 		bEnabled && bExists);
+
+	if (pType->typeHint() == qtractorPluginType::AuxSend
+		&& pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+		qtractorAudioBus *pAudioBus = nullptr;
+		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+			= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
+		if (pAudioAuxSendPlugin)
+			pAudioBus = pAudioAuxSendPlugin->audioBus();
+		m_ui.AuxSendIOMatrixToolButton->setEnabled(pAudioBus != nullptr);
+	}
 }
 
 

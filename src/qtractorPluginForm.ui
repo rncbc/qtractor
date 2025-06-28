@@ -352,6 +352,31 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="AuxSendIOMatrixToolButton">
+       <property name="minimumSize">
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>96</width>
+         <height>96</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip">
+        <string>Audio bus I/O matrix</string>
+       </property>
+       <property name="text">
+        <string>I/O Matrix...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -409,6 +434,7 @@
   <tabstop>AutoConnectCheckBox</tabstop>
   <tabstop>AuxSendBusNameComboBox</tabstop>
   <tabstop>AuxSendBusNameToolButton</tabstop>
+  <tabstop>AuxSendIOMatrixToolButton</tabstop>
   <tabstop>DirectAccessParamPushButton</tabstop>
  </tabstops>
  <resources>
