@@ -163,6 +163,29 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorAuxSendIOMatrixCommand - declaration.
+//
+
+class qtractorAuxSendIOMatrixCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorAuxSendIOMatrixCommand(
+		qtractorPlugin *pPlugin, const QList<int>& matrix);
+
+	// Plugin insertion command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	QList<int> m_matrix;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorRemovePluginCommand - declaration.
 //
 

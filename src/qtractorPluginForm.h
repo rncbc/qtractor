@@ -109,6 +109,7 @@ protected slots:
 
 	void changeAuxSendBusNameSlot(int iAuxSendBusName);
 	void clickAuxSendBusNameSlot();
+	void clickAuxSendIOMatrixSlot();
 
 	void updateDirectAccessParamSlot();
 	void changeDirectAccessParamSlot();

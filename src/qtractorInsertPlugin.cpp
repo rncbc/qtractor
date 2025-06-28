@@ -131,24 +131,27 @@ static inline void sse_process_add (
 	__m128 v0 = _mm_load_ps1(&fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i] + iOffset;
-		float *pFrames = ppFrames[i];
-		unsigned int nframes = iFrames;
-		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
-			*pBuffer++ += fGain * *pFrames++;
-		for (; nframes >= 4; nframes -= 4) {
-			_mm_store_ps(pBuffer,
-				_mm_add_ps(
-					_mm_loadu_ps(pBuffer),
-					_mm_mul_ps(
-						_mm_loadu_ps(pFrames), v0)
-					)
-			);
-			pFrames += 4;
-			pBuffer += 4;
+		float *pBuffer = ppBuffer[i];
+		if (pBuffer) {
+			pBuffer += iOffset;
+			float *pFrames = ppFrames[i];
+			unsigned int nframes = iFrames;
+			for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
+				*pBuffer++ += fGain * *pFrames++;
+			for (; nframes >= 4; nframes -= 4) {
+				_mm_store_ps(pBuffer,
+					_mm_add_ps(
+						_mm_loadu_ps(pBuffer),
+						_mm_mul_ps(
+							_mm_loadu_ps(pFrames), v0)
+						)
+				);
+				pFrames += 4;
+				pBuffer += 4;
+			}
+			for (; nframes > 0; --nframes)
+				*pBuffer++ += fGain * *pFrames++;
 		}
-		for (; nframes > 0; --nframes)
-			*pBuffer++ += fGain * *pFrames++;
 	}
 }
 
@@ -223,22 +226,25 @@ static inline void neon_process_add (
 	float32x4_t vGain = vdupq_n_f32(fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i] + iOffset;
-		float *pFrames = ppFrames[i];
-		unsigned int nframes = iFrames;
-		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
-			*pBuffer++ += fGain * *pFrames++;
-		for (; nframes >= 4; nframes -= 4) {
-			float32x4_t vBuffer = vld1q_f32(pBuffer);
-			float32x4_t vFrames = vld1q_f32(pFrames);
-			//Vr[i] := Va[i] + Vb[i] * Vc[i]
-			vBuffer = vmlaq_f32(vBuffer, vGain, vFrames);
-			vst1q_f32(pBuffer, vBuffer);
-			pFrames += 4;
-			pBuffer += 4;
+		float *pBuffer = ppBuffer[i];
+		if (pBuffer) {
+			pBuffer += iOffset;
+			float *pFrames = ppFrames[i];
+			unsigned int nframes = iFrames;
+			for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
+				*pBuffer++ += fGain * *pFrames++;
+			for (; nframes >= 4; nframes -= 4) {
+				float32x4_t vBuffer = vld1q_f32(pBuffer);
+				float32x4_t vFrames = vld1q_f32(pFrames);
+				//Vr[i] := Va[i] + Vb[i] * Vc[i]
+				vBuffer = vmlaq_f32(vBuffer, vGain, vFrames);
+				vst1q_f32(pBuffer, vBuffer);
+				pFrames += 4;
+				pBuffer += 4;
+			}
+			for (; nframes > 0; --nframes)
+				*pBuffer++ += fGain * *pFrames++;
 		}
-		for (; nframes > 0; --nframes)
-			*pBuffer++ += fGain * *pFrames++;
 	}
 }
 
@@ -276,10 +282,13 @@ static inline void std_process_add (
 	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i] + iOffset;
-		float *pFrames = ppFrames[i];
-		for (unsigned int n = 0; n < iFrames; ++n)
-			*pBuffer++ += fGain * *pFrames++;
+		float *pBuffer = ppBuffer[i];
+		if (pBuffer) {
+			pBuffer += iOffset;
+			float *pFrames = ppFrames[i];
+			for (unsigned int n = 0; n < iFrames; ++n)
+				*pBuffer++ += fGain * *pFrames++;
+		}
 	}
 }
 
@@ -1277,6 +1286,10 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
+
+	// Audio bus I/O matrix buffers.
+	m_ppOBuffers = nullptr;
+	m_piOBuffers = nullptr;
 }
 
 
@@ -1316,9 +1329,19 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	const bool bActivated = isActivated();
 	setChannelsActivated(iChannels, false);
 
-	// Cleanup bus...
+	// Cleanup bus and buffers...
 	if (m_pAudioBus)
 		m_pAudioBus = nullptr;
+
+	if (m_ppOBuffers) {
+		delete [] m_ppOBuffers;
+		m_ppOBuffers = nullptr;
+	}
+
+	if (m_piOBuffers) {
+		delete [] m_piOBuffers;
+		m_piOBuffers = nullptr;
+	}
 
 	// Set new instance number...
 	setInstances(iInstances);
@@ -1341,6 +1364,15 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 
 	// Setup aux-send bus...
 	setAudioBusName(m_sAudioBusName);
+
+	// Setup audio bus I/O matrix and buffers...
+	if (iChannels > 0 && m_pAudioBus) {
+		const unsigned short iOBuffers = m_pAudioBus->channels();
+		const unsigned short iIBuffers = qMin(iChannels, iOBuffers);
+		m_ppOBuffers = new float * [iIBuffers];
+		m_piOBuffers = new int [iIBuffers];
+		updateAudioBusMatrix(iChannels);
+	}
 
 	// (Re)activate instance if necessary...
 	setChannelsActivated(iChannels, bActivated);
@@ -1381,7 +1413,7 @@ void qtractorAudioAuxSendPlugin::setAudioBusName (
 		}
 	}
 
-	if (pAudioBus && pAudioBus->channels() == channels()) {
+	if (pAudioBus) {
 		if (bReset && sAudioBusName != m_sAudioBusName)
 			pAudioEngine->resetAudioOutBus(pAudioBus, list());
 		m_pAudioBus = pAudioBus;
@@ -1415,6 +1447,39 @@ void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 	QListIterator<qtractorPluginListItem *> iter(items());
 	while (iter.hasNext())
 		iter.next()->setText(sTitle);
+}
+
+
+// Audio bus I/O matrix.
+void qtractorAudioAuxSendPlugin::setAudioBusMatrix ( const QList<int>& matrix )
+{
+	m_matrix = matrix;
+
+	updateAudioBusMatrix(channels());
+}
+
+
+const QList<int>& qtractorAudioAuxSendPlugin::audioBusMatrix (void) const
+{
+	return m_matrix;
+}
+
+
+void qtractorAudioAuxSendPlugin::updateAudioBusMatrix ( unsigned short iChannels )
+{
+	if (m_pAudioBus && m_ppOBuffers && m_piOBuffers) {
+		const unsigned short iOBuffers = m_pAudioBus->channels();
+		const unsigned short iIBuffers = qMin(iChannels, iOBuffers);
+		int j = 0;
+		for (unsigned short i = 0; i < iIBuffers; ++i) {
+			m_ppOBuffers[i] = nullptr;
+			if (i < m_matrix.size())
+				m_piOBuffers[i] = m_matrix.at(i);
+			else
+				m_piOBuffers[i] = j;
+			if (++j >= iOBuffers) j = 0;
+		}
+	}
 }
 
 
@@ -1456,9 +1521,20 @@ void qtractorAudioAuxSendPlugin::process (
 
 	float **ppOut = m_pAudioBus->out();
 	const unsigned int iOffset = pAudioEngine->bufferOffset();
-	const unsigned short iChannels = channels();
+	const unsigned short iOBuffers = m_pAudioBus->channels();
+	const unsigned short iIBuffers = qMin(channels(), iOBuffers);
 	const float fGain = m_pSendGainParam->value();
-	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iOffset, iChannels, fGain);
+
+	if (m_ppOBuffers && m_piOBuffers) {
+		for (unsigned short i = 0; i < iIBuffers; ++i) {
+			const int j = m_piOBuffers[i];
+			if (j >= 0 && j < iOBuffers)
+				m_ppOBuffers[i] = ppOut[j];
+		}
+		ppOut = m_ppOBuffers;
+	}
+
+	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iOffset, iIBuffers, fGain);
 
 //	m_pAudioBus->process_commit(nframes);
 }
@@ -1486,6 +1562,13 @@ void qtractorAudioAuxSendPlugin::configure (
 
 	if (sKey == "audioBusName")
 		setAudioBusName(sValue);
+	else
+	if (sKey == "audioBusMatrix") {
+		m_matrix.clear();
+		QStringListIterator iter(sValue.split(';'));
+		while (iter.hasNext())
+			m_matrix.append(iter.next().toInt());
+	}
 }
 
 
@@ -1499,6 +1582,14 @@ void qtractorAudioAuxSendPlugin::freezeConfigs (void)
 	clearConfigs();
 
 	setConfig("audioBusName", m_sAudioBusName);
+
+	if (!m_matrix.isEmpty()) {
+		QStringList vlist;
+		QListIterator<int> iter(m_matrix);
+		while (iter.hasNext())
+			vlist.append(QString::number(iter.next()));
+		setConfig("audioBusMatrix", vlist.join(';'));
+	}
 }
 
 

@@ -282,7 +282,7 @@ public:
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
 	unsigned short instances(unsigned short iChannels, bool /*bMidi*/) const
-		{ return (iChannels > 0 && iChannels == audioOuts() ? 1 : 0); }
+		{ return (iChannels > 0 ? 1 : 0); }
 
 	// Instance cached-deferred accesors.
 	const QString& aboutText();
@@ -369,6 +369,12 @@ public:
 	// Audio bus to appear on plugin lists.
 	void updateAudioBusName() const;
 
+	// Audio bus I/O matrix.
+	void setAudioBusMatrix(const QList<int>&  matrix);
+	const QList<int>& audioBusMatrix() const;
+
+	void updateAudioBusMatrix(unsigned short iChannels);
+
 	// Override title/name caption.
 	QString title() const;
 
@@ -389,6 +395,11 @@ private:
 	// Custom optimized processors.
 	void (*m_pfnProcessAdd)(float **, float **, unsigned int,
 		unsigned int, unsigned short, float);
+
+	float **m_ppOBuffers;
+	int    *m_piOBuffers;
+
+	QList<int> m_matrix;
 };
 
 

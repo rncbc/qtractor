@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing Aux-Send audio bus I/O matrix functionality.
+  (EXPERIMENTAL)
+
 - Corrected greater-than-2-channel audio clip waveform drawing,
   while on certain zoom levels, an old bug lurking there since
   dawn, quite an example to the evil of too-early optimization ;)
@@ -163,12 +166,12 @@ GIT HEAD
 - Double-click on slider for default value, replicating the behavior
   of middle-click.
 
-- Fixed bug: Aux Send loses state when reordered in a strip.
+- Fixed bug: Aux-Send loses state when reordered in a strip.
 
 - Create/Add new bus below that which is used as source in View/Buses
   dialog.
 
-- Mitigate truncated bus names in Aux Send Bus dialog.
+- Mitigate truncated bus names in Aux-Send bus dialog.
 
 - Fixed yet another old bug regarding the flush of all pending MIDI
   Note-Off events when playback stops, shuts-off or panics, especially
@@ -212,7 +215,7 @@ GIT HEAD
 - Fixed MIDI clip offset resizing, most especially when drag-moving
   the left-edge.
 
-- Audio Aux-sends inserted on audio output buses are not restricted
+- Audio Aux-Sends inserted on audio output buses are not restricted
   to later buses anymore; the only restriction now is that no cyclic
   or loop-back routes are allowed; audio output buses are now sorted
   internally in-place for correct processing order.
@@ -513,7 +516,7 @@ GIT HEAD
 - Fixed an allegedly old and incorrect 0dBfs notch position on MIDI
   track/buses audio meter sidekicks.
 
-- Send/return and Aux-send inserts now show the proper name and the
+- Send/return and Aux-Send inserts now show the proper name and the
   target output bus name on the properties editor title respectively.
 
 - Fixed a zero-day blunder that was keeping the real-time process
@@ -1569,7 +1572,7 @@ GIT HEAD
   supported (input only).
 
 - Fixed a sure immediate crash on removing audio buses that are
-  current targets of any active Aux-send inserts.
+  current targets of any active Aux-Send inserts.
 
 - Fixed yet another old bummer that was reaping off assigned MIDI
   controllers on existing track's gain/volume or panning controls, when
@@ -1699,7 +1702,7 @@ GIT HEAD
 
 - Introducing brand new track icons property.
 
-- Old Dry/Wet Insert and Aux-send pseudo-plugin parameters are now
+- Old Dry/Wet Insert and Aux-Send pseudo-plugin parameters are now
   split into separate Dry and Wet controls, what else could it possibly
   be? :)
 

@@ -220,7 +220,7 @@ qtractorAuxSendPluginCommand::qtractorAuxSendPluginCommand (
 }
 
 
-// Plugin insertion command methods.
+// Plugin command methods.
 bool qtractorAuxSendPluginCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
@@ -251,6 +251,48 @@ bool qtractorAuxSendPluginCommand::redo (void)
 }
 
 bool qtractorAuxSendPluginCommand::undo (void)
+{
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorAuxSendPluginCommand - implementation
+//
+
+// Constructor.
+qtractorAuxSendIOMatrixCommand::qtractorAuxSendIOMatrixCommand (
+	qtractorPlugin *pPlugin, const QList<int>& matrix )
+	: qtractorPluginCommand(QObject::tr("aux-send matrix"), pPlugin),
+		m_matrix(matrix)
+{
+}
+
+
+// Plugin command methods.
+bool qtractorAuxSendIOMatrixCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == nullptr)
+		return false;
+
+	if ((pPlugin->type())->index() == 0)
+		return false;
+
+	qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+		= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+	if (pAudioAuxSendPlugin == nullptr)
+		return false;
+
+	const QList<int> matrix
+		= pAudioAuxSendPlugin->audioBusMatrix();
+	pAudioAuxSendPlugin->setAudioBusMatrix(m_matrix);
+	m_matrix = matrix;
+
+	return true;
+}
+
+bool qtractorAuxSendIOMatrixCommand::undo (void)
 {
 	return redo();
 }

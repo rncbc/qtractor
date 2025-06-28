@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>
+
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ </comment>
+ <class>qtractorAuxSendIOMatrixForm</class>
+ <widget class="QDialog" name="qtractorAuxSendIOMatrixForm`">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>320</width>
+    <height>240</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Aux-Send I/O Matrix</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
+    <number>4</number>
+   </property>
+   <property name="margin">
+    <number>4</number>
+   </property>
+   <item>
+    <widget class="qtractorAuxSendIOMatrixForm::TableWidget" name="TableWidget" />
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="DialogButtons">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qtractorAuxSendIOMatrixForm::TableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>qtractorAuxSendIOMatrixForm.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>TableWidget</tabstop>
+  <tabstop>DialogButtons</tabstop>
+ </tabstops>
+ <resources>
+  <include location="qtractor.qrc"/>
+ </resources>
+ <connections/>
+</ui>

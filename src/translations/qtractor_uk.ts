@@ -337,65 +337,65 @@ End:	%3	Length:	%4</source>
         <translation>панорамування шини</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="367"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="376"/>
         <source>Insert Send/Return pseudo-plugin (Audio)</source>
         <translation>Вставити псевдододаток Надсилання/Повернення (звук)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="429"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="438"/>
         <source>Insert Send/Return pseudo-plugin (MIDI)</source>
         <translation>Вставити псевдододаток Надсилання/Повернення (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="473"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="783"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1274"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1532"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="482"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="792"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1283"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1623"/>
         <source>Send Gain</source>
         <translation>Підсилання надсилання</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="481"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="791"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="490"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="800"/>
         <source>Dry Gain</source>
         <translation>Підсилення високих частот</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="489"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="799"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="498"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="808"/>
         <source>Wet Gain</source>
         <translation>Підсилення низьких частот</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1138"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1147"/>
         <source>Aux Send (Audio)</source>
         <translation>Надсилання допоміжного (звук)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1171"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1180"/>
         <source>Aux Send pseudo-plugin (Audio)</source>
         <translation>Псевдододаток надсилання допоміжного (звук)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1233"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1242"/>
         <source>Aux Send pseudo-plugin (MIDI)</source>
         <translation>Псевдододаток надсилання допоміжного (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1428"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1700"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1493"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1791"/>
         <source>(none)</source>
         <translation>(немає)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="756"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1429"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="765"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1494"/>
         <source>%1 (Audio)</source>
         <translation>%1 (звук)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1081"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1701"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1090"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1792"/>
         <location filename="../qtractorMidiControlPlugin.cpp" line="569"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
@@ -689,51 +689,56 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="266"/>
+        <source>aux-send matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginCommand.cpp" line="308"/>
         <source>remove plugin</source>
         <translation>вилучити додаток</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="372"/>
+        <location filename="../qtractorPluginCommand.cpp" line="414"/>
         <source>move plugin</source>
         <translation>пересунути додаток</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="491"/>
+        <location filename="../qtractorPluginCommand.cpp" line="533"/>
         <source>activate plugin</source>
         <translation>задіяти додаток</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="527"/>
+        <location filename="../qtractorPluginCommand.cpp" line="569"/>
         <source>preset plugin</source>
         <translation>додаток набору</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="574"/>
+        <location filename="../qtractorPluginCommand.cpp" line="616"/>
         <source>reset plugin</source>
         <translation>скинути додаток</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="624"/>
+        <location filename="../qtractorPluginCommand.cpp" line="666"/>
         <source>plugin program</source>
         <translation>програма додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="670"/>
+        <location filename="../qtractorPluginCommand.cpp" line="712"/>
         <source>plugin alias</source>
         <translation>альтернативна назва додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="903"/>
+        <location filename="../qtractorPluginCommand.cpp" line="945"/>
         <source>dedicated audio outputs</source>
         <translation>визначені виходи звуку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="948"/>
+        <location filename="../qtractorPluginCommand.cpp" line="990"/>
         <source>direct access param</source>
         <translation>параметр безпосереднього доступу</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="980"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1022"/>
         <source>import plugins</source>
         <translation>імпортувати додатки</translation>
     </message>
@@ -1036,6 +1041,14 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <location filename="../qtractorAudioMeter.cpp" line="681"/>
         <source>Gain: %1 dB</source>
         <translation>Підсил.: %1 дБ</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorAuxSendIOMatrixForm</name>
+    <message>
+        <location filename="../qtractorAuxSendIOMatrixForm.ui" line="39"/>
+        <source>Aux-Send I/O Matrix</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13835,56 +13848,66 @@ Do you want to apply the changes?</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="388"/>
+        <location filename="../qtractorPluginForm.ui" line="372"/>
+        <source>Audio bus I/O matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.ui" line="375"/>
+        <source>I/O Matrix...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.ui" line="413"/>
         <source>Direct Access Parameter</source>
         <translation>Параметр безпосереднього доступу</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="391"/>
+        <location filename="../qtractorPluginForm.ui" line="416"/>
         <source>Direct Access</source>
         <translation>Безпосередній доступ</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="264"/>
+        <location filename="../qtractorPluginForm.cpp" line="269"/>
         <source>Page %1</source>
         <translation>Сторінка %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="394"/>
+        <location filename="../qtractorPluginForm.cpp" line="401"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 екземплярів, %4 каналів.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="555"/>
-        <location filename="../qtractorPluginForm.cpp" line="601"/>
+        <location filename="../qtractorPluginForm.cpp" line="562"/>
+        <location filename="../qtractorPluginForm.cpp" line="608"/>
         <source>(none)</source>
         <translation>(немає)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="708"/>
+        <location filename="../qtractorPluginForm.cpp" line="717"/>
         <source>Open Preset</source>
         <translation>Відкрити набір</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="711"/>
-        <location filename="../qtractorPluginForm.cpp" line="810"/>
+        <location filename="../qtractorPluginForm.cpp" line="720"/>
+        <location filename="../qtractorPluginForm.cpp" line="819"/>
         <source>Preset files (*.%1)</source>
         <translation>файли наборів (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="712"/>
-        <location filename="../qtractorPluginForm.cpp" line="811"/>
+        <location filename="../qtractorPluginForm.cpp" line="721"/>
+        <location filename="../qtractorPluginForm.cpp" line="820"/>
         <source>All files (*.*)</source>
         <translation>усі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="753"/>
-        <location filename="../qtractorPluginForm.cpp" line="855"/>
+        <location filename="../qtractorPluginForm.cpp" line="762"/>
+        <location filename="../qtractorPluginForm.cpp" line="864"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="754"/>
+        <location filename="../qtractorPluginForm.cpp" line="763"/>
         <source>Preset could not be loaded from file:
 
 &quot;%1&quot;.
@@ -13897,12 +13920,12 @@ Sorry.</source>
 Вибачте.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="808"/>
+        <location filename="../qtractorPluginForm.cpp" line="817"/>
         <source>Save Preset</source>
         <translation>Зберегти шаблон</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="856"/>
+        <location filename="../qtractorPluginForm.cpp" line="865"/>
         <source>Preset could not be saved to file:
 
 &quot;%1&quot;.
@@ -13915,12 +13938,12 @@ Sorry.</source>
 Вибачте.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="888"/>
+        <location filename="../qtractorPluginForm.cpp" line="897"/>
         <source>Warning</source>
         <translation>Попередження</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="889"/>
+        <location filename="../qtractorPluginForm.cpp" line="898"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -13933,17 +13956,17 @@ Are you sure?</source>
 Ви справді цього хочете?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1113"/>
+        <location filename="../qtractorPluginForm.cpp" line="1162"/>
         <source>&amp;None</source>
         <translation>&amp;Немає</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1359"/>
+        <location filename="../qtractorPluginForm.cpp" line="1418"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>Латентність: %1 мс (%2 кадрів)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1363"/>
+        <location filename="../qtractorPluginForm.cpp" line="1422"/>
         <source>(no latency)</source>
         <translation>(немає латентності)</translation>
     </message>
@@ -14169,7 +14192,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1822"/>
+        <location filename="../qtractorPluginForm.cpp" line="1881"/>
         <source>Open File</source>
         <translation>Відкриття файла</translation>
     </message>
