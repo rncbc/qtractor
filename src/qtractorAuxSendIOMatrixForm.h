@@ -95,6 +95,9 @@ public:
 protected:
 
 	void mousePressEvent(QMouseEvent *event) override;
+	void keyPressEvent(QKeyEvent *event) override;
+
+	void toggleCell(int row, int col);
 
 private:
 

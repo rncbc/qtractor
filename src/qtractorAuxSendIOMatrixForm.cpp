@@ -242,16 +242,8 @@ qtractorAuxSendIOMatrixForm *qtractorAuxSendIOMatrixForm::TableWidget::form (voi
 }
 
 
-void qtractorAuxSendIOMatrixForm::TableWidget::mousePressEvent ( QMouseEvent *event )
+void qtractorAuxSendIOMatrixForm::TableWidget::toggleCell ( int row, int col )
 {
-	QTableWidget::mousePressEvent(event);
-
-	if (m_form == nullptr)
-		return;
-
-	const QPoint& pos = event->pos();
-	const int row = QTableWidget::rowAt(pos.y());
-	const int col = QTableWidget::columnAt(pos.x());
 	const QList<QButtonGroup *>& groups = m_form->groups();
 	if (row >= 0 && row < groups.size()) {
 		QButtonGroup *group = groups.at(row);
@@ -266,6 +258,33 @@ void qtractorAuxSendIOMatrixForm::TableWidget::mousePressEvent ( QMouseEvent *ev
 			}
 		}
 	}
+}
+
+
+void qtractorAuxSendIOMatrixForm::TableWidget::keyPressEvent ( QKeyEvent *event )
+{
+	QTableWidget::keyPressEvent(event);
+
+	if (event->key() == Qt::Key_Space) {
+		const int row = QTableWidget::currentRow();
+		const int col = QTableWidget::currentColumn();
+		toggleCell(row, col);
+	}
+}
+
+
+
+void qtractorAuxSendIOMatrixForm::TableWidget::mousePressEvent ( QMouseEvent *event )
+{
+	QTableWidget::mousePressEvent(event);
+
+	if (m_form == nullptr)
+		return;
+
+	const QPoint& pos = event->pos();
+	const int row = QTableWidget::rowAt(pos.y());
+	const int col = QTableWidget::columnAt(pos.x());
+	toggleCell(row, col);
 }
 
 
