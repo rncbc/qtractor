@@ -35,6 +35,8 @@
 #include "qtractorMidiControlObserverForm.h"
 #include "qtractorMidiControlPluginWidget.h"
 
+#include "qtractorAuxSendIOMatrixForm.h"
+
 #include "qtractorSpinBox.h"
 
 #include "qtractorBusForm.h"
@@ -1120,22 +1122,13 @@ void qtractorPluginForm::clickAuxSendIOMatrixSlot (void)
 	if (pAudioBus == nullptr)
 		return;
 
-	// TODO: Show audio bus I/O matrix editor...
-	//
-	//qtractorAuxSendIOMatrixForm dialog(this);
-	//dialog.setChannels(pAudioAuxSendPlugin->channels(), pAudioBus->channels());
-	//dialog.setMatrix(pAudioAuxSendPlugin->matrix());
-	//dialog.refresh();
-	//if (dialog.exec() == QDialog::Accepted) {
-	//	pAudioAuxSendPlugin->setMatrix(dialog.matrix);
-	//}
-	QMessageBox::information(this,
-		tr("Information"),
-		tr("Aux-Send I/O Matrix (%1 x %2)\n\n"
-		"Not implemented yet!\n")
-		.arg(pAudioAuxSendPlugin->channels())
-		.arg(pAudioBus->channels()),
-		QMessageBox::Ok);
+	qtractorAuxSendIOMatrixForm dialog(this);
+	dialog.setChannels(pAudioAuxSendPlugin->channels(), pAudioBus->channels());
+	dialog.setMatrix(pAudioAuxSendPlugin->audioBusMatrix());
+	dialog.refresh();
+	if (dialog.exec() == QDialog::Accepted) {
+		pAudioAuxSendPlugin->setAudioBusMatrix(dialog.matrix());
+	}
 }
 
 
