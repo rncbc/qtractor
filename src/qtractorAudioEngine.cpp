@@ -1767,21 +1767,20 @@ bool qtractorAudioEngine::fileExport (
 	if (iExportStart >= iExportEnd)
 		return false;
 
-	// We'll grab the first bus around, as reference...
-	qtractorAudioBus *pExportBus = nullptr;
-	QListIterator<qtractorBus *> iter(buses2());
+	// We'll grab the minimum number of channels around, as reference...
+	unsigned short iChannels = 0;
+	QListIterator<qtractorAudioBus *> iter(exportBuses);
 	while (iter.hasNext()) {
-		qtractorBus *pBus = iter.next();
-		if (pBus->busMode() & qtractorBus::Output) {
-			pExportBus = static_cast<qtractorAudioBus *> (pBus);
-			break;
+		qtractorAudioBus *pAudioBus = iter.next();
+		if (pAudioBus->busMode() & qtractorBus::Output
+			&& iChannels < pAudioBus->channels()) {
+			iChannels = pAudioBus->channels();
 		}
 	}
-	if (pExportBus == nullptr)
+	if (iChannels < 1)
 		return false;
 
 	// Get proper file type class...
-	const unsigned int iChannels = pExportBus->channels();
 	qtractorAudioFile *pExportFile
 		= qtractorAudioFileFactory::createAudioFile(sExportPath,
 			iChannels, sampleRate(), bufferSizeEx(), iExportFormat);

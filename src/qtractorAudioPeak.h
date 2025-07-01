@@ -187,7 +187,7 @@ public:
 
 	// Peak frame buffer reader-cache executive.
 	qtractorAudioPeakFile::Frame *peakFrames(
-		unsigned long iFrameOffset, unsigned long iFrameLength, int width);
+		unsigned long iFrameOffset, unsigned long iFrameLength);
 	// Peak frame buffer length (in frames).
 	unsigned int peakLength() const
 		{ return m_iPeakLength; }

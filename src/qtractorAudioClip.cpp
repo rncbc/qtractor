@@ -679,7 +679,7 @@ void qtractorAudioClip::draw (
 
 	// Grab them in...
 	qtractorAudioPeakFile::Frame *pPeakFrames
-		= m_pPeak->peakFrames(iFrameOffset, iFrameLength, clipRect.width());
+		= m_pPeak->peakFrames(iFrameOffset, iFrameLength);
 	if (pPeakFrames == nullptr)
 		return;
 

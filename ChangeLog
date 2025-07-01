@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Corrected greater-than-2-channel audio clip waveform drawing, 
+  while on certain zoom levels, an old bug lurking there since
+  dawn, quite an example to the evil of too-early optimization ;)
+  (GH #507) (EXPERIMENTAL)
+  
 - Draw all audio clip peaks+rms waveforms slightly compressed, so
   that low-level signals have improved visibility. (EXPERIMENTAL)
 

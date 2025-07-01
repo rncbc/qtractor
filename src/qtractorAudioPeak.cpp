@@ -893,12 +893,8 @@ qtractorAudioPeak::~qtractorAudioPeak (void)
 
 // Peak frame buffer reader-cache executive.
 qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
-	unsigned long iFrameOffset, unsigned long iFrameLength, int width )
+	unsigned long iFrameOffset, unsigned long iFrameLength )
 {
-	// Skip empty blanks...
-	if (width < 1)
-		return nullptr;
-
 	// Try open current peak file as is...
 	if (!m_pPeakFile->openRead())
 		return nullptr;
@@ -925,8 +921,7 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 			const unsigned int iPeakHash
 				= qHash(iPeakPeriod)
 				^ qHash(iFrameOffset)
-				^ qHash(iFrameLength)
-				^ qHash(width);
+				^ qHash(iFrameLength);
 			if (m_iPeakHash == iPeakHash)
 				return m_pPeakFrames;
 			m_iPeakHash = iPeakHash;
@@ -948,43 +943,13 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	const int p1 = int(iPeakLength);
 	const int n1 = iChannels * p1;
 
-	if (width < p1 && width > 1) {
-		const int w2 = (width >> 1) + 1;
-		const int n2 = iChannels * w2;
-		m_pPeakFrames = new qtractorAudioPeakFile::Frame [n2];
-		int n = 0; int i = 0;
-		while (n < n2) {
-			const int i2 = (n * p1) / w2;
-			for (unsigned short k = 0; k < iChannels; ++k) {
-				qtractorAudioPeakFile::Frame *pNewFrame = &m_pPeakFrames[n++];
-				qtractorAudioPeakFile::Frame *pOldFrame = &pPeakFrames[i + k];
-				pNewFrame->max = pOldFrame->max;
-				pNewFrame->min = pOldFrame->min;
-				pNewFrame->rms = pOldFrame->rms;
-				for (int j = i + 1; j < i2; j += iChannels) {
-					pOldFrame += iChannels;
-					if (pNewFrame->max < pOldFrame->max)
-						pNewFrame->max = pOldFrame->max;
-					if (pNewFrame->min < pOldFrame->min)
-						pNewFrame->min = pOldFrame->min;
-					if (pNewFrame->rms < pOldFrame->rms)
-						pNewFrame->rms = pOldFrame->rms;
-				}
-			}
-			i = i2;
-		}
-		// New-indirect frame buffer length...
-		m_iPeakLength = n / iChannels;
-		// Done-indirect.
-	} else {
-		// Direct-copy frame-buffer...
-		m_pPeakFrames = new qtractorAudioPeakFile::Frame [n1];
-		::memcpy(m_pPeakFrames, pPeakFrames,
-			n1 * sizeof(qtractorAudioPeakFile::Frame));
-		// New-direct frame buffer length...
-		m_iPeakLength = iPeakLength;
-		// Done-direct.
-	}
+	// Direct-copy frame-buffer...
+	m_pPeakFrames = new qtractorAudioPeakFile::Frame [n1];
+	::memcpy(m_pPeakFrames, pPeakFrames,
+		n1 * sizeof(qtractorAudioPeakFile::Frame));
+	// New-direct frame buffer length...
+	m_iPeakLength = iPeakLength;
+	// Done-direct.
 
 	return m_pPeakFrames;
 }
