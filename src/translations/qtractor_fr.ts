@@ -1049,6 +1049,18 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <source>Aux-Send I/O Matrix</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="229"/>
+        <source>Warning</source>
+        <translation type="unfinished">Attention</translation>
+    </message>
+    <message>
+        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="230"/>
+        <source>Some settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>qtractorBusForm</name>

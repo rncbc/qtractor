@@ -28,7 +28,7 @@
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QHBoxLayout>
-
+#include <QMessageBox>
 #include <QMouseEvent>
 
 
@@ -115,8 +115,6 @@ void qtractorAuxSendIOMatrixForm::setChannels ( int nins, int nouts )
 #endif
 	m_ui.TableWidget->setRowCount(nins);
 	m_ui.TableWidget->setColumnCount(nouts);
-
-	refresh();
 }
 
 
@@ -221,6 +219,28 @@ void qtractorAuxSendIOMatrixForm::accept (void)
 
 void qtractorAuxSendIOMatrixForm::reject (void)
 {
+	// Check if there's any pending changes...
+	if (m_ui.TableWidget->isDirty()) {
+		QMessageBox::StandardButtons buttons
+			= QMessageBox::Apply
+			| QMessageBox::Discard
+			| QMessageBox::Cancel;
+		switch (QMessageBox::warning(this,
+			tr("Warning"),
+			tr("Some settings have been changed.\n\n"
+			"Do you want to apply the changes?"),
+			buttons)) {
+		case QMessageBox::Discard:
+			break;
+		case QMessageBox::Apply:
+			accept();
+			// Fall-thru...
+		default:
+			// Cancel.
+			return;
+		}
+	}
+
 	QDialog::reject();
 }
 
@@ -229,7 +249,7 @@ void qtractorAuxSendIOMatrixForm::reject (void)
 // qtractorAuxSendIOMatrixForm::TableWidget
 
 qtractorAuxSendIOMatrixForm::TableWidget::TableWidget ( QWidget *parent )
-	: QTableWidget(2, 2, parent), m_form(nullptr)
+	: QTableWidget(2, 2, parent), m_form(nullptr), m_dirty(0)
 {
 	QTableWidget::setSelectionMode(QTableWidget::NoSelection);
 
@@ -259,6 +279,12 @@ qtractorAuxSendIOMatrixForm *qtractorAuxSendIOMatrixForm::TableWidget::form (voi
 }
 
 
+bool qtractorAuxSendIOMatrixForm::TableWidget::isDirty (void) const
+{
+	return (m_dirty > 0);
+}
+
+
 void qtractorAuxSendIOMatrixForm::TableWidget::toggleCell ( int row, int col )
 {
 	const QList<QButtonGroup *>& groups = m_form->groups();
@@ -272,6 +298,7 @@ void qtractorAuxSendIOMatrixForm::TableWidget::toggleCell ( int row, int col )
 				if (on) group->setExclusive(false);
 				radio->setChecked(!on);
 				if (on) group->setExclusive(true);
+				++m_dirty;
 			}
 		}
 	}

@@ -1050,6 +1050,20 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <source>Aux-Send I/O Matrix</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="229"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="230"/>
+        <source>Some settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation type="unfinished">Některá nastavení byla změněna.
+
+Chcete použít tyto změny?</translation>
+    </message>
 </context>
 <context>
     <name>qtractorBusForm</name>

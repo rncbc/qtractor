@@ -93,6 +93,8 @@ public:
 	void setForm(qtractorAuxSendIOMatrixForm *form);
 	qtractorAuxSendIOMatrixForm *form() const;
 
+	bool isDirty() const;
+
 protected:
 
 	void mousePressEvent(QMouseEvent *event) override;
@@ -103,6 +105,8 @@ protected:
 private:
 
 	qtractorAuxSendIOMatrixForm *m_form;
+
+	int m_dirty;
 };
 
 
