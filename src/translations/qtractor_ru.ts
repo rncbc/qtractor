@@ -13735,17 +13735,17 @@ Are you sure?</source>
 Вы уверены?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1418"/>
+        <location filename="../qtractorPluginForm.cpp" line="1419"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1422"/>
+        <location filename="../qtractorPluginForm.cpp" line="1423"/>
         <source>(no latency)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1162"/>
+        <location filename="../qtractorPluginForm.cpp" line="1163"/>
         <source>&amp;None</source>
         <translation>&amp;Нет</translation>
     </message>
@@ -14082,7 +14082,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1881"/>
+        <location filename="../qtractorPluginForm.cpp" line="1882"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>

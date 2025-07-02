@@ -35,14 +35,31 @@
 //-------------------------------------------------------------------------
 // qtractorAuxSendIOMatrixForm::RadioButton
 
-class qtractorAuxSendIOMatrixForm::RadioButton : public QWidget
+class qtractorAuxSendIOMatrixForm::RadioButton : public QRadioButton
 {
 public:
 
 	RadioButton(QWidget *parent = nullptr)
+		: QRadioButton(parent) {}
+
+protected:
+
+	bool hitButton(const QPoint&) const
+		{ return false; }
+};
+
+
+//-------------------------------------------------------------------------
+// qtractorAuxSendIOMatrixForm::TableCell
+
+class qtractorAuxSendIOMatrixForm::TableCell : public QWidget
+{
+public:
+
+	TableCell(QWidget *parent = nullptr)
 		: QWidget(parent)
 	{
-		m_radio = new QRadioButton(this);
+		m_radio = new RadioButton(this);
 
 		QHBoxLayout *layout = new QHBoxLayout();
 		layout->setContentsMargins(0, 0, 0, 0);
@@ -53,12 +70,12 @@ public:
 		QWidget::setLayout(layout);
 	}
 
-	QRadioButton *radio() const
+	RadioButton *radio() const
 		{ return m_radio; }
 
 private:
 
-	QRadioButton *m_radio;
+	RadioButton *m_radio;
 };
 
 
@@ -175,11 +192,11 @@ void qtractorAuxSendIOMatrixForm::refresh (void)
 		QButtonGroup *group = new QButtonGroup(this);
 		group->setExclusive(true);
 		for (int col = 0; col < nouts; ++col) {
-			RadioButton *radio = new RadioButton();
-			m_ui.TableWidget->setCellWidget(row, col, radio);
-			group->addButton(radio->radio(), col);
+			TableCell *cell = new TableCell();
+			m_ui.TableWidget->setCellWidget(row, col, cell);
+			group->addButton(cell->radio(), col);
 			if (out == col)
-				radio->radio()->setChecked(true);
+				cell->radio()->setChecked(true);
 		}
 		m_groups.append(group);
 	}

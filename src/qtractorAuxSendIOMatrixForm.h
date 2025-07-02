@@ -57,6 +57,7 @@ public:
 	void refresh();
 
 	class TableWidget;
+	class TableCell;
 	class RadioButton;
 
 	const QList<QButtonGroup *>& groups() const;

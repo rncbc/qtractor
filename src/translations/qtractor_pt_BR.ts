@@ -13761,7 +13761,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Entradas (Retornos)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1162"/>
+        <location filename="../qtractorPluginForm.cpp" line="1163"/>
         <source>&amp;None</source>
         <translation>&amp;Nada</translation>
     </message>
@@ -13856,12 +13856,12 @@ Sorry.</source>
 Desculpe.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1418"/>
+        <location filename="../qtractorPluginForm.cpp" line="1419"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>Latência: %1 ms (%2 amostras)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1422"/>
+        <location filename="../qtractorPluginForm.cpp" line="1423"/>
         <source>(no latency)</source>
         <translation>(sem latência)</translation>
     </message>
@@ -14186,7 +14186,7 @@ Posso continuar?</translation>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1881"/>
+        <location filename="../qtractorPluginForm.cpp" line="1882"/>
         <source>Open File</source>
         <translation>Abrir Arquivo</translation>
     </message>

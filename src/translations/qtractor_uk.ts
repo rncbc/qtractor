@@ -13956,17 +13956,17 @@ Are you sure?</source>
 Ви справді цього хочете?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1162"/>
+        <location filename="../qtractorPluginForm.cpp" line="1163"/>
         <source>&amp;None</source>
         <translation>&amp;Немає</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1418"/>
+        <location filename="../qtractorPluginForm.cpp" line="1419"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>Латентність: %1 мс (%2 кадрів)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1422"/>
+        <location filename="../qtractorPluginForm.cpp" line="1423"/>
         <source>(no latency)</source>
         <translation>(немає латентності)</translation>
     </message>
@@ -14192,7 +14192,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1881"/>
+        <location filename="../qtractorPluginForm.cpp" line="1882"/>
         <source>Open File</source>
         <translation>Відкриття файла</translation>
     </message>

@@ -1123,6 +1123,7 @@ void qtractorPluginForm::clickAuxSendIOMatrixSlot (void)
 		return;
 
 	qtractorAuxSendIOMatrixForm dialog(this);
+	dialog.setWindowTitle(m_pPlugin->editorTitle());
 	dialog.setChannels(pAudioAuxSendPlugin->channels(), pAudioBus->channels());
 	dialog.setMatrix(pAudioAuxSendPlugin->audioBusMatrix());
 	dialog.refresh();

@@ -13941,17 +13941,17 @@ Are you sure?</source>
 よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1418"/>
+        <location filename="../qtractorPluginForm.cpp" line="1419"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>遅延: %1 ms (%2 フレーム)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1422"/>
+        <location filename="../qtractorPluginForm.cpp" line="1423"/>
         <source>(no latency)</source>
         <translation>(遅延なし)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1162"/>
+        <location filename="../qtractorPluginForm.cpp" line="1163"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>
@@ -14177,7 +14177,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1881"/>
+        <location filename="../qtractorPluginForm.cpp" line="1882"/>
         <source>Open File</source>
         <translation>ファイルを開く</translation>
     </message>
