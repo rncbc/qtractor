@@ -5955,10 +5955,20 @@ void qtractorMainForm::transportLoopSet (void)
 	// Make sure session is activated?...
 	//checkRestartSession();
 
+	// Do the loop-set toggle switch...
+	unsigned long iLoopStart = m_pSession->editHead();
+	unsigned long iLoopEnd   = m_pSession->editTail();
+
+	if (m_pSession->isLooping() &&
+		m_pSession->loopStart() == m_pSession->editHead() &&
+		m_pSession->loopEnd()   == m_pSession->editTail()) {
+		iLoopStart = 0;
+		iLoopEnd   = 0;
+	}
+
 	// Now, express the change as an undoable command...
 	m_pSession->execute(
-		new qtractorSessionLoopCommand(m_pSession,
-			m_pSession->editHead(), m_pSession->editTail()));
+		new qtractorSessionLoopCommand(m_pSession, iLoopStart, iLoopEnd));
 }
 
 
@@ -6903,7 +6913,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportLoopAction->setEnabled(
 		!bRolling && (bLooping || bSelectable));
 	m_ui.transportLoopSetAction->setEnabled(
-		!bRolling && bSelectable);
+		!bRolling && (bSelectable || bLooping));
 	m_ui.transportStopAction->setEnabled(bPlaying);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 	m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);
