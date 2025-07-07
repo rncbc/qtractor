@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Transport/Loop Set behavior slightly changed, now toggling the
+  loop range if the edit-head/tail match current loop-start/end.
+
 - Introducing Aux-Send audio bus I/O matrix functionality.
   (EXPERIMENTAL)
 
