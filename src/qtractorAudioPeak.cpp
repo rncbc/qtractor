@@ -944,13 +944,13 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	const int p1 = int(iPeakLength);
 	const int n1 = iChannels * p1;
 
-	if (width < p1 && width > 1 && 2 >= iChannels) {
+	if (width < p1 && width > 1) {
 		const int w2 = (width >> 1) + 1;
 		const int n2 = iChannels * w2;
 		m_pPeakFrames = new qtractorAudioPeakFile::Frame [n2];
 		int n = 0; int i = 0;
 		while (n < n2) {
-			const int i2 = ((n + iChannels) * n1) / n2;
+			const int i2 = iChannels * (((n + iChannels) * p1) / n2);
 			for (unsigned short k = 0; k < iChannels; ++k) {
 				qtractorAudioPeakFile::Frame *pNewFrame = &m_pPeakFrames[n + k];
 				pNewFrame->max = 0;
