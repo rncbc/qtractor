@@ -974,6 +974,28 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     </message>
 </context>
 <context>
+    <name>qtractorAudioIOMatrixForm</name>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.ui" line="39"/>
+        <source>Aux-Send I/O Matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
+        <source>Warning</source>
+        <translation type="unfinished">Предупреждение</translation>
+    </message>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
+        <source>Some settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation type="unfinished">Некоторые параметры изменились.
+
+Вы хотите применить изменения?</translation>
+    </message>
+</context>
+<context>
     <name>qtractorAudioListView</name>
     <message>
         <location filename="../qtractorAudioListView.cpp" line="113"/>
@@ -1037,28 +1059,6 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <location filename="../qtractorAudioMeter.cpp" line="681"/>
         <source>Gain: %1 dB</source>
         <translation>Усиление: %1 Дб</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorAuxSendIOMatrixForm</name>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.ui" line="39"/>
-        <source>Aux-Send I/O Matrix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="229"/>
-        <source>Warning</source>
-        <translation type="unfinished">Предупреждение</translation>
-    </message>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="230"/>
-        <source>Some settings have been changed.
-
-Do you want to apply the changes?</source>
-        <translation type="unfinished">Некоторые параметры изменились.
-
-Вы хотите применить изменения?</translation>
     </message>
 </context>
 <context>

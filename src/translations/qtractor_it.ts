@@ -978,6 +978,28 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
     </message>
 </context>
 <context>
+    <name>qtractorAudioIOMatrixForm</name>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.ui" line="39"/>
+        <source>Aux-Send I/O Matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
+        <source>Warning</source>
+        <translation type="unfinished">Attenzione</translation>
+    </message>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
+        <source>Some settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation type="unfinished">Alcune impostazioni sono state modificate.
+
+Vuoi applicare le modifiche?</translation>
+    </message>
+</context>
+<context>
     <name>qtractorAudioListView</name>
     <message>
         <location filename="../qtractorAudioListView.cpp" line="113"/>
@@ -1041,28 +1063,6 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <location filename="../qtractorAudioMeter.cpp" line="681"/>
         <source>Gain: %1 dB</source>
         <translation type="unfinished">Guadagno: %1 dB</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorAuxSendIOMatrixForm</name>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.ui" line="39"/>
-        <source>Aux-Send I/O Matrix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="229"/>
-        <source>Warning</source>
-        <translation type="unfinished">Attenzione</translation>
-    </message>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="230"/>
-        <source>Some settings have been changed.
-
-Do you want to apply the changes?</source>
-        <translation type="unfinished">Alcune impostazioni sono state modificate.
-
-Vuoi applicare le modifiche?</translation>
     </message>
 </context>
 <context>

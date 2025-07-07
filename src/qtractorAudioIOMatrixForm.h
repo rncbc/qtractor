@@ -1,4 +1,4 @@
-// qtractorAuxSendIOMatrixForm.h
+// qtractorAudioIOMatrixForm.h
 //
 /****************************************************************************
    Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorAuxSendIOMatrixForm_h
-#define __qtractorAuxSendIOMatrixForm_h
+#ifndef __qtractorAudioIOMatrixForm_h
+#define __qtractorAudioIOMatrixForm_h
 
 #include <QDialog>
 
@@ -32,20 +32,20 @@ class QButtonGroup;
 
 
 //-------------------------------------------------------------------------
-// qtractorAuxSendIOMatrixForm
+// qtractorAudioIOMatrixForm
 
-namespace Ui { class qtractorAuxSendIOMatrixForm; }
+namespace Ui { class qtractorAudioIOMatrixForm; }
 
 
-class qtractorAuxSendIOMatrixForm: public QDialog
+class qtractorAudioIOMatrixForm: public QDialog
 {
 	Q_OBJECT
 
 public:
 
-	qtractorAuxSendIOMatrixForm(QWidget *parent = nullptr);
+	qtractorAudioIOMatrixForm(QWidget *parent = nullptr);
 
-	virtual ~qtractorAuxSendIOMatrixForm();
+	virtual ~qtractorAudioIOMatrixForm();
 
 	void setChannels(int nins, int nouts);
 	int inputChannels() const;
@@ -72,8 +72,8 @@ protected slots:
 
 private:
 
-	Ui::qtractorAuxSendIOMatrixForm *p_ui;
-	Ui::qtractorAuxSendIOMatrixForm& m_ui;
+	Ui::qtractorAudioIOMatrixForm *p_ui;
+	Ui::qtractorAudioIOMatrixForm& m_ui;
 
 	QList<QButtonGroup *> m_groups;
 
@@ -82,16 +82,16 @@ private:
 
 
 //-------------------------------------------------------------------------
-// qtractorAuxSendIOMatrixForm::TableWidget
+// qtractorAudioIOMatrixForm::TableWidget
 
-class qtractorAuxSendIOMatrixForm::TableWidget : public QTableWidget
+class qtractorAudioIOMatrixForm::TableWidget : public QTableWidget
 {
 public:
 
 	TableWidget(QWidget *parent = nullptr);
 
-	void setForm(qtractorAuxSendIOMatrixForm *form);
-	qtractorAuxSendIOMatrixForm *form() const;
+	void setForm(qtractorAudioIOMatrixForm *form);
+	qtractorAudioIOMatrixForm *form() const;
 
 	bool isDirty() const;
 
@@ -104,12 +104,12 @@ protected:
 
 private:
 
-	qtractorAuxSendIOMatrixForm *m_form;
+	qtractorAudioIOMatrixForm *m_form;
 
 	int m_dirty;
 };
 
 
-#endif // __qtractorAuxSendIOMatrixForm_h
+#endif // __qtractorAudioIOMatrixForm_h
 
-// end of qtractorAuxSendIOMatrixForm.h
+// end of qtractorAudioIOMatrixForm.h
