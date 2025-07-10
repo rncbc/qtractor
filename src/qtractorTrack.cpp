@@ -1746,9 +1746,8 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				iClipOffset += (iTrackStart - iClipStart);
 				iClipStart = iTrackStart;
 			}
-			if (iClipEnd > iTrackEnd) {
+			if (iClipEnd > iTrackEnd)
 				iClipEnd = iTrackEnd;
-			}
 			int x1, x2;
 			if (pClip->clipStart0() > 0) {
 				x1 = 0;
@@ -1757,17 +1756,18 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				x1 = m_pSession->pixelFromFrame(iClipStart) - x0;
 				x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
 			}
-			qDebug("%s@%d: x0=%d, x1=%d, x2=%d", __func__, __LINE__, x0, x1, x2);
-			pPainter->setPen(pen);
-			pPainter->setBrush(brush);
-			// Draw the clip...
-			const QRect clipRect(x1, y, x2 - x1, h);
-			pClip->drawClip(pPainter, clipRect, iClipOffset);
-			if (pClip == pClipRecordEx)
-				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
-			else
-			if (pClip->isClipMute())
-				pPainter->fillRect(clipRect, QColor(0, 0, 0, 60));
+			if (x1 < x2) {
+				pPainter->setPen(pen);
+				pPainter->setBrush(brush);
+				// Draw the clip...
+				const QRect clipRect(x1, y, x2 - x1, h);
+				pClip->drawClip(pPainter, clipRect, iClipOffset);
+				if (pClip == pClipRecordEx)
+					pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
+				else
+				if (pClip->isClipMute())
+					pPainter->fillRect(clipRect, QColor(0, 0, 0, 60));
+			}
 		}
 		pClip = pClip->next();
 	}

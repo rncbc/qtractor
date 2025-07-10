@@ -35,7 +35,7 @@
 #include "qtractorMidiControlObserverForm.h"
 #include "qtractorMidiControlPluginWidget.h"
 
-#include "qtractorAuxSendIOMatrixForm.h"
+#include "qtractorAudioIOMatrixForm.h"
 
 #include "qtractorSpinBox.h"
 
@@ -1122,7 +1122,7 @@ void qtractorPluginForm::clickAuxSendIOMatrixSlot (void)
 	if (pAudioBus == nullptr)
 		return;
 
-	qtractorAuxSendIOMatrixForm dialog(this);
+	qtractorAudioIOMatrixForm dialog(this);
 	dialog.setWindowTitle(m_pPlugin->editorTitle());
 	dialog.setChannels(pAudioAuxSendPlugin->channels(), pAudioBus->channels());
 	dialog.setMatrix(pAudioAuxSendPlugin->audioBusMatrix());
