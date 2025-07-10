@@ -951,6 +951,8 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		int n = 0; int i = 0;
 		while (n < n2) {
 			const int i2 = iChannels * (((n + iChannels) * p1) / n2);
+			if (i2 >= n1)
+				break;
 			for (unsigned short k = 0; k < iChannels; ++k) {
 				qtractorAudioPeakFile::Frame *pNewFrame = &m_pPeakFrames[n + k];
 				pNewFrame->max = 0;

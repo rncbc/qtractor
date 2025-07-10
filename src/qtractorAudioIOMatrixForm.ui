@@ -19,8 +19,8 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  </comment>
- <class>qtractorAuxSendIOMatrixForm</class>
- <widget class="QDialog" name="qtractorAuxSendIOMatrixForm`">
+ <class>qtractorAudioIOMatrixForm</class>
+ <widget class="QDialog" name="qtractorAudioIOMatrixForm`">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -46,7 +46,7 @@
     <number>4</number>
    </property>
    <item>
-    <widget class="qtractorAuxSendIOMatrixForm::TableWidget" name="TableWidget" />
+    <widget class="qtractorAudioIOMatrixForm::TableWidget" name="TableWidget" />
    </item>
    <item>
     <widget class="QDialogButtonBox" name="DialogButtons">
@@ -62,9 +62,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>qtractorAuxSendIOMatrixForm::TableWidget</class>
+   <class>qtractorAudioIOMatrixForm::TableWidget</class>
    <extends>QTableWidget</extends>
-   <header>qtractorAuxSendIOMatrixForm.h</header>
+   <header>qtractorAudioIOMatrixForm.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

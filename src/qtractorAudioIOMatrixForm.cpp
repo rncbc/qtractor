@@ -1,4 +1,4 @@
-// qtractorAuxSendIOMatrixForm.cpp
+// qtractorAudioIOMatrixForm.cpp
 //
 /****************************************************************************
    Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,9 +19,9 @@
 
 *****************************************************************************/
 
-#include "qtractorAuxSendIOMatrixForm.h"
+#include "qtractorAudioIOMatrixForm.h"
 
-#include "ui_qtractorAuxSendIOMatrixForm.h"
+#include "ui_qtractorAudioIOMatrixForm.h"
 
 
 #include <QHeaderView>
@@ -33,9 +33,9 @@
 
 
 //-------------------------------------------------------------------------
-// qtractorAuxSendIOMatrixForm::RadioButton
+// qtractorAudioIOMatrixForm::RadioButton
 
-class qtractorAuxSendIOMatrixForm::RadioButton : public QRadioButton
+class qtractorAudioIOMatrixForm::RadioButton : public QRadioButton
 {
 public:
 
@@ -50,9 +50,9 @@ protected:
 
 
 //-------------------------------------------------------------------------
-// qtractorAuxSendIOMatrixForm::TableCell
+// qtractorAudioIOMatrixForm::TableCell
 
-class qtractorAuxSendIOMatrixForm::TableCell : public QWidget
+class qtractorAudioIOMatrixForm::TableCell : public QWidget
 {
 public:
 
@@ -80,10 +80,10 @@ private:
 
 
 //-------------------------------------------------------------------------
-// qtractorAuxSendIOMatrixForm
+// qtractorAudioIOMatrixForm
 
-qtractorAuxSendIOMatrixForm::qtractorAuxSendIOMatrixForm ( QWidget *parent )
-	: QDialog(parent), p_ui(new Ui::qtractorAuxSendIOMatrixForm), m_ui(*p_ui)
+qtractorAudioIOMatrixForm::qtractorAudioIOMatrixForm ( QWidget *parent )
+	: QDialog(parent), p_ui(new Ui::qtractorAudioIOMatrixForm), m_ui(*p_ui)
 {
 	m_ui.setupUi(this);
 
@@ -100,7 +100,7 @@ qtractorAuxSendIOMatrixForm::qtractorAuxSendIOMatrixForm ( QWidget *parent )
 }
 
 
-qtractorAuxSendIOMatrixForm::~qtractorAuxSendIOMatrixForm (void)
+qtractorAudioIOMatrixForm::~qtractorAudioIOMatrixForm (void)
 {
 	delete p_ui;
 
@@ -108,7 +108,7 @@ qtractorAuxSendIOMatrixForm::~qtractorAuxSendIOMatrixForm (void)
 }
 
 
-void qtractorAuxSendIOMatrixForm::setChannels ( int nins, int nouts )
+void qtractorAudioIOMatrixForm::setChannels ( int nins, int nouts )
 {
 #ifdef CONFIG_DEBUG
 	qDebug("%s(%d, %d)", __func__, nins, nouts);
@@ -118,50 +118,50 @@ void qtractorAuxSendIOMatrixForm::setChannels ( int nins, int nouts )
 }
 
 
-int qtractorAuxSendIOMatrixForm::inputChannels (void) const
+int qtractorAudioIOMatrixForm::inputChannels (void) const
 {
 	return m_ui.TableWidget->rowCount();
 }
 
 
-int qtractorAuxSendIOMatrixForm::outputChannels (void) const
+int qtractorAudioIOMatrixForm::outputChannels (void) const
 {
 	return m_ui.TableWidget->columnCount();
 }
 
 
-void qtractorAuxSendIOMatrixForm::setMatrix ( const QList<int>& matrix )
+void qtractorAudioIOMatrixForm::setMatrix ( const QList<int>& matrix )
 {
 	m_matrix = matrix;
 }
 
 
-const QList<int>& qtractorAuxSendIOMatrixForm::matrix (void) const
+const QList<int>& qtractorAudioIOMatrixForm::matrix (void) const
 {
 	return m_matrix;
 }
 
 
 
-void qtractorAuxSendIOMatrixForm::inputChannelsChanged ( int index )
+void qtractorAudioIOMatrixForm::inputChannelsChanged ( int index )
 {
 	setChannels(index + 1, outputChannels());
 }
 
 
-void qtractorAuxSendIOMatrixForm::outputChannelsChanged ( int index )
+void qtractorAudioIOMatrixForm::outputChannelsChanged ( int index )
 {
 	setChannels(inputChannels(), index + 1);
 }
 
 
-const QList<QButtonGroup *>& qtractorAuxSendIOMatrixForm::groups (void) const
+const QList<QButtonGroup *>& qtractorAudioIOMatrixForm::groups (void) const
 {
 	return m_groups;
 }
 
 
-void qtractorAuxSendIOMatrixForm::refresh (void)
+void qtractorAudioIOMatrixForm::refresh (void)
 {
 	m_ui.TableWidget->clear();
 
@@ -201,7 +201,7 @@ void qtractorAuxSendIOMatrixForm::refresh (void)
 }
 
 
-void qtractorAuxSendIOMatrixForm::accept (void)
+void qtractorAudioIOMatrixForm::accept (void)
 {
 	m_matrix.clear();
 
@@ -217,7 +217,7 @@ void qtractorAuxSendIOMatrixForm::accept (void)
 }
 
 
-void qtractorAuxSendIOMatrixForm::reject (void)
+void qtractorAudioIOMatrixForm::reject (void)
 {
 	// Check if there's any pending changes...
 	if (m_ui.TableWidget->isDirty()) {
@@ -246,9 +246,9 @@ void qtractorAuxSendIOMatrixForm::reject (void)
 
 
 //-------------------------------------------------------------------------
-// qtractorAuxSendIOMatrixForm::TableWidget
+// qtractorAudioIOMatrixForm::TableWidget
 
-qtractorAuxSendIOMatrixForm::TableWidget::TableWidget ( QWidget *parent )
+qtractorAudioIOMatrixForm::TableWidget::TableWidget ( QWidget *parent )
 	: QTableWidget(2, 2, parent), m_form(nullptr), m_dirty(0)
 {
 	QTableWidget::setSelectionMode(QTableWidget::NoSelection);
@@ -267,25 +267,25 @@ qtractorAuxSendIOMatrixForm::TableWidget::TableWidget ( QWidget *parent )
 }
 
 
-void qtractorAuxSendIOMatrixForm::TableWidget::setForm ( qtractorAuxSendIOMatrixForm *form )
+void qtractorAudioIOMatrixForm::TableWidget::setForm ( qtractorAudioIOMatrixForm *form )
 {
 	m_form = form;
 }
 
 
-qtractorAuxSendIOMatrixForm *qtractorAuxSendIOMatrixForm::TableWidget::form (void) const
+qtractorAudioIOMatrixForm *qtractorAudioIOMatrixForm::TableWidget::form (void) const
 {
 	return m_form;
 }
 
 
-bool qtractorAuxSendIOMatrixForm::TableWidget::isDirty (void) const
+bool qtractorAudioIOMatrixForm::TableWidget::isDirty (void) const
 {
 	return (m_dirty > 0);
 }
 
 
-void qtractorAuxSendIOMatrixForm::TableWidget::toggleCell ( int row, int col )
+void qtractorAudioIOMatrixForm::TableWidget::toggleCell ( int row, int col )
 {
 	const QList<QButtonGroup *>& groups = m_form->groups();
 	if (row >= 0 && row < groups.size()) {
@@ -305,7 +305,7 @@ void qtractorAuxSendIOMatrixForm::TableWidget::toggleCell ( int row, int col )
 }
 
 
-void qtractorAuxSendIOMatrixForm::TableWidget::keyPressEvent ( QKeyEvent *event )
+void qtractorAudioIOMatrixForm::TableWidget::keyPressEvent ( QKeyEvent *event )
 {
 	QTableWidget::keyPressEvent(event);
 
@@ -318,7 +318,7 @@ void qtractorAuxSendIOMatrixForm::TableWidget::keyPressEvent ( QKeyEvent *event 
 
 
 
-void qtractorAuxSendIOMatrixForm::TableWidget::mousePressEvent ( QMouseEvent *event )
+void qtractorAudioIOMatrixForm::TableWidget::mousePressEvent ( QMouseEvent *event )
 {
 	QTableWidget::mousePressEvent(event);
 
@@ -332,4 +332,4 @@ void qtractorAuxSendIOMatrixForm::TableWidget::mousePressEvent ( QMouseEvent *ev
 }
 
 
-// end of qtractorAuxSendIOMatrixForm.cpp
+// end of qtractorAudioIOMatrixForm.cpp

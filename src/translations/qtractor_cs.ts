@@ -978,6 +978,28 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
 </context>
 <context>
+    <name>qtractorAudioIOMatrixForm</name>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.ui" line="39"/>
+        <source>Aux-Send I/O Matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
+        <source>Some settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation type="unfinished">Některá nastavení byla změněna.
+
+Chcete použít tyto změny?</translation>
+    </message>
+</context>
+<context>
     <name>qtractorAudioListView</name>
     <message>
         <location filename="../qtractorAudioListView.cpp" line="113"/>
@@ -1041,28 +1063,6 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorAudioMeter.cpp" line="681"/>
         <source>Gain: %1 dB</source>
         <translation>Zesílení: %1 dB</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorAuxSendIOMatrixForm</name>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.ui" line="39"/>
-        <source>Aux-Send I/O Matrix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="229"/>
-        <source>Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorAuxSendIOMatrixForm.cpp" line="230"/>
-        <source>Some settings have been changed.
-
-Do you want to apply the changes?</source>
-        <translation type="unfinished">Některá nastavení byla změněna.
-
-Chcete použít tyto změny?</translation>
     </message>
 </context>
 <context>
