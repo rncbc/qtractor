@@ -216,37 +216,37 @@ Ende:	%3	Länge:	%4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="584"/>
+        <location filename="../qtractorEngineCommand.cpp" line="587"/>
         <source>create bus</source>
         <translation>Erzeuge Bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="606"/>
+        <location filename="../qtractorEngineCommand.cpp" line="609"/>
         <source>update bus</source>
         <translation>Aktualisiere Bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="623"/>
+        <location filename="../qtractorEngineCommand.cpp" line="626"/>
         <source>delete bus</source>
         <translation>Lösche Bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="646"/>
+        <location filename="../qtractorEngineCommand.cpp" line="649"/>
         <source>move bus</source>
         <translation>Verschiebe Bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="694"/>
+        <location filename="../qtractorEngineCommand.cpp" line="697"/>
         <source>bus pass-through</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="740"/>
+        <location filename="../qtractorEngineCommand.cpp" line="743"/>
         <source>bus gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="817"/>
+        <location filename="../qtractorEngineCommand.cpp" line="820"/>
         <source>bus pan</source>
         <translation type="unfinished"></translation>
     </message>

@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Give some slack time to stabilize, when updating or changing
+  audio bus channel counts, mitigating the probability to fault
+  when unregistering old and registering new PipeWire/JACK ports
+  in immediate succession. (EXPERIMENTAL)
+
 - Transport/Loop Set behavior slightly changed, now toggling the
   loop range if the edit-head/tail match current loop-start/end.
 

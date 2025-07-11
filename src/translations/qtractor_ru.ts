@@ -96,37 +96,37 @@ End:	%3	Length:	%4</source>
         <translation>Файл:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="584"/>
+        <location filename="../qtractorEngineCommand.cpp" line="587"/>
         <source>create bus</source>
         <translation>создание шины</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="606"/>
+        <location filename="../qtractorEngineCommand.cpp" line="609"/>
         <source>update bus</source>
         <translation>обновление шины</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="623"/>
+        <location filename="../qtractorEngineCommand.cpp" line="626"/>
         <source>delete bus</source>
         <translation>удаление шины</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="646"/>
+        <location filename="../qtractorEngineCommand.cpp" line="649"/>
         <source>move bus</source>
         <translation>перемещение шины</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="694"/>
+        <location filename="../qtractorEngineCommand.cpp" line="697"/>
         <source>bus pass-through</source>
         <translation>сквозная шина</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="740"/>
+        <location filename="../qtractorEngineCommand.cpp" line="743"/>
         <source>bus gain</source>
         <translation>усиление шины</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="817"/>
+        <location filename="../qtractorEngineCommand.cpp" line="820"/>
         <source>bus pan</source>
         <translation>панорама шины</translation>
     </message>
