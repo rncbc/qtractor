@@ -544,7 +544,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="266"/>
         <source>aux-send matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>matrice aux-send</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="308"/>
@@ -981,19 +981,21 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorAudioIOMatrixForm.ui" line="39"/>
         <source>Aux-Send I/O Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice d&apos;E/S Aux-Send</translation>
     </message>
     <message>
         <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Certains paramètres ont été modifiés.
+
+Souhaitez-vous appliquer ces modifications ?</translation>
     </message>
 </context>
 <context>
@@ -6110,7 +6112,15 @@ erased from all its current data,
 when closing this session.
 
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le répertoire est une archive extraite :
+
+&quot;%1&quot;
+
+Ce répertoire sera supprimé,
+effacé de toutes ses données actuelles,
+lors de la fermeture de cette session.
+
+Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2759"/>
@@ -13865,12 +13875,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="372"/>
         <source>Audio bus I/O matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice d&apos;E/S de bus audio</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="375"/>
         <source>I/O Matrix...</source>
-        <translation type="unfinished"></translation>
+        <translation>Marice d&apos;E/S...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="413"/>
