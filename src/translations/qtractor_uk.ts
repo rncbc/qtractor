@@ -680,7 +680,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="193"/>
         <source>add MIDI controller</source>
-        <translation type="unfinished"></translation>
+        <translation>додати MIDI-контролер</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="217"/>
@@ -690,7 +690,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="266"/>
         <source>aux-send matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>матриця надсилання aux</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="308"/>
@@ -964,17 +964,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="75"/>
         <source>Control (MIDI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Керування (MIDI)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="108"/>
         <source>MIDI Controller Send pseudo-plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Псевдододаток надислання MIDI-контролера</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPlugin.cpp" line="141"/>
         <source>Value</source>
-        <translation type="unfinished">Значення</translation>
+        <translation>Значення</translation>
     </message>
 </context>
 <context>
@@ -982,19 +982,19 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorAudioIOMatrixForm.ui" line="39"/>
         <source>Aux-Send I/O Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Матриця надсилання введення-виведення Aux</translation>
     </message>
     <message>
         <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation type="unfinished">До деяких параметрів було внесено зміни.
+        <translation>До деяких параметрів було внесено зміни.
 
 Хочете застосувати ці зміни?</translation>
     </message>
@@ -6137,7 +6137,15 @@ erased from all its current data,
 when closing this session.
 
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог є результатом видобування даних з архіву:
+
+«%1»
+
+Цей каталог буде вилучено,
+очищено від усіх поточних даних,
+при закритті цього сеансу.
+
+Продовжити виконання дії?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2759"/>
@@ -7337,47 +7345,47 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="29"/>
         <source>&amp;Type:</source>
-        <translation type="unfinished">&amp;Тип:</translation>
+        <translation>&amp;Тип:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="42"/>
         <source>MIDI event type</source>
-        <translation type="unfinished">Тип події MIDI</translation>
+        <translation>Тип події MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="62"/>
         <source>Cha&amp;nnel:</source>
-        <translation type="unfinished">&amp;Канал:</translation>
+        <translation>&amp;Канал:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="75"/>
         <source>MIDI channel</source>
-        <translation type="unfinished">Канал MIDI</translation>
+        <translation>Канал MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="91"/>
         <source>&amp;Parameter:</source>
-        <translation type="unfinished">&amp;Параметр:</translation>
+        <translation>&amp;Параметр:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="104"/>
         <source>MIDI parameter</source>
-        <translation type="unfinished">Параметр MIDI</translation>
+        <translation>Параметр MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="111"/>
         <source>&amp;Logarithmic</source>
-        <translation type="unfinished">&amp;Логарифмічний</translation>
+        <translation>&amp;Логарифмічний</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="118"/>
         <source>In&amp;vert</source>
-        <translation type="unfinished">&amp;Інвертувати</translation>
+        <translation>&amp;Інвертувати</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="125"/>
         <source>&amp;Bipolar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Біполярний</translation>
     </message>
 </context>
 <context>
@@ -13844,7 +13852,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPluginForm.ui" line="308"/>
         <source>Auto-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоз&apos;єднання</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="315"/>
@@ -13864,12 +13872,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPluginForm.ui" line="372"/>
         <source>Audio bus I/O matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Матриця В/В звукової шини</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="375"/>
         <source>I/O Matrix...</source>
-        <translation type="unfinished"></translation>
+        <translation>Матриця В/В…</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="413"/>
@@ -14114,7 +14122,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1911"/>
         <source>Add &amp;Controller</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати &amp;контролер</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1940"/>
