@@ -332,7 +332,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="266"/>
         <source>aux-send matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice aux-send</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="308"/>
@@ -982,19 +982,19 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorAudioIOMatrixForm.ui" line="39"/>
         <source>Aux-Send I/O Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice vstupu/výstupu aux-send</translation>
     </message>
     <message>
         <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Upozornění</translation>
     </message>
     <message>
         <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation type="unfinished">Některá nastavení byla změněna.
+        <translation>Některá nastavení byla změněna.
 
 Chcete použít tyto změny?</translation>
     </message>
@@ -2966,7 +2966,15 @@ erased from all its current data,
 when closing this session.
 
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář je rozbalený archiv:
+
+&quot;%1&quot;
+
+Tento adresář bude odstraněn,
+vymazána všechna jeho nynější data,
+při ukončení tohoto sezení.
+
+Chcete pokračovat?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2759"/>
@@ -13959,12 +13967,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="372"/>
         <source>Audio bus I/O matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice vstupu/výstupu zvukové sběrnice</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="375"/>
         <source>I/O Matrix...</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice vstupu/výstupu...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="413"/>
