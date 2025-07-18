@@ -215,37 +215,37 @@ End:	%3	Length:	%4</source>
         <translation>%1 モニター</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="584"/>
+        <location filename="../qtractorEngineCommand.cpp" line="587"/>
         <source>create bus</source>
         <translation>バスの作成</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="606"/>
+        <location filename="../qtractorEngineCommand.cpp" line="609"/>
         <source>update bus</source>
         <translation>バスの更新</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="623"/>
+        <location filename="../qtractorEngineCommand.cpp" line="626"/>
         <source>delete bus</source>
         <translation>バスの削除</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="646"/>
+        <location filename="../qtractorEngineCommand.cpp" line="649"/>
         <source>move bus</source>
         <translation>バスの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="694"/>
+        <location filename="../qtractorEngineCommand.cpp" line="697"/>
         <source>bus pass-through</source>
         <translation>バスのパススルー</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="740"/>
+        <location filename="../qtractorEngineCommand.cpp" line="743"/>
         <source>bus gain</source>
         <translation>バスのゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="817"/>
+        <location filename="../qtractorEngineCommand.cpp" line="820"/>
         <source>bus pan</source>
         <translation>バスのパン</translation>
     </message>
