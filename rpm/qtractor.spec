@@ -192,6 +192,8 @@ cmake --install build
 
 
 %changelog
+* Sat Jul 19 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.7
+- A Summer'25 Release.
 * Fri Jun  6 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.6
 - An End-of-Spring'25 Release.
 * Wed May 21 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.5
