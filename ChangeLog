@@ -4,26 +4,24 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.5.7  2025-07-19  A Summer'25 Release.
 
 - Give some slack time to stabilize, when updating or changing
   audio bus channel counts, mitigating the probability to fault
   when unregistering old and registering new PipeWire/JACK ports
-  in immediate succession. (EXPERIMENTAL)
+  in immediate succession.
 
 - Transport/Loop Set behavior slightly changed, now toggling the
   loop range if the edit-head/tail match current loop-start/end.
 
 - Introducing Aux-Send audio bus I/O matrix functionality.
-  (EXPERIMENTAL)
 
 - Corrected greater-than-2-channel audio clip waveform drawing,
   while on certain zoom levels, an old bug lurking there since
   dawn, quite an example to the evil of too-early optimization ;)
-  (GH #507) (EXPERIMENTAL)
 
 - Draw all audio clip peaks+rms waveforms slightly compressed, so
-  that low-level signals have improved visibility. (EXPERIMENTAL)
+  that low-level signals have improved visibility.
 
 - Warn when saving any type of session into an extracted archive
   directory.
