@@ -1,7 +1,7 @@
 // qtractorWsolaTimeStretcher.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2012, Olli Parviainen.
@@ -216,6 +216,11 @@ public:
 
 		// Ensures that the buffer has capacity for at least this many frames.
 		void ensureCapacity(unsigned int iCapacity);
+
+	protected:
+
+		// Destroy all current allocated buffers.
+		void clearFifoBuffer();
 
 	private:
 

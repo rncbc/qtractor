@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed WSOLA time-stretching crashing on greater-than-2-channels
+  /stereo audio clips. (GH Issue #510)
+  
+- Fix misaligned LV2 Atoms. (GH PR #511)
+
+
 1.5.7  2025-07-19  A Summer'25 Release.
 
 - Give some slack time to stabilize, when updating or changing

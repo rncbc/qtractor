@@ -1,7 +1,7 @@
 // qtractorWsolaTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2012, Olli Parviainen.
@@ -659,13 +659,7 @@ qtractorWsolaTimeStretcher::FifoBuffer::FifoBuffer (
 // Destructor.
 qtractorWsolaTimeStretcher::FifoBuffer::~FifoBuffer (void)
 {
-	if (m_ppBufferUnaligned) {
-		for (unsigned short i = 0; i < m_iChannels; ++i)
-			delete [] m_ppBufferUnaligned[i];
-		delete [] m_ppBufferUnaligned;
-	}
-	if (m_ppBuffer)
-		delete [] m_ppBuffer;
+	clearFifoBuffer();
 }
 
 
@@ -675,7 +669,9 @@ void qtractorWsolaTimeStretcher::FifoBuffer::setChannels (
 {
 	if (m_iChannels == iChannels)
 		return;
-	
+
+	clearFifoBuffer();
+
 	m_iChannels = iChannels;
 	m_iBufferSize = 0;
 	
@@ -802,6 +798,23 @@ void qtractorWsolaTimeStretcher::FifoBuffer::ensureCapacity (
 		}
 		// Done rewind.
 		m_iFramePos = 0;
+	}
+}
+
+
+// Destroy all current allocated buffers.
+void qtractorWsolaTimeStretcher::FifoBuffer::clearFifoBuffer (void)
+{
+	if (m_ppBufferUnaligned) {
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			delete [] m_ppBufferUnaligned[i];
+		delete [] m_ppBufferUnaligned;
+		m_ppBufferUnaligned = nullptr;
+	}
+
+	if (m_ppBuffer) {
+		delete [] m_ppBuffer;
+		m_ppBuffer = nullptr;
 	}
 }
 
