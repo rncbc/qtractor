@@ -659,7 +659,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorInsertPlugin.cpp" line="482"/>
         <location filename="../qtractorInsertPlugin.cpp" line="792"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1283"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1623"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1621"/>
         <source>Send Gain</source>
         <translation>Poslat zesílení</translation>
     </message>
@@ -691,20 +691,20 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Pomocný nepravý přídavný modul pro odeslání (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1493"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1791"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1491"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1789"/>
         <source>(none)</source>
         <translation>(žádný)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="765"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1494"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1492"/>
         <source>%1 (Audio)</source>
         <translation>%1 (Audio)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1090"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1792"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1790"/>
         <location filename="../qtractorMidiControlPlugin.cpp" line="569"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
