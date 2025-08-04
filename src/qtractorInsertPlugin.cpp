@@ -1333,15 +1333,7 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	if (m_pAudioBus)
 		m_pAudioBus = nullptr;
 
-	if (m_ppOBuffers) {
-		delete [] m_ppOBuffers;
-		m_ppOBuffers = nullptr;
-	}
-
-	if (m_piOBuffers) {
-		delete [] m_piOBuffers;
-		m_piOBuffers = nullptr;
-	}
+	updateAudioBusMatrix(0);
 
 	// Set new instance number...
 	setInstances(iInstances);
@@ -1364,15 +1356,6 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 
 	// Setup aux-send bus...
 	setAudioBusName(m_sAudioBusName);
-
-	// Setup audio bus I/O matrix and buffers...
-	if (iChannels > 0 && m_pAudioBus) {
-		const unsigned short iOBuffers = m_pAudioBus->channels();
-		const unsigned short iIBuffers = qMin(iChannels, iOBuffers);
-		m_ppOBuffers = new float * [iIBuffers];
-		m_piOBuffers = new int [iIBuffers];
-		updateAudioBusMatrix(iChannels);
-	}
 
 	// (Re)activate instance if necessary...
 	setChannelsActivated(iChannels, bActivated);
@@ -1426,6 +1409,8 @@ void qtractorAudioAuxSendPlugin::setAudioBusName (
 	}
 
 	updateAudioBusName();
+
+	updateAudioBusMatrix(channels());
 }
 
 const QString& qtractorAudioAuxSendPlugin::audioBusName (void) const
@@ -1467,9 +1452,22 @@ const QList<int>& qtractorAudioAuxSendPlugin::audioBusMatrix (void) const
 
 void qtractorAudioAuxSendPlugin::updateAudioBusMatrix ( unsigned short iChannels )
 {
-	if (m_pAudioBus && m_ppOBuffers && m_piOBuffers) {
+	if (m_ppOBuffers) {
+		delete [] m_ppOBuffers;
+		m_ppOBuffers = nullptr;
+	}
+
+	if (m_piOBuffers) {
+		delete [] m_piOBuffers;
+		m_piOBuffers = nullptr;
+	}
+
+	// Setup audio bus I/O matrix and buffers...
+	if (iChannels > 0 && m_pAudioBus) {
 		const unsigned short iOBuffers = m_pAudioBus->channels();
 		const unsigned short iIBuffers = qMin(iChannels, iOBuffers);
+		m_ppOBuffers = new float * [iIBuffers];
+		m_piOBuffers = new int [iIBuffers];
 		int j = 0;
 		for (unsigned short i = 0; i < iIBuffers; ++i) {
 			m_ppOBuffers[i] = nullptr;

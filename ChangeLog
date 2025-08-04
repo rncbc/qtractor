@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed initial Aux-Send audio bus I/O matrix functionality.
+
 - Fixed WSOLA time-stretching crashing on greater-than-2-channels
   /stereo audio clips. (GH Issue #510)
   
