@@ -890,12 +890,15 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackMoveBottomAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackMoveBottom()));
-	QObject::connect(m_ui.trackHeightUpAction,
+	QObject::connect(m_ui.trackHeightIncreaseAction,
 		SIGNAL(triggered(bool)),
-		SLOT(trackHeightUp()));
-	QObject::connect(m_ui.trackHeightDownAction,
+		SLOT(trackHeightIncrease()));
+	QObject::connect(m_ui.trackHeightDecreaseAction,
 		SIGNAL(triggered(bool)),
-		SLOT(trackHeightDown()));
+		SLOT(trackHeightDecrease()));
+	QObject::connect(m_ui.trackHeightMinimizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackHeightMinimize()));
 	QObject::connect(m_ui.trackHeightResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackHeightReset()));
@@ -4045,7 +4048,7 @@ void qtractorMainForm::trackMoveBottom (void)
 
 
 // Increase current track height.
-void qtractorMainForm::trackHeightUp (void)
+void qtractorMainForm::trackHeightIncrease (void)
 {
 	qtractorTrack *pTrack = nullptr;
 	if (m_pTracks)
@@ -4054,7 +4057,7 @@ void qtractorMainForm::trackHeightUp (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackHeightUp()");
+	qDebug("qtractorMainForm::trackHeightIncrease()");
 #endif
 
 	const int iZoomHeight = (150 * pTrack->zoomHeight()) / 100;
@@ -4064,7 +4067,7 @@ void qtractorMainForm::trackHeightUp (void)
 
 
 // Decreate current track height.
-void qtractorMainForm::trackHeightDown (void)
+void qtractorMainForm::trackHeightDecrease (void)
 {
 	qtractorTrack *pTrack = nullptr;
 	if (m_pTracks)
@@ -4073,10 +4076,30 @@ void qtractorMainForm::trackHeightDown (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackHeightDown()");
+	qDebug("qtractorMainForm::trackHeightDecrease()");
 #endif
 
 	const int iZoomHeight = (75 * pTrack->zoomHeight()) / 100;
+	m_pSession->execute(
+		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
+}
+
+
+// Minimize current track height.
+void qtractorMainForm::trackHeightMinimize (void)
+{
+	qtractorTrack *pTrack = nullptr;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackHeightMinimize()");
+#endif
+
+	const int iVerticalZoom = m_pSession->verticalZoom();
+	const int iZoomHeight = (iVerticalZoom * qtractorTrack::HeightMin) / 100;
 	m_pSession->execute(
 		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 }

@@ -245,8 +245,10 @@
      <property name="title">
       <string>&amp;Height</string>
      </property>
-     <addaction name="trackHeightUpAction"/>
-     <addaction name="trackHeightDownAction"/>
+     <addaction name="trackHeightIncreaseAction"/>
+     <addaction name="trackHeightDecreaseAction"/>
+     <addaction name="separator"/>
+     <addaction name="trackHeightMinimizeAction"/>
      <addaction name="separator"/>
      <addaction name="trackHeightResetAction"/>
     </widget>
@@ -1384,7 +1386,7 @@
     <string>Move current track to bottom</string>
    </property>
   </action>
-  <action name="trackHeightUpAction">
+  <action name="trackHeightIncreaseAction">
    <property name="text">
     <string>&amp;Increase</string>
    </property>
@@ -1401,7 +1403,7 @@
     <string>Ctrl+Shift++</string>
    </property>
   </action>
-  <action name="trackHeightDownAction">
+  <action name="trackHeightDecreaseAction">
    <property name="text">
     <string>&amp;Decrease</string>
    </property>
@@ -1416,6 +1418,20 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+-</string>
+   </property>
+  </action>
+  <action name="trackHeightMinimizeAction">
+   <property name="text">
+    <string>&amp;Minimize</string>
+   </property>
+   <property name="iconText">
+    <string>Minimize Height</string>
+   </property>
+   <property name="toolTip">H
+    <string>Minimize height</string>
+   </property>
+   <property name="statusTip">
+    <string>Minimize track height</string>
    </property>
   </action>
   <action name="trackHeightResetAction">
