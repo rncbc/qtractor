@@ -1400,7 +1400,7 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 	}
 
 	unsigned long iClipRecordEnd = iFrameTime;
-	if (iClipRecordEnd  > m_iClipRecordStart)
+	if (iClipRecordEnd >= m_iClipRecordStart)
 		iClipRecordEnd -= m_iClipRecordStart;
 	if (m_pClipRecord)
 		iClipRecordEnd += m_pClipRecord->clipStart();

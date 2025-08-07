@@ -1827,7 +1827,7 @@ void qtractorSession::trackRecord (
 
 	// Make sure the recording clip
 	// starts on some exact location...
-	pTrack->setClipRecordStart(bPlaying ? iFrameTime : iClipStart);
+	pTrack->setClipRecordStart(iFrameTime);
 
 #if 0
 	// Mute track as appropriate...

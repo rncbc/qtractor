@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed all empty/void audio clips created when aborting an armed
+  recording session; revisited. (EXPERIEMNTAL)
+
 - Added new Track/Height/Minimize menu item.
 
 - Fixed initial Aux-Send audio bus I/O matrix functionality.
