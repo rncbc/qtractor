@@ -425,6 +425,8 @@ void qtractorTrack::clear (void)
 		delete m_pSyncThread;
 		m_pSyncThread = nullptr;
 	}
+
+	m_iZoomHeightBase = -1;
 }
 
 
@@ -1238,6 +1240,28 @@ void qtractorTrack::updateZoomHeight (void)
 		if (m_iZoomHeight < HeightMin)
 			m_iZoomHeight = HeightMin;
 	}
+}
+
+
+// Visual height minimize/toggle.
+int qtractorTrack::minimizeZoomHeight (void)
+{
+	int iZoomHeight = m_iZoomHeight;
+
+	if (iZoomHeight > HeightMin) {
+		m_iZoomHeightBase = iZoomHeight;
+		iZoomHeight = HeightMin;
+	}
+	else
+	if (m_iZoomHeightBase > HeightMin)
+		iZoomHeight = m_iZoomHeightBase;
+	else
+	if (m_pSession) {
+		iZoomHeight = (HeightBase * m_pSession->verticalZoom()) / 100;
+		m_iZoomHeightBase = iZoomHeight;
+	}
+
+	return iZoomHeight;
 }
 
 

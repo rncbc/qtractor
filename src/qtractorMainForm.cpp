@@ -4100,12 +4100,8 @@ void qtractorMainForm::trackHeightMinimize (void)
 	qDebug("qtractorMainForm::trackHeightMinimize()");
 #endif
 
-	const int iVerticalZoom = m_pSession->verticalZoom();
-	int iZoomHeight = (iVerticalZoom * qtractorTrack::HeightMin) / 100;
-	if (iZoomHeight >= pTrack->zoomHeight())
-		iZoomHeight = (iVerticalZoom * qtractorTrack::HeightBase) / 100;
 	m_pSession->execute(
-		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
+		new qtractorResizeTrackCommand(pTrack, pTrack->minimizeZoomHeight()));
 }
 
 
