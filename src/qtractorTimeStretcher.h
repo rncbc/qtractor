@@ -89,6 +89,7 @@ private:
 	unsigned int m_iRubberBandFrames;
 	float **m_ppRubberBandFrames;
 	float **m_ppRubberBandBuffer;
+	bool m_bRubberBandStart;
 	bool m_bRubberBandFlush;
 #endif
 };
