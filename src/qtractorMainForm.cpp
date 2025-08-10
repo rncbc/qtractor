@@ -2716,44 +2716,46 @@ bool qtractorMainForm::saveSessionFileEx (
 				return false;
 		}
 	}
-	// Warn when saving any type of session
+	// Warn when saving some type of sessions
 	// into an extracted archive directory...
-	info.setFile(info.path());
-	if (info.exists() && info.isDir() &&
-		qtractorDocument::extractedArchives().contains(info.filePath())) {
-		bool bConfirmArchive = true;
-		if  (m_pOptions && m_pOptions->bConfirmArchive) {
-			const QString& sTitle
-				= tr("Warning");
-			const QString& sText = tr(
-				"The directory is an extracted archive:\n\n"
-				"\"%1\"\n\n"
-				"This directory will be removed,\n"
-				"erased from all its current data,\n"
-				"when closing this session.\n\n"
-				"Do you want to continue?")
-				.arg(info.filePath());
-		#if 0
-			bConfirmArchive (QMessageBox::warning(this, sTitle, sText,
-				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
-		#else
-			QMessageBox mbox(this);
-			mbox.setIcon(QMessageBox::Warning);
-			mbox.setWindowTitle(sTitle);
-			mbox.setText(sText);
-			mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-			QCheckBox cbox(tr("Don't ask this again"));
-			cbox.setChecked(false);
-			cbox.blockSignals(true);
-			mbox.addButton(&cbox, QMessageBox::ActionRole);
-			bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
-			if (cbox.isChecked())
-				m_pOptions->bConfirmArchive = false;
-		#endif
+	if ((iFlags & qtractorDocument::Temporary) == 0) {
+		info.setFile(info.path());
+		if (info.exists() && info.isDir() &&
+			qtractorDocument::extractedArchives().contains(info.filePath())) {
+			bool bConfirmArchive = true;
+			if  (m_pOptions && m_pOptions->bConfirmArchive) {
+				const QString& sTitle
+					= tr("Warning");
+				const QString& sText = tr(
+					"The directory is an extracted archive:\n\n"
+					"\"%1\"\n\n"
+					"This directory will be removed,\n"
+					"erased from all its current data,\n"
+					"when closing this session.\n\n"
+					"Do you want to continue?")
+					.arg(info.filePath());
+			#if 0
+				bConfirmArchive (QMessageBox::warning(this, sTitle, sText,
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+			#else
+				QMessageBox mbox(this);
+				mbox.setIcon(QMessageBox::Warning);
+				mbox.setWindowTitle(sTitle);
+				mbox.setText(sText);
+				mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+				QCheckBox cbox(tr("Don't ask this again"));
+				cbox.setChecked(false);
+				cbox.blockSignals(true);
+				mbox.addButton(&cbox, QMessageBox::ActionRole);
+				bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
+				if (cbox.isChecked())
+					m_pOptions->bConfirmArchive = false;
+			#endif
+			}
+			// Aborting?...
+			if (!bConfirmArchive)
+				return false;
 		}
-		// Aborting?...
-		if (!bConfirmArchive)
-			return false;
 	}
 #endif
 

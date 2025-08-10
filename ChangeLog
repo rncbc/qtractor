@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Avoid warning when auto-saving an extracted archive/zip session.
+
 - Fixed all empty/void audio clips created when aborting an armed
   recording session; revisited. (EXPERIEMNTAL)
 
