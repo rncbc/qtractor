@@ -34,10 +34,10 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	, m_pRubberBandStretcher(nullptr)
 	, m_iRubberBandChannels(iChannels)
 	, m_iRubberBandLatency(0)
+	, m_iRubberBandPadding(0)
 	, m_iRubberBandFrames(0)
 	, m_ppRubberBandFrames(nullptr)
 	, m_ppRubberBandBuffer(nullptr)
-	, m_bRubberBandStart(false)
 	, m_bRubberBandFlush(false)
 #endif
 {
@@ -79,7 +79,8 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 		if (fPitchShift  < 1e-3f)
 			fPitchShift  = 1.0f;
 		RubberBand::RubberBandStretcher::Options options
-			= RubberBand::RubberBandStretcher::OptionProcessRealTime;
+			= RubberBand::RubberBandStretcher::OptionProcessRealTime
+			| RubberBand::RubberBandStretcher::OptionWindowShort;
 		if (iFlags & RubberBandFormant)
 			options |= RubberBand::RubberBandStretcher::OptionFormantPreserved;
 	#ifdef CONFIG_LIBRUBBERBAND_R3
@@ -94,11 +95,12 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 		m_ppRubberBandBuffer = new float * [m_iRubberBandChannels];
 	#ifdef CONFIG_LIBRUBBERBAND_R3
 		m_iRubberBandLatency = m_pRubberBandStretcher->getStartDelay();
-		m_iRubberBandFrames = m_pRubberBandStretcher->getPreferredStartPad();
-		if (m_iRubberBandFrames < m_iRubberBandLatency)
-			m_iRubberBandFrames = m_iRubberBandLatency;
+		m_iRubberBandPadding = m_pRubberBandStretcher->getPreferredStartPad();
+		m_iRubberBandPadding += m_iRubberBandLatency;
+		m_iRubberBandFrames = qMax(m_iRubberBandLatency, m_iRubberBandPadding);
 	#else
 		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
+		m_iRubberBandPadding = m_iRubberBandLatency;
 		m_iRubberBandFrames = m_iRubberBandLatency;
 	#endif
 		if (m_iRubberBandFrames > 0) {
@@ -153,13 +155,11 @@ void qtractorTimeStretcher::process (
 	}
 #ifdef CONFIG_LIBRUBBERBAND
 	if (m_pRubberBandStretcher) {
-		if (!m_bRubberBandStart) {
-			// Process the first dummy empty buffer...
-			if (m_iRubberBandFrames > 0) {
-				m_pRubberBandStretcher->process(
-					m_ppRubberBandFrames, m_iRubberBandFrames, false);
-			}
-			m_bRubberBandStart = true;
+		// Process the first dummy empty buffer...
+		if (m_iRubberBandPadding > 0) {
+			m_pRubberBandStretcher->process(
+				m_ppRubberBandFrames, m_iRubberBandPadding, false);
+			m_iRubberBandPadding = 0;
 		}
 		m_pRubberBandStretcher->process(ppFrames, iFrames, false);
 	}
@@ -243,11 +243,11 @@ void qtractorTimeStretcher::reset (void)
 		m_pRubberBandStretcher->reset();
 	#ifdef CONFIG_LIBRUBBERBAND_R3
 		m_iRubberBandLatency = m_pRubberBandStretcher->getStartDelay();
-		m_iRubberBandFrames = m_pRubberBandStretcher->getPreferredStartPad();
-		if (m_iRubberBandFrames < m_iRubberBandLatency)
-			m_iRubberBandFrames = m_iRubberBandLatency;
+		m_iRubberBandPadding = m_pRubberBandStretcher->getPreferredStartPad();
+		m_iRubberBandFrames = qMax(m_iRubberBandLatency, m_iRubberBandPadding);
 	#else
 		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
+		m_iRubberBandPadding = m_iRubberBandLatency;
 		m_iRubberBandFrames = m_iRubberBandLatency;
 	#endif
 		if (m_iRubberBandFrames > 0) {
@@ -261,7 +261,6 @@ void qtractorTimeStretcher::reset (void)
 			for (unsigned short i = 1; i < m_iRubberBandChannels; ++i)
 				m_ppRubberBandFrames[i] = m_ppRubberBandFrames[0];
 		}
-		m_bRubberBandStart = false;
 		m_bRubberBandFlush = false;
 	}
 #endif

@@ -86,10 +86,10 @@ private:
 	RubberBand::RubberBandStretcher *m_pRubberBandStretcher;
 	unsigned short m_iRubberBandChannels;
 	unsigned int m_iRubberBandLatency;
+	unsigned int m_iRubberBandPadding;
 	unsigned int m_iRubberBandFrames;
 	float **m_ppRubberBandFrames;
 	float **m_ppRubberBandBuffer;
-	bool m_bRubberBandStart;
 	bool m_bRubberBandFlush;
 #endif
 };
