@@ -891,12 +891,15 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackMoveBottomAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackMoveBottom()));
-	QObject::connect(m_ui.trackHeightUpAction,
+	QObject::connect(m_ui.trackHeightIncreaseAction,
 		SIGNAL(triggered(bool)),
-		SLOT(trackHeightUp()));
-	QObject::connect(m_ui.trackHeightDownAction,
+		SLOT(trackHeightIncrease()));
+	QObject::connect(m_ui.trackHeightDecreaseAction,
 		SIGNAL(triggered(bool)),
-		SLOT(trackHeightDown()));
+		SLOT(trackHeightDecrease()));
+	QObject::connect(m_ui.trackHeightMinimizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackHeightMinimize()));
 	QObject::connect(m_ui.trackHeightResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackHeightReset()));
@@ -2719,44 +2722,46 @@ bool qtractorMainForm::saveSessionFileEx (
 				return false;
 		}
 	}
-	// Warn when saving any type of session
+	// Warn when saving some type of sessions
 	// into an extracted archive directory...
-	info.setFile(info.path());
-	if (info.exists() && info.isDir() &&
-		qtractorDocument::extractedArchives().contains(info.filePath())) {
-		bool bConfirmArchive = true;
-		if  (m_pOptions && m_pOptions->bConfirmArchive) {
-			const QString& sTitle
-				= tr("Warning");
-			const QString& sText = tr(
-				"The directory is an extracted archive:\n\n"
-				"\"%1\"\n\n"
-				"This directory will be removed,\n"
-				"erased from all its current data,\n"
-				"when closing this session.\n\n"
-				"Do you want to continue?")
-				.arg(info.filePath());
-		#if 0
-			bConfirmArchive (QMessageBox::warning(this, sTitle, sText,
-				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
-		#else
-			QMessageBox mbox(this);
-			mbox.setIcon(QMessageBox::Warning);
-			mbox.setWindowTitle(sTitle);
-			mbox.setText(sText);
-			mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-			QCheckBox cbox(tr("Don't ask this again"));
-			cbox.setChecked(false);
-			cbox.blockSignals(true);
-			mbox.addButton(&cbox, QMessageBox::ActionRole);
-			bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
-			if (cbox.isChecked())
-				m_pOptions->bConfirmArchive = false;
-		#endif
+	if ((iFlags & qtractorDocument::Temporary) == 0) {
+		info.setFile(info.path());
+		if (info.exists() && info.isDir() &&
+			qtractorDocument::extractedArchives().contains(info.filePath())) {
+			bool bConfirmArchive = true;
+			if  (m_pOptions && m_pOptions->bConfirmArchive) {
+				const QString& sTitle
+					= tr("Warning");
+				const QString& sText = tr(
+					"The directory is an extracted archive:\n\n"
+					"\"%1\"\n\n"
+					"This directory will be removed,\n"
+					"erased from all its current data,\n"
+					"when closing this session.\n\n"
+					"Do you want to continue?")
+					.arg(info.filePath());
+			#if 0
+				bConfirmArchive (QMessageBox::warning(this, sTitle, sText,
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+			#else
+				QMessageBox mbox(this);
+				mbox.setIcon(QMessageBox::Warning);
+				mbox.setWindowTitle(sTitle);
+				mbox.setText(sText);
+				mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+				QCheckBox cbox(tr("Don't ask this again"));
+				cbox.setChecked(false);
+				cbox.blockSignals(true);
+				mbox.addButton(&cbox, QMessageBox::ActionRole);
+				bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
+				if (cbox.isChecked())
+					m_pOptions->bConfirmArchive = false;
+			#endif
+			}
+			// Aborting?...
+			if (!bConfirmArchive)
+				return false;
 		}
-		// Aborting?...
-		if (!bConfirmArchive)
-			return false;
 	}
 #endif
 
@@ -4051,7 +4056,7 @@ void qtractorMainForm::trackMoveBottom (void)
 
 
 // Increase current track height.
-void qtractorMainForm::trackHeightUp (void)
+void qtractorMainForm::trackHeightIncrease (void)
 {
 	qtractorTrack *pTrack = nullptr;
 	if (m_pTracks)
@@ -4060,7 +4065,7 @@ void qtractorMainForm::trackHeightUp (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackHeightUp()");
+	qDebug("qtractorMainForm::trackHeightIncrease()");
 #endif
 
 	const int iZoomHeight = (150 * pTrack->zoomHeight()) / 100;
@@ -4070,7 +4075,7 @@ void qtractorMainForm::trackHeightUp (void)
 
 
 // Decreate current track height.
-void qtractorMainForm::trackHeightDown (void)
+void qtractorMainForm::trackHeightDecrease (void)
 {
 	qtractorTrack *pTrack = nullptr;
 	if (m_pTracks)
@@ -4079,12 +4084,30 @@ void qtractorMainForm::trackHeightDown (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackHeightDown()");
+	qDebug("qtractorMainForm::trackHeightDecrease()");
 #endif
 
 	const int iZoomHeight = (75 * pTrack->zoomHeight()) / 100;
 	m_pSession->execute(
 		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
+}
+
+
+// Minimize current track height.
+void qtractorMainForm::trackHeightMinimize (void)
+{
+	qtractorTrack *pTrack = nullptr;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackHeightMinimize()");
+#endif
+
+	m_pSession->execute(
+		new qtractorResizeTrackCommand(pTrack, pTrack->minimizeZoomHeight()));
 }
 
 
