@@ -185,8 +185,9 @@ public slots:
 	void trackMoveUp();
 	void trackMoveDown();
 	void trackMoveBottom();
-	void trackHeightUp();
-	void trackHeightDown();
+	void trackHeightIncrease();
+	void trackHeightDecrease();
+	void trackHeightMinimize();
 	void trackHeightReset();
 	void trackAutoMonitor(bool bOn);
 	void trackAutoDeactivate(bool bOn);
