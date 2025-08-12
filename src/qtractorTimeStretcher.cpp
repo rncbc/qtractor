@@ -79,8 +79,7 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 		if (fPitchShift  < 1e-3f)
 			fPitchShift  = 1.0f;
 		RubberBand::RubberBandStretcher::Options options
-			= RubberBand::RubberBandStretcher::OptionProcessRealTime
-			| RubberBand::RubberBandStretcher::OptionWindowShort;
+			= RubberBand::RubberBandStretcher::OptionProcessRealTime;
 		if (iFlags & RubberBandFormant)
 			options |= RubberBand::RubberBandStretcher::OptionFormantPreserved;
 	#ifdef CONFIG_LIBRUBBERBAND_R3
