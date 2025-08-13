@@ -985,12 +985,12 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="228"/>
         <source>Warning</source>
         <translation type="unfinished">Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>

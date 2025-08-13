@@ -185,8 +185,7 @@ void qtractorAudioIOMatrixForm::refresh (void)
 		if (row < m_matrix.size())
 			out = m_matrix.at(row);
 		else
-		if (row < nouts)
-			out = row;
+			out = (row % nouts);
 		QButtonGroup *group = new QButtonGroup(this);
 		group->setExclusive(true);
 		for (int col = 0; col < nouts; ++col) {

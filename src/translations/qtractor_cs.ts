@@ -985,12 +985,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Matrice vstupu/výstupu aux-send</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="228"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>

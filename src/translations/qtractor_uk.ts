@@ -985,12 +985,12 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Матриця надсилання введення-виведення Aux</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="228"/>
         <source>Warning</source>
         <translation>Попередження</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>

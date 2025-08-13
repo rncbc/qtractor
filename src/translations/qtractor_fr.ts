@@ -984,12 +984,12 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>Matrice d&apos;E/S Aux-Send</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="228"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioIOMatrixForm.cpp" line="230"/>
+        <location filename="../qtractorAudioIOMatrixForm.cpp" line="229"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
