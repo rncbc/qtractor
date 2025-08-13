@@ -1465,7 +1465,7 @@ void qtractorAudioAuxSendPlugin::updateAudioBusMatrix ( unsigned short iChannels
 	// Setup audio bus I/O matrix and buffers...
 	if (iChannels > 0 && m_pAudioBus) {
 		const unsigned short iOBuffers = m_pAudioBus->channels();
-		const unsigned short iIBuffers = qMin(iChannels, iOBuffers);
+		const unsigned short iIBuffers = iChannels;
 		m_ppOBuffers = new float * [iIBuffers];
 		m_piOBuffers = new int [iIBuffers];
 		int j = 0;
@@ -1520,7 +1520,7 @@ void qtractorAudioAuxSendPlugin::process (
 	float **ppOut = m_pAudioBus->out();
 	const unsigned int iOffset = pAudioEngine->bufferOffset();
 	const unsigned short iOBuffers = m_pAudioBus->channels();
-	const unsigned short iIBuffers = qMin(channels(), iOBuffers);
+	const unsigned short iIBuffers = channels();
 	const float fGain = m_pSendGainParam->value();
 
 	if (m_ppOBuffers && m_piOBuffers) {

@@ -17,7 +17,8 @@ GIT HEAD
 
 - Added new Track/Height/Minimize menu item.
 
-- Fixed initial Aux-Send audio bus I/O matrix functionality.
+- Fixed initial Aux-Send audio bus I/O matrix functionality; also
+  when input channel count is greater than output count.
 
 - Fixed WSOLA time-stretching crashing on greater-than-2-channels
   /stereo audio clips. (GH Issue #510)
