@@ -5080,22 +5080,22 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1425"/>
         <source>&amp;Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zmenšit</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1428"/>
         <source>Minimize Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmenšit výšku</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1431"/>
         <source>Minimize height</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmenšit výšku</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1434"/>
         <source>Minimize track height</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmenšit výšku stopy</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1462"/>
