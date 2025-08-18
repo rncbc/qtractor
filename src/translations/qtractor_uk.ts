@@ -3980,22 +3980,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1425"/>
         <source>&amp;Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Мінімізувати</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1428"/>
         <source>Minimize Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Мінімізувати висоту</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1431"/>
         <source>Minimize height</source>
-        <translation type="unfinished"></translation>
+        <translation>Мінімізувати висоту</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1434"/>
         <source>Minimize track height</source>
-        <translation type="unfinished"></translation>
+        <translation>Мінімізувати висоту доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1439"/>
@@ -7649,12 +7649,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="124"/>
         <source>Chinese Cymbal</source>
-        <translation type="unfinished"></translation>
+        <translation>Китайські цимбали</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="125"/>
         <source>Ride Bell</source>
-        <translation type="unfinished"></translation>
+        <translation>Тарілка</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="126"/>
