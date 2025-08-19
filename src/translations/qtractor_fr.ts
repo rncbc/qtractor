@@ -3979,22 +3979,22 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1425"/>
         <source>&amp;Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Minimiser</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1428"/>
         <source>Minimize Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimiser la hauteur</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1431"/>
         <source>Minimize height</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimiser la hauteur</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1434"/>
         <source>Minimize track height</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimiser la hauteur de piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1439"/>
