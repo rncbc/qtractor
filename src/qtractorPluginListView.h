@@ -175,7 +175,7 @@ protected slots:
 	void dropCopy();
 	void dropCancel();
 
-	// Simple click handler.
+	// Double/simple-click handler.
 	void itemDoubleClickedSlot(QListWidgetItem *);
 	void itemActivatedSlot(QListWidgetItem *);
 

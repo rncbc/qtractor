@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- When selecting an Aux-Send pseudo-plugin, also highlight the
+  respective target output bus mixer strip. (EXPERIMENTAL)
+
 - Mitigate and compensate for padding and start-delay/latency to
   (lib)RubberBand time-stretching and pitch-shifting processing.
   (GH #513) (EXPERIMENTAL)

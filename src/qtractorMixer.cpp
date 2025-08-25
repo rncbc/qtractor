@@ -1375,9 +1375,6 @@ void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 
 void qtractorMixerRack::setSelectedStrip2 ( qtractorMixerStrip *pStrip )
 {
-	if (m_pSelectedStrip2 == m_pSelectedStrip)
-		return;
-
 	if (m_pSelectedStrip2)
 		m_pSelectedStrip2->setSelected(false);
 
@@ -1795,6 +1792,31 @@ void qtractorMixer::keyPressEvent ( QKeyEvent *pKeyEvent )
 		QMainWindow::keyPressEvent(pKeyEvent);
 		break;
 	}
+}
+
+
+// Current selected output bus (usually an Aux-Send target) accessors.
+void qtractorMixer::setSelectedOutputBus ( qtractorBus *pOutputBus )
+{
+	qtractorMixerStrip *pOutputStrip2 = nullptr;
+
+	if (pOutputBus && (pOutputBus->busMode() & qtractorBus::Output))
+		pOutputStrip2 = m_pOutputRack->findStrip(pOutputBus->monitor_out());
+
+	if (pOutputStrip2)
+		m_pOutputRack->setSelectedStrip2(pOutputStrip2);
+}
+
+
+qtractorBus *qtractorMixer::selectedOutputBus (void) const
+{
+	qtractorBus *pOutputBus = nullptr;
+
+	qtractorMixerStrip *pOutputStrip2 = m_pOutputRack->selectedStrip2();
+	if (pOutputStrip2)
+		pOutputBus = pOutputStrip2->bus();
+
+	return pOutputBus;
 }
 
 

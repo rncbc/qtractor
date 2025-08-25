@@ -41,6 +41,8 @@
 #include "qtractorInsertPlugin.h"
 #include "qtractorMidiControlPlugin.h"
 
+#include "qtractorMixer.h"
+
 #include <QItemDelegate>
 #include <QPainter>
 #include <QMenu>
@@ -190,7 +192,7 @@ protected:
 		const QStyleOptionViewItem& option, const QModelIndex& index ) const
 	{
 		QSize size(QItemDelegate::sizeHint(option, index));
-		size.setHeight(16);
+		size.setHeight(qMax(size.height(), 16));
 		return size;
 	}
 
@@ -301,15 +303,13 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	// Trap for help/tool-tips events.
 	QListWidget::viewport()->installEventFilter(this);
 
-	// Double-click handling...
+	// Double/simple-click handling...
 	QObject::connect(this,
 		SIGNAL(itemDoubleClicked(QListWidgetItem*)),
 		SLOT(itemDoubleClickedSlot(QListWidgetItem*)));
-#if 0
 	QObject::connect(this,
 		SIGNAL(itemActivated(QListWidgetItem*)),
 		SLOT(itemActivatedSlot(QListWidgetItem*)));
-#endif
 }
 
 
@@ -1376,13 +1376,8 @@ void qtractorPluginListView::midiControlAutoConnect (void)
 }
 
 
-// Show an existing plugin form slot.
+// Double-click handler.
 void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
-{
-	itemActivatedSlot(item);
-}
-
-void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 {
 	if (m_pPluginList == nullptr)
 		return;
@@ -1409,6 +1404,51 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 		pPlugin->openEditor();
 	else
 		pPlugin->openForm();
+}
+
+
+// Simple-click handler.
+void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
+{
+	if (m_pPluginList == nullptr)
+		return;
+
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (item);
+	if (pItem == nullptr)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == nullptr)
+		return;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == nullptr)
+		return;
+
+	if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+			= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+		if (pAudioAuxSendPlugin)
+			pMixer->setSelectedOutputBus(pAudioAuxSendPlugin->audioBus());
+
+	} else {
+		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+			= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
+		if (pMidiAuxSendPlugin)
+			pMixer->setSelectedOutputBus(pMidiAuxSendPlugin->midiBus());
+	}
 }
 
 

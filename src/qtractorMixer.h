@@ -421,6 +421,10 @@ public:
 	// Multi-row workspace layout method.
 	void updateWorkspaces();
 
+	// Current selected output bus (usually an Aux-Send target) accessors.
+	void setSelectedOutputBus(qtractorBus *pOutputBus);
+	qtractorBus *selectedOutputBus() const;
+
 protected:
 
 	// Just about to notify main-window that we're closing.
