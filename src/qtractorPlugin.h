@@ -471,7 +471,7 @@ public:
 
 	void toggleFormEditor(bool bOn);
 	void updateFormDirtyCount();
-	void updateMidiControlAutoConnect();
+	void updateFormMidiControlAutoConnect();
 	void updateFormAuxSendBusName();
 	void updateFormActivated();
 	void refreshForm();

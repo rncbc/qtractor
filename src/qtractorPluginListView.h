@@ -118,6 +118,9 @@ public:
 	// Show insert pseudo-plugin audio bus connections.
 	static void insertPluginBus(qtractorPlugin *pPlugin, int iBusMode);
 
+	// Show selected Aux-Send bus on the mixer outputs pane.
+	static void updateAuxSendPluginBus(qtractorPlugin *pPlugin);
+
 signals:
 
 	// Plugin chain changed somehow.
@@ -177,7 +180,7 @@ protected slots:
 
 	// Double/simple-click handler.
 	void itemDoubleClickedSlot(QListWidgetItem *);
-	void itemActivatedSlot(QListWidgetItem *);
+	void itemClickedSlot(QListWidgetItem *);
 
 protected:
 

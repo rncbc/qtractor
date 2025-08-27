@@ -1803,8 +1803,7 @@ void qtractorMixer::setSelectedOutputBus ( qtractorBus *pOutputBus )
 	if (pOutputBus && (pOutputBus->busMode() & qtractorBus::Output))
 		pOutputStrip2 = m_pOutputRack->findStrip(pOutputBus->monitor_out());
 
-	if (pOutputStrip2)
-		m_pOutputRack->setSelectedStrip2(pOutputStrip2);
+	m_pOutputRack->setSelectedStrip2(pOutputStrip2);
 }
 
 

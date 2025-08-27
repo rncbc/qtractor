@@ -1049,6 +1049,8 @@ void qtractorPluginForm::changeAuxSendBusNameSlot ( int iAuxSendBusName )
 
 	pSession->execute(
 		new qtractorAuxSendPluginCommand(m_pPlugin, sAuxSendBusName));
+
+	qtractorPluginListView::updateAuxSendPluginBus(m_pPlugin);
 }
 
 

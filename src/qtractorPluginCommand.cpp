@@ -235,7 +235,6 @@ bool qtractorAuxSendPluginCommand::redo (void)
 		const QString sAudioBusName = pAudioAuxSendPlugin->audioBusName();
 		pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName, true);
 		m_sAuxSendBusName = sAudioBusName;
-		pAudioAuxSendPlugin->updateFormAuxSendBusName();
 	} else {
 		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
 			= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
@@ -244,8 +243,9 @@ bool qtractorAuxSendPluginCommand::redo (void)
 		const QString sMidiBusName = pMidiAuxSendPlugin->midiBusName();
 		pMidiAuxSendPlugin->setMidiBusName(m_sAuxSendBusName);
 		m_sAuxSendBusName = sMidiBusName;
-		pMidiAuxSendPlugin->updateFormAuxSendBusName();
 	}
+
+	pPlugin->updateFormAuxSendBusName();
 
 	return true;
 }

@@ -731,7 +731,7 @@ void qtractorPlugin::updateFormDirtyCount (void)
 }
 
 
-void qtractorPlugin::updateMidiControlAutoConnect (void)
+void qtractorPlugin::updateFormMidiControlAutoConnect (void)
 {
 	if (m_pForm)
 		m_pForm->updateMidiControlAutoConnect();

@@ -308,8 +308,8 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 		SIGNAL(itemDoubleClicked(QListWidgetItem*)),
 		SLOT(itemDoubleClickedSlot(QListWidgetItem*)));
 	QObject::connect(this,
-		SIGNAL(itemActivated(QListWidgetItem*)),
-		SLOT(itemActivatedSlot(QListWidgetItem*)));
+		SIGNAL(itemClicked(QListWidgetItem*)),
+		SLOT(itemClickedSlot(QListWidgetItem*)));
 }
 
 
@@ -1262,6 +1262,44 @@ void qtractorPluginListView::insertPluginBus (
 }
 
 
+// Show selected Aux-Send bus on the mixer outputs pane. [static]
+void qtractorPluginListView::updateAuxSendPluginBus (
+	qtractorPlugin *pPlugin )
+{
+	if (pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == nullptr)
+		return;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == nullptr)
+		return;
+
+	if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+			= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+		if (pAudioAuxSendPlugin)
+			pMixer->setSelectedOutputBus(pAudioAuxSendPlugin->audioBus());
+
+	} else {
+		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+			= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
+		if (pMidiAuxSendPlugin)
+			pMixer->setSelectedOutputBus(pMidiAuxSendPlugin->midiBus());
+	}
+}
+
+
+
 // Audio specific slots.
 void qtractorPluginListView::audioOutputs (void)
 {
@@ -1370,7 +1408,7 @@ void qtractorPluginListView::midiControlAutoConnect (void)
 		if (pMidiControlPlugin) {
 			pMidiControlPlugin->setControlAutoConnect(
 				!pMidiControlPlugin->isControlAutoConnect()); // Toggle!
-			pMidiControlPlugin->updateMidiControlAutoConnect();
+			pMidiControlPlugin->updateFormMidiControlAutoConnect();
 		}
 	}
 }
@@ -1408,7 +1446,7 @@ void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 
 
 // Simple-click handler.
-void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
+void qtractorPluginListView::itemClickedSlot ( QListWidgetItem *item )
 {
 	if (m_pPluginList == nullptr)
 		return;
@@ -1422,33 +1460,7 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 	if (pPlugin == nullptr)
 		return;
 
-	qtractorPluginType *pType = pPlugin->type();
-	if (pType == nullptr)
-		return;
-
-	if (pType->typeHint() != qtractorPluginType::AuxSend)
-		return;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == nullptr)
-		return;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == nullptr)
-		return;
-
-	if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
-		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
-			= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
-		if (pAudioAuxSendPlugin)
-			pMixer->setSelectedOutputBus(pAudioAuxSendPlugin->audioBus());
-
-	} else {
-		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
-			= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
-		if (pMidiAuxSendPlugin)
-			pMixer->setSelectedOutputBus(pMidiAuxSendPlugin->midiBus());
-	}
+	updateAuxSendPluginBus(pPlugin);
 }
 
 
