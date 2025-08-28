@@ -1462,6 +1462,9 @@ void qtractorPluginListView::itemClickedSlot ( QListWidgetItem *item )
 	if (m_pPluginList == nullptr)
 		return;
 
+	if (m_pPluginList->flags() & qtractorPluginList::Bus)
+		return;
+
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (item);
 	if (pItem == nullptr)
