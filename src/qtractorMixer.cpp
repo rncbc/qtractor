@@ -1156,7 +1156,7 @@ void qtractorMixerRackWidget::contextMenuEvent (
 void qtractorMixerRackWidget::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	if (!m_pWorkspaceWidget->rect().contains(pMouseEvent->pos()))
-		m_pRack->setSelectedStrip(nullptr);
+		m_pRack->mixer()->setCurrentTrack(nullptr);
 
 	QScrollArea::mousePressEvent(pMouseEvent);
 }
@@ -1354,9 +1354,6 @@ void qtractorMixerRack::clear (void)
 // Selection stuff.
 void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 {
-	if (m_pSelectedStrip == pStrip)
-		return;
-
 	if (m_pSelectedStrip)
 		m_pSelectedStrip->setSelected(false);
 
@@ -1375,6 +1372,12 @@ void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 
 void qtractorMixerRack::setSelectedStrip2 ( qtractorMixerStrip *pStrip )
 {
+	if (pStrip && pStrip == m_pSelectedStrip)
+		return;
+
+	if (m_pSelectedStrip2 && m_pSelectedStrip2 == m_pSelectedStrip)
+		m_pSelectedStrip2 = nullptr;
+
 	if (m_pSelectedStrip2)
 		m_pSelectedStrip2->setSelected(false);
 

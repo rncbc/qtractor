@@ -182,7 +182,13 @@ protected slots:
 	void itemDoubleClickedSlot(QListWidgetItem *);
 	void itemClickedSlot(QListWidgetItem *);
 
+	// Row-change handler.
+	void currentRowChangedSlot(int);
+
 protected:
+
+	// Focus-in handler.
+	void focusInEvent(QFocusEvent *pFocusEvent);
 
 	// Move item on list.
 	void moveItem(qtractorPluginListItem *pItem,
@@ -263,6 +269,9 @@ private:
 
 	// Common tiny scrollbar style stuff.
 	TinyScrollBarStyle *m_pTinyScrollBarStyle;
+
+	// To track the current item...
+	qtractorPluginListItem *m_pCurrentItem;
 };
 
 

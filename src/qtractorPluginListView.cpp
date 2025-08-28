@@ -282,6 +282,9 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	// Common tiny scrollbar style stuff.
 	m_pTinyScrollBarStyle = nullptr;
 
+	// To track the current item...
+	m_pCurrentItem = nullptr;
+
 //	QListWidget::setDragEnabled(true);
 	QListWidget::setAcceptDrops(true);
 	QListWidget::setDropIndicatorShown(true);
@@ -310,6 +313,9 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QObject::connect(this,
 		SIGNAL(itemClicked(QListWidgetItem*)),
 		SLOT(itemClickedSlot(QListWidgetItem*)));
+	QObject::connect(this,
+		SIGNAL(currentRowChanged(int)),
+		SLOT(currentRowChangedSlot(int)));
 }
 
 
@@ -386,6 +392,8 @@ void qtractorPluginListView::refresh (void)
 // Master clean-up.
 void qtractorPluginListView::clear (void)
 {
+	m_pCurrentItem = nullptr;
+
 	dragLeaveEvent(nullptr);
 
 	QListWidget::clear();
@@ -560,6 +568,9 @@ void qtractorPluginListView::removePlugin (void)
 		return;
 
 	pSession->execute(new qtractorRemovePluginCommand(pPlugin));
+
+	if (m_pCurrentItem == pItem)
+		m_pCurrentItem = nullptr;
 
 	emit contentsChanged();
 }
@@ -1451,16 +1462,38 @@ void qtractorPluginListView::itemClickedSlot ( QListWidgetItem *item )
 	if (m_pPluginList == nullptr)
 		return;
 
+	if (currentRow() < 0)
+		return;
+
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (item);
 	if (pItem == nullptr)
 		return;
 
-	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == nullptr)
+	if (m_pCurrentItem == pItem)
 		return;
 
-	updateAuxSendPluginBus(pPlugin);
+	updateAuxSendPluginBus(pItem->plugin());
+
+	m_pCurrentItem = pItem;
+}
+
+
+// Row-change handler.
+void qtractorPluginListView::currentRowChangedSlot ( int iCurrentRow )
+{
+	itemClickedSlot(QListWidget::item(iCurrentRow));
+}
+
+
+// Focus-in handler.
+void qtractorPluginListView::focusInEvent ( QFocusEvent *pFocusEvent )
+{
+	QListWidget::focusInEvent(pFocusEvent);
+
+	m_pCurrentItem = nullptr;
+
+	itemClickedSlot(QListWidget::currentItem());
 }
 
 
