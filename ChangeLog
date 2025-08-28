@@ -4,19 +4,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.5.8  2025-08-29  A Late Summer'25 Release.
 
 - When selecting an Aux-Send pseudo-plugin, also highlight the
-  respective target output bus mixer strip. (EXPERIMENTAL)
+  respective target output bus mixer strip.
 
 - Mitigate and compensate for padding and start-delay/latency to
   (lib)RubberBand time-stretching and pitch-shifting processing.
-  (GH #513) (EXPERIMENTAL)
- 
+
 - Avoid warning when auto-saving an extracted archive/zip session.
 
 - Fixed all empty/void audio clips created when aborting an armed
-  recording session; revisited. (EXPERIMENTAL)
+  recording session; revisited.
 
 - Added new Track/Height/Minimize menu item.
 
@@ -24,9 +23,9 @@ GIT HEAD
   when input channel count is greater than output count.
 
 - Fixed WSOLA time-stretching crashing on greater-than-2-channels
-  /stereo audio clips. (GH Issue #510)
-  
-- Fix misaligned LV2 Atoms. (GH PR #511)
+  /stereo audio clips.
+
+- Fix misaligned LV2 Atoms.
 
 
 1.5.7  2025-07-19  A Summer'25 Release.
@@ -76,7 +75,7 @@ GIT HEAD
 - A warning is now issued when an audio self connection is made
   (eg. connecting an output bus (or insert send) directly into
   an input bus (or insert return).
-  
+
 - Files item selection mode switching corrected.
 
 - Mitigate or postpone a 'too many open files' condition as much 
@@ -149,7 +148,7 @@ GIT HEAD
   into a single undo-able command, reflecting only the first value
   change in the series, dropping the previous old algorithm, which
   was dead wrong if not utterly defective.
-  
+
 - Unique track names resolve to the first line only.
 
 - Help/Shortcuts... Search tool gets implemented; all changed MIDI

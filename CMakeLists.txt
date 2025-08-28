@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
 project (Qtractor
-  VERSION 1.5.7
+  VERSION 1.5.8
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
   HOMEPAGE_URL "https://qtractor.org"
   LANGUAGES C CXX)
