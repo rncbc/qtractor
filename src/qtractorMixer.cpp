@@ -1108,11 +1108,7 @@ void qtractorMixerRackWidget::contextMenuEvent (
 	QContextMenuEvent *pContextMenuEvent )
 {
 	// Maybe it's a track strip
-	qtractorBus *pBus = nullptr;
-	qtractorMixerStrip *pStrip = m_pRack->stripAt(pContextMenuEvent->pos());
-	if (pStrip)
-		pBus = pStrip->bus();
-	if (pBus == nullptr || pStrip == nullptr) {
+	if (m_pRack->isTrackRack()) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
 			pMainForm->stabilizeForm();
@@ -1122,31 +1118,75 @@ void qtractorMixerRackWidget::contextMenuEvent (
 		return;
 	}
 
+	// Definitely a bus strip.
+	qtractorBus *pBus = nullptr;
+	qtractorMixerStrip *pStrip = m_pRack->stripAt(pContextMenuEvent->pos());
+	if (pStrip)
+		pBus = pStrip->bus();
+
 	// Build the device context menu...
 	QMenu menu(this);
 	QAction *pAction;
+	bool bEnabled;
 
-	pAction = menu.addAction(
-		tr("&Inputs"), pStrip, SLOT(busInputsSlot()));
-	pAction->setEnabled(pBus->busMode() & qtractorBus::Input);
+	pAction = menu.addAction(tr("&Inputs"));
+	bEnabled = (pStrip && pBus && (pBus->busMode() & qtractorBus::Input));
+	if (bEnabled) {
+		QObject::connect(
+			pAction, SIGNAL(triggered(bool)),
+			pStrip, SLOT(busInputsSlot()));
+	}
+	pAction->setEnabled(bEnabled);
 
-	pAction = menu.addAction(
-		tr("&Outputs"), pStrip, SLOT(busOutputsSlot()));
-	pAction->setEnabled(pBus->busMode() & qtractorBus::Output);
+	pAction = menu.addAction(tr("&Outputs"));
+	bEnabled = (pStrip && pBus && (pBus->busMode() & qtractorBus::Output));
+	if (bEnabled) {
+		QObject::connect(
+			pAction, SIGNAL(triggered(bool)),
+			pStrip, SLOT(busOutputsSlot()));
+	}
+	pAction->setEnabled(bEnabled);
 
 	menu.addSeparator();
 
-	pAction = menu.addAction(
-		tr("&Monitor"), pStrip, SLOT(busMonitorSlot()));
-	pAction->setEnabled(
-		(pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
+	pAction = menu.addAction(tr("&Monitor"));
 	pAction->setCheckable(true);
-	pAction->setChecked(pBus->isMonitor());
+	bEnabled = (pStrip && pBus && (
+		(pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex));
+	if (bEnabled) {
+		QObject::connect(
+			pAction, SIGNAL(triggered(bool)),
+			pStrip, SLOT(busMonitorSlot()));
+		pAction->setChecked(pBus->isMonitor());
+	}
+	pAction->setEnabled(bEnabled);
+
+	menu.addSeparator();
+
+	pAction = menu.addAction(tr("&Buses..."));
+	if (pStrip && pBus) {
+		QObject::connect(
+			pAction, SIGNAL(triggered(bool)),
+			pStrip, SLOT(busPropertiesSlot()));
+	} else {
+		QObject::connect(
+			pAction, SIGNAL(triggered(bool)),
+			m_pRack, SLOT(busPropertiesSlot()));
+	}
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("&Buses..."), pStrip, SLOT(busPropertiesSlot()));
+		QIcon::fromTheme("trackAudio"), tr("&Audio"),
+		m_pRack, SLOT(busAudioStripsSlot()));
+	pAction->setCheckable(true);
+	pAction->setChecked(!m_pRack->isStripTypeHidden(qtractorTrack::Audio));
+
+	pAction = menu.addAction(
+		QIcon::fromTheme("trackMidi"), tr("&MIDI"),
+		m_pRack, SLOT(busMidiStripsSlot()));
+	pAction->setCheckable(true);
+	pAction->setChecked(!m_pRack->isStripTypeHidden(qtractorTrack::Midi));
 
 	menu.exec(pContextMenuEvent->globalPos());
 }
@@ -1239,7 +1279,8 @@ qtractorMixerRack::qtractorMixerRack (
 	qtractorMixer *pMixer, const QString& sTitle )
 	: QDockWidget(sTitle, pMixer), m_pMixer(pMixer),
 		m_pSelectedStrip(nullptr), m_pSelectedStrip2(nullptr),
-		m_pRackWidget(new qtractorMixerRackWidget(this))
+		m_pRackWidget(new qtractorMixerRackWidget(this)),
+		m_hiddenStripType(qtractorTrack::None)
 {
 	QDockWidget::setObjectName(sTitle);	// TODO: make this an unique-id.
 	QDockWidget::setTitleBarWidget(
@@ -1474,6 +1515,66 @@ QList<qtractorMixerStrip *> qtractorMixerRack::findAudioOutputBusStrips (
 }
 
 
+// Whether strip type is hidden.
+void qtractorMixerRack::setStripTypeHidden ( qtractorTrack::TrackType stripType )
+{
+	m_hiddenStripType = stripType;
+}
+
+
+bool qtractorMixerRack::isStripTypeHidden ( qtractorTrack::TrackType stripType ) const
+{
+	return (m_hiddenStripType == stripType);
+}
+
+
+
+// Check for this being any special rack.
+bool qtractorMixerRack::isInputRack (void) const
+{
+	return (m_pMixer->inputRack() == this);
+}
+
+bool qtractorMixerRack::isTrackRack (void) const
+{
+	return (m_pMixer->trackRack() == this);
+}
+
+bool qtractorMixerRack::isOutputRack (void) const
+{
+	return (m_pMixer->outputRack() == this);
+}
+
+
+// Show/edit bus properties form.
+void qtractorMixerRack::busPropertiesSlot (void)
+{
+	qtractorBusForm(this).exec();
+}
+
+
+void qtractorMixerRack::busAudioStripsSlot (void)
+{
+	if (m_hiddenStripType != qtractorTrack::Audio)
+		m_hiddenStripType  = qtractorTrack::Audio;
+	else
+		m_hiddenStripType  = qtractorTrack::None;
+
+	m_pMixer->updateBuses(true);
+}
+
+
+void qtractorMixerRack::busMidiStripsSlot (void)
+{
+	if (m_hiddenStripType != qtractorTrack::Midi)
+		m_hiddenStripType  = qtractorTrack::Midi;
+	else
+		m_hiddenStripType  = qtractorTrack::None;
+
+	m_pMixer->updateBuses(true);
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorMixer -- Mixer widget.
 
@@ -1572,10 +1673,16 @@ void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
 		= (busMode == qtractorBus::Input ?
 			pBus->monitor_in() : pBus->monitor_out());
 
-	qtractorMixerStrip *pStrip = pRack->findStrip(pMonitor);
-	if (pStrip == nullptr) {
-		pRack->addStrip(new qtractorMixerStrip(pRack, pBus, busMode));
-	} else {
+	qtractorMixerStrip *pStrip = nullptr;
+	if (!pRack->isStripTypeHidden(pBus->busType())) {
+		pStrip = pRack->findStrip(pMonitor);
+		if (pStrip == nullptr) {
+			pStrip = new qtractorMixerStrip(pRack, pBus, busMode);
+			pRack->addStrip(pStrip);
+		}
+	}
+
+	if (pStrip) {
 		pStrip->setMark(0);
 		if (bReset)
 			pStrip->setBus(pBus);

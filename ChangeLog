@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Mixer: temporarily hide/show either Audio or MIDI buses, from
+  the respective Inputs and/or Outputs rack pane. (EXPERIMENTAL)
+
 1.5.8  2025-08-29  A Late Summer'25 Release.
 
 - When selecting an Aux-Send pseudo-plugin, also highlight the
