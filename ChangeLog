@@ -9,6 +9,10 @@ GIT HEAD
 - Mixer: temporarily hide/show either Audio or MIDI buses, from
   the respective Inputs and/or Outputs rack pane. (EXPERIMENTAL)
 
+- Add underlying platform name (eg. xcb, wayland) to Qt version
+  string.
+
+
 1.5.8  2025-08-29  A Late Summer'25 Release.
 
 - When selecting an Aux-Send pseudo-plugin, also highlight the

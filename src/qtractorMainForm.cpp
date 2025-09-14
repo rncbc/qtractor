@@ -6481,6 +6481,12 @@ void qtractorMainForm::helpAbout (void)
 #if defined(QT_STATIC)
 	sText += "-static";
 #endif
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+	sText += ' ';
+	sText += '(';
+	sText += QApplication::platformName();
+	sText += ')';
+#endif
 	sText += "<br />\n";
 	sText += "<br />\n";
 	sText += tr("Website") + ": <a href=\"" QTRACTOR_WEBSITE "\">" QTRACTOR_WEBSITE "</a><br />\n";
