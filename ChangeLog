@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Slightly better positioning and centering when just clicking
+  but not dragging the main and MIDI editor thumb-views around.
+  
 - Mixer: temporarily hide/show either Audio or MIDI buses, from
   the respective Inputs and/or Outputs rack pane. (EXPERIMENTAL)
 
