@@ -330,9 +330,10 @@ void qtractorMidiThumbView::setPlayHeadX ( int iPlayHeadX )
 	if (pMidiClip == nullptr)
 		return;
 
-	const int cw = m_pEditor->editView()->contentsWidth() + 1;
+	const int cw = m_pEditor->editView()->contentsWidth();// + 1;
 	const int x0 = pTimeScale->pixelFromFrame(pMidiClip->clipStart());
-	pSession->setPlayHead(pTimeScale->frameFromPixel((cw * iPlayHeadX) / w) - x0);
+	pSession->setPlayHead(
+		pTimeScale->frameFromPixel(x0 + ((cw * iPlayHeadX) / w)));
 
 	m_pEditor->setSyncViewHoldOn(false);
 }
