@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Main menu and toolbar Edit/Select Mode/Clip, Range, Rectangle
+  and Automation actions are now self-toggled when triggered.
+
 - Slightly better positioning and centering when just clicking
   but not dragging the main and MIDI editor thumb-views around.
   

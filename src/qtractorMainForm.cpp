@@ -1396,19 +1396,17 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMessagesCapture();
 
 	// Track view select mode...
-	qtractorTrackView::SelectMode selectMode;
-	switch (pOptions->iTrackViewSelectMode) {
-	case 2:
-		selectMode = qtractorTrackView::SelectRect;
+	const qtractorTrackView::SelectMode selectMode
+		= qtractorTrackView::SelectMode(pOptions->iTrackViewSelectMode);
+	switch (selectMode) {
+	case qtractorTrackView::SelectRect:
 		m_ui.editSelectModeRectAction->setChecked(true);
 		break;
-	case 1:
-		selectMode = qtractorTrackView::SelectRange;
+	case qtractorTrackView::SelectRange:
 		m_ui.editSelectModeRangeAction->setChecked(true);
 		break;
-	case 0:
+	case qtractorTrackView::SelectClip:
 	default:
-		selectMode = qtractorTrackView::SelectClip;
 		m_ui.editSelectModeClipAction->setChecked(true);
 		break;
 	}
@@ -3483,14 +3481,21 @@ void qtractorMainForm::editSelectModeClip (void)
 #endif
 
 	// Select clip mode...
+	const qtractorTrackView::SelectMode selectMode
+		= qtractorTrackView::SelectClip;
+
 	if (m_pTracks) {
 		qtractorTrackView *pTrackView = m_pTracks->trackView();
-		pTrackView->setSelectMode(qtractorTrackView::SelectClip);
-		pTrackView->setCurveEdit(false);
+		if (pTrackView->selectMode() == selectMode && !pTrackView->isCurveEdit()) {
+				m_ui.editSelectModeCurveAction->trigger();
+		} else {
+			pTrackView->setSelectMode(selectMode);
+			pTrackView->setCurveEdit(false);
+		}
 	}
 
 	if (m_pOptions)
-		m_pOptions->iTrackViewSelectMode = 0;
+		m_pOptions->iTrackViewSelectMode = int(selectMode);
 
 	++m_iStabilizeTimer;
 }
@@ -3503,15 +3508,22 @@ void qtractorMainForm::editSelectModeRange (void)
 	qDebug("qtractorMainForm::editSelectModeRange()");
 #endif
 
-	// Select clip mode...
+	// Select range mode...
+	const qtractorTrackView::SelectMode selectMode
+		= qtractorTrackView::SelectRange;
+
 	if (m_pTracks) {
 		qtractorTrackView *pTrackView = m_pTracks->trackView();
-		pTrackView->setSelectMode(qtractorTrackView::SelectRange);
-		pTrackView->setCurveEdit(false);
+		if (pTrackView->selectMode() == selectMode && !pTrackView->isCurveEdit()) {
+				m_ui.editSelectModeCurveAction->trigger();
+		} else {
+			pTrackView->setSelectMode(selectMode);
+			pTrackView->setCurveEdit(false);
+		}
 	}
 
 	if (m_pOptions)
-		m_pOptions->iTrackViewSelectMode = 1;
+		m_pOptions->iTrackViewSelectMode = int(selectMode);
 
 	++m_iStabilizeTimer;
 }
@@ -3524,15 +3536,22 @@ void qtractorMainForm::editSelectModeRect (void)
 	qDebug("qtractorMainForm::editSelectModeRect()");
 #endif
 
-	// Select clip mode...
-	if (m_pTracks) {
+	// Select rectangle mode...
+	const qtractorTrackView::SelectMode selectMode
+		= qtractorTrackView::SelectRect;
+
+	if (m_pTracks && m_pOptions) {
 		qtractorTrackView *pTrackView = m_pTracks->trackView();
-		pTrackView->setSelectMode(qtractorTrackView::SelectRect);
-		pTrackView->setCurveEdit(false);
+		if (pTrackView->selectMode() == selectMode && !pTrackView->isCurveEdit()) {
+			m_ui.editSelectModeCurveAction->trigger();
+		} else {
+			pTrackView->setSelectMode(selectMode);
+			pTrackView->setCurveEdit(false);
+		}
 	}
 
 	if (m_pOptions)
-		m_pOptions->iTrackViewSelectMode = 2;
+		m_pOptions->iTrackViewSelectMode = int(selectMode);
 
 	++m_iStabilizeTimer;
 }
@@ -3545,8 +3564,28 @@ void qtractorMainForm::editSelectModeCurve (void)
 	qDebug("qtractorMainForm::editSelectModeCurve()");
 #endif
 
-	if (m_pTracks)
-		m_pTracks->trackView()->setCurveEdit(true);
+	if (m_pTracks) {
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		if (pTrackView->isCurveEdit()) {
+			switch (pTrackView->selectMode()) {
+			case qtractorTrackView::SelectRect:
+				m_ui.editSelectModeRectAction->trigger();
+				break;
+			case qtractorTrackView::SelectRange:
+				m_ui.editSelectModeRangeAction->trigger();
+				break;
+			case qtractorTrackView::SelectClip:
+			default:
+				m_ui.editSelectModeClipAction->trigger();
+				break;
+			}
+		} else {
+			// Select curve mode...
+			pTrackView->setCurveEdit(true);
+		}
+	}
+
+	++m_iStabilizeTimer;
 }
 
 

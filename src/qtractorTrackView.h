@@ -87,8 +87,8 @@ public:
 	void updateContentsRecord();
 
 	// The current clip selection mode.
-	enum SelectMode { SelectClip, SelectRange, SelectRect };
-	enum SelectEdit { EditNone = 0, EditHead = 1, EditTail = 2, EditBoth = 3 };
+	enum SelectMode { SelectClip = 0, SelectRange, SelectRect };
+	enum SelectEdit { EditNone = 0, EditHead, EditTail, EditBoth };
 
 	// Selection flags
 	enum {
