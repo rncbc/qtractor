@@ -3302,7 +3302,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="925"/>
         <location filename="../qtractorMainForm.ui" line="3041"/>
-        <location filename="../qtractorMainForm.cpp" line="7616"/>
+        <location filename="../qtractorMainForm.cpp" line="7655"/>
         <source>&amp;None</source>
         <translation>&amp;Rien</translation>
     </message>
@@ -5801,7 +5801,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="3152"/>
         <location filename="../qtractorMainForm.ui" line="3155"/>
-        <location filename="../qtractorMainForm.cpp" line="6503"/>
+        <location filename="../qtractorMainForm.cpp" line="6542"/>
         <source>About</source>
         <translation>À propos</translation>
     </message>
@@ -5848,7 +5848,7 @@ Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="644"/>
-        <location filename="../qtractorMainForm.cpp" line="6882"/>
+        <location filename="../qtractorMainForm.cpp" line="6921"/>
         <source>MOD</source>
         <translation>MOD</translation>
     </message>
@@ -5859,7 +5859,7 @@ Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="653"/>
-        <location filename="../qtractorMainForm.cpp" line="6887"/>
+        <location filename="../qtractorMainForm.cpp" line="6926"/>
         <source>REC</source>
         <translation>ENR</translation>
     </message>
@@ -5870,7 +5870,7 @@ Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="662"/>
-        <location filename="../qtractorMainForm.cpp" line="6892"/>
+        <location filename="../qtractorMainForm.cpp" line="6931"/>
         <source>MUTE</source>
         <translation>MUET</translation>
     </message>
@@ -5881,7 +5881,7 @@ Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="671"/>
-        <location filename="../qtractorMainForm.cpp" line="6897"/>
+        <location filename="../qtractorMainForm.cpp" line="6936"/>
         <source>SOLO</source>
         <translation>SOLO</translation>
     </message>
@@ -5892,7 +5892,7 @@ Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="680"/>
-        <location filename="../qtractorMainForm.cpp" line="6902"/>
+        <location filename="../qtractorMainForm.cpp" line="6941"/>
         <source>LOOP</source>
         <translation>BOUCLE</translation>
     </message>
@@ -5912,7 +5912,7 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Fréquence d&apos;échantillonnage de la session</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="1715"/>
+        <location filename="../qtractorMainForm.cpp" line="1713"/>
         <source>Could not set default session directory:
 
 %1
@@ -5925,7 +5925,7 @@ Sorry.</source>
 Désolé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="1674"/>
+        <location filename="../qtractorMainForm.cpp" line="1672"/>
         <source>Ready</source>
         <translation>Prêt</translation>
     </message>
@@ -5940,74 +5940,74 @@ Désolé.</translation>
         <translation>Taille de la mémoire tampon de la session</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2018"/>
-        <location filename="../qtractorMainForm.cpp" line="8718"/>
+        <location filename="../qtractorMainForm.cpp" line="2016"/>
+        <location filename="../qtractorMainForm.cpp" line="8757"/>
         <source>Untitled%1</source>
         <translation>Sans titre%1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2067"/>
-        <location filename="../qtractorMainForm.cpp" line="3000"/>
+        <location filename="../qtractorMainForm.cpp" line="2065"/>
+        <location filename="../qtractorMainForm.cpp" line="2998"/>
         <source>New session: &quot;%1&quot;.</source>
         <translation>Nouvelle session: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2088"/>
-        <location filename="../qtractorMainForm.cpp" line="2183"/>
+        <location filename="../qtractorMainForm.cpp" line="2086"/>
+        <location filename="../qtractorMainForm.cpp" line="2181"/>
         <source>Session files (*.%1 *.%2 *.%3)</source>
         <translation>Fichiers session (*.%1 *.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2092"/>
-        <location filename="../qtractorMainForm.cpp" line="2187"/>
+        <location filename="../qtractorMainForm.cpp" line="2090"/>
+        <location filename="../qtractorMainForm.cpp" line="2185"/>
         <source>Session files (*.%1 *.%2)</source>
         <translation>Fichiers session (*.%1 *.%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2095"/>
-        <location filename="../qtractorMainForm.cpp" line="2190"/>
+        <location filename="../qtractorMainForm.cpp" line="2093"/>
+        <location filename="../qtractorMainForm.cpp" line="2188"/>
         <source>Template files (*.%1)</source>
         <translation>Fichiers modèle (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2098"/>
-        <location filename="../qtractorMainForm.cpp" line="2193"/>
+        <location filename="../qtractorMainForm.cpp" line="2096"/>
+        <location filename="../qtractorMainForm.cpp" line="2191"/>
         <source>Archive files (*.%1)</source>
         <translation>Fichiers archive (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2101"/>
-        <location filename="../qtractorMainForm.cpp" line="2196"/>
+        <location filename="../qtractorMainForm.cpp" line="2099"/>
+        <location filename="../qtractorMainForm.cpp" line="2194"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2106"/>
+        <location filename="../qtractorMainForm.cpp" line="2104"/>
         <source>Open Session</source>
         <translation>Ouvrir une session</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2199"/>
+        <location filename="../qtractorMainForm.cpp" line="2197"/>
         <source>Save Session</source>
         <translation>Sauvegarder une session</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2258"/>
-        <location filename="../qtractorMainForm.cpp" line="2350"/>
-        <location filename="../qtractorMainForm.cpp" line="2411"/>
-        <location filename="../qtractorMainForm.cpp" line="2522"/>
-        <location filename="../qtractorMainForm.cpp" line="2686"/>
-        <location filename="../qtractorMainForm.cpp" line="2728"/>
-        <location filename="../qtractorMainForm.cpp" line="3204"/>
-        <location filename="../qtractorMainForm.cpp" line="4460"/>
-        <location filename="../qtractorMainForm.cpp" line="4562"/>
-        <location filename="../qtractorMainForm.cpp" line="7139"/>
-        <location filename="../qtractorMainForm.cpp" line="8404"/>
+        <location filename="../qtractorMainForm.cpp" line="2256"/>
+        <location filename="../qtractorMainForm.cpp" line="2348"/>
+        <location filename="../qtractorMainForm.cpp" line="2409"/>
+        <location filename="../qtractorMainForm.cpp" line="2520"/>
+        <location filename="../qtractorMainForm.cpp" line="2684"/>
+        <location filename="../qtractorMainForm.cpp" line="2726"/>
+        <location filename="../qtractorMainForm.cpp" line="3202"/>
+        <location filename="../qtractorMainForm.cpp" line="4499"/>
+        <location filename="../qtractorMainForm.cpp" line="4601"/>
+        <location filename="../qtractorMainForm.cpp" line="7178"/>
+        <location filename="../qtractorMainForm.cpp" line="8443"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2259"/>
+        <location filename="../qtractorMainForm.cpp" line="2257"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -6020,12 +6020,12 @@ Do you want to replace it?</source>
 Voulez-vous le remplacer ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2290"/>
+        <location filename="../qtractorMainForm.cpp" line="2288"/>
         <source>Backup session: &quot;%1&quot; as &quot;%2&quot;.</source>
         <translation>Session de sauvegarde: &quot;%1&quot; en &quot;%2&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2294"/>
+        <location filename="../qtractorMainForm.cpp" line="2292"/>
         <source>Could not backup existing session:
 
 %1 as %2
@@ -6038,7 +6038,7 @@ Sorry.</source>
 Désolé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2351"/>
+        <location filename="../qtractorMainForm.cpp" line="2349"/>
         <source>The current session has been changed:
 
 &quot;%1&quot;
@@ -6051,7 +6051,7 @@ Do you want to save the changes?</source>
 Voulez-vous sauvegarder les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2412"/>
+        <location filename="../qtractorMainForm.cpp" line="2410"/>
         <source>About to remove archive directory:
 
 &quot;%1&quot;
@@ -6064,12 +6064,12 @@ Are you sure?</source>
 Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2451"/>
+        <location filename="../qtractorMainForm.cpp" line="2449"/>
         <source>Session closed.</source>
         <translation>Session fermée.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2523"/>
+        <location filename="../qtractorMainForm.cpp" line="2521"/>
         <source>The directory already exists:
 
 &quot;%1&quot;
@@ -6082,12 +6082,12 @@ Do you want to replace it?</source>
 Voulez-vous le remplacer ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2565"/>
+        <location filename="../qtractorMainForm.cpp" line="2563"/>
         <source>Opening &quot;%1&quot;...</source>
         <translation>Ouvre &quot;%1&quot;...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2632"/>
+        <location filename="../qtractorMainForm.cpp" line="2630"/>
         <source>Session could not be loaded
 from &quot;%1&quot;.
 
@@ -6098,12 +6098,12 @@ Sorry.</source>
 Désolé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2645"/>
+        <location filename="../qtractorMainForm.cpp" line="2643"/>
         <source>Open session: &quot;%1&quot;.</source>
         <translation>Ouvre la session: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2687"/>
+        <location filename="../qtractorMainForm.cpp" line="2685"/>
         <source>A directory with same name already exists:
 
 &quot;%1&quot;
@@ -6122,7 +6122,7 @@ lors de l&apos;ouverture et de l&apos;extraction de cette archive dans le futur.
 Souhaitez-vous continuer ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2729"/>
+        <location filename="../qtractorMainForm.cpp" line="2727"/>
         <source>The directory is an extracted archive:
 
 &quot;%1&quot;
@@ -6143,12 +6143,12 @@ lors de la fermeture de cette session.
 Voulez-vous continuer ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2764"/>
+        <location filename="../qtractorMainForm.cpp" line="2762"/>
         <source>Saving &quot;%1&quot;...</source>
         <translation>Sauvegarde &quot;%1&quot;...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2852"/>
+        <location filename="../qtractorMainForm.cpp" line="2850"/>
         <source>Session could not be saved
 to &quot;%1&quot;.
 
@@ -6159,12 +6159,12 @@ vers &quot;%1&quot;.
 Désolé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2861"/>
+        <location filename="../qtractorMainForm.cpp" line="2859"/>
         <source>Save session: &quot;%1&quot;.</source>
         <translation>Sauvegarde la session : &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="3205"/>
+        <location filename="../qtractorMainForm.cpp" line="3203"/>
         <source>Oops!
 
 Looks like it crashed or did not close properly last time it was run... however, an auto-saved session file exists:
@@ -6181,7 +6181,7 @@ Il semblerait qu&apos;il y ait eu un crash ou que l&apos;application n&apos;est 
 Voulez-vous redémarrer à partir de celui-ci ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="4461"/>
+        <location filename="../qtractorMainForm.cpp" line="4500"/>
         <source>About to clear automation:
 
 &quot;%1&quot;
@@ -6194,7 +6194,7 @@ Are you sure?</source>
 Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="4563"/>
+        <location filename="../qtractorMainForm.cpp" line="4602"/>
         <source>About to clear all automation:
 
 &quot;%1&quot;
@@ -6207,169 +6207,169 @@ Are you sure?</source>
 Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5027"/>
+        <location filename="../qtractorMainForm.cpp" line="5066"/>
         <source>take range</source>
         <translation>plage de prise</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5625"/>
+        <location filename="../qtractorMainForm.cpp" line="5664"/>
         <source>session</source>
         <translation>session</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5628"/>
+        <location filename="../qtractorMainForm.cpp" line="5667"/>
         <source> or </source>
         <translation> ou </translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5629"/>
+        <location filename="../qtractorMainForm.cpp" line="5668"/>
         <source>program</source>
         <translation>programme</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5633"/>
+        <location filename="../qtractorMainForm.cpp" line="5672"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5634"/>
+        <location filename="../qtractorMainForm.cpp" line="5673"/>
         <source>Some settings may be only effective
 next time you start this %1.</source>
         <translation>Certains réglages ne seront effectifs
 que la prochaine fois que vous démarrerez %1.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6294"/>
+        <location filename="../qtractorMainForm.cpp" line="6333"/>
         <source>Player panic!</source>
         <translation>Panique du lecteur !</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6338"/>
+        <location filename="../qtractorMainForm.cpp" line="6377"/>
         <source>Debugging option enabled.</source>
         <translation>Option de débuggage activée.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6341"/>
+        <location filename="../qtractorMainForm.cpp" line="6380"/>
         <source>Ogg Vorbis (libvorbis) file support disabled.</source>
         <translation>Support des fichiers Ogg Vorbis (libvorbis) désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6344"/>
+        <location filename="../qtractorMainForm.cpp" line="6383"/>
         <source>MPEG-1 Audio Layer 3 (libmad) file support disabled.</source>
         <translation>Support des fichiers MPEG-1 Audio Layer 3 (libmad) désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6347"/>
+        <location filename="../qtractorMainForm.cpp" line="6386"/>
         <source>Sample-rate conversion (libsamplerate) disabled.</source>
         <translation>Conversion de fréquence d&apos;échantillonnage (libsamplerate) désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6350"/>
+        <location filename="../qtractorMainForm.cpp" line="6389"/>
         <source>Pitch-shifting support (librubberband) disabled.</source>
         <translation>Support du décalage de tonalité (librubberband) désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6353"/>
+        <location filename="../qtractorMainForm.cpp" line="6392"/>
         <source>Beat-detection support (libaubio) disabled.</source>
         <translation>Support de détection de battement (libaubio) désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6356"/>
+        <location filename="../qtractorMainForm.cpp" line="6395"/>
         <source>OSC service support (liblo) disabled.</source>
         <translation>Support du service OSC (liblo) désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6359"/>
+        <location filename="../qtractorMainForm.cpp" line="6398"/>
         <source>LADSPA Plug-in support disabled.</source>
         <translation>Support des greffons LADSPA désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6362"/>
+        <location filename="../qtractorMainForm.cpp" line="6401"/>
         <source>DSSI Plug-in support disabled.</source>
         <translation>Support des greffons DSSI désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6371"/>
+        <location filename="../qtractorMainForm.cpp" line="6410"/>
         <source>CLAP Plug-in support disabled.</source>
         <translation>Le support des greffons CLAP est désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6374"/>
+        <location filename="../qtractorMainForm.cpp" line="6413"/>
         <source>LV2 Plug-in support disabled.</source>
         <translation>Support du greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6380"/>
+        <location filename="../qtractorMainForm.cpp" line="6419"/>
         <source>LV2 Plug-in UI support disabled.</source>
         <translation>Support de l&apos;interface graphique des greffons LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6384"/>
+        <location filename="../qtractorMainForm.cpp" line="6423"/>
         <source>LV2 Plug-in UI support (libsuil) disabled.</source>
         <translation>Support de l&apos;interface graphique des greffons (libsuil) LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6392"/>
+        <location filename="../qtractorMainForm.cpp" line="6431"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
         <translation>Support MIDI/Event greffon LV2 (PÉRIMÉ) activé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6395"/>
+        <location filename="../qtractorMainForm.cpp" line="6434"/>
         <source>LV2 Plug-in MIDI/Atom support disabled.</source>
         <translation>SupporT MIDI/Atom greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6408"/>
+        <location filename="../qtractorMainForm.cpp" line="6447"/>
         <source>LV2 Plug-in State Files support disabled.</source>
         <translation>Support fichiers état greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6414"/>
+        <location filename="../qtractorMainForm.cpp" line="6453"/>
         <source>LV2 Plug-in MIDNAM support disabled.</source>
         <translation>Support LV2 Plug-in MIDNAM désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6420"/>
+        <location filename="../qtractorMainForm.cpp" line="6459"/>
         <source>LV2 Plug-in Patch support disabled.</source>
         <translation>Support Patch greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6433"/>
+        <location filename="../qtractorMainForm.cpp" line="6472"/>
         <source>LV2 Plug-in UI Touch interface support disabled.</source>
         <translation>Support UI Touch interface greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6439"/>
+        <location filename="../qtractorMainForm.cpp" line="6478"/>
         <source>LV2 Plug-in UI Idle interface support disabled.</source>
         <translation>Support UI Idle greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6442"/>
+        <location filename="../qtractorMainForm.cpp" line="6481"/>
         <source>LV2 Plug-in UI Show interface support disabled.</source>
         <translation>Support UI Show interface greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6448"/>
+        <location filename="../qtractorMainForm.cpp" line="6487"/>
         <source>LV2 Plug-in UI GTKMM2 native support disabled.</source>
         <translation>Support natif de l&apos;interface graphique GTKMM2 des greffons LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6462"/>
+        <location filename="../qtractorMainForm.cpp" line="6501"/>
         <source>JACK Metadata support disabled.</source>
         <translation>Support des métadonnées JACK désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6480"/>
+        <location filename="../qtractorMainForm.cpp" line="6519"/>
         <source>Using: Qt %1</source>
         <translation>Utilisant : Qt %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6907"/>
+        <location filename="../qtractorMainForm.cpp" line="6946"/>
         <source>XRUN</source>
         <translation>XRUN</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7140"/>
+        <location filename="../qtractorMainForm.cpp" line="7179"/>
         <source>The following issues were detected:
 
 %1
@@ -6382,12 +6382,12 @@ Saving into another session file is highly recommended.</source>
 Sauvegarder dans un autre fichier session est fortement recommandé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8419"/>
+        <location filename="../qtractorMainForm.cpp" line="8458"/>
         <source>Don&apos;t show this again</source>
         <translation>Ne plus montrer ceci</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8614"/>
+        <location filename="../qtractorMainForm.cpp" line="8653"/>
         <source>The audio engine buffer size has changed,
 increased from %1 to %2 frames/period.
 
@@ -6400,7 +6400,7 @@ Le rechargement du fichier de session courant
 est hautement recommandé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8877"/>
+        <location filename="../qtractorMainForm.cpp" line="8916"/>
         <source>TRACK MONITOR %1 %2</source>
         <translation>MONITEUR DE PISTE %1 %2</translation>
     </message>
@@ -6415,112 +6415,112 @@ est hautement recommandé.</translation>
         <translation>Temps courant (tête de lecture)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6365"/>
+        <location filename="../qtractorMainForm.cpp" line="6404"/>
         <source>VST2 Plug-in support disabled.</source>
         <translation>Support des greffons VST2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6368"/>
+        <location filename="../qtractorMainForm.cpp" line="6407"/>
         <source>VST3 Plug-in support disabled.</source>
         <translation>Support des greffons VST3 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6377"/>
+        <location filename="../qtractorMainForm.cpp" line="6416"/>
         <source>LV2 Plug-in support (liblilv) disabled.</source>
         <translation>Support greffon LV2 (liblilv) désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6388"/>
+        <location filename="../qtractorMainForm.cpp" line="6427"/>
         <source>LV2 Plug-in External UI support disabled.</source>
         <translation>Support UI externe greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6398"/>
+        <location filename="../qtractorMainForm.cpp" line="6437"/>
         <source>LV2 Plug-in Worker/Schedule support disabled.</source>
         <translation>Support Worker/Schedule greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6401"/>
+        <location filename="../qtractorMainForm.cpp" line="6440"/>
         <source>LV2 Plug-in State support disabled.</source>
         <translation>Support état greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6411"/>
+        <location filename="../qtractorMainForm.cpp" line="6450"/>
         <source>LV2 Plug-in Programs support disabled.</source>
         <translation>Support des programmes greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6417"/>
+        <location filename="../qtractorMainForm.cpp" line="6456"/>
         <source>LV2 Plug-in Presets support disabled.</source>
         <translation>Support des préréglages des greffos LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6423"/>
+        <location filename="../qtractorMainForm.cpp" line="6462"/>
         <source>LV2 Plug-in Time/position support disabled.</source>
         <translation>Support Temps/position greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6426"/>
+        <location filename="../qtractorMainForm.cpp" line="6465"/>
         <source>LV2 Plug-in Options support disabled.</source>
         <translation>Support pour les options du greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6429"/>
+        <location filename="../qtractorMainForm.cpp" line="6468"/>
         <source>LV2 Plug-in Buf-size support disabled.</source>
         <translation>Support du Buf-size pour les greffons LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6436"/>
+        <location filename="../qtractorMainForm.cpp" line="6475"/>
         <source>LV2 Plug-in UI Request-value support disabled.</source>
         <translation>Support du UI Request-value pour les greffons LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6456"/>
+        <location filename="../qtractorMainForm.cpp" line="6495"/>
         <source>JACK Session support disabled.</source>
         <translation>Support de session JACK désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6459"/>
+        <location filename="../qtractorMainForm.cpp" line="6498"/>
         <source>JACK Latency support disabled.</source>
         <translation>Support de la latence JACK désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6472"/>
+        <location filename="../qtractorMainForm.cpp" line="6511"/>
         <source>Version</source>
         <translation>Version</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6492"/>
+        <location filename="../qtractorMainForm.cpp" line="6531"/>
         <source>Website</source>
         <translation>Site web</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6497"/>
+        <location filename="../qtractorMainForm.cpp" line="6536"/>
         <source>This program is free software; you can redistribute it and/or modify it</source>
         <translation>Ce programme est un logiciel libre; vous pouvez le redistribuer et/ou le modifier</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6498"/>
+        <location filename="../qtractorMainForm.cpp" line="6537"/>
         <source>under the terms of the GNU General Public License version 2 or later.</source>
         <translation>sous les conditions de la license générale GNU version 2 ou plus.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6621"/>
+        <location filename="../qtractorMainForm.cpp" line="6660"/>
         <source>record clip</source>
         <translation>enregistre clip</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6783"/>
+        <location filename="../qtractorMainForm.cpp" line="6822"/>
         <source>[modified]</source>
         <translation>[modifié]</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7021"/>
+        <location filename="../qtractorMainForm.cpp" line="7060"/>
         <source>Session started.</source>
         <translation>Session démarrée.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7025"/>
+        <location filename="../qtractorMainForm.cpp" line="7064"/>
         <source>The audio/MIDI engine could not be started.
 
 Make sure the JACK/Pipewire audio service and
@@ -6533,7 +6533,7 @@ et le module noyau ALSA Sequencer (snd-seq-midi)
 sont opérationnels, puis redémarrez la session.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7111"/>
+        <location filename="../qtractorMainForm.cpp" line="7150"/>
         <source>The original session sample rate (%1 Hz)
 is not the same as the current audio engine (%2 Hz).
 
@@ -6546,81 +6546,81 @@ Sauvegarder et recharger à partir d&apos;un nouveau fichier session
 est fortement recommandé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2426"/>
-        <location filename="../qtractorMainForm.cpp" line="2537"/>
-        <location filename="../qtractorMainForm.cpp" line="2705"/>
-        <location filename="../qtractorMainForm.cpp" line="2746"/>
+        <location filename="../qtractorMainForm.cpp" line="2424"/>
+        <location filename="../qtractorMainForm.cpp" line="2535"/>
+        <location filename="../qtractorMainForm.cpp" line="2703"/>
+        <location filename="../qtractorMainForm.cpp" line="2744"/>
         <source>Don&apos;t ask this again</source>
         <translation>Ne pas redemander</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6405"/>
+        <location filename="../qtractorMainForm.cpp" line="6444"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
         <translation>support de LV2 plug-in State Make Path activé (DANGEREUX)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6445"/>
+        <location filename="../qtractorMainForm.cpp" line="6484"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
         <translation>Support natif LV2 Plug-in UI GTK2 désactivé</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6451"/>
+        <location filename="../qtractorMainForm.cpp" line="6490"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
         <translation>support natif LV2 Plug-in UI X11 désactivé</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6465"/>
+        <location filename="../qtractorMainForm.cpp" line="6504"/>
         <source>NSM support disabled.</source>
         <translation>Support de NSM désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7748"/>
+        <location filename="../qtractorMainForm.cpp" line="7787"/>
         <source>&amp;Hold</source>
         <translation>&amp;Maintien</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7753"/>
+        <location filename="../qtractorMainForm.cpp" line="7792"/>
         <source>&amp;Linear</source>
         <translation>&amp;Linéaire</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7759"/>
+        <location filename="../qtractorMainForm.cpp" line="7798"/>
         <source>&amp;Spline</source>
         <translation>&amp;Spline</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7887"/>
+        <location filename="../qtractorMainForm.cpp" line="7926"/>
         <source>Take %1</source>
         <translation>Prise %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="3044"/>
-        <location filename="../qtractorMainForm.cpp" line="7894"/>
+        <location filename="../qtractorMainForm.cpp" line="7933"/>
         <source>None</source>
         <translation>Rien</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7984"/>
+        <location filename="../qtractorMainForm.cpp" line="8023"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8373"/>
+        <location filename="../qtractorMainForm.cpp" line="8412"/>
         <source>XRUN(%1 skipped)</source>
         <translation>XRUN(%1 sauté)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8378"/>
+        <location filename="../qtractorMainForm.cpp" line="8417"/>
         <source>XRUN(%1): some frames might have been lost.</source>
         <translation>XRUN(%1): des trames peuvent avoir été perdues.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8395"/>
+        <location filename="../qtractorMainForm.cpp" line="8434"/>
         <source>Audio connections change.</source>
         <translation>Les connexions audio changent.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8406"/>
+        <location filename="../qtractorMainForm.cpp" line="8445"/>
         <source>Audio self-connection detected!
 
 In general, connecting an output bus (or insert send),
@@ -6636,17 +6636,17 @@ d&apos;insert). Souvent, cela ne fonctionne pas.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8437"/>
+        <location filename="../qtractorMainForm.cpp" line="8476"/>
         <source>MIDI connections change.</source>
         <translation>Les connexions MIDI changent.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8458"/>
+        <location filename="../qtractorMainForm.cpp" line="8497"/>
         <source>Playing ended.</source>
         <translation>Lecture terminée.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8539"/>
+        <location filename="../qtractorMainForm.cpp" line="8578"/>
         <source>The audio engine has been shutdown.
 
 Make sure the JACK audio server (jackd)
@@ -6657,120 +6657,120 @@ Assurez-vous que le serveur audio JACK (jackd)
 est près et en fonctionnement puis redémarrez la session.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8812"/>
-        <location filename="../qtractorMainForm.cpp" line="9001"/>
+        <location filename="../qtractorMainForm.cpp" line="8851"/>
+        <location filename="../qtractorMainForm.cpp" line="9040"/>
         <source>STOP</source>
         <translation>STOP</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8819"/>
+        <location filename="../qtractorMainForm.cpp" line="8858"/>
         <source>PLAY</source>
         <translation>JOUER</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8823"/>
+        <location filename="../qtractorMainForm.cpp" line="8862"/>
         <source>FFWD</source>
         <translation>FFWD</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8827"/>
+        <location filename="../qtractorMainForm.cpp" line="8866"/>
         <source>REW</source>
         <translation>REW</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8832"/>
+        <location filename="../qtractorMainForm.cpp" line="8871"/>
         <source>REC ON</source>
         <translation>ENR ON</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8840"/>
+        <location filename="../qtractorMainForm.cpp" line="8879"/>
         <source>REC OFF</source>
         <translation>ENR OFF</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8844"/>
+        <location filename="../qtractorMainForm.cpp" line="8883"/>
         <source>RESET</source>
         <translation>REINIT</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8848"/>
+        <location filename="../qtractorMainForm.cpp" line="8887"/>
         <source>LOCATE %1</source>
         <translation>LOCALISE %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8852"/>
+        <location filename="../qtractorMainForm.cpp" line="8891"/>
         <source>SHUTTLE %1</source>
         <translation>NAVETTE %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8856"/>
+        <location filename="../qtractorMainForm.cpp" line="8895"/>
         <source>STEP %1</source>
         <translation>PAS %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8862"/>
+        <location filename="../qtractorMainForm.cpp" line="8901"/>
         <source>TRACK RECORD %1 %2</source>
         <translation>PISTE ENREGISTREMENT %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8867"/>
+        <location filename="../qtractorMainForm.cpp" line="8906"/>
         <source>TRACK MUTE %1 %2</source>
         <translation>PISTE MUET %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8872"/>
+        <location filename="../qtractorMainForm.cpp" line="8911"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>PISTE SOLO %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8882"/>
+        <location filename="../qtractorMainForm.cpp" line="8921"/>
         <source>Unknown sub-command</source>
         <translation>Sous-commande inconnue</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8888"/>
-        <location filename="../qtractorMainForm.cpp" line="9021"/>
+        <location filename="../qtractorMainForm.cpp" line="8927"/>
+        <location filename="../qtractorMainForm.cpp" line="9060"/>
         <source>Not implemented</source>
         <translation>Pas implémenté</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8901"/>
+        <location filename="../qtractorMainForm.cpp" line="8940"/>
         <source>MIDI CTL: %1, Channel %2, Param %3, Value %4</source>
         <translation>MIDI CTL : %1, Canal %2, Param %3, Valeur %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8951"/>
+        <location filename="../qtractorMainForm.cpp" line="8990"/>
         <source>(track %1, gain %2)</source>
         <translation>(piste %1, gain %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8973"/>
+        <location filename="../qtractorMainForm.cpp" line="9012"/>
         <source>(track %1, panning %2)</source>
         <translation>(piste %1, panoramique %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8994"/>
+        <location filename="../qtractorMainForm.cpp" line="9033"/>
         <source>START</source>
         <translation>DEMARRE</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9009"/>
+        <location filename="../qtractorMainForm.cpp" line="9048"/>
         <source>CONTINUE</source>
         <translation>CONTINUE</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9015"/>
+        <location filename="../qtractorMainForm.cpp" line="9054"/>
         <source>SONGPOS %1</source>
         <translation>SONGPOS %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9039"/>
+        <location filename="../qtractorMainForm.cpp" line="9078"/>
         <source>%1 BPM</source>
         <translation>%1 BPM</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9157"/>
-        <location filename="../qtractorMainForm.cpp" line="9217"/>
+        <location filename="../qtractorMainForm.cpp" line="9196"/>
+        <location filename="../qtractorMainForm.cpp" line="9256"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Joue &quot;%1&quot;...</translation>
     </message>
