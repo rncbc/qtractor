@@ -15771,80 +15771,80 @@ Length:	%3</source>
 Тривалість:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3539"/>
+        <location filename="../qtractorTrackView.cpp" line="3541"/>
         <source>clip %1</source>
         <translation>кліп %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3540"/>
+        <location filename="../qtractorTrackView.cpp" line="3542"/>
         <source>fade-in</source>
         <translation>наростання</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3540"/>
+        <location filename="../qtractorTrackView.cpp" line="3542"/>
         <source>fade-out</source>
         <translation>згасання</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3670"/>
+        <location filename="../qtractorTrackView.cpp" line="3672"/>
         <source>clip stretch</source>
         <translation>розтягнення кліпу</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3670"/>
+        <location filename="../qtractorTrackView.cpp" line="3672"/>
         <source>clip resize</source>
         <translation>зміна розмірів кліпу</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3755"/>
-        <location filename="../qtractorTrackView.cpp" line="3863"/>
+        <location filename="../qtractorTrackView.cpp" line="3757"/>
+        <location filename="../qtractorTrackView.cpp" line="3865"/>
         <source>clip repeat</source>
         <translation>повторення кліпу</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4745"/>
+        <location filename="../qtractorTrackView.cpp" line="4747"/>
         <source>%1 automation</source>
         <translation>автоматизація %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4749"/>
-        <location filename="../qtractorTrackView.cpp" line="4822"/>
+        <location filename="../qtractorTrackView.cpp" line="4751"/>
+        <location filename="../qtractorTrackView.cpp" line="4824"/>
         <source>cut</source>
         <translation>вирізати</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4752"/>
-        <location filename="../qtractorTrackView.cpp" line="4825"/>
+        <location filename="../qtractorTrackView.cpp" line="4754"/>
+        <location filename="../qtractorTrackView.cpp" line="4827"/>
         <source>delete</source>
         <translation>вилучити</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4818"/>
+        <location filename="../qtractorTrackView.cpp" line="4820"/>
         <source>%1 clip</source>
         <translation>%1 кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4828"/>
+        <location filename="../qtractorTrackView.cpp" line="4830"/>
         <source>split</source>
         <translation>розділити</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5191"/>
+        <location filename="../qtractorTrackView.cpp" line="5192"/>
         <source>move clip</source>
         <translation>пересунути кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5326"/>
+        <location filename="../qtractorTrackView.cpp" line="5327"/>
         <source>paste clip</source>
         <translation>вставити кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5469"/>
+        <location filename="../qtractorTrackView.cpp" line="5470"/>
         <source>move automation</source>
         <translation>пересунути автоматизацію</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5556"/>
+        <location filename="../qtractorTrackView.cpp" line="5557"/>
         <source>paste automation</source>
         <translation>вставити автоматизацію</translation>
     </message>

@@ -1879,7 +1879,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			if (m_pClipDrag && m_dragCursor == DragNone) {
 				// Show that we're about to something...
 				m_dragCursor = m_dragState;
-				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+				setEditCursor(QCursor(Qt::PointingHandCursor));
 				// Make it (un)selected, right on the file view too...
 				if (!m_bCurveEdit && m_selectMode == SelectClip)
 					selectClip(!bModifier);
@@ -2007,14 +2007,14 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				if (m_dragState == DragCurveMove) {
 					// DragCurveMove...
 					m_iDragCurveX = (pos.x() - m_posDrag.x());
-					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+					setEditCursor(QCursor(Qt::SizeHorCursor));
 				}
 				else
 				if (m_dragState == DragClipFadeIn  ||
 					m_dragState == DragClipFadeOut) {
 					// DragClipFade...
 					m_iDragClipX = (pos.x() - m_posDrag.x());
-					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+					setEditCursor(QCursor(Qt::SizeHorCursor));
 					moveRubberBand(&m_pRubberBand, m_rectHandle);
 				}
 				else
@@ -2022,7 +2022,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					m_dragState == DragClipSelectRight) {
 					// DragClipSelect...
 					m_iDragClipX = (pos.x() - m_posDrag.x());
-					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+					setEditCursor(QCursor(Qt::SizeHorCursor));
 				//	moveRubberBand(&m_pRubberBand, m_rectHandle);
 				}
 				else
@@ -2044,14 +2044,14 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					const int x = pixelSnap(m_rectDrag.x());
 					m_iDragClipX = (x - m_rectDrag.x());
 					m_dragState = m_dragCursor = DragClipMove;
-					qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
+					setEditCursor(QCursor(Qt::SizeAllCursor));
 					showClipSelect();
 				} else {
 					// We'll start rubber banding...
 					m_rectDrag.setTopLeft(m_posDrag);
 					m_rectDrag.setBottomRight(pos);
 					m_dragState = m_dragCursor = DragSelect;
-					qtractorScrollView::setCursor(QCursor(Qt::CrossCursor));
+					setEditCursor(QCursor(Qt::CrossCursor));
 					// Create the rubber-band if there's none...
 					moveRubberBand(&m_pRubberBand, m_rectDrag);
 				}
@@ -2304,7 +2304,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			m_dragState != DragClipPaste     &&
 			m_dragState != DragClipStep) {
 			m_dragCursor = DragNone;
-			qtractorScrollView::unsetCursor();
+			unsetEditCursor();
 			return true;
 		}
 	}
@@ -3369,8 +3369,10 @@ qtractorClip *qtractorTrackView::dragClipStart (
 			m_dragCursor = DragCurveMove;
 		else
 			m_dragCursor = DragCurveNode;
-		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+		setEditCursor(QCursor(Qt::PointingHandCursor));
 		return clipAt(pos, bSelectTrack);
+	} else {
+		unsetEditCursor();
 	}
 
 	qtractorSession *pSession = pTrack->session();
@@ -3410,7 +3412,7 @@ qtractorClip *qtractorTrackView::dragClipStart (
 	// Reset cursor if any persist around.
 	if (m_dragCursor != DragNone) {
 		m_dragCursor  = DragNone;
-		qtractorScrollView::unsetCursor();
+		unsetEditCursor();
 	}
 
 	return pClipAt;
@@ -3436,7 +3438,7 @@ bool qtractorTrackView::dragClipStartEx (
 			rectClip.top() + 1, 8, 8);
 	if (m_rectHandle.contains(pos)) {
 		m_dragCursor = DragClipFadeIn;
-		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+		setEditCursor(QCursor(Qt::PointingHandCursor));
 		return true;
 	}
 
@@ -3446,7 +3448,7 @@ bool qtractorTrackView::dragClipStartEx (
 			rectClip.top() + 1, 8, 8);
 	if (m_rectHandle.contains(pos)) {
 		m_dragCursor = DragClipFadeOut;
-		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+		setEditCursor(QCursor(Qt::PointingHandCursor));
 		return true;
 	}
 
@@ -3457,7 +3459,7 @@ bool qtractorTrackView::dragClipStartEx (
 	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
 		m_dragCursor = (modifiers & Qt::ControlModifier
 			? DragClipRepeatLeft : DragClipResizeLeft);
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		setEditCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
 
@@ -3466,7 +3468,7 @@ bool qtractorTrackView::dragClipStartEx (
 	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
 		m_dragCursor = (modifiers & Qt::ControlModifier
 			? DragClipRepeatRight : DragClipResizeRight);
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		setEditCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
 
@@ -3474,7 +3476,7 @@ bool qtractorTrackView::dragClipStartEx (
 	x = pSession->pixelFromFrame(pClip->clipSelectStart());
 	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
 		m_dragCursor = DragClipSelectLeft;
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		setEditCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
 
@@ -3482,7 +3484,7 @@ bool qtractorTrackView::dragClipStartEx (
 	x = pSession->pixelFromFrame(pClip->clipSelectEnd());
 	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
 		m_dragCursor = DragClipSelectRight;
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		setEditCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
 
@@ -3972,7 +3974,7 @@ void qtractorTrackView::dragCurveNode (
 	if (m_pDragCurve == nullptr) {
 		m_pDragCurve = pCurve;
 		m_dragCursor = DragCurveNode;
-		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+		setEditCursor(QCursor(Qt::PointingHandCursor));
 	}
 
 	ensureVisible(pos.x(), pos.y(), 24, 24);
@@ -4047,7 +4049,7 @@ void qtractorTrackView::resetDragState (void)
 
 	// Should fallback mouse cursor...
 	if (m_dragCursor != DragNone)
-		qtractorScrollView::unsetCursor();
+		unsetEditCursor();
 	if (m_dragState == DragClipStep)
 		m_pClipSelect->reset();
 	if (m_dragState == DragCurveStep)
@@ -4262,7 +4264,7 @@ bool qtractorTrackView::keyStep (
 			m_posDrag   = m_rectDrag.topLeft();
 			m_posStep   = QPoint(0, 0);
 			m_iDragClipX = pixelSnap(m_rectDrag.x()) - m_rectDrag.x();
-			qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
+			setEditCursor(QCursor(Qt::SizeAllCursor));
 		}
 		else
 		if (isCurveSelected() && m_bCurveEdit
@@ -4272,7 +4274,7 @@ bool qtractorTrackView::keyStep (
 			m_posDrag   = m_rectDrag.topLeft();
 			m_posStep   = QPoint(0, 0);
 			m_iDragCurveX = pixelSnap(m_rectDrag.x()) - m_rectDrag.x();
-			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+			setEditCursor(QCursor(Qt::SizeHorCursor));
 		}
 	}
 
@@ -5061,7 +5063,7 @@ void qtractorTrackView::pasteClipboard (
 				m_dragState = m_dragCursor = DragClipPasteDrop;
 				// It doesn't matter which one, both pasteable views are due...
 				qtractorScrollView::setFocus();
-				qtractorScrollView::setCursor(QCursor(
+				setEditCursor(QCursor(
 					QIcon::fromTheme("editPaste").pixmap(22, 22), 12, 12));
 				// Update the pasted stuff
 				showClipDropRects();
@@ -5162,8 +5164,7 @@ void qtractorTrackView::pasteClipboard (
 
 	// It doesn't matter which one, both pasteable views are due...
 	qtractorScrollView::setFocus();
-	qtractorScrollView::setCursor(QCursor(
-		QIcon::fromTheme("editPaste").pixmap(22, 22), 12, 12));
+	setEditCursor(QCursor(QIcon::fromTheme("editPaste").pixmap(22, 22), 12, 12));
 
 	// Let's-a go...
 	qtractorScrollView::viewport()->update();
@@ -5750,6 +5751,8 @@ void qtractorTrackView::setCurveEdit ( bool bCurveEdit )
 
 	clearSelect();
 
+	unsetEditCursor();
+
 	m_pTracks->selectionChangeNotify();
 }
 
@@ -5943,6 +5946,24 @@ void qtractorTrackView::editCurveNodeFinished (void)
 #endif
 
 	closeEditCurveNode();
+}
+
+
+// (Un)set edit mode cursors.
+void qtractorTrackView::setEditCursor ( const QCursor& cursr )
+{
+	qtractorScrollView::viewport()->setCursor(cursr);
+}
+
+
+void qtractorTrackView::unsetEditCursor (void)
+{
+	if (m_bCurveEdit) {
+		setEditCursor(QCursor(
+			QIcon::fromTheme("editSelectCurve").pixmap(22), 7, 6));
+	} else {
+		qtractorScrollView::viewport()->unsetCursor();
+	}
 }
 
 

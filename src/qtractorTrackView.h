@@ -259,6 +259,10 @@ public:
 	unsigned int pixelSnap(unsigned int x) const;
 	unsigned long frameSnap(unsigned long iFrame) const;
 
+	// (Un)set edit mode cursors.
+	void setEditCursor(const QCursor& cursr);
+	void unsetEditCursor();
+
 protected:
 
 	// Resize event handler.
