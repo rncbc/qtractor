@@ -25,12 +25,6 @@ Source:		%{name}-%{version}.tar.gz
 URL:		https://qtractor.org/
 #Packager:	rncbc.org
 
-%if 0%{?fedora_version} >= 34 || 0%{?suse_version} > 1500 || ( 0%{?sle_version} == 150200 && 0%{?is_opensuse} )
-%define qt_major_version  6
-%else
-%define qt_major_version  5
-%endif
-
 BuildRequires:	coreutils
 BuildRequires:	pkgconfig
 BuildRequires:	glibc-devel
@@ -46,7 +40,6 @@ BuildRequires:	gcc-c++ >= 10
 %define _GCC	/usr/bin/gcc
 %define _GXX	/usr/bin/g++
 %endif
-%if 0%{qt_major_version} == 6
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
 BuildRequires:	qtbase6.9-static >= 6.9
 BuildRequires:	qttools6.9-static
@@ -60,16 +53,6 @@ BuildRequires:	pkgconfig(Qt6Widgets)
 BuildRequires:	pkgconfig(Qt6Svg)
 BuildRequires:	pkgconfig(Qt6Xml)
 BuildRequires:	pkgconfig(Qt6Network)
-%endif
-%else
-BuildRequires:	cmake(Qt5LinguistTools)
-BuildRequires:	pkgconfig(Qt5Core)
-BuildRequires:	pkgconfig(Qt5Gui)
-BuildRequires:	pkgconfig(Qt5Widgets)
-BuildRequires:	pkgconfig(Qt5Svg)
-BuildRequires:	pkgconfig(Qt5Xml)
-BuildRequires:	pkgconfig(Qt5Network)
-BuildRequires:	pkgconfig(Qt5X11Extras)
 %endif
 %if %{defined fedora}
 BuildRequires:	jack-audio-connection-kit-devel
