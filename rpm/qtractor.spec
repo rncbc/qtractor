@@ -76,9 +76,7 @@ BuildRequires:	pkgconfig(serd-0)
 BuildRequires:	pkgconfig(sord-0)
 BuildRequires:	pkgconfig(sratom-0)
 BuildRequires:	pkgconfig(lilv-0)
-%if 0%{qt_major_version} < 6
-BuildRequires:	pkgconfig(suil-0)
-%endif
+#BuildRequires:	pkgconfig(suil-0)
 BuildRequires:	pkgconfig(vorbis)
 BuildRequires:	pkgconfig(samplerate)
 BuildRequires:	pkgconfig(dssi)
