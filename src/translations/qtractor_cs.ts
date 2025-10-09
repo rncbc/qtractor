@@ -12015,12 +12015,12 @@ P &lt; 0 : zpomalení posunu.
     <message>
         <location filename="../qtractorMixer.cpp" line="1180"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished">&amp;Zvuk</translation>
+        <translation>&amp;Zvuk</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1186"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
 </context>
 <context>
