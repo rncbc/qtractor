@@ -8079,27 +8079,27 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="311"/>
         <source>Pitch Bend Sensitivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Чутливість до зміни тону</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="312"/>
         <source>Fine Tune</source>
-        <translation type="unfinished"></translation>
+        <translation>Тонке коригування</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="313"/>
         <source>Coarse Tune</source>
-        <translation type="unfinished"></translation>
+        <translation>Жорстке коригування</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="314"/>
         <source>Tuning Program</source>
-        <translation type="unfinished"></translation>
+        <translation>Програма коригування</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="315"/>
         <source>Tuning Bank</source>
-        <translation type="unfinished"></translation>
+        <translation>Банк коригування</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="241"/>
@@ -8914,12 +8914,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="682"/>
         <source>Jog</source>
-        <translation type="unfinished">біг підтюпцем</translation>
+        <translation>Джоґ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="683"/>
         <source>Multani</source>
-        <translation type="unfinished">мултані</translation>
+        <translation>Мултані</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="684"/>
@@ -12015,12 +12015,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMixer.cpp" line="1180"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>З&amp;вук</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="1186"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
 </context>
 <context>
