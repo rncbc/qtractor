@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.5.9  2025-10-31  A Halloween'25 Release.
 
 - Main menu and toolbar Edit/Select Mode/Clip, Range, Rectangle
   and Automation actions are now self-toggled when triggered.
@@ -13,7 +13,7 @@ GIT HEAD
   but not dragging the main and MIDI editor thumb-views around.
   
 - Mixer: temporarily hide/show either Audio or MIDI buses, from
-  the respective Inputs and/or Outputs rack pane. (EXPERIMENTAL)
+  the respective Inputs and/or Outputs rack pane.
 
 - Add underlying platform name (eg. xcb, wayland) to Qt version
   string.
