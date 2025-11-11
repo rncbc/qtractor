@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Updated to VST3 SDK v3.8.0.build.66
+
+
 1.5.9  2025-10-31  A Halloween'25 Release.
 
 - Main menu and toolbar Edit/Select Mode/Clip, Range, Rectangle
