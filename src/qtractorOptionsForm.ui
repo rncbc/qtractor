@@ -510,6 +510,86 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="GeneralClipsGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Clips</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QLabel" name="ClipFadeInTypeLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Default &amp;Fade In:</string>
+            </property>
+            <property name="buddy">
+             <cstring>ClipFadeInTypeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="ClipFadeInTypeComboBox">
+            <property name="toolTip">
+             <string>Default clip fade-in type</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="ClipFadeOutTypeLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
+            <property name="text">
+             <string>Default &amp;Fade Out:</string>
+            </property>
+            <property name="buddy">
+             <cstring>ClipFadeOutTypeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="ClipFadeOutTypeComboBox">
+            <property name="toolTip">
+             <string>Default clip fade-out type</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -4369,6 +4449,8 @@
   <tabstop>TrackViewDropSpanCheckBox</tabstop>
   <tabstop>MidButtonModifierCheckBox</tabstop>
   <tabstop>KeepEditorsOnTopCheckBox</tabstop>
+  <tabstop>ClipFadeInTypeComboBox</tabstop>
+  <tabstop>ClipFadeOutTypeComboBox</tabstop>
   <tabstop>TransportModeComboBox</tabstop>
   <tabstop>TimebaseCheckBox</tabstop>
   <tabstop>LoopRecordingModeComboBox</tabstop>

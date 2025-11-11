@@ -1503,6 +1503,12 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Set MIDI control non catch-up/hook global option...
 	qtractorMidiControl::setSync(m_pOptions->bMidiControlSync);
 
+	// Set default clip fade-in/out types...
+	qtractorClip::setDefaultFadeInType(
+		qtractorClip::fadeTypeFromIndex(m_pOptions->iClipFadeInType));
+	qtractorClip::setDefaultFadeOutType(
+		qtractorClip::fadeTypeFromIndex(m_pOptions->iClipFadeOutType));
+
 	// Load MIDI controller configuration files...
 	QStringListIterator it(m_pOptions->midiControlFiles);
 	while (it.hasNext())
@@ -5403,6 +5409,8 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
 	const bool    bOldKeepEditorsOnTop   = m_pOptions->bKeepEditorsOnTop;
 	const int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
+	const int     iOldClipFadeInType     = m_pOptions->iClipFadeInType;
+	const int     iOldClipFadeOutType    = m_pOptions->iClipFadeOutType;
 	const int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	const int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
 	const int     iOldResampleType       = m_pOptions->iAudioResampleType;
@@ -5567,6 +5575,14 @@ void qtractorMainForm::viewOptions (void)
 			(sOldMessagesLogPath != m_pOptions->sMessagesLogPath))
 			m_pMessages->setLogging(
 				m_pOptions->bMessagesLog, m_pOptions->sMessagesLogPath);
+		if (iOldClipFadeInType != m_pOptions->iClipFadeInType) {
+			qtractorClip::setDefaultFadeInType(
+				qtractorClip::fadeTypeFromIndex(m_pOptions->iClipFadeInType));
+		}
+		if (iOldClipFadeOutType != m_pOptions->iClipFadeOutType) {
+			qtractorClip::setDefaultFadeOutType(
+				qtractorClip::fadeTypeFromIndex(m_pOptions->iClipFadeOutType));
+		}
 		// FIXME: This is what it should ever be,
 		// make it right from this very moment...
 		qtractorAudioFileFactory::setDefaultType(

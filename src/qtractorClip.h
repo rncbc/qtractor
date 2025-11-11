@@ -24,6 +24,8 @@
 
 #include "qtractorTrack.h"
 
+#include <QIcon>
+
 
 // Forward declarations.
 class qtractorClipCommand;
@@ -153,6 +155,18 @@ public:
 	// Compute clip gain, given current fade-in/out slopes.
 	float fadeInOutGain(unsigned long iOffset) const;
 
+	// Clip fade-in/out types helpers
+	//
+	struct FadeTypeInfo {
+		QString name;
+		QIcon iconFadeIn;
+		QIcon iconFadeOut;
+	};
+
+	typedef QHash<int, FadeTypeInfo> FadeTypes;
+
+	static FadeTypes& fadeTypes();
+
 	// Clip time reference settler method.
 	void updateClipTime();
 
@@ -221,6 +235,16 @@ public:
 	static FadeType fadeInTypeFromText(const QString& sText);
 	static FadeType fadeOutTypeFromText(const QString& sText);
 	static QString textFromFadeType(FadeType fadeType);
+
+	static FadeType fadeTypeFromIndex(int iIndex);
+	static int indexFromFadeType(FadeType fadeType);
+
+
+	static void setDefaultFadeInType(FadeType fadeType);
+	static FadeType defaultFadeInType();
+
+	static void setDefaultFadeOutType(FadeType fadeType);
+	static FadeType defaultFadeOutType();
 
 	// Take(record) descriptor.
 	//
@@ -409,6 +433,9 @@ private:
 	// Approximations to exponential fade interpolation.
 	FadeFunctor *m_pFadeInFunctor;
 	FadeFunctor *m_pFadeOutFunctor;
+
+	static FadeType g_defaultFadeInType;
+	static FadeType g_defaultFadeOutType;
 
 	// Local active/dirty flags.
 	bool m_bActive;

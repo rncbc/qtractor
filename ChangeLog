@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Default Clip Fade-In/Out types (Linear, Quadratic, Cubic) are
+  now settable as user preference options (cf. View/Options.../
+  /General/Clips).
+
 - Updated to VST3 SDK v3.8.0.build.66
 
 

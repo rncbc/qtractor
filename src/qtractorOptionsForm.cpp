@@ -29,6 +29,7 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
 #include "qtractorSession.h"
+#include "qtractorClip.h"
 
 #include "qtractorPluginFactory.h"
 
@@ -165,6 +166,14 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 			iSessionFormat++,
 			sSessionFormat.arg(sSessionExt),
 			sSessionExt);
+	}
+
+	// Populate the fade-in/out types combo-boxes.
+	const qtractorClip::FadeTypes& fadeTypes = qtractorClip::fadeTypes();
+	for (int i = 0; i < fadeTypes.count(); ++i) {
+		const qtractorClip::FadeTypeInfo& info = fadeTypes.value(i);
+		m_ui.ClipFadeInTypeComboBox->addItem(info.iconFadeIn, info.name);
+		m_ui.ClipFadeOutTypeComboBox->addItem(info.iconFadeOut, info.name);
 	}
 
 	// Populate the MIDI capture quantize combo-box.
@@ -426,6 +435,12 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.DisplayFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(displayFormatChanged(int)));
+	QObject::connect(m_ui.ClipFadeInTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ClipFadeOutTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -808,6 +823,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
 	m_ui.ShiftKeyModifierCheckBox->setChecked(m_pOptions->bShiftKeyModifier);
 	m_ui.MidButtonModifierCheckBox->setChecked(m_pOptions->bMidButtonModifier);
+	m_ui.ClipFadeInTypeComboBox->setCurrentIndex(m_pOptions->iClipFadeInType);
+	m_ui.ClipFadeOutTypeComboBox->setCurrentIndex(m_pOptions->iClipFadeOutType);
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
 	m_ui.LoopRecordingModeComboBox->setCurrentIndex(m_pOptions->iLoopRecordingMode);
 	m_ui.DisplayFormatComboBox->setCurrentIndex(m_pOptions->iDisplayFormat);
@@ -994,6 +1011,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
 		m_pOptions->bShiftKeyModifier    = m_ui.ShiftKeyModifierCheckBox->isChecked();
 		m_pOptions->bMidButtonModifier   = m_ui.MidButtonModifierCheckBox->isChecked();
+		m_pOptions->iClipFadeInType      = m_ui.ClipFadeInTypeComboBox->currentIndex();
+		m_pOptions->iClipFadeOutType     = m_ui.ClipFadeOutTypeComboBox->currentIndex();
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
 		m_pOptions->iLoopRecordingMode   = m_ui.LoopRecordingModeComboBox->currentIndex();
 		m_pOptions->iDisplayFormat       = m_ui.DisplayFormatComboBox->currentIndex();
@@ -2279,7 +2298,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.SessionTemplatePathToolButton->setEnabled(bSessionTemplate);
 	if (bSessionTemplate && bValid) {
 		const QString& sPath = m_ui.SessionTemplatePathComboBox->currentText();
-		bValid = !sPath.isEmpty() && QFileInfo(sPath).exists();
+		bValid = !sPath.isEmpty() && QFileInfo::exists(sPath);
 	}
 
 	m_ui.SessionBackupModeComboBox->setEnabled(

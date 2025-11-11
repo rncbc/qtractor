@@ -61,15 +61,10 @@ protected slots:
 
 protected:
 
-	qtractorClip::FadeType fadeTypeFromIndex(int iIndex) const;
-	int indexFromFadeType(qtractorClip::FadeType fadeType) const;
-
 	qtractorTrack::TrackType trackType() const;
 
 	void fileChanged(const QString& sFilename,
 		unsigned short iTrackChannel);
-
-	static void initFadeTypes();
 
 private:
 

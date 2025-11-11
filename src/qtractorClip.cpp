@@ -100,8 +100,8 @@ void qtractorClip::clear (void)
 	m_iFadeInTime     = 0;
 	m_iFadeOutTime    = 0;
 
-	setFadeInType(InQuad);
-	setFadeOutType(OutQuad);
+	setFadeInType(g_defaultFadeInType);
+	setFadeOutType(g_defaultFadeOutType);
 
 	m_bDirty = false;
 }
@@ -1260,6 +1260,81 @@ qtractorClip::FadeFunctor *qtractorClip::createFadeFunctor (
 	}
 
 	return nullptr;
+}
+
+
+//----------------------------------------------------------------------------
+// Clip fade-in/out types.
+
+qtractorClip::FadeType qtractorClip::g_defaultFadeInType  = qtractorClip::InQuad;
+qtractorClip::FadeType qtractorClip::g_defaultFadeOutType = qtractorClip::OutQuad;
+
+
+void qtractorClip::setDefaultFadeInType(FadeType fadeType)
+{
+	g_defaultFadeInType = fadeType;
+}
+
+qtractorClip::FadeType qtractorClip::defaultFadeInType (void)
+{
+	return g_defaultFadeInType;
+}
+
+
+void qtractorClip::setDefaultFadeOutType ( FadeType fadeType )
+{
+	g_defaultFadeOutType = fadeType;
+}
+
+qtractorClip::FadeType qtractorClip::defaultFadeOutType (void)
+{
+	return g_defaultFadeOutType;
+}
+
+
+qtractorClip::FadeTypes& qtractorClip::fadeTypes (void)
+{
+	static const char *s_aFadeTypeNames[] = {
+
+		QT_TR_NOOP("Linear"),		// Linear (obvious:)
+		QT_TR_NOOP("Quadratic 1"),	// InQuad
+		QT_TR_NOOP("Quadratic 2"),	// OutQuad
+		QT_TR_NOOP("Quadratic 3"),	// InOutQuad
+		QT_TR_NOOP("Cubic 1"),		// InCubic
+		QT_TR_NOOP("Cubic 2"),		// OutCubic
+		QT_TR_NOOP("Cubic 3"),		// InOutCubic
+
+		nullptr
+	};
+
+	static FadeTypes s_fadeTypes;
+
+	if (s_fadeTypes.isEmpty()) {
+		const QPixmap& pmFadeIn
+			= QIcon::fromTheme("fadeIn").pixmap(7 * 16, 16);
+		const QPixmap& pmFadeOut
+			= QIcon::fromTheme("fadeOut").pixmap(7 * 16, 16);
+		for (int i = 0; s_aFadeTypeNames[i]; ++i) {
+			FadeTypeInfo& info = s_fadeTypes[i];
+			info.name = QObject::tr(s_aFadeTypeNames[i]);
+			info.iconFadeIn  = pmFadeIn.copy(i << 4, 0, 16, 16);
+			info.iconFadeOut = pmFadeOut.copy(i << 4, 0, 16, 16);
+		}
+	}
+
+	return s_fadeTypes;
+}
+
+
+// Fade type index converters.
+qtractorClip::FadeType qtractorClip::fadeTypeFromIndex ( int iIndex )
+{
+	return qtractorClip::FadeType(iIndex);
+}
+
+int qtractorClip::indexFromFadeType ( FadeType fadeType )
+{
+	return int(fadeType);
 }
 
 

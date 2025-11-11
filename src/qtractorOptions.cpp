@@ -256,6 +256,8 @@ void qtractorOptions::loadOptions (void)
 	sMarkerColor    = m_settings.value("/MarkerColor").toString();
 	sCurveColor     = m_settings.value("/CurveColor").toString();
 	bAutoBackgroundColor = m_settings.value("/AutoBackgroundColor", false).toBool();
+	iClipFadeInType  = m_settings.value("/ClipFadeInType", 2).toInt();
+	iClipFadeOutType = m_settings.value("/ClipFadeOutType", 3).toInt();
 	m_settings.endGroup();
 
 	// Session auto-save group.
@@ -591,6 +593,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MarkerColor", sMarkerColor);
 	m_settings.setValue("/CurveColor", sCurveColor);
 	m_settings.setValue("/AutoBackgroundColor", bAutoBackgroundColor);
+	m_settings.setValue("/ClipFadeInType", iClipFadeInType);
+	m_settings.setValue("/ClipFadeOutType", iClipFadeOutType);
 	m_settings.endGroup();
 
 	// Session auto-save group.

@@ -338,6 +338,10 @@ public:
 	// Global persistent user preference options.
 	bool bUseNativeDialogs;
 
+	// Default clip fade-in/out types.
+	int iClipFadeInType;
+	int iClipFadeOutType;
+
 	// Run-time special non-persistent options.
 	bool bDontUseNativeDialogs;
 
