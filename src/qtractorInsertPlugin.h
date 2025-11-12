@@ -162,10 +162,16 @@ public:
 	// Override title/name caption.
 	QString title() const;
 
+	// Report latency.
+	unsigned long latency() const;
+
 protected:
 
 	// Plugin configuration (connections).
 	void freezeConfigs(int iBusMode);
+
+	// Forward decls.
+	class LatencyParam;
 
 private:
 
@@ -175,6 +181,8 @@ private:
 	Param *m_pSendGainParam;
 	Param *m_pDryGainParam;
 	Param *m_pWetGainParam;
+
+	LatencyParam *m_pLatencyParam;
 
 	// Custom optimized processors.
 	void (*m_pfnProcessGain)(float **, unsigned int,
@@ -481,6 +489,24 @@ public:
 	bool isInteger() const { return false; }
 	bool isToggled() const { return false; }
 	bool isDisplay() const { return false; }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioInsertPlugin::Latency -- Audio insert plugin control input port.
+//
+
+class qtractorAudioInsertPlugin::LatencyParam : public qtractorInsertPlugin::Param
+{
+public:
+
+	// Constructors.
+	LatencyParam(qtractorAudioInsertPlugin *pAudioInsertPlugin, unsigned long iIndex)
+		: qtractorInsertPlugin::Param(pAudioInsertPlugin, iIndex) {}
+
+	// Port range hints predicate methods.
+	bool isLogarithmic() const { return false; }
+	bool isInteger() const { return true; }
 };
 
 

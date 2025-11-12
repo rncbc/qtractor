@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Audio Insert pseudo-plugins now have an extra user supplied
+  input parameter: Latency (frames). (EXPERIMENTAL)
+
 - Default Clip Fade-In/Out types (Linear, Quadratic, Cubic) are
   now settable as user preference options (cf. View/Options.../
   /General/Clips).

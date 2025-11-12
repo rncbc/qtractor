@@ -348,7 +348,7 @@ bool qtractorAudioInsertPluginType::open (void)
 	m_iUniqueID = qHash(m_sLabel) ^ qHash(iChannels);
 
 	// Pseudo-plugin port counts...
-	m_iControlIns  = 2;
+	m_iControlIns  = 4;
 	m_iControlOuts = 0;
 	m_iAudioIns    = iChannels;
 	m_iAudioOuts   = iChannels;
@@ -410,7 +410,7 @@ bool qtractorMidiInsertPluginType::open (void)
 	m_iUniqueID = qHash(m_sLabel);//^ qHash(iChannels);
 
 	// Pseudo-plugin port counts...
-	m_iControlIns  = 2;
+	m_iControlIns  = 3;
 	m_iControlOuts = 0;
 	m_iAudioIns    = 0;
 	m_iAudioOuts   = 0;
@@ -502,6 +502,14 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	m_pWetGainParam->setValue(1.0f, false);
 	addParam(m_pWetGainParam);
 
+	m_pLatencyParam = new LatencyParam(this, 3);
+	m_pLatencyParam->setName(QObject::tr("Latency (frames)"));
+	m_pLatencyParam->setMinValue(0.0f);
+	m_pLatencyParam->setMaxValue(192000.0f);
+	m_pLatencyParam->setDefaultValue(0.0f);
+	m_pLatencyParam->setValue(0.0f, false);
+	addParam(m_pLatencyParam);
+
 	// Setup plugin instance...
 	//setChannels(channels());
 }
@@ -583,6 +591,9 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	// Add this one to the engine's exo-bus list,
 	// for conection persistence purposes...
 	pAudioEngine->addBusEx(m_pAudioBus);
+
+	// Settle max value for the latency param (2secs)...
+	m_pLatencyParam->setMaxValue(float(pAudioEngine->sampleRate() << 1));
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
@@ -769,6 +780,13 @@ QString qtractorAudioInsertPlugin::title (void) const
 	}
 
 	return sTitle;
+}
+
+
+// Report latency.
+unsigned long qtractorAudioInsertPlugin::latency (void) const
+{
+	return (unsigned long) m_pLatencyParam->value();
 }
 
 
