@@ -790,6 +790,30 @@ unsigned long qtractorAudioInsertPlugin::latency (void) const
 }
 
 
+// Display latency in milliseconds (ms)
+QString qtractorAudioInsertPlugin::LatencyParam::display (void) const
+{
+	QString sDisplay;
+
+	// Maximum latency is supposed to be settled to 2secs.
+	const float fSampleRate
+		= 0.5f * Param::maxValue();
+	if (fSampleRate > 0.0f) {
+		 // Latency in millisecs.
+		const float fLatency
+			= (1000.0f * Param::value()) / fSampleRate;
+		if (fLatency > 0.0f) {
+			const int iDecimals
+				= (fLatency < 1.0f ? 3 : (fLatency < 100.0f ? 1 : 0));
+			sDisplay = QObject::tr("%1 ms")
+				.arg(QString::number(fLatency, 'f', iDecimals));
+		}
+	}
+
+	return sDisplay;
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorMidiInsertPlugin -- MIDI-insert pseudo-plugin instance.
 //

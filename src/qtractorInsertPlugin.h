@@ -507,6 +507,10 @@ public:
 	// Port range hints predicate methods.
 	bool isLogarithmic() const { return false; }
 	bool isInteger() const { return true; }
+	bool isDisplay() const { return true; }
+
+	// Display latency in milliseconds (ms)
+	QString display() const;
 };
 
 

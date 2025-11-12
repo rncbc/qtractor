@@ -261,21 +261,21 @@ End:	%3	Length:	%4</source>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="482"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="810"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1301"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1639"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="834"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1325"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1663"/>
         <source>Send Gain</source>
         <translation>センドのゲイン</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="490"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="818"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="842"/>
         <source>Dry Gain</source>
         <translation>ドライのゲイン</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="498"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="826"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="850"/>
         <source>Wet Gain</source>
         <translation>ウェットのゲイン</translation>
     </message>
@@ -285,35 +285,40 @@ End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1165"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="808"/>
+        <source>%1 ms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorInsertPlugin.cpp" line="1189"/>
         <source>Aux Send (Audio)</source>
         <translation>Auxセンド(音声)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1198"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1222"/>
         <source>Aux Send pseudo-plugin (Audio)</source>
         <translation>擬似Auxセンドプラグイン(音声)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1260"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1284"/>
         <source>Aux Send pseudo-plugin (MIDI)</source>
         <translation>擬似Auxセンドプラグイン(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1509"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1807"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1533"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1831"/>
         <source>(none)</source>
         <translation type="unfinished">(なし)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="776"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1510"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1534"/>
         <source>%1 (Audio)</source>
         <translation>%1 (音声)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1108"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1808"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1132"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1832"/>
         <location filename="../qtractorMidiControlPlugin.cpp" line="569"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
