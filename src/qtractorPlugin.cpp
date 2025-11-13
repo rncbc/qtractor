@@ -700,6 +700,8 @@ void qtractorPlugin::closeForm ( bool bForce )
 	if (m_pForm == nullptr)
 		return;
 
+	freezeFormPos();
+
 	if (bForce) {
 		m_pForm->close();
 		delete m_pForm;
@@ -2126,6 +2128,7 @@ void qtractorPluginList::movePlugin (
 			pParam->observer()->setCurveList(m_pCurveList);
 		}
 		// Now for the real thing...
+		pPlugin->setChannels(0);
 		pPlugin->setPluginList(this);
 		pPlugin->setChannels(channels());
 		if (pPlugin->isActivated()) {

@@ -502,13 +502,9 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	m_pWetGainParam->setValue(1.0f, false);
 	addParam(m_pWetGainParam);
 
-	m_pLatencyParam = new LatencyParam(this, 3);
-	m_pLatencyParam->setName(QObject::tr("Latency (frames)"));
-	m_pLatencyParam->setMinValue(0.0f);
-	m_pLatencyParam->setMaxValue(192000.0f);
-	m_pLatencyParam->setDefaultValue(0.0f);
-	m_pLatencyParam->setValue(0.0f, false);
-	addParam(m_pLatencyParam);
+	// Latency param applies to tracks only...
+	m_pLatencyParam = nullptr;
+	m_fLatencyValue = 0.0f;
 
 	// Setup plugin instance...
 	//setChannels(channels());
@@ -559,6 +555,14 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 		m_pAudioBus = nullptr;
 	}
 
+	// Latency param is recreated here, on tracks only...
+	if (m_pLatencyParam) {
+		m_fLatencyValue = m_pLatencyParam->value(); // Save!
+		removeParam(m_pLatencyParam);
+		delete m_pLatencyParam;
+		m_pLatencyParam = nullptr;
+	}
+
 	// Set new instance number...
 	setInstances(iInstances);
 	if (iInstances < 1) {
@@ -570,6 +574,18 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	qDebug("qtractorAudioInsertPlugin[%p]::setChannels(%u) instances=%u",
 		this, iChannels, iInstances);
 #endif
+
+	// Latency param is also recreated here, but only for tracks...
+	const unsigned int iFlags = list()->flags();
+	if ((iFlags & qtractorPluginList::Bus) == 0) {
+		m_pLatencyParam = new LatencyParam(this, 3);
+		m_pLatencyParam->setName(QObject::tr("Latency (frames)"));
+		m_pLatencyParam->setMinValue(0.0f);
+		m_pLatencyParam->setMaxValue(float(pAudioEngine->sampleRate() << 1));
+		m_pLatencyParam->setDefaultValue(m_fLatencyValue); // Restore!
+		m_pLatencyParam->setValue(m_fLatencyValue, false); //
+		addParam(m_pLatencyParam);
+	}
 
 	// Audio bus name -- it must be unique...
 	int iBusName = 1;
@@ -591,9 +607,6 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	// Add this one to the engine's exo-bus list,
 	// for conection persistence purposes...
 	pAudioEngine->addBusEx(m_pAudioBus);
-
-	// Settle max value for the latency param (2secs)...
-	m_pLatencyParam->setMaxValue(float(pAudioEngine->sampleRate() << 1));
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
@@ -786,7 +799,10 @@ QString qtractorAudioInsertPlugin::title (void) const
 // Report latency.
 unsigned long qtractorAudioInsertPlugin::latency (void) const
 {
-	return (unsigned long) m_pLatencyParam->value();
+	if (m_pLatencyParam)
+		return (unsigned long) m_pLatencyParam->value();
+	else
+		return 0;
 }
 
 

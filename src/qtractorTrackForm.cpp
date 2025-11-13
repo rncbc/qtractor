@@ -1693,10 +1693,11 @@ void qtractorTrackForm::updatePluginListLatency (void)
 
 	qtractorSubject::flushQueue(true);
 
+	const unsigned int iSampleRate = pSession->sampleRate();
 	const unsigned long iLatency = pPluginList->currentLatency();
-	if (iLatency > 0) {
+	if (iSampleRate > 0 && iLatency > 0) {
 		const float fLatencyMs
-			= 1000.0f * float(iLatency) / float(pSession->sampleRate());
+			= 1000.0f * float(iLatency) / float(iSampleRate);
 		m_ui.PluginListLatencyPushButton->setText(
 			tr("%1 ms (%2 frames)")
 				.arg(QString::number(fLatencyMs, 'f', 1))

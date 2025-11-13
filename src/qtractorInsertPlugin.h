@@ -183,6 +183,7 @@ private:
 	Param *m_pWetGainParam;
 
 	LatencyParam *m_pLatencyParam;
+	float         m_fLatencyValue;
 
 	// Custom optimized processors.
 	void (*m_pfnProcessGain)(float **, unsigned int,

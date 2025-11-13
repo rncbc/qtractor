@@ -300,7 +300,7 @@ MIDI:	</translation>
         <translation>Aux Send: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2440"/>
+        <location filename="../qtractorPlugin.cpp" line="2443"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
     </message>
@@ -345,42 +345,42 @@ MIDI:	</translation>
         <translation>Přesunout přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="533"/>
+        <location filename="../qtractorPluginCommand.cpp" line="544"/>
         <source>activate plugin</source>
         <translation>Zapnout přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="569"/>
+        <location filename="../qtractorPluginCommand.cpp" line="580"/>
         <source>preset plugin</source>
         <translation>Přednastavit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="616"/>
+        <location filename="../qtractorPluginCommand.cpp" line="627"/>
         <source>reset plugin</source>
         <translation>Znovu spustit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="666"/>
+        <location filename="../qtractorPluginCommand.cpp" line="677"/>
         <source>plugin program</source>
         <translation>Program přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="712"/>
+        <location filename="../qtractorPluginCommand.cpp" line="723"/>
         <source>plugin alias</source>
         <translation>Přezdívka přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="945"/>
+        <location filename="../qtractorPluginCommand.cpp" line="956"/>
         <source>dedicated audio outputs</source>
         <translation>Jednoúčelové zvukové výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="990"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1001"/>
         <source>direct access param</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="1022"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1033"/>
         <source>import plugins</source>
         <translation>Přídavné moduly k zavedení</translation>
     </message>
@@ -657,64 +657,64 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="482"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="834"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1325"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1663"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="850"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1341"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1679"/>
         <source>Send Gain</source>
         <translation>Poslat zesílení</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="490"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="842"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="858"/>
         <source>Dry Gain</source>
         <translation>Zkušební zesílení</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="498"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="850"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="866"/>
         <source>Wet Gain</source>
         <translation>Ostré zesílení</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="506"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="582"/>
         <source>Latency (frames)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="808"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="824"/>
         <source>%1 ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1189"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1205"/>
         <source>Aux Send (Audio)</source>
         <translation>Pomocné odeslání (Audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1222"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1238"/>
         <source>Aux Send pseudo-plugin (Audio)</source>
         <translation>Pomocný nepravý přídavný modul pro odeslání (Audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1284"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1300"/>
         <source>Aux Send pseudo-plugin (MIDI)</source>
         <translation>Pomocný nepravý přídavný modul pro odeslání (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1533"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1831"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1549"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1847"/>
         <source>(none)</source>
         <translation>(žádný)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="776"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1534"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="789"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1550"/>
         <source>%1 (Audio)</source>
         <translation>%1 (Audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1132"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1832"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1148"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1848"/>
         <location filename="../qtractorMidiControlPlugin.cpp" line="569"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
@@ -15415,12 +15415,12 @@ Chcete použít tyto změny?</translation>
         <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1701"/>
+        <location filename="../qtractorTrackForm.cpp" line="1702"/>
         <source>%1 ms (%2 frames)</source>
         <translation>%1 ms (%2 snímků)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1705"/>
+        <location filename="../qtractorTrackForm.cpp" line="1706"/>
         <source>(no latency)</source>
         <translation>(bez prodlevy)</translation>
     </message>

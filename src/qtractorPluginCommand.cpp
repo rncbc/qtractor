@@ -465,6 +465,14 @@ bool qtractorMovePluginCommand::redo (void)
 
 //	pSession->lock();
 
+	// If we're changing plugin-lists, close the generic editor,
+	// but reopen it here later, if it's currently visible...
+	bool bReopenForm = false;
+	if (m_pPluginList != pPlugin->list()) {
+		bReopenForm = pPlugin->isFormVisible();
+		pPlugin->closeForm(true);
+	}
+
 	// Save the previous track alright...
 	qtractorPlugin *pNextPlugin = pPlugin->next();
 	qtractorPluginList *pPluginList = pPlugin->list();
@@ -500,6 +508,9 @@ bool qtractorMovePluginCommand::redo (void)
 	// Swap it nice, finally.
 	m_pPluginList = pPluginList;
 	setNextPlugin(pNextPlugin);
+
+	if (bReopenForm)
+		pPlugin->openForm();
 
 //	pSession->unlock();
 
