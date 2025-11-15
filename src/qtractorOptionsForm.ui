@@ -542,6 +542,12 @@
           </item>
           <item>
            <widget class="QComboBox" name="ClipFadeInTypeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
             <property name="toolTip">
              <string>Default clip fade-in type</string>
             </property>
@@ -581,6 +587,12 @@
           </item>
           <item>
            <widget class="QComboBox" name="ClipFadeOutTypeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
             <property name="toolTip">
              <string>Default clip fade-out type</string>
             </property>
