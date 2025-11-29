@@ -282,12 +282,12 @@ Fin :	%3	Longueur :	%4</translation>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="582"/>
         <source>Latency (frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Latence (trames)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="824"/>
         <source>%1 ms</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ms</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1205"/>
@@ -1439,37 +1439,37 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="1299"/>
         <source>Linear</source>
-        <translation type="unfinished">Linéaire</translation>
+        <translation>Linéaire</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1300"/>
         <source>Quadratic 1</source>
-        <translation type="unfinished">Quadratique 1</translation>
+        <translation>Quadratique 1</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1301"/>
         <source>Quadratic 2</source>
-        <translation type="unfinished">Quadratique 2</translation>
+        <translation>Quadratique 2</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1302"/>
         <source>Quadratic 3</source>
-        <translation type="unfinished">Quadratique 3</translation>
+        <translation>Quadratique 3</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1303"/>
         <source>Cubic 1</source>
-        <translation type="unfinished">Cubique 1</translation>
+        <translation>Cubique 1</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1304"/>
         <source>Cubic 2</source>
-        <translation type="unfinished">Cubique 2</translation>
+        <translation>Cubique 2</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1305"/>
         <source>Cubic 3</source>
-        <translation type="unfinished">Cubique 3</translation>
+        <translation>Cubique 3</translation>
     </message>
 </context>
 <context>
@@ -12491,27 +12491,27 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="521"/>
         <source>Clips</source>
-        <translation type="unfinished"></translation>
+        <translation>Clips</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
         <source>Default &amp;Fade In:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondu à l&apos;ouverture par dé&amp;faut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="552"/>
         <source>Default clip fade-in type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de fondu à l&apos;ouverture de clip par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="581"/>
         <source>Default &amp;Fade Out:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondu à la fermeture par dé&amp;faut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="597"/>
         <source>Default clip fade-out type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de fondu à la fermeture de clip par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1056"/>
