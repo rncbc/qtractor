@@ -369,12 +369,12 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="582"/>
         <source>Latency (frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Затримка (у кадрах)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="824"/>
         <source>%1 ms</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 мс</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1205"/>
@@ -1440,37 +1440,37 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClip.cpp" line="1299"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Лінійне</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1300"/>
         <source>Quadratic 1</source>
-        <translation type="unfinished">Квадратичне 1</translation>
+        <translation>Квадратичне 1</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1301"/>
         <source>Quadratic 2</source>
-        <translation type="unfinished">Квадратичне 2</translation>
+        <translation>Квадратичне 2</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1302"/>
         <source>Quadratic 3</source>
-        <translation type="unfinished">Квадратичне 3</translation>
+        <translation>Квадратичне 3</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1303"/>
         <source>Cubic 1</source>
-        <translation type="unfinished">Кубічне 1</translation>
+        <translation>Кубічне 1</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1304"/>
         <source>Cubic 2</source>
-        <translation type="unfinished">Кубічне 2</translation>
+        <translation>Кубічне 2</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1305"/>
         <source>Cubic 3</source>
-        <translation type="unfinished">Кубічне 3</translation>
+        <translation>Кубічне 3</translation>
     </message>
 </context>
 <context>
@@ -7617,12 +7617,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="115"/>
         <source>High Floor Tom</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="116"/>
         <source>Pedal Hi-Hat</source>
-        <translation type="unfinished"></translation>
+        <translation>Педальний гай-гет</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="117"/>
@@ -7632,7 +7632,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="118"/>
         <source>Open Hi-Hat</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкритий гай-гет</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="119"/>
@@ -8281,17 +8281,17 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="436"/>
         <source>Expression (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Експресія (14-бітова)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="437"/>
         <source>Effect Control 1 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Керування ефектом 1 (14-бітове)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="438"/>
         <source>Effect Control 2 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Керування ефектом 2 (14-бітове)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="439"/>
@@ -12294,27 +12294,27 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="521"/>
         <source>Clips</source>
-        <translation type="unfinished"></translation>
+        <translation>Кліпи</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
         <source>Default &amp;Fade In:</source>
-        <translation type="unfinished"></translation>
+        <translation>Типове &amp;наростання:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="552"/>
         <source>Default clip fade-in type</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартний тип наростання кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="581"/>
         <source>Default &amp;Fade Out:</source>
-        <translation type="unfinished"></translation>
+        <translation>Типове з&amp;гасання:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="597"/>
         <source>Default clip fade-out type</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартний тип згасання кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="626"/>
