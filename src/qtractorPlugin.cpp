@@ -121,17 +121,20 @@ qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 {
 	qtractorPluginFile *pFile = g_files.value(sFilename, nullptr);
 
-	if (pFile == nullptr && QLibrary::isLibrary(sFilename)
+	if (pFile == nullptr && (QLibrary::isLibrary(sFilename)
 	#ifdef CONFIG_CLAP
 		|| QFileInfo(sFilename).suffix() == "clap"
 	#endif
-	) {
+	)) {
 		pFile = new qtractorPluginFile(sFilename);
 		g_files.insert(pFile->filename(), pFile);
 	}
 
-	if (pFile && !pFile->open())
+	if (pFile && !pFile->open()) {
+		g_files.remove(pFile->filename());
+		delete pFile;
 		pFile = nullptr;
+	}
 
 	if (pFile)
 		pFile->addRef();
@@ -146,6 +149,14 @@ void qtractorPluginFile::removeFile ( qtractorPluginFile *pFile )
 		g_files.remove(pFile->filename());
 		delete pFile;
 	}
+}
+
+
+void qtractorPluginFile::clearAll (void)
+{
+	qDeleteAll(g_files.values());
+
+	g_files.clear();
 }
 
 
@@ -1605,12 +1616,14 @@ bool qtractorPlugin::savePlugin (
 	freezeValues();
 
 	qtractorPluginType *pType = type();
+	const qtractorPluginType::Hint typeHint
+		= pType->typeHint();
 	pElement->setAttribute("type",
-		qtractorPluginType::textFromHint(pType->typeHint()));
+		qtractorPluginType::textFromHint(typeHint));
 
 	// Pseudo-plugins don't have a file...
-	const QString& sFilename = pType->filename();
-	if (!sFilename.isEmpty()) {
+	QString sFilename = pType->filename();
+	if (savePluginFilename(sFilename, typeHint)) {
 		pDocument->saveTextElement("filename",
 			sFilename, pElement);
 	}
@@ -1714,6 +1727,38 @@ bool qtractorPlugin::savePluginEx (
 	}
 
 	return bResult;
+}
+
+
+// Check/sanitize plugin file-path to save (absolute->relative)...
+bool qtractorPlugin::savePluginFilename (
+	QString& sFilename, qtractorPluginType::Hint typeHint ) const
+{
+	// Care of internal pseudo-plugins...
+	if (sFilename.isEmpty())
+		return false;
+
+	// LV2 plug-ins are identified by URI...
+	if (typeHint == qtractorPluginType::Lv2)
+		return true;
+
+	// Search for a match with
+	// one of the plugin search paths...
+	qtractorPluginFactory *pPluginFactory
+		= qtractorPluginFactory::getInstance();
+	if (pPluginFactory) {
+		QStringListIterator iter(pPluginFactory->pluginPaths(typeHint));
+		while (iter.hasNext()) {
+			const QString spath = iter.next();
+			if (sFilename.indexOf(spath) == 0) {
+				sFilename.remove(0, spath.length() + 1); // include trailing slash!
+				return true;
+			}
+		}
+	}
+
+	// No match is found, leave it unchanged...
+	return true;
 }
 
 
@@ -2320,7 +2365,7 @@ qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 	int iEditorType = -1;
 
 	const QString& sTypeHint = pElement->attribute("type");
-	qtractorPluginType::Hint typeHint
+	const qtractorPluginType::Hint typeHint
 		= qtractorPluginType::hintFromText(sTypeHint);
 	for (QDomNode nParam = pElement->firstChild();
 			!nParam.isNull();
@@ -2396,7 +2441,7 @@ qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 	}
 
 	// Try to find some alternative, if it doesn't exist...
-	if (checkPluginFile(sFilename, typeHint)) {
+	if (loadPluginFilename(sFilename, typeHint)) {
 		pPlugin = qtractorPluginFactory::createPlugin(this,
 			sFilename, iIndex, typeHint);
 	}
@@ -2639,8 +2684,8 @@ bool qtractorPluginList::isAutoDeactivated (void) const
 }
 
 
-// Check/sanitize plugin file-path;
-bool qtractorPluginList::checkPluginFile (
+// Check/sanitize plugin file-path to load (relative->absolute)...
+bool qtractorPluginList::loadPluginFilename (
 	QString& sFilename, qtractorPluginType::Hint typeHint ) const
 {
 	// Care of internal pseudo-plugins...
@@ -2654,17 +2699,17 @@ bool qtractorPluginList::checkPluginFile (
 	if (typeHint == qtractorPluginType::Lv2)
 		return true;
 
-	// Primary check for plugin pathname...
+	// Check for the original plugin path...
 	QFileInfo fi(sFilename);
 	if (fi.exists() && fi.isReadable())
 		return true;
 
 	// Otherwise search for an alternative
-	// under each respective search paths...
+	// under one of the plugin search paths...
 	qtractorPluginFactory *pPluginFactory
 		= qtractorPluginFactory::getInstance();
 	if (pPluginFactory) {
-		const QString fname = fi.fileName();
+		const QString& fname = (fi.isRelative() ? sFilename : fi.fileName());
 		QStringListIterator iter(pPluginFactory->pluginPaths(typeHint));
 		while (iter.hasNext()) {
 			fi.setFile(QDir(iter.next()), fname);

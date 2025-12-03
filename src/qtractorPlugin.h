@@ -95,6 +95,8 @@ public:
 	static qtractorPluginFile *addFile(const QString& sFilename);
 	static void removeFile(qtractorPluginFile *pFile);
 
+	static void clearAll();
+
 private:
 
 	// Instance variables.
@@ -632,6 +634,10 @@ protected:
 	void clearConfigs() { m_configs.clear(); m_ctypes.clear(); }
 	void clearValues()  { m_values.names.clear(); m_values.index.clear(); }
 
+	// Check/sanitize plugin file-path to save (absolute->relative)...
+	bool savePluginFilename(QString& sFilename,
+		qtractorPluginType::Hint typeHint) const;
+
 private:
 
 	// Instance variables.
@@ -1125,8 +1131,8 @@ public:
 
 protected:
 
-	// Check/sanitize plugin file-path.
-	bool checkPluginFile(QString& sFilename,
+	// Check/sanitize plugin file-path to load (relative->absolute)...
+	bool loadPluginFilename(QString& sFilename,
 		qtractorPluginType::Hint typeHint) const;
 
 private:
