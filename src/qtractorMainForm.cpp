@@ -2401,6 +2401,7 @@ bool qtractorMainForm::closeSession (void)
 	#ifdef CONFIG_LV2
 		qtractorLv2PluginType::lv2_close();
 	#endif
+		qtractorPluginFile::clearAll();
 	#ifdef CONFIG_LIBZ
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();

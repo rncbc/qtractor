@@ -95,6 +95,8 @@ public:
 	static qtractorPluginFile *addFile(const QString& sFilename);
 	static void removeFile(qtractorPluginFile *pFile);
 
+	static void clearAll();
+
 private:
 
 	// Instance variables.

@@ -121,17 +121,20 @@ qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 {
 	qtractorPluginFile *pFile = g_files.value(sFilename, nullptr);
 
-	if (pFile == nullptr && QLibrary::isLibrary(sFilename)
+	if (pFile == nullptr && (QLibrary::isLibrary(sFilename)
 	#ifdef CONFIG_CLAP
 		|| QFileInfo(sFilename).suffix() == "clap"
 	#endif
-	) {
+	)) {
 		pFile = new qtractorPluginFile(sFilename);
 		g_files.insert(pFile->filename(), pFile);
 	}
 
-	if (pFile && !pFile->open())
+	if (pFile && !pFile->open()) {
+		g_files.remove(pFile->filename());
+		delete pFile;
 		pFile = nullptr;
+	}
 
 	if (pFile)
 		pFile->addRef();
@@ -146,6 +149,14 @@ void qtractorPluginFile::removeFile ( qtractorPluginFile *pFile )
 		g_files.remove(pFile->filename());
 		delete pFile;
 	}
+}
+
+
+void qtractorPluginFile::clearAll (void)
+{
+	qDeleteAll(g_files.values());
+
+	g_files.clear();
 }
 
 
