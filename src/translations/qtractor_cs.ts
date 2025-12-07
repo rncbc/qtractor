@@ -36,7 +36,7 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3098"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3390"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3378"/>
         <location filename="../qtractorMidiEngine.cpp" line="4354"/>
         <location filename="../qtractorMidiEngine.cpp" line="4936"/>
         <source>%1 In</source>
@@ -44,7 +44,7 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3107"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3390"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3378"/>
         <location filename="../qtractorMidiEngine.cpp" line="4363"/>
         <location filename="../qtractorMidiEngine.cpp" line="4936"/>
         <source>%1 Out</source>
