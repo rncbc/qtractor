@@ -36,7 +36,7 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3098"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3390"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3378"/>
         <location filename="../qtractorMidiEngine.cpp" line="4354"/>
         <location filename="../qtractorMidiEngine.cpp" line="4936"/>
         <source>%1 In</source>
@@ -44,7 +44,7 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3107"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3390"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3378"/>
         <location filename="../qtractorMidiEngine.cpp" line="4363"/>
         <location filename="../qtractorMidiEngine.cpp" line="4936"/>
         <source>%1 Out</source>
@@ -678,12 +678,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="582"/>
         <source>Latency (frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Prodleva (snímků)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="824"/>
         <source>%1 ms</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ms</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1205"/>
@@ -1441,37 +1441,37 @@ Chcete zahodit tyto změny?</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="1299"/>
         <source>Linear</source>
-        <translation type="unfinished">Lineární</translation>
+        <translation>Lineární</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1300"/>
         <source>Quadratic 1</source>
-        <translation type="unfinished">Kvadratická 1</translation>
+        <translation>Kvadratická 1</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1301"/>
         <source>Quadratic 2</source>
-        <translation type="unfinished">Kvadratická 2</translation>
+        <translation>Kvadratická 2</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1302"/>
         <source>Quadratic 3</source>
-        <translation type="unfinished">Kvadratická 3</translation>
+        <translation>Kvadratická 3</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1303"/>
         <source>Cubic 1</source>
-        <translation type="unfinished">Kubická 1</translation>
+        <translation>Kubická 1</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1304"/>
         <source>Cubic 2</source>
-        <translation type="unfinished">Kubická 2</translation>
+        <translation>Kubická 2</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="1305"/>
         <source>Cubic 3</source>
-        <translation type="unfinished">Kubická 3</translation>
+        <translation>Kubická 3</translation>
     </message>
 </context>
 <context>
@@ -13201,27 +13201,27 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="521"/>
         <source>Clips</source>
-        <translation type="unfinished"></translation>
+        <translation>Záběry</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
         <source>Default &amp;Fade In:</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí postupné &amp;zesílení signálu:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="552"/>
         <source>Default clip fade-in type</source>
-        <translation type="unfinished"></translation>
+        <translation>Druh výchozího postupného zesílení signálu záběru</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="581"/>
         <source>Default &amp;Fade Out:</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí postupné &amp;zeslabení signálu:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="597"/>
         <source>Default clip fade-out type</source>
-        <translation type="unfinished"></translation>
+        <translation>Druh výchozího postupného zeslabení signálu záběru</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1056"/>

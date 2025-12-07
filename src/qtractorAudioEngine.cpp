@@ -3286,85 +3286,73 @@ qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 // Audio I/O port latency accessors.
 unsigned int qtractorAudioBus::latency_in (void) const
 {
-	if (m_ppIPorts == nullptr)
-		return 0;
-
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == nullptr)
 		return 0;
 
-	unsigned int iLatencyIn = 0;
+	unsigned int iLatencyIn = pAudioEngine->bufferSize();
 
-#ifdef CONFIG_JACK_LATENCY
-	jack_nframes_t range_max = 0;
-	jack_latency_range_t range;
-	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppIPorts[i] == nullptr)
-			continue;
-		jack_port_get_latency_range(m_ppIPorts[i], JackCaptureLatency, &range);
-		if (range_max > range.max || i == 0)
-			range_max = range.max;
+	if (m_ppIPorts) {
+	#ifdef CONFIG_JACK_LATENCY
+		jack_nframes_t range_max = 0;
+		jack_latency_range_t range;
+		for (unsigned int i = 0; i < m_iChannels; ++i) {
+			if (m_ppIPorts[i] == nullptr)
+				continue;
+			jack_port_get_latency_range(m_ppIPorts[i], JackCaptureLatency, &range);
+			if (range_max > range.max || i == 0)
+				range_max = range.max;
+		}
+		iLatencyIn += range_max;
+	#else
+		jack_nframes_t lat, lat_min = 0;
+		for (unsigned int i = 0; i < m_iChannels; ++i) {
+			if (m_ppIPorts[i] == nullptr)
+				continue;
+			lat = jack_port_get_latency(m_ppIPorts[i]);
+			if (lat_max > lat || i == 0)
+				lat_max = lat;
+		}
+		iLatencyIn += lat_max;
+	#endif
 	}
-	iLatencyIn += range_max;
-#else
-	jack_nframes_t lat, lat_min = 0;
-	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppIPorts[i] == nullptr)
-			continue;
-		lat = jack_port_get_latency(m_ppIPorts[i]);
-		if (lat_max > lat || i == 0)
-			lat_max = lat;
-	}
-	iLatencyIn += lat_max;
-#endif
-
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-	if (iLatencyIn  < iBufferSize)
-		iLatencyIn += iBufferSize;
-
 	return iLatencyIn;
 }
 
 unsigned int qtractorAudioBus::latency_out (void) const
 {
-	if (m_ppOPorts == nullptr)
-		return 0;
-
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == nullptr)
 		return 0;
 
-	unsigned int iLatencyOut = 0;
+	unsigned int iLatencyOut = pAudioEngine->bufferSize();
 
-#ifdef CONFIG_JACK_LATENCY
-	jack_nframes_t range_max = 0;
-	jack_latency_range_t range;
-	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppOPorts[i] == nullptr)
-			continue;
-		jack_port_get_latency_range(m_ppOPorts[i], JackPlaybackLatency, &range);
-		if (range_max > range.max || i == 0)
-			range_max = range.max;
+	if (m_ppOPorts) {
+	#ifdef CONFIG_JACK_LATENCY
+		jack_nframes_t range_max = 0;
+		jack_latency_range_t range;
+		for (unsigned int i = 0; i < m_iChannels; ++i) {
+			if (m_ppOPorts[i] == nullptr)
+				continue;
+			jack_port_get_latency_range(m_ppOPorts[i], JackPlaybackLatency, &range);
+			if (range_max > range.max || i == 0)
+				range_max = range.max;
+		}
+		iLatencyOut += range_max;
+	#else
+		jack_nframes_t lat, lat_max = 0;
+		for (unsigned int i = 0; i < m_iChannels; ++i) {
+			if (m_ppOPorts[i] == nullptr)
+				continue;
+			lat = jack_port_get_latency(m_ppOPorts[i]);
+			if (lat_max > lat || i == 0)
+				lat_max = lat;
+		}
+		iLatencyOut += lat_max;
+	#endif
 	}
-	iLatencyOut += range_max;
-#else
-	jack_nframes_t lat, lat_max = 0;
-	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppOPorts[i] == nullptr)
-			continue;
-		lat = jack_port_get_latency(m_ppOPorts[i]);
-		if (lat_max > lat || i == 0)
-			lat_max = lat;
-	}
-	iLatencyOut += lat_max;
-#endif
-
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-	if (iLatencyOut  < iBufferSize)
-		iLatencyOut += iBufferSize;
-
 	return iLatencyOut;
 }
 
