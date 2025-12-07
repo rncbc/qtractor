@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Save/load all plugin's paths always as relative only to declared
+  search paths (cf. View/Options.../Plugins/Paths) (EXPERIMENTAL)
+
 - Audio Insert pseudo-plugins now have an extra user supplied
   input parameter: Latency (frames). (EXPERIMENTAL)
 
