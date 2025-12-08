@@ -302,6 +302,10 @@ public:
 	// Transport locate/reposition (timebase aware)...
 	void transport_locate(unsigned long iFrame);
 
+	// Audio I/O latency callbacks.
+	void updateLatency_in();
+	void updateLatency_out();
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -486,6 +490,10 @@ public:
 	qtractorPluginList *pluginList_in()  const;
 	qtractorPluginList *pluginList_out() const;
 
+	// Audio I/O port latency callbacks.
+	void updateLatency_in();
+	void updateLatency_out();
+
 	// Audio I/O port latency accessors.
 	unsigned int latency_in()  const;
 	unsigned int latency_out() const;
@@ -540,6 +548,10 @@ private:
 	float       **m_ppOBuffer;
 	float       **m_ppXBuffer;
 	float       **m_ppYBuffer;
+
+	// Audio I/O port latency (in frames).
+	unsigned int m_iILatency;
+	unsigned int m_iOLatency;
 
 	// Special under-work flag...
 	// (r/w access should be atomic)
