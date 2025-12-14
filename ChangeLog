@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed 'mime-info' file to the correct MIME-type icon names.
+
 - Improved/updated audio clip recording latency compensation.
 
 - Save/load all plugin's paths always as relative only to declared

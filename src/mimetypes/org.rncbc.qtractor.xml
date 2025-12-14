@@ -5,15 +5,18 @@
     <comment>Qtractor session</comment>
     <glob pattern="*.qtr"/>
     <glob pattern="*.qts"/>
+    <icon name="org.rncbc.qtractor.application-x-qtractor-session"/>
   </mime-type>
   <mime-type type="application/x-qtractor-template">
     <sub-class-of type="text/xml"/>
     <comment>Qtractor template</comment>
     <glob pattern="*.qtt"/>
+    <icon name="org.rncbc.qtractor.application-x-qtractor-template"/>
   </mime-type>
   <mime-type type="application/x-qtractor-archive">
     <sub-class-of type="text/xml"/>
     <comment>Qtractor archive</comment>
     <glob pattern="*.qtz"/>
+    <icon name="org.rncbc.qtractor.application-x-qtractor-archive"/>
   </mime-type>
 </mime-info>
