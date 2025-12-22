@@ -339,6 +339,8 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 	Item *pItem = new Item(ResetClip, pClip, pClip->track());
 	pItem->clipOffset = pClip->clipOffset();
 	pItem->clipLength = pClip->clipLength();
+	pItem->fadeInLength = pClip->fadeInLength();
+	pItem->fadeOutLength = pClip->fadeOutLength();
 	m_items.append(pItem);
 
 //	setClearSelect(true);
@@ -845,20 +847,27 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case ResetClip: {
 			const unsigned long iClipStartTime  = pClip->clipStartTime();
-			const unsigned long iClipLengthTime = pClip->clipLengthTime();
-			pItem->clipLength =	pSession->frameFromTickRange(
-				iClipStartTime, iClipStartTime + iClipLengthTime);
-			pClip->setClipLength(pItem->clipLength);
-		#if 1// FIXUP: Don't quantize to MIDI metronomic time-scale...
-			const unsigned long iClipOffset = pClip->clipOffset();
-			pClip->setClipOffset(pItem->clipOffset);
-			pItem->clipOffset =	iClipOffset;
-		#else
 			const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
-			pClip->setClipOffset(pItem->clipOffset);
-			pItem->clipOffset =	pSession->frameFromTickRange(
+			const unsigned long iClipOffset = pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipOffsetTime, true);
-		#endif
+			const unsigned long iClipLengthTime = pClip->clipLengthTime();
+			const unsigned long iClipLength = pSession->frameFromTickRange(
+				iClipStartTime, iClipStartTime + iClipLengthTime);
+			const unsigned long iFadeInTime = pClip->fadeInTime();
+			const unsigned long iFadeInLength = pSession->frameFromTickRange(
+				iClipStartTime, iClipStartTime + iFadeInTime);
+			const unsigned long iFadeOutTime = pClip->fadeOutTime();
+			const unsigned long iFadeOutLength = pSession->frameFromTickRange(
+				iClipStartTime + iClipLengthTime - iFadeOutTime,
+				iClipStartTime + iClipLengthTime);
+			pClip->setClipOffset(pItem->clipOffset);
+			pClip->setClipLength(pItem->clipLength);
+			pClip->setFadeInLength(pItem->fadeInLength);
+			pClip->setFadeOutLength(pItem->fadeOutLength);
+			pItem->clipOffset = iClipOffset;
+			pItem->clipLength = iClipLength;
+			pItem->fadeInLength = iFadeInLength;
+			pItem->fadeOutLength = iFadeOutLength;
 			break;
 		}
 		case StretcherFlagsClip: {

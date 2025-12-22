@@ -6405,9 +6405,6 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LIBRUBBERBAND
 	list << tr("Pitch-shifting support (librubberband) disabled.");
 #endif
-#ifndef CONFIG_LIBAUBIO
-	list << tr("Beat-detection support (libaubio) disabled.");
-#endif
 #ifndef CONFIG_LIBLO
 	list << tr("OSC service support (liblo) disabled.");
 #endif

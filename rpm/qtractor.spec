@@ -81,7 +81,7 @@ BuildRequires:	pkgconfig(vorbis)
 BuildRequires:	pkgconfig(samplerate)
 BuildRequires:	pkgconfig(dssi)
 BuildRequires:	pkgconfig(zlib)
-BuildRequires:	pkgconfig(aubio)
+#BuildRequires:	pkgconfig(aubio)
 
 BuildRequires:	gtk2-devel
 %if %{defined fedora}

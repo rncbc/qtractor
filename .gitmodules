@@ -10,3 +10,6 @@
 [submodule "src/vst3/public.sdk"]
 	path = src/vst3/public.sdk
 	url = https://github.com/steinbergmedia/vst3_public_sdk.git
+[submodule "src/minibpm"]
+	path = src/minibpm
+	url = https://github.com/breakfastquay/minibpm

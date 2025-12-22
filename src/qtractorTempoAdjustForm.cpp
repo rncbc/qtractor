@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,10 +22,10 @@
 #include "qtractorTempoAdjustForm.h"
 
 #include "qtractorAbout.h"
-
 #include "qtractorSession.h"
 
 #include "qtractorAudioClip.h"
+#include "qtractorAudioEngine.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
@@ -34,20 +34,19 @@
 #include <QLineEdit>
 #include <QPainter>
 #include <QPaintEvent>
-
+#include <QProgressBar>
 #include <QElapsedTimer>
 
 #include <cmath>
 
 
 #ifdef CONFIG_LIBAUBIO
-
-#include "qtractorAudioEngine.h"
-
-#include <QProgressBar>
-
 #include <aubio/aubio.h>
+#endif
 
+#ifdef CONFIG_MINIBPM
+#include "minibpm/src/MiniBpm.cpp"
+#endif
 
 // Audio clip beat-detection callback.
 struct audioClipTempoDetectData
@@ -56,27 +55,46 @@ struct audioClipTempoDetectData
 		unsigned iSampleRate, unsigned int iBlockSize = 1024)
 		: count(0), offset(0), channels(iChannels), nstep(iBlockSize >> 3)
 	{
+	#ifdef CONFIG_LIBAUBIO
 		aubio = new_aubio_tempo("default", iBlockSize, nstep, iSampleRate);
 		ibuf = new_fvec(nstep);
 		obuf = new_fvec(1);
+	#endif
+	#ifdef CONFIG_MINIBPM
+		minibpm = new breakfastquay::MiniBPM * [iChannels];
+		for (unsigned short i = 0; i < channels; ++i)
+			minibpm[i] = new breakfastquay::MiniBPM(iSampleRate);
+	#endif
 	}
 	// Dtor.
 	~audioClipTempoDetectData()
 	{
+	#ifdef CONFIG_LIBAUBIO
 		beats.clear();
 		del_fvec(obuf);
 		del_fvec(ibuf);
 		del_aubio_tempo(aubio);
+	#endif
+	#ifdef CONFIG_MINIBPM
+		for (unsigned short i = 0; i < channels; ++i)
+			delete minibpm[i];
+		delete [] minibpm;
+	#endif
 	}
 	// Members.
 	unsigned int count;
 	unsigned long offset;
 	unsigned short channels;
 	unsigned int nstep;
+#ifdef CONFIG_LIBAUBIO
 	aubio_tempo_t *aubio;
 	fvec_t *ibuf;
 	fvec_t *obuf;
 	QList<unsigned long> beats;
+#endif
+#ifdef CONFIG_MINIBPM
+	breakfastquay::MiniBPM **minibpm;
+#endif
 };
 
 
@@ -86,24 +104,19 @@ static void audioClipTempoDetect (
 	audioClipTempoDetectData *pData
 		= static_cast<audioClipTempoDetectData *> (pvArg);
 
+#ifdef CONFIG_LIBAUBIO
 	unsigned int i = 0;
-
 	while (i < iFrames) {
-
 		unsigned int j = 0;
-
 		for (; j < pData->nstep && i < iFrames; ++j, ++i) {
 			float fSum = 0.0f;
 			for (unsigned short n = 0; n < pData->channels; ++n)
 				fSum += ppFrames[n][i];
 			fvec_set_sample(pData->ibuf, fSum / float(pData->channels), j);
 		}
-
 		for (; j < pData->nstep; ++j)
 			fvec_set_sample(pData->ibuf, 0.0f, j);
-
 		aubio_tempo_do(pData->aubio, pData->ibuf, pData->obuf);
-
 		const bool is_beat = bool(fvec_get_sample(pData->obuf, 0));
 		if (is_beat) {
 			unsigned long iOffset = aubio_tempo_get_last(pData->aubio);
@@ -112,6 +125,13 @@ static void audioClipTempoDetect (
 			pData->beats.append(iOffset);
 		}
 	}
+#endif
+
+#ifdef CONFIG_MINIBPM
+	for (unsigned short i = 0; i < pData->channels; ++i) {
+		pData->minibpm[i]->process(ppFrames[i], iFrames);
+	}
+#endif
 
 	if (++(pData->count) > 100) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -123,8 +143,6 @@ static void audioClipTempoDetect (
 		pData->count = 0;
 	}
 }
-
-#endif	// CONFIG_LIBAUBIO
 
 
 //----------------------------------------------------------------------------
@@ -436,17 +454,12 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_ui.GroupBoxLayout->addWidget(m_ui.FormatGroupBox, 0, 5, 1, 1);
 	}
 
-#ifdef CONFIG_LIBAUBIO
 	if (m_pAudioClip) {
 		m_ui.TempoDetectPushButton->setEnabled(true);
 	} else {
 		m_ui.TempoDetectPushButton->setEnabled(false);
 		m_ui.TempoDetectPushButton->hide();
 	}
-#else
-	m_ui.TempoDetectPushButton->setEnabled(false);
-	m_ui.TempoDetectPushButton->hide();
-#endif
 }
 
 
@@ -564,12 +577,12 @@ void qtractorTempoAdjustForm::tempoChanged (void)
 
 	const float fTempo = m_ui.TempoSpinBox->tempo();
 	if (fTempo > 0.0f) {
-		const unsigned long iBeatLength
+		const float fBeatLength
 			= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
-		if (iBeatLength > 0) {
-			const int iRangeLength
-				= m_ui.RangeLengthSpinBox->value();
-			setRangeBeats(iRangeLength / iBeatLength);
+		if (fBeatLength > 0.0f) {
+			const float fRangeLength
+				= float(m_ui.RangeLengthSpinBox->value());
+			setRangeBeats(::lrintf(fRangeLength / fBeatLength));
 		}
 		m_ui.TempoResetPushButton->setEnabled(true);
 	}
@@ -587,8 +600,6 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTempoAdjustForm::tempoDetect()");
 #endif
-
-#ifdef CONFIG_LIBAUBIO
 
 	qtractorTrack *pTrack = m_pAudioClip->track();
 	if (pTrack == nullptr)
@@ -621,8 +632,12 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 		pProgressBar->show();
 	}
 
-	float fTempoDetect = 0.0f;
 	audioClipTempoDetectData data(iChannels, iSampleRate);
+
+#ifdef CONFIG_LIBAUBIO
+
+	float fTempoDetect = 0.0f;
+
 	for (int n = 0; n < 5; ++n) { // 5 times at least!...
 		m_pAudioClip->clipExport(audioClipTempoDetect, &data, iOffset, iLength);
 		fTempoDetect = float(aubio_tempo_get_confidence(data.aubio));
@@ -643,13 +658,44 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	if (m_pClipWidget)
 		m_pClipWidget->setBeats(data.beats);
 
+#endif	// CONFIG_LIBAUBIO
+
+#ifdef CONFIG_MINIBPM
+
+	unsigned short i;
+
+	const unsigned short iBeatsPerBar
+		= m_ui.TempoSpinBox->beatsPerBar();
+	for (i = 0; i < iChannels; ++i) {
+		data.minibpm[i]->setBeatsPerBar(iBeatsPerBar);
+	}
+
+	m_pAudioClip->clipExport(audioClipTempoDetect, &data, iOffset, iLength);
+
+	float fTempoSum = 0.0f;
+	for (i = 0; i < iChannels; ++i) {
+		fTempoSum += data.minibpm[i]->estimateTempo();
+	}
+
+	const float fTempo = fTempoSum / float(iChannels);
+	m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
+
+	if (m_pClipWidget) {
+		QList<unsigned long> beats;
+		const unsigned long iBeatLength
+			= ::lrintf(60.0f * float(iSampleRate) / fTempo);
+		for (unsigned long n = iBeatLength; n < iLength; n += iBeatLength)
+			beats.append(n);
+		m_pClipWidget->setBeats(beats);
+	}
+
+#endif	// CONFIG_MINIBPM
+
 	if (pProgressBar)
 		pProgressBar->hide();
 
 	m_ui.TempoDetectPushButton->setEnabled(true);
 	QApplication::restoreOverrideCursor();
-
-#endif	// CONFIG_LIBAUBIO
 }
 
 
@@ -664,6 +710,8 @@ void qtractorTempoAdjustForm::tempoReset (void)
 	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
 	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), false);
 	m_ui.TempoResetPushButton->setEnabled(false);
+
+	tempoChanged();
 
 	m_iDirtyCount = 0;
 	stabilizeForm();
@@ -865,10 +913,13 @@ void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 		= int(5.0f * float(iRangeLength) / float(m_pTimeScale->sampleRate()));
 	m_ui.RangeBeatsSpinBox->setMaximum(iMaxRangeBeats);
 
-	const unsigned int iRangeBeats
-		= m_pTimeScale->beatFromFrame(iRangeLength);
-	const unsigned long q = m_pTimeScale->beatsPerBar();
-	setRangeBeats(q * ((iRangeBeats + (q >> 1)) / q));
+	const float fTempo = m_ui.TempoSpinBox->tempo();
+	if (fTempo > 0.0f) {
+		const float fBeatLength
+			= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
+		if (fBeatLength > 0.0f)
+			setRangeBeats(::lrintf(float(iRangeLength) / fBeatLength));
+	}
 }
 
 

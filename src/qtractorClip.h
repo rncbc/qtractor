@@ -142,6 +142,8 @@ public:
 	void setFadeInLength(unsigned long iFadeInLength);
 	unsigned long fadeInLength() const
 		{ return m_iFadeInLength; }
+	unsigned long fadeInTime() const
+		{ return m_iFadeInTime; }
 
 	// Clip fade-out accessors
 	void setFadeOutType(FadeType fadeType);
@@ -151,6 +153,8 @@ public:
 	void setFadeOutLength(unsigned long iFadeOutLength);
 	unsigned long fadeOutLength() const
 		{ return m_iFadeOutLength; }
+	unsigned long fadeOutTime() const
+		{ return m_iFadeOutTime; }
 
 	// Compute clip gain, given current fade-in/out slopes.
 	float fadeInOutGain(unsigned long iOffset) const;

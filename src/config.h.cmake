@@ -68,8 +68,11 @@
 /* Define if RUBBERBAND_R3 library is available. */
 #cmakedefine CONFIG_LIBRUBBERBAND_R3 @CONFIG_LIBRUBBERBAND_R3@
 
-/* Define if AUBIO library is available. */
+/* Define if AUBIO library is available (DEPRECATED) */
 #cmakedefine CONFIG_LIBAUBIO @CONFIG_LIBAUBIO@
+
+/* Define if MINIBPM submodule is available. */
+#cmakedefine CONFIG_MINIBPM @CONFIG_MINIBPM@
 
 /* Define if LIBLO library is available. */
 #cmakedefine CONFIG_LIBLO @CONFIG_LIBLO@
@@ -116,7 +119,7 @@
 /* Define if LV2 UI support is available. */
 #cmakedefine CONFIG_LV2_UI @CONFIG_LV2_UI@
 
-/* Define if LV2 Event/MIDI support is available. */
+/* Define if LV2 Event/MIDI support is available (DEPRECATED) */
 #cmakedefine CONFIG_LV2_EVENT @CONFIG_LV2_EVENT@
 
 /* Define if LV2 Atom/MIDI aupport is available. */
