@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -355,9 +355,6 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 
 QString qtractorDocument::addFile ( const QString& sFilename )
 {
-	if (!isArchive() && !isSymLink())
-		return sFilename;
-
 	const QDir& cwd = QDir::current();
 	QString sAlias = cwd.relativeFilePath(sFilename);
 
@@ -561,7 +558,7 @@ void qtractorDocument::clearExtractedArchives ( bool bRemove )
 QString qtractorDocument::addFile (
 	const QString& sDir, const QString& sFilename )
 {
-	if (g_pDocument) {
+	if (g_pDocument && (g_pDocument->isArchive() || g_pDocument->isSymLink())) {
 		const QFileInfo info(QDir(sDir), sFilename);
 		return g_pDocument->addFile(info.absoluteFilePath());
 	}

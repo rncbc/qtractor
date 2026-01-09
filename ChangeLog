@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Make sure all LV2 plug-in state paths are stored as relative.
+  (EXPERIMENTAL)
+
+
 1.5.11  2025-12-30  An End-of-Year'25 Release.
 
 - Refactored Clip/Tempo Adjust.. tempo/beat-detection function to
