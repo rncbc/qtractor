@@ -2048,7 +2048,7 @@ Wollen Sie diese übernehmen?</translation>
 <context>
     <name>qtractorExportClipForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="949"/>
+        <location filename="../qtractorExportForm.cpp" line="978"/>
         <source>%1 %2 Clips</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2261,44 +2261,44 @@ Wollen Sie diese übernehmen?</translation>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
-</context>
-<context>
-    <name>qtractorExportTrackForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="682"/>
-        <source>%1 %2 Tracks</source>
-        <translation>%1 %2 Spuren</translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="734"/>
+        <location filename="../qtractorExportForm.cpp" line="690"/>
         <source>Warning</source>
-        <translation>Warnung</translation>
+        <translation type="unfinished">Warnung</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="735"/>
+        <location filename="../qtractorExportForm.cpp" line="691"/>
         <source>The file already exists:
 
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation>Die Datei existiert bereits:
+        <translation type="unfinished">Die Datei existiert bereits:
 
 &quot;%1&quot;
 
 Ersetzen?</translation>
     </message>
+</context>
+<context>
+    <name>qtractorExportTrackForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="781"/>
+        <location filename="../qtractorExportForm.cpp" line="725"/>
+        <source>%1 %2 Tracks</source>
+        <translation>%1 %2 Spuren</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="810"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>Export der Audiodatei: &quot;%1&quot; gestartet...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="807"/>
+        <location filename="../qtractorExportForm.cpp" line="836"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>Export der Audiodatei: &quot;%1&quot; vollständig.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="812"/>
+        <location filename="../qtractorExportForm.cpp" line="841"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -2311,17 +2311,17 @@ failed.</source>
 gescheitert.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="838"/>
+        <location filename="../qtractorExportForm.cpp" line="867"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>Export der MIDI-Datei: &quot;%1&quot; gestartet...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="865"/>
+        <location filename="../qtractorExportForm.cpp" line="894"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>Export der MIDI-Datei: &quot;%1&quot; vollständig.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="870"/>
+        <location filename="../qtractorExportForm.cpp" line="899"/>
         <source>MIDI file export:
 
 &quot;%1&quot;

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Make sure to ask whether to replace already existing files on
+  Clip/Merge, Export...
+
 - Make sure all LV2 plug-in state paths are stored as relative.
   (EXPERIMENTAL)
 

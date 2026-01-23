@@ -2055,7 +2055,7 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorExportClipForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="949"/>
+        <location filename="../qtractorExportForm.cpp" line="978"/>
         <source>%1 %2 Clips</source>
         <translation>%1 %2 záběry</translation>
     </message>
@@ -2086,6 +2086,24 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorExportForm.cpp" line="333"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="690"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="691"/>
+        <source>The file already exists:
+
+&quot;%1&quot;
+
+Do you want to replace it?</source>
+        <translation type="unfinished">Soubor již existuje:
+
+&quot;%1&quot;
+
+Chcete jej nahradit?</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="46"/>
@@ -2272,40 +2290,22 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorExportTrackForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="682"/>
+        <location filename="../qtractorExportForm.cpp" line="725"/>
         <source>%1 %2 Tracks</source>
         <translation>%1 %2 stop</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="734"/>
-        <source>Warning</source>
-        <translation>Varování</translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="735"/>
-        <source>The file already exists:
-
-&quot;%1&quot;
-
-Do you want to replace it?</source>
-        <translation>Soubor již existuje:
-
-&quot;%1&quot;
-
-Chcete jej nahradit?</translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="781"/>
+        <location filename="../qtractorExportForm.cpp" line="810"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>Vyvedení zvukového souboru: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="807"/>
+        <location filename="../qtractorExportForm.cpp" line="836"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>Vyvedení zvukového souboru: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="812"/>
+        <location filename="../qtractorExportForm.cpp" line="841"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -2318,17 +2318,17 @@ failed.</source>
 selhalo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="838"/>
+        <location filename="../qtractorExportForm.cpp" line="867"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>Vyvedení souboru MIDI: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="865"/>
+        <location filename="../qtractorExportForm.cpp" line="894"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>Vyvedení souboru MIDI: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="870"/>
+        <location filename="../qtractorExportForm.cpp" line="899"/>
         <source>MIDI file export:
 
 &quot;%1&quot;

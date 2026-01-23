@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -400,10 +400,12 @@ void qtractorExportForm::exportPathChanged ( const QString& sExportPath )
 	if (m_exportType == qtractorTrack::Audio) {
 		const QString& sExportExt
 			= QFileInfo(sExportPath).suffix().toLower();
-		if (sExportExt != m_sExportExt) {
+		if (!sExportExt.isEmpty() && sExportExt != m_sExportExt) {
+			const int iCurrentIndex
+				= m_ui.AudioExportTypeComboBox->currentIndex();
 			const int iIndex
 				= m_ui.AudioExportTypeComboBox->indexOf(sExportExt);
-			if (iIndex >= 0) {
+			if (iIndex >= 0 && iIndex != iCurrentIndex) {
 				m_ui.AudioExportTypeComboBox->setCurrentIndex(iIndex);
 				m_sExportExt = sExportExt;
 				audioExportTypeUpdate(iIndex);
@@ -659,6 +661,47 @@ void qtractorExportForm::saveExportOptions (void)
 }
 
 
+// Settle/retrieve the export path.
+void qtractorExportForm::setExportPath ( const QString& sExportPath )
+{
+	m_ui.ExportPathComboBox->setCurrentText(sExportPath);
+}
+
+QString qtractorExportForm::exportPath (void) const
+{
+	return m_ui.ExportPathComboBox->currentText();
+}
+
+
+// Query whether the export-path already exists.
+bool qtractorExportForm::checkExportPath (void)
+{
+	// Enforce (again) default file extension...
+	QString sExportPath = exportPath();
+
+	if (QFileInfo(sExportPath).suffix().isEmpty()) {
+		sExportPath += '.' + exportExt();
+		setExportPath(sExportPath);
+	}
+
+	// Check (again) wether the file already exists...
+	if (QFileInfo(sExportPath).exists()) {
+		if (QMessageBox::warning(this,
+			tr("Warning"),
+			tr("The file already exists:\n\n"
+			"\"%1\"\n\n"
+			"Do you want to replace it?")
+			.arg(sExportPath),
+			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
+			m_ui.ExportPathComboBox->setFocus();
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorExportTrackForm -- UI wrapper form.
 
@@ -716,32 +759,6 @@ void qtractorExportTrackForm::stabilizeForm (void)
 // Executive slots -- accept settings (OK button slot).
 void qtractorExportTrackForm::accept (void)
 {
-	// Must always be a export bus target...
-	const QList<QListWidgetItem *>& exportBusNameItems
-		= m_ui.ExportBusNameListBox->selectedItems();
-	if (exportBusNameItems.isEmpty())
-		return;
-
-	// Enforce (again) default file extension...
-	QString sExportPath = m_ui.ExportPathComboBox->currentText();
-
-	if (QFileInfo(sExportPath).suffix().isEmpty())
-		sExportPath += '.' + m_sExportExt;
-
-	// Check (again) wether the file already exists...
-	if (QFileInfo(sExportPath).exists()) {
-		if (QMessageBox::warning(this,
-			tr("Warning"),
-			tr("The file already exists:\n\n"
-			"\"%1\"\n\n"
-			"Do you want to replace it?")
-			.arg(sExportPath),
-			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
-			m_ui.ExportPathComboBox->setFocus();
-			return;
-		}
-	}
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
@@ -749,6 +766,18 @@ void qtractorExportTrackForm::accept (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == nullptr)
 		return;
+
+	// Must always be a export bus target...
+	const QList<QListWidgetItem *>& exportBusNameItems
+		= m_ui.ExportBusNameListBox->selectedItems();
+	if (exportBusNameItems.isEmpty())
+		return;
+
+	// Check (again) wether the file already exists...
+	if (!checkExportPath())
+		return;
+
+	const QString& sExportPath = exportPath();
 
 	// It can take a minute...
 	m_ui.ExportPathTextLabel->setEnabled(false);
@@ -950,21 +979,13 @@ QString qtractorExportClipForm::windowTitleEx (
 }
 
 
-// Settle/retrieve the export path.
-void qtractorExportClipForm::setExportPath ( const QString& sExportPath )
-{
-	m_ui.ExportPathComboBox->setCurrentText(sExportPath);
-}
-
-QString qtractorExportClipForm::exportPath (void) const
-{
-	return m_ui.ExportPathComboBox->currentText();
-}
-
-
 // Executive slots -- accept settings (OK button slot).
 void qtractorExportClipForm::accept (void)
 {
+	// Check (again) wether the file already exists...
+	if (!checkExportPath())
+		return;
+
 	saveExportOptions();
 
 	qtractorExportForm::accept();

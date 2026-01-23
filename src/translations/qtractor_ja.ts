@@ -2053,7 +2053,7 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorExportClipForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="949"/>
+        <location filename="../qtractorExportForm.cpp" line="978"/>
         <source>%1 %2 Clips</source>
         <translation>%1 %2 クリップ</translation>
     </message>
@@ -2266,44 +2266,44 @@ Do you want to apply the changes?</source>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
-</context>
-<context>
-    <name>qtractorExportTrackForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="682"/>
-        <source>%1 %2 Tracks</source>
-        <translation>%1 %2 トラック</translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="734"/>
+        <location filename="../qtractorExportForm.cpp" line="690"/>
         <source>Warning</source>
-        <translation>警告</translation>
+        <translation type="unfinished">警告</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="735"/>
+        <location filename="../qtractorExportForm.cpp" line="691"/>
         <source>The file already exists:
 
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation>ファイルはすでに存在しています:
+        <translation type="unfinished">ファイルはすでに存在しています:
 
 &quot;%1&quot;
 
 置きかえますか？</translation>
     </message>
+</context>
+<context>
+    <name>qtractorExportTrackForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="781"/>
+        <location filename="../qtractorExportForm.cpp" line="725"/>
+        <source>%1 %2 Tracks</source>
+        <translation>%1 %2 トラック</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="810"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="807"/>
+        <location filename="../qtractorExportForm.cpp" line="836"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="812"/>
+        <location filename="../qtractorExportForm.cpp" line="841"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -2316,17 +2316,17 @@ failed.</source>
 失敗しました。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="838"/>
+        <location filename="../qtractorExportForm.cpp" line="867"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="865"/>
+        <location filename="../qtractorExportForm.cpp" line="894"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="870"/>
+        <location filename="../qtractorExportForm.cpp" line="899"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
