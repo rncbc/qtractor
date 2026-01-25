@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -192,7 +192,7 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
-		
+
 	int iVerticalZoom = pSession->verticalZoom() + iZoomStep;
 	if (iVerticalZoom < ZoomMin)
 		iVerticalZoom = ZoomMin;
@@ -899,7 +899,7 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return false;
-	
+
 	// Make it as an undoable named command...
 	QString sTool;
 	switch (iTool) {
@@ -1004,7 +1004,7 @@ bool qtractorTracks::addClipToolCommand (
 
 	// Emulate an user-made selection...
 	qtractorMidiEditSelect select;
-	const QRect rect; // Dummy event rectangle.	
+	const QRect rect; // Dummy event rectangle.
 	for (qtractorMidiEvent *pEvent = pSeq->events().first();
 			pEvent; pEvent = pEvent->next()) {
 		const unsigned long iTime = pEvent->time();
@@ -1018,7 +1018,7 @@ bool qtractorTracks::addClipToolCommand (
 		pMidiToolsForm->midiEditCommand(pMidiClip, &select,
 			pSession->tickFromFrame(pClip->clipStart()),
 			iTimeStart, iTimeEnd));
-			
+
 	// Must be brand new revision...
 	pMidiClip->setRevision(0);
 
@@ -1158,7 +1158,7 @@ bool qtractorTracks::mergeClips (void)
 		= new qtractorClipCommand(tr("clip merge"));
 
 	const bool bResult = mergeExportClips(pClipCommand);
-	
+
 	// Have we failed the command prospect?
 	if (!bResult || pClipCommand->isEmpty()) {
 		delete pClipCommand;
@@ -1172,14 +1172,8 @@ bool qtractorTracks::mergeClips (void)
 // Merge/export selected clips.
 bool qtractorTracks::mergeExportClips ( qtractorClipCommand *pClipCommand )
 {
-	// Multiple clip selection:
-	// - make sure we have at least 2 clips to merge...
-	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
-	if (pClipSelect->items().count() < 1)
-		return false;
-
 	// Should be one single track...
-	qtractorTrack *pTrack = pClipSelect->singleTrack();
+	qtractorTrack *pTrack = m_pTrackView->singleTrackSelected();
 	if (pTrack == nullptr)
 		return false;
 
@@ -1234,9 +1228,8 @@ struct audioClipBufferItem
 // Merge/export selected(audio) clips.
 bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 {
-	// Should be one single MIDI track...
-	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
-	qtractorTrack *pTrack = pClipSelect->singleTrack();
+	// Should be one single audio track...
+	qtractorTrack *pTrack = m_pTrackView->singleTrackSelected();
 	if (pTrack == nullptr)
 		return false;
 	if (pTrack->trackType() != qtractorTrack::Audio)
@@ -1336,29 +1329,41 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 			.arg(sFilename));
 	}
 
-	// Multiple clip selection...
-	const qtractorClipSelect::ItemList& items = pClipSelect->items();
-	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	// Selection extents (in frames)...
+	QList<audioClipBufferItem *> list;
+
+	unsigned long iSelectStart = pSession->sessionEnd();
+	unsigned long iSelectEnd = pSession->sessionStart();
 
 	const unsigned short iChannels = pAudioBus->channels();
 
-	// Multi-selection extents (in frames)...
-	QList<audioClipBufferItem *> list;
-	unsigned long iSelectStart = pSession->sessionEnd();
-	unsigned long iSelectEnd = pSession->sessionStart();
-	for ( ; iter != iter_end; ++iter) {
-		qtractorClip *pClip = iter.key();
-		qtractorTrack *pTrack = pClip->track();
-		// Make sure it's a legal selection...
-		if (pTrack && pClip->isClipSelected()) {
-			qtractorAudioBufferThread *pSyncThread = pTrack->syncThread();
-			if (iSelectStart > pClip->clipSelectStart())
-				iSelectStart = pClip->clipSelectStart();
-			if (iSelectEnd < pClip->clipSelectEnd())
-				iSelectEnd = pClip->clipSelectEnd();
+	// Multiple clip selection...
+	QListIterator<qtractorClip *> iter(m_pTrackView->selectedClips());
+	while (iter.hasNext()) {
+		qtractorClip *pClip = iter.next();
+		qtractorTrack *pClipTrack = pClip->track();
+		if (pClipTrack && pClipTrack == pTrack) {
+			if (pClip->isClipSelected()) {
+				const unsigned long iClipSelectStart
+					= pClip->clipSelectStart();
+				const unsigned long iClipSelectEnd
+					= pClip->clipSelectEnd();
+				if (iSelectStart > iClipSelectStart)
+					iSelectStart = iClipSelectStart;
+				if (iSelectEnd < iClipSelectEnd)
+					iSelectEnd = iClipSelectEnd;
+			} else {
+				const unsigned long iClipStart
+					= pClip->clipStart();
+				const unsigned long iClipEnd
+					= iClipStart + pClip->clipLength();
+				if (iSelectStart > iClipStart)
+					iSelectStart = iClipStart;
+				if (iSelectEnd < iClipEnd)
+					iSelectEnd = iClipEnd;
+			}
 			list.append(new audioClipBufferItem(
-				pClip, pSyncThread, iChannels));
+				pClip, pClipTrack->syncThread(), iChannels));
 		}
 	}
 
@@ -1457,9 +1462,6 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		delete [] ppFrames[i];
 	delete [] ppFrames;
 
-	qDeleteAll(list);
-	list.clear();
-
 	// Close and free it up...
 	pAudioFile->close();
 	delete pAudioFile;
@@ -1477,9 +1479,9 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 
 	// The resulting merge comands, if any...
 	if (pClipCommand) {
-		iter = items.constBegin();
-		for ( ; iter != iter_end; ++iter) {
-			qtractorClip *pClip = iter.key();
+		it.toFront();
+		while (it.hasNext()) {
+			qtractorAudioClip *pClip = it.next()->clip;
 			// Clip parameters.
 			const unsigned long iClipStart  = pClip->clipStart();
 			const unsigned long iClipOffset = pClip->clipOffset();
@@ -1516,6 +1518,9 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		pClipCommand->addClip(pNewClip, pTrack);
 	}
 
+	qDeleteAll(list);
+	list.clear();
+
 	// Almost done with it...
 	QApplication::restoreOverrideCursor();
 
@@ -1528,8 +1533,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 {
 	// Should be one single MIDI track...
-	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
-	qtractorTrack *pTrack = pClipSelect->singleTrack();
+	qtractorTrack *pTrack = m_pTrackView->singleTrackSelected();
 	if (pTrack == nullptr)
 		return false;
 	if (pTrack->trackType() != qtractorTrack::Midi)
@@ -1625,22 +1629,38 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 			.arg(sFilename));
 	}
 
-	// Multiple clip selection...
-	const qtractorClipSelect::ItemList& items = pClipSelect->items();
-	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
-	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
-
 	// Multi-selection extents (in frames)...
+	QList<qtractorClip *> list;
+
 	unsigned long iSelectStart = pSession->sessionEnd();
 	unsigned long iSelectEnd = pSession->sessionStart();
-	for ( ; iter != iter_end; ++iter) {
-		qtractorClip *pClip = iter.key();
+
+	QListIterator<qtractorClip *> iter(m_pTrackView->selectedClips());
+	while (iter.hasNext()) {
+		qtractorClip *pClip = iter.next();
+		qtractorTrack *pClipTrack = pClip->track();
 		// Make sure it's a legal selection...
-		if (pClip->track() && pClip->isClipSelected()) {
-			if (iSelectStart > pClip->clipSelectStart())
-				iSelectStart = pClip->clipSelectStart();
-			if (iSelectEnd < pClip->clipSelectEnd())
-				iSelectEnd = pClip->clipSelectEnd();
+		if (pClipTrack && pClipTrack == pTrack) {
+			if (pClip->isClipSelected()) {
+				const unsigned long iClipSelectStart
+					= pClip->clipSelectStart();
+				const unsigned long iClipSelectEnd
+					= pClip->clipSelectEnd();
+				if (iSelectStart > iClipSelectStart)
+					iSelectStart = iClipSelectStart;
+				if (iSelectEnd < iClipSelectEnd)
+					iSelectEnd = iClipSelectEnd;
+			} else {
+				const unsigned long iClipStart
+					= pClip->clipStart();
+				const unsigned long iClipEnd
+					= iClipStart + pClip->clipLength();
+				if (iSelectStart > iClipStart)
+					iSelectStart = iClipStart;
+				if (iSelectEnd < iClipEnd)
+					iSelectEnd = iClipEnd;
+			}
+			list.append(pClip);
 		}
 	}
 
@@ -1666,11 +1686,11 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	seq.setProg(pTrack->midiProg());
 
 	// The merge...
-	iter = items.constBegin();
-	for ( ; iter != iter_end; ++iter) {
-		qtractorClip *pClip = iter.key();
+	QListIterator<qtractorClip *> it(list);
+	while (it.hasNext()) {
+		qtractorClip *pClip = it.next();
 		// Make sure it's a legal selection...
-		if (pClip->track() && pClip->isClipSelected()) {
+		if (pClip->track()) {
 			// Clip parameters.
 			const unsigned long iClipStart  = pClip->clipStart();
 			const unsigned long iClipOffset = pClip->clipOffset();
@@ -1883,7 +1903,7 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 			form.tempo(), 2, form.beatsPerBar(), form.beatDivisor()));
 
 	// Done.
-	pSession->setAutoTimeStretch(bAutoTimeStretch);	
+	pSession->setAutoTimeStretch(bAutoTimeStretch);
 
 	if (pClip) {
 		if (pClip->isClipSelected()) {

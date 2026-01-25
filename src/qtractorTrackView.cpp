@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -4591,7 +4591,40 @@ bool qtractorTrackView::isCurveSelected (void) const
 // Whether there's a single track selection.
 qtractorTrack *qtractorTrackView::singleTrackSelected (void)
 {
-	return m_pClipSelect->singleTrack();
+	qtractorTrack *pTrack = m_pClipSelect->singleTrack();
+
+	if (pTrack == nullptr && m_pClipDrag
+		&& m_pClipSelect->items().isEmpty())
+		pTrack = m_pClipDrag->track();
+	else
+	if (pTrack && m_pClipDrag
+		&& m_pClipDrag->track() != pTrack)
+		pTrack = nullptr;
+
+	return pTrack;
+}
+
+
+// Retrieve all or selected/current clips.
+QList<qtractorClip *> qtractorTrackView::selectedClips (void) const
+{
+	QList<qtractorClip *> clips;
+
+	if (m_pClipSelect) {
+		const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			qtractorClip *pClip = iter.key();
+			if (pClip->track() && pClip->isClipSelected())
+				clips.append(pClip);
+		}
+	}
+
+	if (m_pClipDrag && clips.isEmpty())
+		clips.append(m_pClipDrag);
+
+	return clips;
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -7849,8 +7849,8 @@ void qtractorMainForm::updateClipMenu (void)
 		|| (m_pTracks && m_pTracks->isClipSelected());
 	const bool bClipSelectable = bClipSelected
 		&& (m_pSession->editHead() < m_pSession->editTail());
-	const bool bSingleTrackSelected = bClipSelected
-		&& (pTrack && m_pTracks->singleTrackSelected() == pTrack);
+	const bool bSingleTrackSelected
+		= (pTrack && m_pTracks->singleTrackSelected() == pTrack);
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);

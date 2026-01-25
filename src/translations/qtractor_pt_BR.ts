@@ -15757,18 +15757,18 @@ Tamanho:	%3</translation>
 <context>
     <name>qtractorTrackView</name>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4751"/>
-        <location filename="../qtractorTrackView.cpp" line="4824"/>
+        <location filename="../qtractorTrackView.cpp" line="4784"/>
+        <location filename="../qtractorTrackView.cpp" line="4857"/>
         <source>cut</source>
         <translation>recortar</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5557"/>
+        <location filename="../qtractorTrackView.cpp" line="5590"/>
         <source>paste automation</source>
         <translation>colar automação</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4830"/>
+        <location filename="../qtractorTrackView.cpp" line="4863"/>
         <source>split</source>
         <translation>quebrar</translation>
     </message>
@@ -15797,8 +15797,8 @@ Tamanho:	%3</translation>
         <translation>Aumentar Zoom (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4754"/>
-        <location filename="../qtractorTrackView.cpp" line="4827"/>
+        <location filename="../qtractorTrackView.cpp" line="4787"/>
+        <location filename="../qtractorTrackView.cpp" line="4860"/>
         <source>delete</source>
         <translation>apagar</translation>
     </message>
@@ -15819,7 +15819,7 @@ Tamanho:	%3</translation>
         <translation>repetidor de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4820"/>
+        <location filename="../qtractorTrackView.cpp" line="4853"/>
         <source>%1 clip</source>
         <translation>%1 sequência</translation>
     </message>
@@ -15834,7 +15834,7 @@ Tamanho:	%3</translation>
         <translation>sequência %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5470"/>
+        <location filename="../qtractorTrackView.cpp" line="5503"/>
         <source>move automation</source>
         <translation>mover automação</translation>
     </message>
@@ -15844,7 +15844,7 @@ Tamanho:	%3</translation>
         <translation>adicionar sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5327"/>
+        <location filename="../qtractorTrackView.cpp" line="5360"/>
         <source>paste clip</source>
         <translation>colar sequência</translation>
     </message>
@@ -15854,7 +15854,7 @@ Tamanho:	%3</translation>
         <translation>mudar tamanho da sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5192"/>
+        <location filename="../qtractorTrackView.cpp" line="5225"/>
         <source>move clip</source>
         <translation>mover sequência</translation>
     </message>
@@ -15864,7 +15864,7 @@ Tamanho:	%3</translation>
         <translation>fade de entrada</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4747"/>
+        <location filename="../qtractorTrackView.cpp" line="4780"/>
         <source>%1 automation</source>
         <translation>%1 automação</translation>
     </message>
@@ -15878,7 +15878,7 @@ Tamanho:	%3</translation>
     <name>qtractorTracks</name>
     <message>
         <location filename="../qtractorTracks.cpp" line="1123"/>
-        <location filename="../qtractorTracks.cpp" line="2986"/>
+        <location filename="../qtractorTracks.cpp" line="3006"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Importar arquivo MIDI: &quot;%1&quot;, canal da pista: %2.</translation>
     </message>
@@ -15893,28 +15893,28 @@ Tamanho:	%3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1919"/>
+        <location filename="../qtractorTracks.cpp" line="1939"/>
         <source>clip cross-fade</source>
         <translation>crossfade da sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2441"/>
+        <location filename="../qtractorTracks.cpp" line="2461"/>
         <source>remove range</source>
         <translation>remover limite</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2216"/>
+        <location filename="../qtractorTracks.cpp" line="2236"/>
         <source>insert range</source>
         <translation>inserir limite</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1087"/>
-        <location filename="../qtractorTracks.cpp" line="3131"/>
+        <location filename="../qtractorTracks.cpp" line="3151"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Importar arquivo de áudio: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3237"/>
+        <location filename="../qtractorTracks.cpp" line="3257"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Importar arquivo MIDI &quot;%1&quot; em %2 %3.
@@ -15926,25 +15926,25 @@ Tamanho:	%3</translation>
         <translation>unir sequências</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2421"/>
+        <location filename="../qtractorTracks.cpp" line="2441"/>
         <source>Remove Range</source>
         <translation>Remover Limite</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1117"/>
-        <location filename="../qtractorTracks.cpp" line="2980"/>
+        <location filename="../qtractorTracks.cpp" line="3000"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>Importar arquivo MIDI: &quot;%1&quot;, canal da pista: %2 em%3 %4.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2196"/>
+        <location filename="../qtractorTracks.cpp" line="2216"/>
         <source>Insert Range</source>
         <translation>Inserir Limite</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1558"/>
+        <location filename="../qtractorTracks.cpp" line="1562"/>
         <source>Merge/Export MIDI Clip</source>
         <translation>Unir/Renderizar Sequência de MIDI</translation>
     </message>
@@ -15954,7 +15954,7 @@ Tamanho:	%3</translation>
         <translation>mudança de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2740"/>
+        <location filename="../qtractorTracks.cpp" line="2760"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -15973,14 +15973,14 @@ Posso continuar?</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1082"/>
-        <location filename="../qtractorTracks.cpp" line="3126"/>
+        <location filename="../qtractorTracks.cpp" line="3146"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Renderização do arquivo de áudio &quot;%1&quot; em %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1335"/>
+        <location filename="../qtractorTracks.cpp" line="1328"/>
         <source>Audio clip merge/export: &quot;%1&quot; started...</source>
         <translation>União/renderização de sequências de áudio: &quot;%1&quot; iniciado...</translation>
     </message>
@@ -15995,7 +15995,7 @@ Posso continuar?</translation>
         <translation>importar sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3242"/>
+        <location filename="../qtractorTracks.cpp" line="3262"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Importar arquivo de MIDI: &quot;%1&quot;.</translation>
     </message>
@@ -16020,7 +16020,7 @@ Posso continuar?</translation>
         <translation>normalizar</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1746"/>
+        <location filename="../qtractorTracks.cpp" line="1766"/>
         <source>MIDI clip merge/export: &quot;%1&quot; complete.</source>
         <translation>União/renderização de sequências MIDI: &quot;%1&quot; completo.</translation>
     </message>
@@ -16030,7 +16030,7 @@ Posso continuar?</translation>
         <translation>quantizar</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2217"/>
+        <location filename="../qtractorTracks.cpp" line="2237"/>
         <source>insert track range</source>
         <translation>inserir limite à pista</translation>
     </message>
@@ -16050,43 +16050,43 @@ Posso continuar?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1257"/>
-        <location filename="../qtractorTracks.cpp" line="1545"/>
+        <location filename="../qtractorTracks.cpp" line="1250"/>
+        <location filename="../qtractorTracks.cpp" line="1549"/>
         <source>Merge/Export</source>
         <translation>Unir/Exportar</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1474"/>
+        <location filename="../qtractorTracks.cpp" line="1476"/>
         <source>Audio clip merge/export: &quot;%1&quot; complete.</source>
         <translation>União/renderização de sequências de áudio: &quot;%1&quot; completo.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1560"/>
+        <location filename="../qtractorTracks.cpp" line="1564"/>
         <source>MIDI files (*.mid *.smf *.midi)</source>
         <translation>Arquivos MIDI (*.mid *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1561"/>
+        <location filename="../qtractorTracks.cpp" line="1565"/>
         <source>All files (*.*)</source>
         <translation>Todos os arquivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1624"/>
+        <location filename="../qtractorTracks.cpp" line="1628"/>
         <source>MIDI clip merge/export: &quot;%1&quot; started...</source>
         <translation>União/renderização de sequências MIDI: &quot;%1&quot; iniciado...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2739"/>
+        <location filename="../qtractorTracks.cpp" line="2759"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2442"/>
+        <location filename="../qtractorTracks.cpp" line="2462"/>
         <source>remove track range</source>
         <translation>remover limite da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1270"/>
+        <location filename="../qtractorTracks.cpp" line="1263"/>
         <source>Merge/Export Audio Clip</source>
         <translation>Unir/Renderizar Sequência de Áudio</translation>
     </message>

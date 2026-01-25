@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Clip/Merge, Export... now allowed on simple highlighted clips.
+
 - Make sure to ask whether to replace already existing files on
   Clip/Merge, Export...
 
