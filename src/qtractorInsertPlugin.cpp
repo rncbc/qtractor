@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -1441,7 +1441,7 @@ void qtractorAudioAuxSendPlugin::setAudioBusName (
 	if (pAudioBus) {
 		qtractorPluginList *pPluginList = list();
 		if (pPluginList
-			&& (pPluginList->flags() & qtractorPluginList::AudioOutBus)) {
+			&& (pPluginList->flags() == qtractorPluginList::AudioOutBus)) {
 			for (qtractorBus *pBus = pAudioEngine->buses().first();
 					pBus; pBus = pBus->next()) {
 				if ((pBus->busMode() & qtractorBus::Output) &&
@@ -1778,7 +1778,7 @@ void qtractorMidiAuxSendPlugin::setMidiBusName ( const QString& sMidiBusName )
 	if (pMidiBus) {
 		qtractorPluginList *pPluginList = list();
 		if (pPluginList
-			&& (pPluginList->flags() & qtractorPluginList::MidiOutBus)) {
+			&& (pPluginList->flags() == qtractorPluginList::MidiOutBus)) {
 			for (qtractorBus *pBus = pMidiEngine->buses().first();
 					pBus; pBus = pBus->next()) {
 				if ((pBus->busMode() & qtractorBus::Output) &&

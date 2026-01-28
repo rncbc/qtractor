@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2253,7 +2253,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->setAlias(pPlugin->alias());
 		pNewPlugin->setPreset(pPlugin->preset());
 		// Special case for audio Aux-sends copied into output buses...
-		if ((flags() & qtractorPluginList::AudioOutBus) &&
+		if ((flags() == qtractorPluginList::AudioOutBus) &&
 			(pType->typeHint() == qtractorPluginType::AuxSend) &&
 			(pType->index() > 0)) { // index == channels > 0 => Audio aux-send.
 			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin

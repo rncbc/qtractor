@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -423,7 +423,7 @@ qtractorMovePluginCommand::qtractorMovePluginCommand (
 	qtractorPluginType *pType = pPlugin->type();
 	if (pType && (pType->typeHint() == qtractorPluginType::AuxSend)
 		&& (pPluginList != pPlugin->list())) {
-		if ((pPluginList->flags() & qtractorPluginList::AudioOutBus) &&
+		if ((pPluginList->flags() == qtractorPluginList::AudioOutBus) &&
 			(pType->index() > 0)) { // index == channels > 0 => Audio aux-send.
 			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
 				= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
@@ -433,7 +433,7 @@ qtractorMovePluginCommand::qtractorMovePluginCommand (
 			}
 		}
 		else // index == 0 => MIDI aux-send.
-		if (pPluginList->flags() & qtractorPluginList::MidiOutBus) {
+		if (pPluginList->flags() == qtractorPluginList::MidiOutBus) {
 			qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
 				= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
 			if (pMidiAuxSendPlugin) {

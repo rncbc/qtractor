@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed audio Aux-Sends inserted on audio input buses to not
+  affect output buses processing order anymore. (EXPERIMENTAL)
+
 - Clip/Merge, Export... now allowed on simple highlighted clips.
 
 - Make sure to ask whether to replace already existing files on
