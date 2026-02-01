@@ -6,8 +6,7 @@ ChangeLog
 
 GIT HEAD
 
-- Fixed step input on offsetted MIDI clips; extending the clip
-  length automatically on step input is not allowed anymore.
+- Fixed step input on offsetted MIDI clips.
 
 - Fixed audio Aux-Sends inserted on audio input buses to not
   affect output buses processing order anymore. (EXPERIMENTAL)

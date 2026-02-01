@@ -35,16 +35,16 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3162"/>
         <location filename="../qtractorAudioEngine.cpp" line="3453"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4357"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4939"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4358"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4940"/>
         <source>%1 In</source>
         <translation>Вход %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3171"/>
         <location filename="../qtractorAudioEngine.cpp" line="3453"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4366"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4939"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4367"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4940"/>
         <source>%1 Out</source>
         <translation>Выход %1</translation>
     </message>
@@ -156,36 +156,36 @@ End:	%3	Length:	%4</source>
         <translation>%1 - Банк %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1290"/>
+        <location filename="../qtractorMidiClip.cpp" line="1291"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(формат %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1292"/>
+        <location filename="../qtractorMidiClip.cpp" line="1293"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Канал %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1294"/>
+        <location filename="../qtractorMidiClip.cpp" line="1295"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Дорожка %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1297"/>
+        <location filename="../qtractorMidiClip.cpp" line="1298"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 дорожек, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1304"/>
+        <location filename="../qtractorMidiClip.cpp" line="1305"/>
         <source> (%1% vol)</source>
         <translation> (%1% громк)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1340"/>
+        <location filename="../qtractorMidiClip.cpp" line="1341"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation type="unfinished">Сохранение файла MIDI: &quot;%1&quot;, дорожка-канал: %2.</translation>
     </message>
@@ -726,18 +726,18 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1811"/>
+        <location filename="../qtractorMidiClip.cpp" line="1818"/>
         <source>step input</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1811"/>
+        <location filename="../qtractorMidiClip.cpp" line="1818"/>
         <source>overdub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4359"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4368"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4360"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4369"/>
         <location filename="../qtractorTrack.cpp" line="718"/>
         <source>%1 Volume</source>
         <translation>Громкость %1</translation>
@@ -752,8 +752,8 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="3166"/>
         <location filename="../qtractorAudioEngine.cpp" line="3175"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4361"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4370"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4362"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4371"/>
         <location filename="../qtractorTrack.cpp" line="724"/>
         <source>%1 Pan</source>
         <translation type="unfinished"></translation>

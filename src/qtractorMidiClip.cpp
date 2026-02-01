@@ -37,6 +37,7 @@
 #include "qtractorMidiEditCommand.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorTracks.h"
 
 #include "qtractorOptions.h"
 
@@ -1785,11 +1786,17 @@ bool qtractorMidiClip::processInpEvents (
 	if (pSeq == nullptr)
 		return false;
 
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return false;
+
 	qtractorCommandList *pCommandList = nullptr;
 	if (m_pMidiEditorForm == nullptr) {
-		qtractorTrack *pTrack = track();
-		if (pTrack && pTrack->session())
-			pCommandList = pTrack->session()->commands();
+		pCommandList = pSession->commands();
 	} else {
 		pCommandList = commands();
 	}
@@ -1812,6 +1819,8 @@ bool qtractorMidiClip::processInpEvents (
 		m_iInpEventsCommand = 0;
 		m_bInpEventsOverdub = bOverdub;
 	}
+
+	const unsigned long iOldDuration = pSeq->duration();
 
 	QListIterator<qtractorMidiEvent *> iter(events);
 	while (iter.hasNext()) {
@@ -1838,9 +1847,28 @@ bool qtractorMidiClip::processInpEvents (
 
 	m_pInpEventsCommand->adjust();
 
+	if (!m_bInpEventsOverdub) {
+		const unsigned long iDuration = pSeq->duration();
+		if (iDuration > iOldDuration) {
+			const unsigned long t1 = clipStartTime() + iDuration;
+			setClipLengthEx(pSession->frameFromTick(t1) - clipStart());
+			pSeq->setTimeLength(iDuration);
+			updateEditorEx(false);
+		}
+	}
+
 	setDirtyEx(true);
 	update();
 	updateEditorContents();
+
+	if (!m_bInpEventsOverdub) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorTracks *pTracks = pMainForm->tracks();
+			if (pTracks)
+				pTracks->updateContents(true);
+		}
+	}
 
 	if (++m_iInpEventsCommand > 1)
 		return true;

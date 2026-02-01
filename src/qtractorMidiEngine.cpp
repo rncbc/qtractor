@@ -1917,7 +1917,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							= pMidiClip->clipStartTime();
 						const unsigned long iClipEndTime
 							= iClipStartTime + pMidiClip->clipLengthTime();
-						if (iTime >= iClipStartTime && iTime < iClipEndTime) {
+						if (iTime >= iClipStartTime
+							&& (!bPlaying || iTime < iClipEndTime)) {
 							tick = iTime - iClipStartTime;
 							if (bPlaying) // Overdubbing...
 								tick += pMidiClip->clipOffsetTime();
