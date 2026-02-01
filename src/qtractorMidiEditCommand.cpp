@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -153,6 +153,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
 	if (pSeq == nullptr)
 		return false;
+
+	// Make sure pending step input events
+	// don't interfere with future commands...
+	m_pMidiClip->clearInpEvents();
 
 	// Execute all additional commands....
 	executeTimeScaleNodeCommands(bRedo);
