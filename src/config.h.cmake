@@ -212,6 +212,9 @@
 /* Define if VST3 plug-in support is avilable. */
 #cmakedefine CONFIG_VST3 @CONFIG_VST3@
 
+/* Define if VST3 plug-in XCB support is avilable. */
+#cmakedefine CONFIG_VST3_XCB @CONFIG_VST3_XCB@
+
 /* Define if CLAP plug-in support is avilable. */
 #cmakedefine CONFIG_CLAP @CONFIG_CLAP@
 

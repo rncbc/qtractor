@@ -508,7 +508,7 @@ if (CONFIG_CLAP)
   target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE clap/include)
 endif ()
 
-if (XCB_FOUND)
+if (CONFIG_VST3_XCB OR CONFIG_LV2_UI_X11)
   target_include_directories (${PROJECT_NAME} PRIVATE ${XCB_INCLUDE_DIRS})
   target_link_directories (${PROJECT_NAME} PRIVATE ${XCB_LIBRARY_DIRS})
   target_link_libraries (${PROJECT_NAME} PRIVATE ${XCB_LIBRARIES})

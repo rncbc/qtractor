@@ -103,6 +103,8 @@ option (CONFIG_VESTIGE "Enable VeSTige header support (default=yes)" 1)
 # Enable VST3 support.
 option (CONFIG_VST3 "Enable VST3 plug-in support (default=yes)" 1)
 
+option (CONFIG_VST3_XCB  "Enable VST3 plug-in XCB support (default=yes)" 1)
+
 # Enable LV2 support.
 option (CONFIG_LV2 "Enable LV2 plug-in support (default=yes)" 1)
 
@@ -450,10 +452,16 @@ if (CONFIG_VST3 AND NOT CONFIG_VST3SDK)
   set (CONFIG_VST3SDK ${CMAKE_CURRENT_SOURCE_DIR}/src/vst3)
 endif ()
 
-if (CONFIG_VST3 OR CONFIG_LV2_UI_X11)
+if (NOT CONFIG_VST3)
+  set (CONFIG_VST3_XCB 0)
+endif ()
+
+if (CONFIG_VST3_XCB OR CONFIG_LV2_UI_X11)
   pkg_check_modules (XCB xcb)
   if (NOT XCB_FOUND)
     message (WARNING "*** XCB library not found.")
+    set (CONFIG_LV2_UI_X11 0)
+    set (CONFIG_VST3_XCB 0)
   endif ()
 endif ()
 
@@ -857,6 +865,7 @@ show_option ("  LADSPA plug-in support . . . . . . . . . . . . . ." CONFIG_LADSP
 show_option ("  DSSI plug-in support . . . . . . . . . . . . . . ." CONFIG_DSSI)
 show_option ("  VST2 plug-in support . . . . . . . . . . . . . . ." CONFIG_VST2)
 show_option ("  VST3 plug-in support . . . . . . . . . . . . . . ." CONFIG_VST3)
+show_option ("  VST3 plug-in UI XCB support  . . . . . . . . . . ." CONFIG_VST3_XCB)
 show_option ("  CLAP plug-in support . . . . . . . . . . . . . . ." CONFIG_CLAP)
 show_option ("  LV2 plug-in support  . . . . . . . . . . . . . . ." CONFIG_LV2)
 show_option ("  LV2 plug-in support (liblilv)  . . . . . . . . . ." CONFIG_LIBLILV)
