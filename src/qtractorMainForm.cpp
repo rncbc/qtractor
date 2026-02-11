@@ -6127,6 +6127,10 @@ void qtractorMainForm::transportRecord (void)
 			qtractorMmcEvent::RECORD_STROBE : qtractorMmcEvent::RECORD_EXIT);
 	}
 
+	// Toggle playing...
+	m_ui.transportPlayAction->setChecked(bRecording);
+	m_ui.transportPlayAction->trigger();
+
 	++m_iStabilizeTimer;
 }
 
