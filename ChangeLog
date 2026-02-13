@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Filter out zero-duration note events when importing MIDI files.
+  (EXPERIMENTAL)
+
 - Fixed step input on offsetted MIDI clips.
 
 - Fixed audio Aux-Sends inserted on audio input buses to not
