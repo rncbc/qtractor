@@ -93,8 +93,7 @@ void qtractorMidiSequence::addNoteEvent ( qtractorMidiEvent *pEvent )
 	if (m_duration > t1) {
 		pNoteEvent->setDuration(m_duration - t1);
 	} else {
-		unlinkEvent(pNoteEvent);
-		delete pNoteEvent;
+		removeEvent(pNoteEvent);
 	}
 
 	m_notes.erase(iter);
