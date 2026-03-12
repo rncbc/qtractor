@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- New audio clip capture/recording latency compensation options
+  are now in effect (cf. View/Options.../Audio/Capture/Latency).
+  (EXPERIMENTAL)
+
 - Filter out zero-duration note events when importing MIDI files.
   (EXPERIMENTAL)
 

@@ -306,6 +306,15 @@ public:
 	void updateLatency_in();
 	void updateLatency_out();
 
+	// Audio latency compensation stuff.
+	enum LatencyMode { Auto = 0, Add, Fixed };
+
+	void setCaptureLatencyMode(LatencyMode latencyMode);
+	LatencyMode captureLatencyMode() const;
+
+	void setCaptureLatency(unsigned int iCaptureLatency);
+	unsigned int captureLatency() const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -425,6 +434,10 @@ private:
 
 	// Time(base)/BBT time info.
 	TimeInfo             m_timeInfo;
+
+	// Audio latency compensation stuff.
+	LatencyMode  m_captureLatencyMode;
+	unsigned int m_iCaptureLatency;
 };
 
 

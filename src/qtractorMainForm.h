@@ -437,6 +437,7 @@ protected:
 	void updateMidiPlayer();
 	void updateMidiControl();
 	void updateAudioMetronome();
+	void updateAudioCaptureLatency();
 	void updateMidiMetronome();
 	void updateSyncViewHold();
 

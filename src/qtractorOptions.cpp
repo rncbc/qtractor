@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -165,6 +165,8 @@ void qtractorOptions::loadOptions (void)
 	bAudioMetronome      = m_settings.value("/Metronome", false).toBool();
 	iAudioCountInMode    = m_settings.value("/CountInMode", 0).toInt();
 	iAudioCountInBeats   = m_settings.value("/CountInBeats", 4).toInt();
+	iAudioCaptureLatencyMode = m_settings.value("/CaptureLatencyMode", 0).toInt();
+	iAudioCaptureLatency = m_settings.value("/CaptureLatency", 0).toInt();
 	bAudioMasterAutoConnect = m_settings.value("/MasterAutoConnect", true).toBool();
 	bAudioPlayerAutoConnect = m_settings.value("/PlayerAutoConnect", true).toBool();
 	bAudioMetroAutoConnect = m_settings.value("/MetroAutoConnect", true).toBool();
@@ -506,6 +508,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/Metronome", bAudioMetronome);
 	m_settings.setValue("/CountInMode", iAudioCountInMode);
 	m_settings.setValue("/CountInBeats", iAudioCountInBeats);
+	m_settings.setValue("/CaptureLatencyMode", iAudioCaptureLatencyMode);
+	m_settings.setValue("/CaptureLatency", iAudioCaptureLatency);
 	m_settings.setValue("/MasterAutoConnect", bAudioMasterAutoConnect);
 	m_settings.setValue("/PlayerAutoConnect", bAudioPlayerAutoConnect);
 	m_settings.setValue("/MetroAutoConnect", bAudioMetroAutoConnect);

@@ -25,6 +25,7 @@
 #include "qtractorOptions.h"
 
 #include "qtractorAudioFile.h"
+#include "qtractorAudioEngine.h"
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
@@ -257,6 +258,12 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.AudioCaptureQualitySpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioCaptureLatencyComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.AudioCaptureLatencySpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(audioCaptureLatencyChanged(int)));
 	QObject::connect(m_ui.AudioResampleTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -649,6 +656,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		m_pOptions->sAudioCaptureExt, m_pOptions->iAudioCaptureType);
 	m_ui.AudioCaptureFormatComboBox->setCurrentIndex(m_pOptions->iAudioCaptureFormat);
 	m_ui.AudioCaptureQualitySpinBox->setValue(m_pOptions->iAudioCaptureQuality);
+	m_ui.AudioCaptureLatencyComboBox->setCurrentIndex(m_pOptions->iAudioCaptureLatencyMode);
+	m_ui.AudioCaptureLatencySpinBox->setValue(m_pOptions->iAudioCaptureLatency);
 	m_ui.AudioResampleTypeComboBox->setCurrentIndex(m_pOptions->iAudioResampleType);
 	m_ui.TransportModeComboBox->setCurrentIndex(m_pOptions->iTransportMode);
 	m_ui.TimebaseCheckBox->setChecked(m_pOptions->bTimebase);
@@ -952,6 +961,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioCaptureType    = m_ui.AudioCaptureTypeComboBox->currentType(handle);
 		m_pOptions->iAudioCaptureFormat  = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
+		m_pOptions->iAudioCaptureLatencyMode = m_ui.AudioCaptureLatencyComboBox->currentIndex();
+		m_pOptions->iAudioCaptureLatency = m_ui.AudioCaptureLatencySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
 		m_pOptions->iTransportMode       = m_ui.TransportModeComboBox->currentIndex();
 		m_pOptions->bTimebase            = m_ui.TimebaseCheckBox->isChecked();
@@ -1196,6 +1207,24 @@ void qtractorOptionsForm::audioCaptureTypeChanged ( int iIndex )
 		m_ui.AudioCaptureFormatComboBox->setCurrentIndex(iFormat);
 		m_ui.AudioCaptureFormatComboBox->blockSignals(bBlockSignals);
 	}
+
+	changed();
+}
+
+
+// Audio latency compensation stuff.
+void qtractorOptionsForm::audioCaptureLatencyChanged ( int iLatency )
+{
+	QString sLatencyMs;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (iLatency > 0 && pSession) {
+		const float fLatencyMs
+			= 1000.0f * float(iLatency) / float(pSession->sampleRate());
+		sLatencyMs = tr("%1 ms").arg(QString::number(fLatencyMs, 'f', 1));
+	}
+
+	m_ui.AudioCaptureLatencyMsTextLabel->setText(sLatencyMs);
 
 	changed();
 }
@@ -2218,6 +2247,15 @@ void qtractorOptionsForm::stabilizeForm (void)
 		const int iFormat = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		bValid  = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
 	}
+
+	const qtractorAudioEngine::LatencyMode latencyMode
+		= qtractorAudioEngine::LatencyMode(
+			m_ui.AudioCaptureLatencyComboBox->currentIndex());
+	const bool bCaptureLatency
+		= (latencyMode == qtractorAudioEngine::Add
+		|| latencyMode == qtractorAudioEngine::Fixed);
+	m_ui.AudioCaptureLatencySpinBox->setEnabled(bCaptureLatency);
+	m_ui.AudioCaptureLatencyMsTextLabel->setEnabled(bCaptureLatency);
 
 	m_ui.AudioWsolaQuickSeekCheckBox->setEnabled(
 		m_ui.AudioWsolaTimeStretchCheckBox->isChecked());

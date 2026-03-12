@@ -608,6 +608,10 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	// Time(base)/BBT time info.
 	::memset(&m_timeInfo, 0, sizeof(TimeInfo));
+
+	// Audio latency compensation stuff.
+	m_captureLatencyMode = Auto;
+	m_iCaptureLatency    = 0;
 }
 
 
@@ -2787,6 +2791,28 @@ void qtractorAudioEngine::updateLatency_out (void)
 }
 
 
+// Audio latency compensation stuff.
+void qtractorAudioEngine::setCaptureLatencyMode ( LatencyMode latencyMode )
+{
+	m_captureLatencyMode = latencyMode;
+}
+
+qtractorAudioEngine::LatencyMode qtractorAudioEngine::captureLatencyMode (void) const
+{
+	return m_captureLatencyMode;
+}
+
+void qtractorAudioEngine::setCaptureLatency ( unsigned int iCaptureLatency )
+{
+	m_iCaptureLatency = iCaptureLatency;
+}
+
+unsigned int qtractorAudioEngine::captureLatency (void) const
+{
+	return m_iCaptureLatency;
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioBus -- Managed JACK port set
 //
@@ -3355,7 +3381,17 @@ void qtractorAudioBus::updateLatency_in (void)
 	if (pAudioEngine == nullptr)
 		return;
 
-	m_iILatency = pAudioEngine->bufferSize();
+	m_iILatency = 0;
+
+	const qtractorAudioEngine::LatencyMode latencyMode
+		= pAudioEngine->captureLatencyMode();
+	if (latencyMode == qtractorAudioEngine::Add ||
+		latencyMode == qtractorAudioEngine::Fixed)
+		m_iILatency += pAudioEngine->captureLatency();
+	if (latencyMode == qtractorAudioEngine::Fixed)
+		return;
+
+	m_iILatency += pAudioEngine->bufferSize();
 
 	if (m_ppIPorts) {
 	#ifdef CONFIG_JACK_LATENCY

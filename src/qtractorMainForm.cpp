@@ -1537,6 +1537,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateTimebase();
 	updateAudioPlayer();
 	updateAudioMetronome();
+	updateAudioCaptureLatency();
 	updateMidiControlModes();
 	updateMidiQueueTimer();
 	updateMidiDriftCorrect();
@@ -1595,7 +1596,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine)
 		pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
-	
+
 	// Final widget slot connections....
 	QObject::connect(m_pFileSystem->toggleViewAction(),
 		SIGNAL(triggered(bool)),
@@ -5419,6 +5420,8 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldWsolaQuickSeek     = m_pOptions->bAudioWsolaQuickSeek;
 	const bool    bOldRubberBandFormant  = m_pOptions->bAudioRubberBandFormant;
 	const bool    bOldRubberBandFinerR3  = m_pOptions->bAudioRubberBandFinerR3;
+	const int     iOldAudioCaptureLatencyMode = m_pOptions->iAudioCaptureLatencyMode;
+	const int     iOldAudioCaptureLatency = m_pOptions->iAudioCaptureLatency;
 	const bool    bOldAudioPlayerAutoConnect = m_pOptions->bAudioPlayerAutoConnect;
 	const bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	const bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
@@ -5617,6 +5620,10 @@ void qtractorMainForm::viewOptions (void)
 			++m_iDirtyCount; // Fake session properties change.
 			updateMidiControlModes();
 		}
+		// Audio capture latency compensation options...
+		if ((iOldAudioCaptureLatencyMode != m_pOptions->iAudioCaptureLatencyMode) ||
+			(iOldAudioCaptureLatency     != m_pOptions->iAudioCaptureLatency))
+			updateAudioCaptureLatency();
 		// Audio engine audition/pre-listening player options...
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
 			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus) ||
@@ -7491,6 +7498,23 @@ void qtractorMainForm::updateAudioMetronome (void)
 	pAudioEngine->setCountInBeats(m_pOptions->iAudioCountInBeats);
 	pAudioEngine->setCountIn(m_pOptions->iAudioCountInMode > 0 &&
 		bAudioMetronome && m_ui.transportCountInAction->isChecked());
+}
+
+
+// Update audio latency compensation stuff.
+void qtractorMainForm::updateAudioCaptureLatency (void)
+{
+	if (m_pOptions == nullptr)
+		return;
+
+	// Configure the audio engine capture latency mode...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == nullptr)
+		return;
+
+	pAudioEngine->setCaptureLatencyMode(
+		qtractorAudioEngine::LatencyMode(m_pOptions->iAudioCaptureLatencyMode));
+	pAudioEngine->setCaptureLatency(m_pOptions->iAudioCaptureLatency);
 }
 
 

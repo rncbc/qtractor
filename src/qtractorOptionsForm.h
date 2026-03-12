@@ -59,6 +59,7 @@ protected slots:
 	void reject();
 	void changed();
 	void audioCaptureTypeChanged(int);
+	void audioCaptureLatencyChanged(int);
 	void chooseMetroBarFilename();
 	void chooseMetroBeatFilename();
 	void updateMetroNoteNames();
