@@ -3381,17 +3381,7 @@ void qtractorAudioBus::updateLatency_in (void)
 	if (pAudioEngine == nullptr)
 		return;
 
-	m_iILatency = 0;
-
-	const qtractorAudioEngine::LatencyMode latencyMode
-		= pAudioEngine->captureLatencyMode();
-	if (latencyMode == qtractorAudioEngine::Add ||
-		latencyMode == qtractorAudioEngine::Fixed)
-		m_iILatency += pAudioEngine->captureLatency();
-	if (latencyMode == qtractorAudioEngine::Fixed)
-		return;
-
-	m_iILatency += pAudioEngine->bufferSize();
+	m_iILatency = pAudioEngine->bufferSize();
 
 	if (m_ppIPorts) {
 	#ifdef CONFIG_JACK_LATENCY

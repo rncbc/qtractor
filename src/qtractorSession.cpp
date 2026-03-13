@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1788,14 +1788,22 @@ void qtractorSession::trackRecord (
 		// Adjust for some input latency compensation already...
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-		if (pAudioBus)
-			// This is currently just a workaround, because
-			// we consider here only the output latency of
-			// the current audio bus.
-			// TODO: calculate the overall out latency somehow
-			pAudioClip->setClipOffset(
-				pAudioBus->latency_in()	+
-				pAudioBus->latency_out());
+		if (pAudioBus) {
+			qtractorAudioEngine *pAudioEngine
+				= static_cast<qtractorAudioEngine *> (pAudioBus->engine());
+			if (pAudioEngine) {
+				unsigned int iClipOffset = 0;
+				const qtractorAudioEngine::LatencyMode latencyMode
+					= pAudioEngine->captureLatencyMode();
+				if (latencyMode != qtractorAudioEngine::Auto)
+					iClipOffset += pAudioEngine->captureLatency();
+				if (latencyMode != qtractorAudioEngine::Fixed) {
+					iClipOffset += pAudioBus->latency_in();
+					iClipOffset += pAudioBus->latency_out();
+				}
+				pAudioClip->setClipOffset(iClipOffset);
+			}
+		}
 		// One-up audio tracks in record mode.
 		++m_iAudioRecord;
 		break;
