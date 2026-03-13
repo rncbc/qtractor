@@ -79,19 +79,19 @@ Audio:	%1 channels, %2 Hz</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="563"/>
+        <location filename="../qtractorClip.cpp" line="564"/>
         <source>Name:	%1</source>
         <translation>Название:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="571"/>
+        <location filename="../qtractorClip.cpp" line="572"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Начало:	%1	Смещение:	%2
 Конец:	%3	Длительность:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="579"/>
+        <location filename="../qtractorClip.cpp" line="580"/>
         <source>File:	%1</source>
         <translation>Файл:	%1</translation>
     </message>
@@ -1434,37 +1434,37 @@ Do you want to discard the changes?</source>
 <context>
     <name>qtractorClip</name>
     <message>
-        <location filename="../qtractorClip.cpp" line="1299"/>
+        <location filename="../qtractorClip.cpp" line="1300"/>
         <source>Linear</source>
         <translation type="unfinished">Линейное</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1300"/>
+        <location filename="../qtractorClip.cpp" line="1301"/>
         <source>Quadratic 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1301"/>
+        <location filename="../qtractorClip.cpp" line="1302"/>
         <source>Quadratic 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1302"/>
+        <location filename="../qtractorClip.cpp" line="1303"/>
         <source>Quadratic 3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1303"/>
+        <location filename="../qtractorClip.cpp" line="1304"/>
         <source>Cubic 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1304"/>
+        <location filename="../qtractorClip.cpp" line="1305"/>
         <source>Cubic 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1305"/>
+        <location filename="../qtractorClip.cpp" line="1306"/>
         <source>Cubic 3</source>
         <translation type="unfinished"></translation>
     </message>

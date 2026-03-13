@@ -48,14 +48,14 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="571"/>
+        <location filename="../qtractorClip.cpp" line="572"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Início:	%1	Diferença:	%2
 Fim:	%3	Tamanho:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="579"/>
+        <location filename="../qtractorClip.cpp" line="580"/>
         <source>File:	%1</source>
         <translation>Arquivo:	%1</translation>
     </message>
@@ -611,7 +611,7 @@ MIDI:	</translation>
         <translation>%1 Ganho</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="563"/>
+        <location filename="../qtractorClip.cpp" line="564"/>
         <source>Name:	%1</source>
         <translation>Nome:	%1</translation>
     </message>
@@ -1437,37 +1437,37 @@ Você deseja descartar essas alterações?</translation>
 <context>
     <name>qtractorClip</name>
     <message>
-        <location filename="../qtractorClip.cpp" line="1299"/>
+        <location filename="../qtractorClip.cpp" line="1300"/>
         <source>Linear</source>
         <translation type="unfinished">Linear</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1300"/>
+        <location filename="../qtractorClip.cpp" line="1301"/>
         <source>Quadratic 1</source>
         <translation type="unfinished">Quadratica 1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1301"/>
+        <location filename="../qtractorClip.cpp" line="1302"/>
         <source>Quadratic 2</source>
         <translation type="unfinished">Quadratica 2</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1302"/>
+        <location filename="../qtractorClip.cpp" line="1303"/>
         <source>Quadratic 3</source>
         <translation type="unfinished">Quadratica 3</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1303"/>
+        <location filename="../qtractorClip.cpp" line="1304"/>
         <source>Cubic 1</source>
         <translation type="unfinished">Cúbica 1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1304"/>
+        <location filename="../qtractorClip.cpp" line="1305"/>
         <source>Cubic 2</source>
         <translation type="unfinished">Cúbica 2</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="1305"/>
+        <location filename="../qtractorClip.cpp" line="1306"/>
         <source>Cubic 3</source>
         <translation type="unfinished">Cúbica 3</translation>
     </message>
