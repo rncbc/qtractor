@@ -2270,7 +2270,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorExportForm.cpp" line="690"/>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="691"/>
@@ -2279,7 +2279,7 @@ Do you want to apply the changes?</source>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation type="unfinished">Файл з такою назвою вже існує:
+        <translation>Файл з такою назвою вже існує:
 
 «%1»
 
@@ -12406,42 +12406,42 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="859"/>
         <source>&amp;Latency:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Латентність:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="875"/>
         <source>Audio capture/input latency compensation mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим компенсації латентності захоплення/вхідних звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="879"/>
         <source>Auto</source>
-        <translation type="unfinished">Авто</translation>
+        <translation>Авто</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="884"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="889"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Фіксована</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="912"/>
         <source>Audio capture/input latency conpensation (frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Компенсація латентності захоплення/вхідних звукових даних (у кадрах)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="915"/>
         <source> frames</source>
-        <translation type="unfinished"></translation>
+        <translation> кадрів</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="943"/>
         <source>Audio capture/input latency conpensation (ms)</source>
-        <translation type="unfinished"></translation>
+        <translation>Компенсація латентності захоплення/вхідних звукових даних (у мс)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="958"/>
@@ -12701,7 +12701,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1721"/>
         <source>Dedicated audio &amp;metronome outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Спеціалізовані виходи звукового &amp;метронома:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1734"/>
@@ -12919,7 +12919,7 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="2712"/>
         <location filename="../qtractorOptionsForm.ui" line="2802"/>
         <source> ticks</source>
-        <translation type="unfinished"></translation>
+        <translation> тактів</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2599"/>
@@ -13542,7 +13542,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1224"/>
         <source>%1 ms</source>
-        <translation type="unfinished">%1 мс</translation>
+        <translation>%1 мс</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1237"/>
