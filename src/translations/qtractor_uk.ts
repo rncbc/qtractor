@@ -165,32 +165,32 @@ End:	%3	Length:	%4</source>
         <translation>Файл:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="922"/>
+        <location filename="../qtractorClipCommand.cpp" line="923"/>
         <source>take %1</source>
         <translation>дубль %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="924"/>
+        <location filename="../qtractorClipCommand.cpp" line="925"/>
         <source>reset takes</source>
         <translation>скинути дублі</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1196"/>
+        <location filename="../qtractorClipCommand.cpp" line="1197"/>
         <source>clip save</source>
         <translation>збереження кліпу</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1219"/>
+        <location filename="../qtractorClipCommand.cpp" line="1220"/>
         <source>clip unlink</source>
         <translation>від&apos;єднання кліпу</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1247"/>
+        <location filename="../qtractorClipCommand.cpp" line="1248"/>
         <source>clip tool %1</source>
         <translation>інструмент кліпу %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1391"/>
+        <location filename="../qtractorClipCommand.cpp" line="1392"/>
         <source>clip record</source>
         <translation>запис кліпу</translation>
     </message>

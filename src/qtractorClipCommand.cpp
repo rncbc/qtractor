@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -440,7 +440,8 @@ bool qtractorClipCommand::addClipRecord (
 	// Audio clips may need some record latency compensation...
 	if (trackType == qtractorTrack::Audio) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine)
+		if (pAudioEngine &&
+			pAudioEngine->captureLatencyMode() != qtractorAudioEngine::Fixed)
 			iClipOffset += pAudioEngine->transportLatency();
 	}
 
