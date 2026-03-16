@@ -372,7 +372,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="956"/>
         <source>dedicated audio outputs</source>
-        <translation>Jednoúčelové zvukové výstupy</translation>
+        <translation>Vyhrazené zvukové výstupy</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="1001"/>
@@ -2090,7 +2090,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="690"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Upozornění</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="691"/>
@@ -2099,7 +2099,7 @@ Chcete použít tyto změny?</translation>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation type="unfinished">Soubor již existuje:
+        <translation>Soubor již existuje:
 
 &quot;%1&quot;
 
@@ -12121,7 +12121,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1224"/>
         <source>%1 ms</source>
-        <translation type="unfinished">%1 ms</translation>
+        <translation>%1 ms</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1237"/>
@@ -12551,7 +12551,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2246"/>
         <source>Dedicated MIDI &amp;control input/output</source>
-        <translation>&amp;Jednoúčelový ovládací vstup/výstup pro MIDI</translation>
+        <translation>&amp;Vyhrazený ovládací vstup/výstup pro MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="59"/>
@@ -12676,12 +12676,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1211"/>
         <source>Dedicated au&amp;dition/pre-listening player outputs:</source>
-        <translation>Jednoúčelové po&amp;slechové/před-poslechové výstupy přehrávače:</translation>
+        <translation>Vyhrazené po&amp;slechové/před-poslechové výstupy přehrávače:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1224"/>
         <source>Whether to auto-connect dedicated audio player outputs</source>
-        <translation>Zda připojit automaticky jednoúčelové zvukové výstupy přehrávače</translation>
+        <translation>Zda připojit automaticky vyhrazené zvukové výstupy přehrávače</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1227"/>
@@ -12696,7 +12696,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1734"/>
         <source>Whether to auto-connect dedicated audio metronome outputs</source>
-        <translation>Zda připojit automaticky jednoúčelové zvukové výstupy metronomu</translation>
+        <translation>Zda připojit automaticky vyhrazené zvukové výstupy metronomu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1737"/>
@@ -12711,7 +12711,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1993"/>
         <source>Dedicated MIDI p&amp;layer outputs</source>
-        <translation>Jednoúčelové výstupy pře&amp;hrávače MIDI</translation>
+        <translation>Vyhrazené výstupy pře&amp;hrávače MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2199"/>
@@ -12726,7 +12726,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2748"/>
         <source>Dedicated M&amp;IDI metronome output</source>
-        <translation>Jenoúčelový výstup metronomu pro M&amp;IDI</translation>
+        <translation>Vyhrazený výstup metronomu pro M&amp;IDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2599"/>
@@ -13221,42 +13221,42 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="859"/>
         <source>&amp;Latency:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Prodleva:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="875"/>
         <source>Audio capture/input latency compensation mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim vyrovnání prodlevy při záznamu zvuku/vstupu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="879"/>
         <source>Auto</source>
-        <translation type="unfinished">Automaticky</translation>
+        <translation>Automaticky</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="884"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="889"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Pevný</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="912"/>
         <source>Audio capture/input latency conpensation (frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyrovnání prodlevy při záznamu zvuku/vstupu (snímky)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="915"/>
         <source> frames</source>
-        <translation type="unfinished"></translation>
+        <translation>snímky</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="943"/>
         <source>Audio capture/input latency conpensation (ms)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyrovnání prodlevy při záznamu zvuku/vstupu (ms)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1160"/>
@@ -13326,7 +13326,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1721"/>
         <source>Dedicated audio &amp;metronome outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyhrazené výstupy pro zvuk &amp;metronom:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1763"/>
@@ -13359,7 +13359,7 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="2712"/>
         <location filename="../qtractorOptionsForm.ui" line="2802"/>
         <source> ticks</source>
-        <translation type="unfinished"></translation>
+        <translation>tiky</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2709"/>
@@ -13557,12 +13557,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4322"/>
         <source>Dedicated audi&amp;o outputs:</source>
-        <translation>Jednoúčelové zvuk&amp;ové výstupy:</translation>
+        <translation>Vyhrazené výstupy pro &amp;zvuk:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4335"/>
         <source>Whether to auto-connect dedicated audio output ports</source>
-        <translation>Zda připojit automaticky jednoúčelové zvukové výstupní přípojky</translation>
+        <translation>Zda připojit automaticky vyhrazené přípojky pro výstup zvuku</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4338"/>
@@ -14325,7 +14325,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="2169"/>
         <source>&amp;Dedicated</source>
-        <translation>&amp;Jednoúčelové</translation>
+        <translation>&amp;Vyhrazené</translation>
     </message>
 </context>
 <context>
