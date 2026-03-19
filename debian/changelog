@@ -1,8 +1,14 @@
+qtractor (1.5.12-19.1) unstable; urgency=low
+
+  * An Early-Spring'26 Release.
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 20 Mar 2026 18:00:00 +0000
+
 qtractor (1.5.11-18.1) unstable; urgency=low
 
   * An End-of-Year'25 Release.
 
- -- Rui Nuno Capela <rncbc@rncbc.org>  tue, 30 Dec 2025 18:00:00 +0000
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Tue, 30 Dec 2025 18:00:00 +0000
 
 qtractor (1.5.10-17.1) unstable; urgency=low
 

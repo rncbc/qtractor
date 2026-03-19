@@ -4,19 +4,17 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.5.12  2026-03-20  An Early-Spring'26 Release.
 
 - New audio clip capture/recording latency compensation options
   are now in effect (cf. View/Options.../Audio/Capture/Latency).
-  (EXPERIMENTAL)
 
 - Filter out zero-duration note events when importing MIDI files.
-  (EXPERIMENTAL)
 
 - Fixed step input on offsetted MIDI clips.
 
 - Fixed audio Aux-Sends inserted on audio input buses to not
-  affect output buses processing order anymore. (EXPERIMENTAL)
+  affect output buses processing order anymore.
 
 - Clip/Merge, Export... now allowed on simple highlighted clips.
 
@@ -24,7 +22,6 @@ GIT HEAD
   Clip/Merge, Export...
 
 - Make sure all LV2 plug-in state paths are stored as relative.
-  (EXPERIMENTAL)
 
 
 1.5.11  2025-12-30  An End-of-Year'25 Release.
