@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
 project (Qtractor
-  VERSION 1.5.5
+  VERSION 1.5.12
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
   HOMEPAGE_URL "https://qtractor.org"
   LANGUAGES C CXX)
@@ -9,7 +9,7 @@ project (Qtractor
 set (PROJECT_TITLE "${PROJECT_NAME}")
 string (TOLOWER "${PROJECT_TITLE}" PROJECT_NAME)
 
-set (PROJECT_COPYRIGHT "Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.")
+set (PROJECT_COPYRIGHT "Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.")
 set (PROJECT_DOMAIN    "rncbc.org")
 
 execute_process (
@@ -69,7 +69,10 @@ option (CONFIG_LIBRUBBERBAND "Enable librubberband interface (default=yes)" 1)
 option (CONFIG_LIBRUBBERBAND_R3 "Enable librubberband-R3 interface (default=yes)" 1)
 
 # Enable libaudio support.
-option (CONFIG_LIBAUBIO "Enable libaubio interface support (default=yes)" 1)
+option (CONFIG_LIBAUBIO "Enable libaubio interface support (DEPRECATED) (default=no)" 0)
+
+# Enable minibpm support.
+option (CONFIG_MINIBPM "Enable minibpm interface support (default=yes)" 1)
 
 # Enable liblo availability.
 option (CONFIG_LIBLO "Enable liblo interface (default=yes)" 1)
@@ -100,10 +103,12 @@ option (CONFIG_VESTIGE "Enable VeSTige header support (default=yes)" 1)
 # Enable VST3 support.
 option (CONFIG_VST3 "Enable VST3 plug-in support (default=yes)" 1)
 
+option (CONFIG_VST3_XCB  "Enable VST3 plug-in XCB support (default=yes)" 1)
+
 # Enable LV2 support.
 option (CONFIG_LV2 "Enable LV2 plug-in support (default=yes)" 1)
 
-option (CONFIG_LV2_EVENT "Enable LV2 plug-in MIDI/Event support (default=no)" 0)
+option (CONFIG_LV2_EVENT "Enable LV2 plug-in MIDI/Event support (DEPRECATED) (default=no)" 0)
 
 option (CONFIG_LV2_ATOM "Enable LV2 plug-in MIDI/Atom support (default=yes)" 1)
 
@@ -408,12 +413,19 @@ if (CONFIG_LIBRUBBERBAND)
   endif ()
 endif ()
 
-# Check for AUBIO libraries.
+# Check for AUBIO libraries (DEPRECATED)
+if (CONFIG_LIBAUBIO)
+    set (CONFIG_MINIBPM 0)
+else ()
+    set (CONFIG_MINIBPM 1)
+endif ()
+
 if (CONFIG_LIBAUBIO)
   pkg_check_modules (AUBIO IMPORTED_TARGET aubio>=0.4.1)
   if (NOT AUBIO_FOUND)
     message (WARNING "*** AUBIO library not found.")
     set (CONFIG_LIBAUBIO 0)
+    set (CONFIG_MINIBPM 1)
   endif ()
 endif ()
 
@@ -440,10 +452,16 @@ if (CONFIG_VST3 AND NOT CONFIG_VST3SDK)
   set (CONFIG_VST3SDK ${CMAKE_CURRENT_SOURCE_DIR}/src/vst3)
 endif ()
 
-if (CONFIG_VST3 OR CONFIG_LV2_UI_X11)
+if (NOT CONFIG_VST3)
+  set (CONFIG_VST3_XCB 0)
+endif ()
+
+if (CONFIG_VST3_XCB OR CONFIG_LV2_UI_X11)
   pkg_check_modules (XCB xcb)
   if (NOT XCB_FOUND)
     message (WARNING "*** XCB library not found.")
+    set (CONFIG_LV2_UI_X11 0)
+    set (CONFIG_VST3_XCB 0)
   endif ()
 endif ()
 
@@ -834,7 +852,11 @@ show_option ("  Ogg Vorbis audio file support (libvorbis)  . . . ." CONFIG_LIBVO
 show_option ("  MPEG-1 Audio Layer 3 file support (libmad) . . . ." CONFIG_LIBMAD)
 show_option ("  Sample-rate conversion support (libsamplerate) . ." CONFIG_LIBSAMPLERATE)
 show_option ("  Pitch-shifting support (librubberband) . . . . . ." CONFIG_LIBRUBBERBAND)
-show_option ("  Beat-detection support (libaubio)  . . . . . . . ." CONFIG_LIBAUBIO)
+if (CONFIG_LIBAUBIO)
+show_option ("  Beat-detection support (libaubio) (DEPRECATED) . ." CONFIG_LIBAUBIO)
+else ()
+show_option ("  Beat-detection support (minibpm) . . . . . . . . ." CONFIG_MINIBPM)
+endif ()
 show_option ("  OSC service support (liblo)  . . . . . . . . . . ." CONFIG_LIBLO)
 show_option ("  Archive/Zip file support (zlib)  . . . . . . . . ." CONFIG_LIBZ)
 show_option ("  IEEE 32bit float optimizations . . . . . . . . . ." CONFIG_FLOAT32)
@@ -843,6 +865,7 @@ show_option ("  LADSPA plug-in support . . . . . . . . . . . . . ." CONFIG_LADSP
 show_option ("  DSSI plug-in support . . . . . . . . . . . . . . ." CONFIG_DSSI)
 show_option ("  VST2 plug-in support . . . . . . . . . . . . . . ." CONFIG_VST2)
 show_option ("  VST3 plug-in support . . . . . . . . . . . . . . ." CONFIG_VST3)
+show_option ("  VST3 plug-in UI XCB support  . . . . . . . . . . ." CONFIG_VST3_XCB)
 show_option ("  CLAP plug-in support . . . . . . . . . . . . . . ." CONFIG_CLAP)
 show_option ("  LV2 plug-in support  . . . . . . . . . . . . . . ." CONFIG_LV2)
 show_option ("  LV2 plug-in support (liblilv)  . . . . . . . . . ." CONFIG_LIBLILV)

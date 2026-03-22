@@ -39,7 +39,7 @@ Weblog:
   https://www.rncbc.org
 
 Qtractor is free, open-source software, distributed under the terms of
-the GNU General Public License (GPL) [18] version 2 or later.
+the GNU General Public License (GPL) [17] version 2 or later.
 
 
 Features
@@ -63,9 +63,9 @@ Features
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
-  (a-la QjackCtl [19]).
+  (a-la QjackCtl [18]).
 - LADSPA [5], DSSI [11], native VST(2), VST3 [12], LV2 [13]
-  and CLAP [21] plug-ins support.
+  and CLAP [20] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support, including
   native VST FXB/FXP file support.
@@ -83,7 +83,7 @@ Features
 - Unlimited tempo/time-signature map.
 - Unlimited location/bar markers.
 - MIDI clip editor (matrix/piano roll).
-- MIDI instrument definitions (a-la Cakewalk(tm) (*.ins) [21]);
+- MIDI instrument definitions (a-la Cakewalk(tm) (*.ins) [19]);
   SoundFont (*.sf2) and MIDI Names XML (*.midnam) files also supported.
 - MIDI controller mapping/learn/assignment (mixer and plug-in parameters).
 - MIDI system exclusive (SysEx) setups.
@@ -154,10 +154,7 @@ The software requirements for build and runtime are listed as follows:
     https://drobilla.net/software/sord
     https://drobilla.net/software/serd
 
-  - libaubio [16], a library for real time audio labelling
-    https://aubio.org
-
-  - CLAP [21], CLever Audio Plugin
+  - CLAP [20], CLever Audio Plugin
     https://github.com/free-audio/clap
 
 
@@ -195,7 +192,7 @@ Probably plenty still, Qtractor maybe considered on beta stage already.
 Support
 -------
 
-Qtractor is free, Linux Audio [17] open source free software. For bug
+Qtractor is free, Linux Audio [16] open source free software. For bug
 reports, feature requests, discussion forums, mailing lists, or any
 other matter related to the development of this piece of software,
 please use the Sourceforge project page (https://sourceforge.net/projects/qtractor).
@@ -285,24 +282,21 @@ References
      New Session Manager (NSM)
      https://new-session-manager.jackaudio.org/
 
-[16] libaubio, a library for real time audio labelling
-     https://aubio.org
-
-[17] Linux Audio consortium of libre software for audio-related work
+[16] Linux Audio consortium of libre software for audio-related work
      https://linuxaudio.org
 
-[18] GNU General Public License
+[17] GNU General Public License
      https://www.gnu.org/copyleft/gpl.html
 
-[19] QjackCtl - JACK Qt GUI Interface
+[18] QjackCtl - JACK Qt GUI Interface
      https://qjackctl.sourceforge.io
      http://qjackctl.sourceforge.net
 
-[20] Cakewalk, powerful and easy-to-use tools
+[19] Cakewalk, powerful and easy-to-use tools
      for Windows-based music and sound production
      http://www.cakewalk.com/
 
-[21] CLAP, CLever Audio Plugin
+[20] CLAP, CLever Audio Plugin
      https://github.com/free-audio/clap
 
 

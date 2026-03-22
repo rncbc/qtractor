@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -159,13 +159,19 @@ public:
 	// Audio specific accessor.
 	qtractorAudioBus *audioBus() const;
 
-	// Override title/name captioon.
+	// Override title/name caption.
 	QString title() const;
+
+	// Report latency.
+	unsigned long latency() const;
 
 protected:
 
 	// Plugin configuration (connections).
 	void freezeConfigs(int iBusMode);
+
+	// Forward decls.
+	class LatencyParam;
 
 private:
 
@@ -175,6 +181,9 @@ private:
 	Param *m_pSendGainParam;
 	Param *m_pDryGainParam;
 	Param *m_pWetGainParam;
+
+	LatencyParam *m_pLatencyParam;
+	float         m_fLatencyValue;
 
 	// Custom optimized processors.
 	void (*m_pfnProcessGain)(float **, unsigned int,
@@ -219,7 +228,7 @@ public:
 	// MIDI specific accessor.
 	qtractorMidiBus *midiBus() const;
 
-	// Override title/name captioon.
+	// Override title/name caption.
 	QString title() const;
 
 protected:
@@ -282,7 +291,7 @@ public:
 	// Compute the number of instances needed
 	// for the given input/output audio channels.
 	unsigned short instances(unsigned short iChannels, bool /*bMidi*/) const
-		{ return (iChannels > 0 && iChannels == audioOuts() ? 1 : 0); }
+		{ return (iChannels > 0 ? 1 : 0); }
 
 	// Instance cached-deferred accesors.
 	const QString& aboutText();
@@ -369,7 +378,13 @@ public:
 	// Audio bus to appear on plugin lists.
 	void updateAudioBusName() const;
 
-	// Override title/name captioon.
+	// Audio bus I/O matrix.
+	void setAudioBusMatrix(const QList<int>&  matrix);
+	const QList<int>& audioBusMatrix() const;
+
+	void updateAudioBusMatrix(unsigned short iChannels);
+
+	// Override title/name caption.
 	QString title() const;
 
 protected:
@@ -389,6 +404,11 @@ private:
 	// Custom optimized processors.
 	void (*m_pfnProcessAdd)(float **, float **, unsigned int,
 		unsigned int, unsigned short, float);
+
+	float **m_ppOBuffers;
+	int    *m_piOBuffers;
+
+	QList<int> m_matrix;
 };
 
 
@@ -428,7 +448,7 @@ public:
 	// Audio bus to appear on plugin lists.
 	void updateMidiBusName() const;
 
-	// Override title/name captioon.
+	// Override title/name caption.
 	QString title() const;
 
 protected:
@@ -470,6 +490,28 @@ public:
 	bool isInteger() const { return false; }
 	bool isToggled() const { return false; }
 	bool isDisplay() const { return false; }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioInsertPlugin::Latency -- Audio insert plugin control input port.
+//
+
+class qtractorAudioInsertPlugin::LatencyParam : public qtractorInsertPlugin::Param
+{
+public:
+
+	// Constructors.
+	LatencyParam(qtractorAudioInsertPlugin *pAudioInsertPlugin, unsigned long iIndex)
+		: qtractorInsertPlugin::Param(pAudioInsertPlugin, iIndex) {}
+
+	// Port range hints predicate methods.
+	bool isLogarithmic() const { return false; }
+	bool isInteger() const { return true; }
+	bool isDisplay() const { return true; }
+
+	// Display latency in milliseconds (ms)
+	QString display() const;
 };
 
 

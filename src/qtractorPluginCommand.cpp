@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -184,6 +184,30 @@ bool qtractorAddAuxSendPluginCommand::undo (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorAddMidiControlPluginCommand - implementation
+//
+
+// Constructor.
+qtractorAddMidiControlPluginCommand::qtractorAddMidiControlPluginCommand (
+	qtractorPlugin *pPlugin ) : qtractorPluginCommand(
+		QObject::tr("add MIDI controller"), pPlugin)
+{
+}
+
+
+// Plugin insertion command methods.
+bool qtractorAddMidiControlPluginCommand::redo (void)
+{
+	return addPlugins();
+}
+
+bool qtractorAddMidiControlPluginCommand::undo (void)
+{
+	return removePlugins();
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorAuxSendPluginCommand - implementation
 //
 
@@ -196,7 +220,7 @@ qtractorAuxSendPluginCommand::qtractorAuxSendPluginCommand (
 }
 
 
-// Plugin insertion command methods.
+// Plugin command methods.
 bool qtractorAuxSendPluginCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
@@ -211,7 +235,6 @@ bool qtractorAuxSendPluginCommand::redo (void)
 		const QString sAudioBusName = pAudioAuxSendPlugin->audioBusName();
 		pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName, true);
 		m_sAuxSendBusName = sAudioBusName;
-		pAudioAuxSendPlugin->updateFormAuxSendBusName();
 	} else {
 		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
 			= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
@@ -220,13 +243,56 @@ bool qtractorAuxSendPluginCommand::redo (void)
 		const QString sMidiBusName = pMidiAuxSendPlugin->midiBusName();
 		pMidiAuxSendPlugin->setMidiBusName(m_sAuxSendBusName);
 		m_sAuxSendBusName = sMidiBusName;
-		pMidiAuxSendPlugin->updateFormAuxSendBusName();
 	}
+
+	pPlugin->updateFormAuxSendBusName();
 
 	return true;
 }
 
 bool qtractorAuxSendPluginCommand::undo (void)
+{
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorAuxSendPluginCommand - implementation
+//
+
+// Constructor.
+qtractorAuxSendIOMatrixCommand::qtractorAuxSendIOMatrixCommand (
+	qtractorPlugin *pPlugin, const QList<int>& matrix )
+	: qtractorPluginCommand(QObject::tr("aux-send matrix"), pPlugin),
+		m_matrix(matrix)
+{
+}
+
+
+// Plugin command methods.
+bool qtractorAuxSendIOMatrixCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == nullptr)
+		return false;
+
+	if ((pPlugin->type())->index() == 0)
+		return false;
+
+	qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+		= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+	if (pAudioAuxSendPlugin == nullptr)
+		return false;
+
+	const QList<int> matrix
+		= pAudioAuxSendPlugin->audioBusMatrix();
+	pAudioAuxSendPlugin->setAudioBusMatrix(m_matrix);
+	m_matrix = matrix;
+
+	return true;
+}
+
+bool qtractorAuxSendIOMatrixCommand::undo (void)
 {
 	return redo();
 }
@@ -357,7 +423,7 @@ qtractorMovePluginCommand::qtractorMovePluginCommand (
 	qtractorPluginType *pType = pPlugin->type();
 	if (pType && (pType->typeHint() == qtractorPluginType::AuxSend)
 		&& (pPluginList != pPlugin->list())) {
-		if ((pPluginList->flags() & qtractorPluginList::AudioOutBus) &&
+		if ((pPluginList->flags() == qtractorPluginList::AudioOutBus) &&
 			(pType->index() > 0)) { // index == channels > 0 => Audio aux-send.
 			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
 				= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
@@ -367,7 +433,7 @@ qtractorMovePluginCommand::qtractorMovePluginCommand (
 			}
 		}
 		else // index == 0 => MIDI aux-send.
-		if (pPluginList->flags() & qtractorPluginList::MidiOutBus) {
+		if (pPluginList->flags() == qtractorPluginList::MidiOutBus) {
 			qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
 				= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
 			if (pMidiAuxSendPlugin) {
@@ -398,6 +464,14 @@ bool qtractorMovePluginCommand::redo (void)
 		return false;
 
 //	pSession->lock();
+
+	// If we're changing plugin-lists, close the generic editor,
+	// but reopen it here later, if it's currently visible...
+	bool bReopenForm = false;
+	if (m_pPluginList != pPlugin->list()) {
+		bReopenForm = pPlugin->isFormVisible();
+		pPlugin->closeForm(true);
+	}
 
 	// Save the previous track alright...
 	qtractorPlugin *pNextPlugin = pPlugin->next();
@@ -434,6 +508,9 @@ bool qtractorMovePluginCommand::redo (void)
 	// Swap it nice, finally.
 	m_pPluginList = pPluginList;
 	setNextPlugin(pNextPlugin);
+
+	if (bReopenForm)
+		pPlugin->openForm();
 
 //	pSession->unlock();
 

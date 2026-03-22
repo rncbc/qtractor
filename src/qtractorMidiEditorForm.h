@@ -207,6 +207,7 @@ protected slots:
 	void updateTrackInstrumentMenu();
 
 	void sendNote(int iNote, int iVelocity, bool bForce);
+	void sendNoteEx(int iNote, int iVelocity, unsigned long iDuration);
 
 	void selectionChanged(qtractorMidiEditor *);
 	void contentsChanged(qtractorMidiEditor *);

@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -510,6 +510,98 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="GeneralClipsGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Clips</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QLabel" name="ClipFadeInTypeLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Default &amp;Fade In:</string>
+            </property>
+            <property name="buddy">
+             <cstring>ClipFadeInTypeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="ClipFadeInTypeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Default clip fade-in type</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="ClipFadeOutTypeLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
+            <property name="text">
+             <string>Default &amp;Fade Out:</string>
+            </property>
+            <property name="buddy">
+             <cstring>ClipFadeOutTypeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="ClipFadeOutTypeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Default clip fade-out type</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -749,6 +841,110 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="5">
+           <layout class="QHBoxLayout">
+            <item>
+             <widget class="QLabel" name="AudioCaptureLatencyTextLabel">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignVCenter</set>
+              </property>
+              <property name="text">
+               <string>&amp;Latency:</string>
+              </property>
+              <property name="buddy" >
+               <cstring>AudioCaptureLatencyComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="AudioCaptureLatencyComboBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip" >
+               <string>Audio capture/input latency compensation mode</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>Auto</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Add</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Fixed</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="AudioCaptureLatencySpinBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximum">
+               <number>9999</number>
+              </property>
+              <property name="toolTip" >
+               <string>Audio capture/input latency conpensation (frames)</string>
+              </property>
+              <property name="suffix">
+               <string> frames</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="AudioCaptureLatencyMsTextLabel">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="toolTip" >
+               <string>Audio capture/input latency conpensation (ms)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="AudioCaptureFormatTextLabel">
@@ -1123,99 +1319,122 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout">
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="AudioMetronomeCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to enable the audio metronome</string>
-            </property>
-            <property name="text">
-             <string>&amp;Enable audio metronome</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="AudioCountInModeLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>&amp;Count-in:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>AudioCountInModeComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3" colspan="2">
-           <widget class="QComboBox" name="AudioCountInModeComboBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Count-in mode</string>
-            </property>
-            <item>
-             <property name="text">
-              <string>None</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Playback</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Recording</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="5">
-           <widget class="QSpinBox" name="AudioCountInBeatsSpinBox">
-            <property name="minimumSize">
-             <size>
-              <width>66</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Count-in number</string>
-            </property>
-            <property name="suffix">
-             <string> beats</string>
-            </property>
-            <property name="minimum">
-             <number>2</number>
-            </property>
-            <property name="maximum">
-             <number>24</number>
-            </property>
-            <property name="value">
+          <item row="0" column="0" colspan="6">
+           <layout class="QHBoxLayout">
+            <property name="spacing">
              <number>4</number>
             </property>
-           </widget>
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QCheckBox" name="AudioMetronomeCheckBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Whether to enable the audio metronome</string>
+              </property>
+              <property name="text">
+               <string>&amp;Enable audio metronome</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="AudioCountInModeLabel">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>&amp;Count-in:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>AudioCountInModeComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="AudioCountInModeComboBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Count-in mode</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>None</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Playback</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Recording</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="AudioCountInBeatsSpinBox">
+              <property name="minimumSize">
+               <size>
+                <width>66</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Count-in number</string>
+              </property>
+              <property name="suffix">
+               <string> beats</string>
+              </property>
+              <property name="minimum">
+               <number>2</number>
+              </property>
+              <property name="maximum">
+               <number>24</number>
+              </property>
+              <property name="value">
+               <number>4</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="MetroBarFilenameTextLabel">
@@ -1227,6 +1446,9 @@
             </property>
             <property name="text">
              <string>&amp;File (bar):</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MetroBarFilenameComboBox</cstring>
@@ -1303,6 +1525,9 @@
             <property name="text">
              <string>&amp;Gain (bar):</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
             <property name="buddy">
              <cstring>MetroBarGainSpinBox</cstring>
             </property>
@@ -1352,6 +1577,9 @@
             </property>
             <property name="text">
              <string>&amp;File (beat):</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MetroBeatFilenameComboBox</cstring>
@@ -1417,7 +1645,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="4" colspan="2">
+          <item row="2" column="4">
            <widget class="QLabel" name="MetroBeatGainTextLabel">
             <property name="font">
              <font>
@@ -1427,6 +1655,9 @@
             </property>
             <property name="text">
              <string>&amp;Gain (beat):</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MetroBeatGainSpinBox</cstring>
@@ -1467,69 +1698,98 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QCheckBox" name="AudioMetroBusCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
+          <item row="3" column="0" colspan="6">
+           <layout class="QHBoxLayout">
+            <property name="spacing">
+             <number>4</number>
             </property>
-            <property name="toolTip">
-             <string>Whether to have separate audio metronome output ports</string>
+            <property name="margin">
+             <number>0</number>
             </property>
-            <property name="text">
-             <string>Dedicated a&amp;udio metronome outputs:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QCheckBox" name="AudioMetroAutoConnectCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to auto-connect dedicated audio metronome outputs</string>
-            </property>
-            <property name="text">
-             <string>Auto-co&amp;nnect</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3" colspan="2">
-           <widget class="QLabel" name="AudioMetroOffsetTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>&amp;Offset (latency):</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>AudioMetroOffsetSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="5">
-           <widget class="qtractorTimeSpinBox" name="AudioMetroOffsetSpinBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Metronome Audio offset (latency)</string>
-            </property>
-           </widget>
+            <item>
+             <widget class="QCheckBox" name="AudioMetroBusCheckBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Whether to have separate audio metronome output ports</string>
+              </property>
+              <property name="text">
+               <string>Dedicated audio &amp;metronome outputs:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="AudioMetroAutoConnectCheckBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Whether to auto-connect dedicated audio metronome outputs</string>
+              </property>
+              <property name="text">
+               <string>Auto-co&amp;nnect</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="AudioMetroOffsetTextLabel">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>&amp;Offset (latency):</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>AudioMetroOffsetSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="qtractorTimeSpinBox" name="AudioMetroOffsetSpinBox">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Metronome Audio offset (latency)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -2018,24 +2278,30 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout">
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="MidiMetronomeCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to enable the MIDI metronome</string>
-            </property>
-            <property name="text">
-             <string>&amp;Enable MIDI metronome</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" colspan="3">
+          <item row="0" column="0" colspan="7">
            <layout class="QHBoxLayout">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QCheckBox" name="MidiMetronomeCheckBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Whether to enable the MIDI metronome</string>
+              </property>
+              <property name="text">
+               <string>&amp;Enable MIDI metronome</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <spacer>
               <property name="orientation">
@@ -2043,7 +2309,7 @@
               </property>
               <property name="sizeHint">
                <size>
-                <width>4</width>
+                <width>20</width>
                 <height>20</height>
                </size>
               </property>
@@ -2097,91 +2363,91 @@
               </property>
               <property name="sizeHint">
                <size>
-                <width>4</width>
+                <width>20</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
+            <item>
+             <widget class="QLabel" name="MidiCountInModeLabel">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>&amp;Count-in:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>AudioCountInModeComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="MidiCountInModeComboBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Count-in mode</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>None</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Playback</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Recording</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="MidiCountInBeatsSpinBox">
+              <property name="minimumSize">
+               <size>
+                <width>66</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Count-in number</string>
+              </property>
+              <property name="suffix">
+               <string> beats</string>
+              </property>
+              <property name="minimum">
+               <number>2</number>
+              </property>
+              <property name="maximum">
+               <number>24</number>
+              </property>
+              <property name="value">
+               <number>4</number>
+              </property>
+             </widget>
+            </item>
            </layout>
-          </item>
-          <item row="0" column="5" colspan="2">
-           <widget class="QLabel" name="MidiCountInModeLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>&amp;Count-in:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>AudioCountInModeComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="7">
-           <widget class="QComboBox" name="MidiCountInModeComboBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Count-in mode</string>
-            </property>
-            <item>
-             <property name="text">
-              <string>None</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Playback</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Recording</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="8">
-           <widget class="QSpinBox" name="MidiCountInBeatsSpinBox">
-            <property name="minimumSize">
-             <size>
-              <width>66</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Count-in number</string>
-            </property>
-            <property name="suffix">
-             <string> beats</string>
-            </property>
-            <property name="minimum">
-             <number>2</number>
-            </property>
-            <property name="maximum">
-             <number>24</number>
-            </property>
-            <property name="value">
-             <number>4</number>
-            </property>
-           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="MetroBarNoteTextLabel">
@@ -2193,6 +2459,9 @@
             </property>
             <property name="text">
              <string>&amp;Note (bar):</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MetroBarNoteComboBox</cstring>
@@ -2218,20 +2487,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="3" rowspan="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>4</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="4">
+          <item row="1" column="3">
            <widget class="QLabel" name="MetroBarVelocityTextLabel">
             <property name="font">
              <font>
@@ -2242,13 +2498,22 @@
             <property name="text">
              <string>&amp;Velocity (bar):</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
             <property name="buddy">
              <cstring>MetroBarVelocitySpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="5">
+          <item row="1" column="4">
            <widget class="QSpinBox" name="MetroBarVelocitySpinBox">
+            <property name="minimumSize">
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <weight>50</weight>
@@ -2269,20 +2534,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="6" rowspan="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>4</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="7">
+          <item row="1" column="5">
            <widget class="QLabel" name="MetroBarDurationTextLabel">
             <property name="font">
              <font>
@@ -2293,13 +2545,22 @@
             <property name="text">
              <string>&amp;Duration (bar):</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
             <property name="buddy">
              <cstring>MetroBarDurationSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="8">
+          <item row="1" column="6">
            <widget class="QSpinBox" name="MetroBarDurationSpinBox">
+            <property name="minimumSize">
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <weight>50</weight>
@@ -2308,6 +2569,9 @@
             </property>
             <property name="toolTip">
              <string>Metronome MIDI duration (bar)</string>
+            </property>
+            <property name="suffix">
+             <string> ticks</string>
             </property>
             <property name="minimum">
              <number>1</number>
@@ -2334,6 +2598,9 @@
             <property name="text">
              <string>&amp;Note (beat):</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
             <property name="buddy">
              <cstring>MetroBeatNoteComboBox</cstring>
             </property>
@@ -2358,7 +2625,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="4">
+          <item row="2" column="3">
            <widget class="QLabel" name="MetroBeatVelocityTextLabel">
             <property name="font">
              <font>
@@ -2369,13 +2636,22 @@
             <property name="text">
              <string>&amp;Velocity (beat):</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
             <property name="buddy">
              <cstring>MetroBeatVelocitySpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="2" column="5">
+          <item row="2" column="4">
            <widget class="QSpinBox" name="MetroBeatVelocitySpinBox">
+            <property name="minimumSize">
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <weight>50</weight>
@@ -2396,7 +2672,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="7">
+          <item row="2" column="5">
            <widget class="QLabel" name="MetroBeatDurationTextLabel">
             <property name="font">
              <font>
@@ -2407,13 +2683,22 @@
             <property name="text">
              <string>&amp;Duration (beat):</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
             <property name="buddy">
              <cstring>MetroBeatDurationSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="2" column="8">
+          <item row="2" column="6">
            <widget class="QSpinBox" name="MetroBeatDurationSpinBox">
+            <property name="minimumSize">
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <weight>50</weight>
@@ -2422,6 +2707,9 @@
             </property>
             <property name="toolTip">
              <string>Metronome MIDI duration (beat)</string>
+            </property>
+            <property name="suffix">
+             <string> ticks</string>
             </property>
             <property name="minimum">
              <number>1</number>
@@ -2437,65 +2725,97 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="5">
-           <widget class="QCheckBox" name="MidiMetroBusCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
+          <item row="3" column="0" colspan="7">
+           <layout class="QHBoxLayout">
+            <property name="spacing">
+             <number>4</number>
             </property>
-            <property name="toolTip">
-             <string>Whether to have separate MIDI metronome output port</string>
-            </property>
-            <property name="text">
-             <string>Dedicated M&amp;IDI metronome output</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="5" colspan="3">
-           <widget class="QLabel" name="MidiMetroOffsetTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>&amp;Offset (latency):</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>AudioMetroOffsetSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="8">
-           <widget class="QSpinBox" name="MidiMetroOffsetSpinBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Metronome MIDI offset (latency)</string>
-            </property>
-            <property name="minimum">
+            <property name="margin">
              <number>0</number>
             </property>
-            <property name="maximum">
-             <number>9999</number>
-            </property>
-            <property name="singleStep">
-             <number>8</number>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-           </widget>
+            <item>
+             <widget class="QCheckBox" name="MidiMetroBusCheckBox">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Whether to have separate MIDI metronome output port</string>
+              </property>
+              <property name="text">
+               <string>Dedicated M&amp;IDI metronome output</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="MidiMetroOffsetTextLabel">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>&amp;Offset (latency):</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>AudioMetroOffsetSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="MidiMetroOffsetSpinBox">
+              <property name="minimumSize">
+               <size>
+                <width>66</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Metronome MIDI offset (latency)</string>
+              </property>
+              <property name="suffix">
+               <string> ticks</string>
+              </property>
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>9999</number>
+              </property>
+              <property name="singleStep">
+               <number>8</number>
+              </property>
+              <property name="value">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -4369,12 +4689,16 @@
   <tabstop>TrackViewDropSpanCheckBox</tabstop>
   <tabstop>MidButtonModifierCheckBox</tabstop>
   <tabstop>KeepEditorsOnTopCheckBox</tabstop>
+  <tabstop>ClipFadeInTypeComboBox</tabstop>
+  <tabstop>ClipFadeOutTypeComboBox</tabstop>
   <tabstop>TransportModeComboBox</tabstop>
   <tabstop>TimebaseCheckBox</tabstop>
   <tabstop>LoopRecordingModeComboBox</tabstop>
   <tabstop>AudioCaptureTypeComboBox</tabstop>
   <tabstop>AudioCaptureFormatComboBox</tabstop>
   <tabstop>AudioCaptureQualitySpinBox</tabstop>
+  <tabstop>AudioCaptureLatencyComboBox</tabstop>
+  <tabstop>AudioCaptureLatencySpinBox</tabstop>
   <tabstop>AudioAutoTimeStretchCheckBox</tabstop>
   <tabstop>AudioResampleTypeComboBox</tabstop>
   <tabstop>AudioWsolaTimeStretchCheckBox</tabstop>

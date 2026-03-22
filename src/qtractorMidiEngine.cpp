@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -492,9 +492,9 @@ void qtractorMidiOutputThread::run (void)
 	while (m_bRunState) {
 		// Wait for sync...
 		m_cond.wait(&m_mutex);
-#ifdef CONFIG_DEBUG_0
+	#ifdef CONFIG_DEBUG_0
 		qDebug("qtractorMidiOutputThread[%p]::run(): waked.", this);
-#endif
+	#endif
 		// Only if playing, the output process cycle.
 		if (m_pMidiEngine->isPlaying())
 			m_pMidiEngine->process();
@@ -1917,8 +1917,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							= pMidiClip->clipStartTime();
 						const unsigned long iClipEndTime
 							= iClipStartTime + pMidiClip->clipLengthTime();
-						if (iTime >= iClipStartTime && (!bPlaying || iTime < iClipEndTime))
-							tick = iTime - iClipStartTime + pMidiClip->clipOffsetTime();
+						if (iTime >= iClipStartTime
+							&& (!bPlaying || iTime < iClipEndTime)) {
+							tick = iTime - iClipStartTime;
+							if (bPlaying) // Overdubbing...
+								tick += pMidiClip->clipOffsetTime();
+						}
 						else
 						if (type != qtractorMidiEvent::NOTEOFF)
 							pSeq = nullptr;
@@ -4708,6 +4712,10 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 void qtractorMidiBus::sendNote (
 	qtractorTrack *pTrack, int iNote, int iVelocity, bool bForce ) const
 {
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
@@ -4723,8 +4731,8 @@ void qtractorMidiBus::sendNote (
 	const unsigned short iChannel = pTrack->midiChannel();
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiBus[%p]::sendNote(%d, %d, %d)",
-		this, iChannel, iNote, iVelocity);
+	qDebug("qtractorMidiBus[%p]::sendNote(%d, %d, %d, %d)",
+		this, iChannel, iNote, iVelocity, int(bForce));
 #endif
 
 	// Initialize sequencer event...
@@ -4766,9 +4774,9 @@ void qtractorMidiBus::sendNote (
 	}
 
 	// Attempt to capture the playing note as well...
-	if (bForce && pTrack->isRecord() && pTrack->session()) {
+	if (bForce && pTrack->isRecord()) {
 		const unsigned long tick
-			= (pTrack->session())->timep(pMidiEngine->queueTime());
+			= pSession->timep(pMidiEngine->queueTime());
 		snd_seq_ev_set_dest(&ev,
 			pMidiEngine->alsaClient(), m_iAlsaPort);
 		snd_seq_ev_schedule_tick(&ev,
@@ -5104,13 +5112,13 @@ int qtractorMidiBus::updateConnects (
 			seq_addr.port   = pItem->port;
 			snd_seq_port_subscribe_set_dest(pPortSubs, &seq_addr);
 		}
-#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG
 		const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
 		qDebug("qtractorMidiBus[%p]::updateConnects(%d): "
 			"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, int(busMode),
 				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
 				pItem->client, pItem->portName.toUtf8().constData());
-#endif
+	#endif
 		if (snd_seq_subscribe_port(pAlsaSeq, pPortSubs) == 0) {
 			const int iItem = connects.indexOf(pItem);
 			if (iItem >= 0) {

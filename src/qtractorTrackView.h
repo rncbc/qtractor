@@ -1,7 +1,7 @@
 // qtractorTrackView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -93,8 +93,8 @@ public:
 	void updateContentsRecord();
 
 	// The current clip selection mode.
-	enum SelectMode { SelectClip, SelectRange, SelectRect };
-	enum SelectEdit { EditNone = 0, EditHead = 1, EditTail = 2, EditBoth = 3 };
+	enum SelectMode { SelectClip = 0, SelectRange, SelectRect };
+	enum SelectEdit { EditNone = 0, EditHead, EditTail, EditBoth };
 
 	// Selection flags
 	enum {
@@ -161,6 +161,9 @@ public:
 
 	// Whether there's a single track selection.
 	qtractorTrack *singleTrackSelected();
+
+	// Retrieve all or selected/current clips.
+	QList<qtractorClip *> selectedClips() const;
 
 	// Clear current selection (no notify).
 	void clearSelect(bool bReset = false);
@@ -264,6 +267,10 @@ public:
 	// or the passed one if [Alt] key is pressed.
 	unsigned int pixelSnap(unsigned int x) const;
 	unsigned long frameSnap(unsigned long iFrame) const;
+
+	// (Un)set edit mode cursors.
+	void setEditCursor(const QCursor& cursr);
+	void unsetEditCursor();
 
 protected:
 

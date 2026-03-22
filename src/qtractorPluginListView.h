@@ -1,7 +1,7 @@
 // qtractorPluginListView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -118,6 +118,9 @@ public:
 	// Show insert pseudo-plugin audio bus connections.
 	static void insertPluginBus(qtractorPlugin *pPlugin, int iBusMode);
 
+	// Show selected Aux-Send bus on the mixer outputs pane.
+	static void updateAuxSendPluginBus(qtractorPlugin *pPlugin);
+
 signals:
 
 	// Plugin chain changed somehow.
@@ -156,9 +159,13 @@ protected slots:
 	void addMidiInsertPlugin();
 	void addMidiAuxSendPlugin();
 
+	void addMidiControlPlugin();
+
 	// Send/return insert specific slots.
 	void insertPluginOutputs();
 	void insertPluginInputs();
+
+	void midiControlAutoConnect();
 
 	// Audio specific slots.
 	void audioOutputs();
@@ -171,11 +178,17 @@ protected slots:
 	void dropCopy();
 	void dropCancel();
 
-	// Simple click handler.
+	// Double/simple-click handler.
 	void itemDoubleClickedSlot(QListWidgetItem *);
-	void itemActivatedSlot(QListWidgetItem *);
+	void itemClickedSlot(QListWidgetItem *);
+
+	// Row-change handler.
+	void currentRowChangedSlot(int);
 
 protected:
+
+	// Focus-in handler.
+	void focusInEvent(QFocusEvent *pFocusEvent);
 
 	// Move item on list.
 	void moveItem(qtractorPluginListItem *pItem,
@@ -256,6 +269,9 @@ private:
 
 	// Common tiny scrollbar style stuff.
 	TinyScrollBarStyle *m_pTinyScrollBarStyle;
+
+	// To track the current item...
+	qtractorPluginListItem *m_pCurrentItem;
 };
 
 
