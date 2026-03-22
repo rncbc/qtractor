@@ -67,6 +67,8 @@ set (HEADERS
   qtractorMidiControlCommand.h
   qtractorMidiControlObserver.h
   qtractorMidiControlTypeGroup.h
+  qtractorMidiControlPluginWidget.h
+  qtractorMidiControlPlugin.h
   qtractorMidiCursor.h
   qtractorMidiEditor.h
   qtractorMidiEditCommand.h
@@ -125,6 +127,7 @@ set (HEADERS
   qtractorVst3Plugin.h
   qtractorZipFile.h
   qtractorWsolaTimeStretcher.h
+  qtractorAudioIOMatrixForm.h
   qtractorBusForm.h
   qtractorClipForm.h
   qtractorConnectForm.h
@@ -202,6 +205,8 @@ set (SOURCES
   qtractorMidiControlCommand.cpp
   qtractorMidiControlObserver.cpp
   qtractorMidiControlTypeGroup.cpp
+  qtractorMidiControlPluginWidget.cpp
+  qtractorMidiControlPlugin.cpp
   qtractorMidiCursor.cpp
   qtractorMidiEditor.cpp
   qtractorMidiEditCommand.cpp
@@ -255,6 +260,7 @@ set (SOURCES
   qtractorVst3Plugin.cpp
   qtractorWsolaTimeStretcher.cpp
   qtractorZipFile.cpp
+  qtractorAudioIOMatrixForm.cpp
   qtractorBusForm.cpp
   qtractorClipForm.cpp
   qtractorConnectForm.cpp
@@ -282,6 +288,7 @@ set (SOURCES
 )
 
 set (FORMS
+  qtractorAudioIOMatrixForm.ui
   qtractorBusForm.ui
   qtractorClipForm.ui
   qtractorConnectForm.ui
@@ -291,6 +298,7 @@ set (FORMS
   qtractorMainForm.ui
   qtractorMidiControlForm.ui
   qtractorMidiControlObserverForm.ui
+  qtractorMidiControlPluginWidget.ui
   qtractorMidiEditorForm.ui
   qtractorMidiImportForm.ui
   qtractorMidiSysexForm.ui
@@ -507,7 +515,7 @@ if (CONFIG_CLAP)
   target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE clap/include)
 endif ()
 
-if (XCB_FOUND)
+if (CONFIG_VST3_XCB OR CONFIG_LV2_UI_X11)
   target_include_directories (${PROJECT_NAME} PRIVATE ${XCB_INCLUDE_DIRS})
   target_link_directories (${PROJECT_NAME} PRIVATE ${XCB_LIBRARY_DIRS})
   target_link_libraries (${PROJECT_NAME} PRIVATE ${XCB_LIBRARIES})

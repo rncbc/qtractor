@@ -1,4 +1,4 @@
-// qtractorPluginSelectForm.h
+// qtractorMidiControlPluginWidget.h
 //
 /****************************************************************************
    Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,59 +19,61 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorPluginSelectForm_h
-#define __qtractorPluginSelectForm_h
+#ifndef __qtractorMidiControlPluginWidget_h
+#define __qtractorMidiControlPluginWidget_h
 
-#include "ui_qtractorPluginSelectForm.h"
+#include "ui_qtractorMidiControlPluginWidget.h"
 
-#include "qtractorPlugin.h"
+
+// Forward declarartions.
+class qtractorMidiControlTypeGroup;
+class qtractorMidiControlPlugin;
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginSelectForm -- UI wrapper form.
+// qtractorMidiControlPluginWidget -- UI wrapper form.
 
-class qtractorPluginSelectForm : public QDialog
+class qtractorMidiControlPluginWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorPluginSelectForm(QWidget *pParent = nullptr);
+	qtractorMidiControlPluginWidget(QWidget *pParent = nullptr);
 	// Destructor.
-	~qtractorPluginSelectForm();
+	~qtractorMidiControlPluginWidget();
 
-	void setPluginList(qtractorPluginList *pPluginList);
-	qtractorPluginList *pluginList() const;
+	// Accessors.
+	void setMidiControlPlugin(qtractorMidiControlPlugin *pMidiControlPlugin);
+	qtractorMidiControlPlugin *midiControlPlugin() const;
 
-	int pluginCount() const;
-	QString pluginFilename(int iPlugin) const;
-	unsigned long pluginIndex(int iPlugin) const;
-	qtractorPluginType::Hint pluginTypeHint(int iPlugin) const;
+	void dirtyNotify();
 
 protected slots:
 
-	void typeHintChanged(int iTypeHint);
+	void changed();
+	void changedBipolar();
 
-	void reset();
-	void rescan();
-	void refresh();
-	void scanned(int iPercent);
-	void stabilize();
-	void accept();
+signals:
+
+	void bipolarChanged();
 
 private:
 
 	// The Qt-designer UI struct...
-	Ui::qtractorPluginSelectForm m_ui;
+	Ui::qtractorMidiControlPluginWidget m_ui;
 
-	qtractorPluginList *m_pPluginList;
+	// Instance variables.
+	qtractorMidiControlTypeGroup *m_pControlTypeGroup;
 
-	QList<QTreeWidgetItem *> m_selectedItems;
+	qtractorMidiControlPlugin *m_pMidiControlPlugin;
+
+	int m_iDirtySetup;
 };
 
 
-#endif	// __qtractorPluginSelectForm_h
+#endif	// __qtractorMidiControlPluginWidget_h
 
 
-// end of qtractorPluginSelectForm.h
+// end of qtractorMidiControlPluginWidget.h

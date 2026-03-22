@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -93,6 +93,10 @@
 
 #ifdef CONFIG_VST3
 #include "qtractorVst3Plugin.h"
+#endif
+
+#ifdef CONFIG_CLAP
+#include "qtractorClapPlugin.h"
 #endif
 
 #ifdef CONFIG_LV2
@@ -888,12 +892,15 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackMoveBottomAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackMoveBottom()));
-	QObject::connect(m_ui.trackHeightUpAction,
+	QObject::connect(m_ui.trackHeightIncreaseAction,
 		SIGNAL(triggered(bool)),
-		SLOT(trackHeightUp()));
-	QObject::connect(m_ui.trackHeightDownAction,
+		SLOT(trackHeightIncrease()));
+	QObject::connect(m_ui.trackHeightDecreaseAction,
 		SIGNAL(triggered(bool)),
-		SLOT(trackHeightDown()));
+		SLOT(trackHeightDecrease()));
+	QObject::connect(m_ui.trackHeightMinimizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackHeightMinimize()));
 	QObject::connect(m_ui.trackHeightResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackHeightReset()));
@@ -1391,19 +1398,17 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMessagesCapture();
 
 	// Track view select mode...
-	qtractorTrackView::SelectMode selectMode;
-	switch (pOptions->iTrackViewSelectMode) {
-	case 2:
-		selectMode = qtractorTrackView::SelectRect;
+	const qtractorTrackView::SelectMode selectMode
+		= qtractorTrackView::SelectMode(pOptions->iTrackViewSelectMode);
+	switch (selectMode) {
+	case qtractorTrackView::SelectRect:
 		m_ui.editSelectModeRectAction->setChecked(true);
 		break;
-	case 1:
-		selectMode = qtractorTrackView::SelectRange;
+	case qtractorTrackView::SelectRange:
 		m_ui.editSelectModeRangeAction->setChecked(true);
 		break;
-	case 0:
+	case qtractorTrackView::SelectClip:
 	default:
-		selectMode = qtractorTrackView::SelectClip;
 		m_ui.editSelectModeClipAction->setChecked(true);
 		break;
 	}
@@ -1500,6 +1505,12 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Set MIDI control non catch-up/hook global option...
 	qtractorMidiControl::setSync(m_pOptions->bMidiControlSync);
 
+	// Set default clip fade-in/out types...
+	qtractorClip::setDefaultFadeInType(
+		qtractorClip::fadeTypeFromIndex(m_pOptions->iClipFadeInType));
+	qtractorClip::setDefaultFadeOutType(
+		qtractorClip::fadeTypeFromIndex(m_pOptions->iClipFadeOutType));
+
 	// Load MIDI controller configuration files...
 	QStringListIterator it(m_pOptions->midiControlFiles);
 	while (it.hasNext())
@@ -1528,6 +1539,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateTimebase();
 	updateAudioPlayer();
 	updateAudioMetronome();
+	updateAudioCaptureLatency();
 	updateMidiControlModes();
 	updateMidiQueueTimer();
 	updateMidiDriftCorrect();
@@ -1586,7 +1598,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine)
 		pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
-	
+
 	// Final widget slot connections....
 	QObject::connect(m_pFileSystem->toggleViewAction(),
 		SIGNAL(triggered(bool)),
@@ -2200,7 +2212,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();
 		}
-		// Always avoid to store session on extracted direactories...
+		// Always avoid to store session on extracted directories...
 		sFilename = sessionArchivePath(sFilename);
 		// Try to rename as if a backup is about...
 		sFilename = sessionBackupPath(sFilename);
@@ -2392,6 +2404,7 @@ bool qtractorMainForm::closeSession (void)
 	#ifdef CONFIG_LV2
 		qtractorLv2PluginType::lv2_close();
 	#endif
+		qtractorPluginFile::clearAll();
 	#ifdef CONFIG_LIBZ
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();
@@ -2670,6 +2683,8 @@ bool qtractorMainForm::saveSessionFileEx (
 #ifdef CONFIG_LIBZ
 	if (sSuffix == qtractorDocument::archiveExt()) {
 		iFlags |= qtractorDocument::Archive;
+		// Warn when saving an archive session with
+		// same name of an existing directory...
 		info.setFile(info.path() + QDir::separator() + info.completeBaseName());
 		if (info.exists() && info.isDir() &&
 			!qtractorDocument::extractedArchives().contains(info.filePath())) {
@@ -2684,6 +2699,47 @@ bool qtractorMainForm::saveSessionFileEx (
 					"erasing all its current data,\n"
 					"when opening and extracting "
 					"this archive in the future.\n\n"
+					"Do you want to continue?")
+					.arg(info.filePath());
+			#if 0
+				bConfirmArchive (QMessageBox::warning(this, sTitle, sText,
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+			#else
+				QMessageBox mbox(this);
+				mbox.setIcon(QMessageBox::Warning);
+				mbox.setWindowTitle(sTitle);
+				mbox.setText(sText);
+				mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+				QCheckBox cbox(tr("Don't ask this again"));
+				cbox.setChecked(false);
+				cbox.blockSignals(true);
+				mbox.addButton(&cbox, QMessageBox::ActionRole);
+				bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
+				if (cbox.isChecked())
+					m_pOptions->bConfirmArchive = false;
+			#endif
+			}
+			// Aborting?...
+			if (!bConfirmArchive)
+				return false;
+		}
+	}
+	// Warn when saving some type of sessions
+	// into an extracted archive directory...
+	if ((iFlags & qtractorDocument::Temporary) == 0) {
+		info.setFile(info.path());
+		if (info.exists() && info.isDir() &&
+			qtractorDocument::extractedArchives().contains(info.filePath())) {
+			bool bConfirmArchive = true;
+			if  (m_pOptions && m_pOptions->bConfirmArchive) {
+				const QString& sTitle
+					= tr("Warning");
+				const QString& sText = tr(
+					"The directory is an extracted archive:\n\n"
+					"\"%1\"\n\n"
+					"This directory will be removed,\n"
+					"erased from all its current data,\n"
+					"when closing this session.\n\n"
 					"Do you want to continue?")
 					.arg(info.filePath());
 			#if 0
@@ -3435,14 +3491,21 @@ void qtractorMainForm::editSelectModeClip (void)
 #endif
 
 	// Select clip mode...
+	const qtractorTrackView::SelectMode selectMode
+		= qtractorTrackView::SelectClip;
+
 	if (m_pTracks) {
 		qtractorTrackView *pTrackView = m_pTracks->trackView();
-		pTrackView->setSelectMode(qtractorTrackView::SelectClip);
-		pTrackView->setCurveEdit(false);
+		if (pTrackView->selectMode() == selectMode && !pTrackView->isCurveEdit()) {
+				m_ui.editSelectModeCurveAction->trigger();
+		} else {
+			pTrackView->setSelectMode(selectMode);
+			pTrackView->setCurveEdit(false);
+		}
 	}
 
 	if (m_pOptions)
-		m_pOptions->iTrackViewSelectMode = 0;
+		m_pOptions->iTrackViewSelectMode = int(selectMode);
 
 	++m_iStabilizeTimer;
 }
@@ -3455,15 +3518,22 @@ void qtractorMainForm::editSelectModeRange (void)
 	qDebug("qtractorMainForm::editSelectModeRange()");
 #endif
 
-	// Select clip mode...
+	// Select range mode...
+	const qtractorTrackView::SelectMode selectMode
+		= qtractorTrackView::SelectRange;
+
 	if (m_pTracks) {
 		qtractorTrackView *pTrackView = m_pTracks->trackView();
-		pTrackView->setSelectMode(qtractorTrackView::SelectRange);
-		pTrackView->setCurveEdit(false);
+		if (pTrackView->selectMode() == selectMode && !pTrackView->isCurveEdit()) {
+				m_ui.editSelectModeCurveAction->trigger();
+		} else {
+			pTrackView->setSelectMode(selectMode);
+			pTrackView->setCurveEdit(false);
+		}
 	}
 
 	if (m_pOptions)
-		m_pOptions->iTrackViewSelectMode = 1;
+		m_pOptions->iTrackViewSelectMode = int(selectMode);
 
 	++m_iStabilizeTimer;
 }
@@ -3476,15 +3546,22 @@ void qtractorMainForm::editSelectModeRect (void)
 	qDebug("qtractorMainForm::editSelectModeRect()");
 #endif
 
-	// Select clip mode...
-	if (m_pTracks) {
+	// Select rectangle mode...
+	const qtractorTrackView::SelectMode selectMode
+		= qtractorTrackView::SelectRect;
+
+	if (m_pTracks && m_pOptions) {
 		qtractorTrackView *pTrackView = m_pTracks->trackView();
-		pTrackView->setSelectMode(qtractorTrackView::SelectRect);
-		pTrackView->setCurveEdit(false);
+		if (pTrackView->selectMode() == selectMode && !pTrackView->isCurveEdit()) {
+			m_ui.editSelectModeCurveAction->trigger();
+		} else {
+			pTrackView->setSelectMode(selectMode);
+			pTrackView->setCurveEdit(false);
+		}
 	}
 
 	if (m_pOptions)
-		m_pOptions->iTrackViewSelectMode = 2;
+		m_pOptions->iTrackViewSelectMode = int(selectMode);
 
 	++m_iStabilizeTimer;
 }
@@ -3497,8 +3574,28 @@ void qtractorMainForm::editSelectModeCurve (void)
 	qDebug("qtractorMainForm::editSelectModeCurve()");
 #endif
 
-	if (m_pTracks)
-		m_pTracks->trackView()->setCurveEdit(true);
+	if (m_pTracks) {
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		if (pTrackView->isCurveEdit()) {
+			switch (pTrackView->selectMode()) {
+			case qtractorTrackView::SelectRect:
+				m_ui.editSelectModeRectAction->trigger();
+				break;
+			case qtractorTrackView::SelectRange:
+				m_ui.editSelectModeRangeAction->trigger();
+				break;
+			case qtractorTrackView::SelectClip:
+			default:
+				m_ui.editSelectModeClipAction->trigger();
+				break;
+			}
+		} else {
+			// Select curve mode...
+			pTrackView->setCurveEdit(true);
+		}
+	}
+
+	++m_iStabilizeTimer;
 }
 
 
@@ -4002,7 +4099,7 @@ void qtractorMainForm::trackMoveBottom (void)
 
 
 // Increase current track height.
-void qtractorMainForm::trackHeightUp (void)
+void qtractorMainForm::trackHeightIncrease (void)
 {
 	qtractorTrack *pTrack = nullptr;
 	if (m_pTracks)
@@ -4011,7 +4108,7 @@ void qtractorMainForm::trackHeightUp (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackHeightUp()");
+	qDebug("qtractorMainForm::trackHeightIncrease()");
 #endif
 
 	const int iZoomHeight = (150 * pTrack->zoomHeight()) / 100;
@@ -4021,7 +4118,7 @@ void qtractorMainForm::trackHeightUp (void)
 
 
 // Decreate current track height.
-void qtractorMainForm::trackHeightDown (void)
+void qtractorMainForm::trackHeightDecrease (void)
 {
 	qtractorTrack *pTrack = nullptr;
 	if (m_pTracks)
@@ -4030,12 +4127,30 @@ void qtractorMainForm::trackHeightDown (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackHeightDown()");
+	qDebug("qtractorMainForm::trackHeightDecrease()");
 #endif
 
 	const int iZoomHeight = (75 * pTrack->zoomHeight()) / 100;
 	m_pSession->execute(
 		new qtractorResizeTrackCommand(pTrack, iZoomHeight));
+}
+
+
+// Minimize current track height.
+void qtractorMainForm::trackHeightMinimize (void)
+{
+	qtractorTrack *pTrack = nullptr;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackHeightMinimize()");
+#endif
+
+	m_pSession->execute(
+		new qtractorResizeTrackCommand(pTrack, pTrack->minimizeZoomHeight()));
 }
 
 
@@ -5303,6 +5418,8 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
 	const bool    bOldKeepEditorsOnTop   = m_pOptions->bKeepEditorsOnTop;
 	const int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
+	const int     iOldClipFadeInType     = m_pOptions->iClipFadeInType;
+	const int     iOldClipFadeOutType    = m_pOptions->iClipFadeOutType;
 	const int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	const int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
 	const int     iOldResampleType       = m_pOptions->iAudioResampleType;
@@ -5310,6 +5427,8 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldWsolaQuickSeek     = m_pOptions->bAudioWsolaQuickSeek;
 	const bool    bOldRubberBandFormant  = m_pOptions->bAudioRubberBandFormant;
 	const bool    bOldRubberBandFinerR3  = m_pOptions->bAudioRubberBandFinerR3;
+	const int     iOldAudioCaptureLatencyMode = m_pOptions->iAudioCaptureLatencyMode;
+	const int     iOldAudioCaptureLatency = m_pOptions->iAudioCaptureLatency;
 	const bool    bOldAudioPlayerAutoConnect = m_pOptions->bAudioPlayerAutoConnect;
 	const bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	const bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
@@ -5467,6 +5586,14 @@ void qtractorMainForm::viewOptions (void)
 			(sOldMessagesLogPath != m_pOptions->sMessagesLogPath))
 			m_pMessages->setLogging(
 				m_pOptions->bMessagesLog, m_pOptions->sMessagesLogPath);
+		if (iOldClipFadeInType != m_pOptions->iClipFadeInType) {
+			qtractorClip::setDefaultFadeInType(
+				qtractorClip::fadeTypeFromIndex(m_pOptions->iClipFadeInType));
+		}
+		if (iOldClipFadeOutType != m_pOptions->iClipFadeOutType) {
+			qtractorClip::setDefaultFadeOutType(
+				qtractorClip::fadeTypeFromIndex(m_pOptions->iClipFadeOutType));
+		}
 		// FIXME: This is what it should ever be,
 		// make it right from this very moment...
 		qtractorAudioFileFactory::setDefaultType(
@@ -5500,6 +5627,10 @@ void qtractorMainForm::viewOptions (void)
 			++m_iDirtyCount; // Fake session properties change.
 			updateMidiControlModes();
 		}
+		// Audio capture latency compensation options...
+		if ((iOldAudioCaptureLatencyMode != m_pOptions->iAudioCaptureLatencyMode) ||
+			(iOldAudioCaptureLatency     != m_pOptions->iAudioCaptureLatency))
+			updateAudioCaptureLatency();
 		// Audio engine audition/pre-listening player options...
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
 			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus) ||
@@ -5917,10 +6048,20 @@ void qtractorMainForm::transportLoopSet (void)
 	// Make sure session is activated?...
 	//checkRestartSession();
 
+	// Do the loop-set toggle switch...
+	unsigned long iLoopStart = m_pSession->editHead();
+	unsigned long iLoopEnd   = m_pSession->editTail();
+
+	if (m_pSession->isLooping() &&
+		m_pSession->loopStart() == m_pSession->editHead() &&
+		m_pSession->loopEnd()   == m_pSession->editTail()) {
+		iLoopStart = 0;
+		iLoopEnd   = 0;
+	}
+
 	// Now, express the change as an undoable command...
 	m_pSession->execute(
-		new qtractorSessionLoopCommand(m_pSession,
-			m_pSession->editHead(), m_pSession->editTail()));
+		new qtractorSessionLoopCommand(m_pSession, iLoopStart, iLoopEnd));
 }
 
 
@@ -6278,9 +6419,6 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LIBRUBBERBAND
 	list << tr("Pitch-shifting support (librubberband) disabled.");
 #endif
-#ifndef CONFIG_LIBAUBIO
-	list << tr("Beat-detection support (libaubio) disabled.");
-#endif
 #ifndef CONFIG_LIBLO
 	list << tr("OSC service support (liblo) disabled.");
 #endif
@@ -6409,6 +6547,12 @@ void qtractorMainForm::helpAbout (void)
 	sText += tr("Using: Qt %1").arg(qVersion());
 #if defined(QT_STATIC)
 	sText += "-static";
+#endif
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+	sText += ' ';
+	sText += '(';
+	sText += QApplication::platformName();
+	sText += ')';
 #endif
 	sText += "<br />\n";
 	sText += "<br />\n";
@@ -6865,7 +7009,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportLoopAction->setEnabled(
 		!bRolling && (bLooping || bSelectable));
 	m_ui.transportLoopSetAction->setEnabled(
-		!bRolling && bSelectable);
+		!bRolling && (bSelectable || bLooping));
 	m_ui.transportStopAction->setEnabled(bPlaying);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 	m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);
@@ -7364,6 +7508,23 @@ void qtractorMainForm::updateAudioMetronome (void)
 }
 
 
+// Update audio latency compensation stuff.
+void qtractorMainForm::updateAudioCaptureLatency (void)
+{
+	if (m_pOptions == nullptr)
+		return;
+
+	// Configure the audio engine capture latency mode...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == nullptr)
+		return;
+
+	pAudioEngine->setCaptureLatencyMode(
+		qtractorAudioEngine::LatencyMode(m_pOptions->iAudioCaptureLatencyMode));
+	pAudioEngine->setCaptureLatency(m_pOptions->iAudioCaptureLatency);
+}
+
+
 // Update MIDI metronome parameters.
 void qtractorMainForm::updateMidiMetronome (void)
 {
@@ -7719,8 +7880,8 @@ void qtractorMainForm::updateClipMenu (void)
 		|| (m_pTracks && m_pTracks->isClipSelected());
 	const bool bClipSelectable = bClipSelected
 		&& (m_pSession->editHead() < m_pSession->editTail());
-	const bool bSingleTrackSelected = bClipSelected
-		&& (pTrack && m_pTracks->singleTrackSelected() == pTrack);
+	const bool bSingleTrackSelected
+		= (pTrack && m_pTracks->singleTrackSelected() == pTrack);
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);

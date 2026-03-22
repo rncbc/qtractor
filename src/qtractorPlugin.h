@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -95,6 +95,8 @@ public:
 	static qtractorPluginFile *addFile(const QString& sFilename);
 	static void removeFile(qtractorPluginFile *pFile);
 
+	static void clearAll();
+
 private:
 
 	// Instance variables.
@@ -120,7 +122,9 @@ class qtractorPluginType
 public:
 
 	// Have hints for plugin paths.
-	enum Hint { Any = 0, Ladspa, Dssi, Vst2, Vst3, Clap, Lv2, Insert, AuxSend };
+	enum Hint { Any = 0,
+		Ladspa, Dssi, Vst2, Vst3, Clap, Lv2,
+		Insert, AuxSend, Control };
 
 	// Constructor.
 	qtractorPluginType(qtractorPluginFile *pFile, unsigned long iIndex,
@@ -469,6 +473,7 @@ public:
 
 	void toggleFormEditor(bool bOn);
 	void updateFormDirtyCount();
+	void updateFormMidiControlAutoConnect();
 	void updateFormAuxSendBusName();
 	void updateFormActivated();
 	void refreshForm();
@@ -628,6 +633,10 @@ protected:
 	// Plugin configure and parameter/state clearance.
 	void clearConfigs() { m_configs.clear(); m_ctypes.clear(); }
 	void clearValues()  { m_values.names.clear(); m_values.index.clear(); }
+
+	// Check/sanitize plugin file-path to save (absolute->relative)...
+	bool savePluginFilename(QString& sFilename,
+		qtractorPluginType::Hint typeHint) const;
 
 private:
 
@@ -1125,8 +1134,8 @@ public:
 
 protected:
 
-	// Check/sanitize plugin file-path.
-	bool checkPluginFile(QString& sFilename,
+	// Check/sanitize plugin file-path to load (relative->absolute)...
+	bool loadPluginFilename(QString& sFilename,
 		qtractorPluginType::Hint typeHint) const;
 
 private:

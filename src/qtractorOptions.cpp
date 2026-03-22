@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -165,6 +165,8 @@ void qtractorOptions::loadOptions (void)
 	bAudioMetronome      = m_settings.value("/Metronome", false).toBool();
 	iAudioCountInMode    = m_settings.value("/CountInMode", 0).toInt();
 	iAudioCountInBeats   = m_settings.value("/CountInBeats", 4).toInt();
+	iAudioCaptureLatencyMode = m_settings.value("/CaptureLatencyMode", 0).toInt();
+	iAudioCaptureLatency = m_settings.value("/CaptureLatency", 0).toInt();
 	bAudioMasterAutoConnect = m_settings.value("/MasterAutoConnect", true).toBool();
 	bAudioPlayerAutoConnect = m_settings.value("/PlayerAutoConnect", true).toBool();
 	bAudioMetroAutoConnect = m_settings.value("/MetroAutoConnect", true).toBool();
@@ -262,6 +264,8 @@ void qtractorOptions::loadOptions (void)
 	sMarkerColor    = m_settings.value("/MarkerColor").toString();
 	sCurveColor     = m_settings.value("/CurveColor").toString();
 	bAutoBackgroundColor = m_settings.value("/AutoBackgroundColor", false).toBool();
+	iClipFadeInType  = m_settings.value("/ClipFadeInType", 2).toInt();
+	iClipFadeOutType = m_settings.value("/ClipFadeOutType", 3).toInt();
 	m_settings.endGroup();
 
 	// Session auto-save group.
@@ -510,6 +514,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/Metronome", bAudioMetronome);
 	m_settings.setValue("/CountInMode", iAudioCountInMode);
 	m_settings.setValue("/CountInBeats", iAudioCountInBeats);
+	m_settings.setValue("/CaptureLatencyMode", iAudioCaptureLatencyMode);
+	m_settings.setValue("/CaptureLatency", iAudioCaptureLatency);
 	m_settings.setValue("/MasterAutoConnect", bAudioMasterAutoConnect);
 	m_settings.setValue("/PlayerAutoConnect", bAudioPlayerAutoConnect);
 	m_settings.setValue("/MetroAutoConnect", bAudioMetroAutoConnect);
@@ -603,6 +609,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MarkerColor", sMarkerColor);
 	m_settings.setValue("/CurveColor", sCurveColor);
 	m_settings.setValue("/AutoBackgroundColor", bAutoBackgroundColor);
+	m_settings.setValue("/ClipFadeInType", iClipFadeInType);
+	m_settings.setValue("/ClipFadeOutType", iClipFadeOutType);
 	m_settings.endGroup();
 
 	// Session auto-save group.
@@ -836,6 +844,12 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		sVersion += QString("Qt: %1").arg(qVersion());
 	#if defined(QT_STATIC)
 		sVersion += "-static";
+	#endif
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+		sVersion += ' ';
+		sVersion += '(';
+		sVersion += QApplication::platformName();
+		sVersion += ')';
 	#endif
 		sVersion += '\n';
 		show_error(sVersion);

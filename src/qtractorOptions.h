@@ -1,7 +1,7 @@
 // qtractorOptions.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -143,6 +143,10 @@ public:
 	// Audio metronome count-in options.
 	int     iAudioCountInMode;
 	int     iAudioCountInBeats;
+
+	// Audio latency compensation stuff.
+	int     iAudioCaptureLatencyMode;
+	int     iAudioCaptureLatency;
 
 	// MIDI options...
 	int  iMidiCaptureFormat;
@@ -345,6 +349,10 @@ public:
 
 	// Global persistent user preference options.
 	bool bUseNativeDialogs;
+
+	// Default clip fade-in/out types.
+	int iClipFadeInType;
+	int iClipFadeOutType;
 
 	// Run-time special non-persistent options.
 	bool bDontUseNativeDialogs;

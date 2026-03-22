@@ -1,7 +1,7 @@
 // qtractorAudioEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -302,6 +302,19 @@ public:
 	// Transport locate/reposition (timebase aware)...
 	void transport_locate(unsigned long iFrame);
 
+	// Audio I/O latency callbacks.
+	void updateLatency_in();
+	void updateLatency_out();
+
+	// Audio latency compensation stuff.
+	enum LatencyMode { Auto = 0, Add, Fixed };
+
+	void setCaptureLatencyMode(LatencyMode latencyMode);
+	LatencyMode captureLatencyMode() const;
+
+	void setCaptureLatency(unsigned int iCaptureLatency);
+	unsigned int captureLatency() const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -421,6 +434,10 @@ private:
 
 	// Time(base)/BBT time info.
 	TimeInfo             m_timeInfo;
+
+	// Audio latency compensation stuff.
+	LatencyMode  m_captureLatencyMode;
+	unsigned int m_iCaptureLatency;
 };
 
 
@@ -486,6 +503,10 @@ public:
 	qtractorPluginList *pluginList_in()  const;
 	qtractorPluginList *pluginList_out() const;
 
+	// Audio I/O port latency callbacks.
+	void updateLatency_in();
+	void updateLatency_out();
+
 	// Audio I/O port latency accessors.
 	unsigned int latency_in()  const;
 	unsigned int latency_out() const;
@@ -540,6 +561,10 @@ private:
 	float       **m_ppOBuffer;
 	float       **m_ppXBuffer;
 	float       **m_ppYBuffer;
+
+	// Audio I/O port latency (in frames).
+	unsigned int m_iILatency;
+	unsigned int m_iOLatency;
 
 	// Special under-work flag...
 	// (r/w access should be atomic)

@@ -1,7 +1,7 @@
 // qtractorMainForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -185,8 +185,9 @@ public slots:
 	void trackMoveUp();
 	void trackMoveDown();
 	void trackMoveBottom();
-	void trackHeightUp();
-	void trackHeightDown();
+	void trackHeightIncrease();
+	void trackHeightDecrease();
+	void trackHeightMinimize();
 	void trackHeightReset();
 	void trackAutoMonitor(bool bOn);
 	void trackAutoDeactivate(bool bOn);
@@ -436,6 +437,7 @@ protected:
 	void updateMidiPlayer();
 	void updateMidiControl();
 	void updateAudioMetronome();
+	void updateAudioCaptureLatency();
 	void updateMidiMetronome();
 	void updateSyncViewHold();
 

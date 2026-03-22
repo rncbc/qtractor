@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -60,7 +60,7 @@ qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
 		m_bLogarithmic(false), m_bFeedback(false),
-		m_bInvert(false), m_bHook(false), m_bLatch(true), m_bTriggered(false),
+		m_bInvert(false), m_bHook(true), m_bLatch(true), m_bTriggered(false),
 		m_fMidiValue(0.0f), m_bMidiSync(false), m_pCurveList(nullptr)
 {
 }

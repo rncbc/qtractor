@@ -28,10 +28,14 @@
 #include "qtractorPluginListView.h"
 
 #include "qtractorInsertPlugin.h"
+#include "qtractorMidiControlPlugin.h"
 
 #include "qtractorObserverWidget.h"
 
 #include "qtractorMidiControlObserverForm.h"
+#include "qtractorMidiControlPluginWidget.h"
+
+#include "qtractorAudioIOMatrixForm.h"
 
 #include "qtractorSpinBox.h"
 
@@ -103,6 +107,8 @@ qtractorPluginForm::qtractorPluginForm (
 	m_iDirtyCount = 0;
 	m_iUpdate     = 0;
 
+	m_pMidiControlPluginWidget = nullptr;
+
 	m_pDirectAccessParamMenu = new QMenu();
 	m_ui.DirectAccessParamPushButton->setMenu(m_pDirectAccessParamMenu);
 
@@ -153,12 +159,18 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.ReturnsToolButton,
 		SIGNAL(clicked()),
 		SLOT(returnsSlot()));
+	QObject::connect(m_ui.AutoConnectCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(autoConnectSlot(bool)));
 	QObject::connect(m_ui.AuxSendBusNameComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAuxSendBusNameSlot(int)));
 	QObject::connect(m_ui.AuxSendBusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(clickAuxSendBusNameSlot()));
+	QObject::connect(m_ui.AuxSendIOMatrixToolButton,
+		SIGNAL(clicked()),
+		SLOT(clickAuxSendIOMatrixSlot()));
 
 	QObject::connect(m_pDirectAccessParamMenu,
 		SIGNAL(aboutToShow()),
@@ -298,6 +310,21 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	int iRow = 0;
 	int iColumn = 0;
 
+	qtractorMidiControlPlugin *pMidiControlPlugin = nullptr;
+	if (typeHint == qtractorPluginType::Control && pType->index() == 0)
+		pMidiControlPlugin = static_cast<qtractorMidiControlPlugin *> (m_pPlugin);
+	if (pMidiControlPlugin) {
+		m_pMidiControlPluginWidget = new qtractorMidiControlPluginWidget(this);
+		m_pMidiControlPluginWidget->setMidiControlPlugin(pMidiControlPlugin);
+		QObject::connect(m_pMidiControlPluginWidget,
+			SIGNAL(bipolarChanged()),
+			SLOT(updateParamRangeSlot()));
+		pGridLayout->addWidget(m_pMidiControlPluginWidget, iRow, iColumn);
+		m_ui.AutoConnectCheckBox->setChecked(
+			pMidiControlPlugin->isControlAutoConnect());
+		++iRow;
+	}
+
 	iColumnsPerPage += (iColumnsPerPage - 1); // Plus gap columns!
 	if (!m_paramWidgets.isEmpty())
 		pGridLayout->setColumnStretch(iColumn, 1);
@@ -335,7 +362,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Show insert tool options...
 	const bool bInsertPlugin = (typeHint == qtractorPluginType::Insert);
-	if (bInsertPlugin) {
+	const bool bMidiControlPlugin = (pMidiControlPlugin != nullptr);
+	if (bInsertPlugin || bMidiControlPlugin) {
 		if (pType->index() > 0) { // index == channels > 0 => Audio insert.
 			m_ui.SendsToolButton->setIcon(QIcon::fromTheme("itemAudioPortOut"));
 			m_ui.ReturnsToolButton->setIcon(QIcon::fromTheme("itemAudioPortIn"));
@@ -344,14 +372,17 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			m_ui.ReturnsToolButton->setIcon(QIcon::fromTheme("itemMidiPortIn"));
 		}
 	}
-	m_ui.SendsToolButton->setVisible(bInsertPlugin);
+	m_ui.SendsToolButton->setVisible(bInsertPlugin || bMidiControlPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
+	m_ui.AutoConnectCheckBox->setVisible(bMidiControlPlugin);
 
 	// Show aux-send tool options...
 	const bool bAuxSendPlugin = (typeHint == qtractorPluginType::AuxSend);
+	const bool bAudioAuxSendPlugin = (bAuxSendPlugin && pType->index() > 0);
 	m_ui.AuxSendBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameLabel->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameToolButton->setVisible(bAuxSendPlugin);
+	m_ui.AuxSendIOMatrixToolButton->setVisible(bAudioAuxSendPlugin);
 
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
@@ -460,6 +491,38 @@ void qtractorPluginForm::updateDirtyCount (void)
 }
 
 
+// Update specific MIDI Controller send auto-connect state.
+void qtractorPluginForm::updateMidiControlAutoConnect (void)
+{
+	if (m_pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	bool bAutoConnect = false;;
+
+	if (pType->typeHint() == qtractorPluginType::Control
+		&& pType->index() == 0) {
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= static_cast<qtractorMidiControlPlugin *> (m_pPlugin);
+		if (pMidiControlPlugin) {
+			const bool bOldAutoConnect
+				= m_ui.AutoConnectCheckBox->isChecked();
+			bAutoConnect = pMidiControlPlugin->isControlAutoConnect();
+			if (m_pMidiControlPluginWidget &&
+				( bAutoConnect && !bOldAutoConnect) ||
+				(!bAutoConnect &&  bOldAutoConnect)) {
+				m_pMidiControlPluginWidget->dirtyNotify();
+			}
+		}
+	}
+
+	m_ui.AutoConnectCheckBox->setChecked(bAutoConnect);
+}
+
+
 // Update specific aux-send bus name settings.
 void qtractorPluginForm::updateAuxSendBusName (void)
 {
@@ -503,7 +566,7 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 			if (pBus->busMode() & qtractorBus::Output) {
 				qtractorAudioBus *pAudioBus
 					= static_cast<qtractorAudioBus *> (pBus);
-				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels()) {
+				if (pAudioBus) {
 					if (bAudioOutBus && // Skip current or cyclic buses...
 						pAudioBus->pluginList_out() == pPluginList) {
 						cyclicAudioOutBuses.append(
@@ -566,6 +629,8 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 	m_ui.AuxSendBusNameComboBox->setCurrentIndex(iIndex);
 
 	m_pPlugin->updateEditorTitle();
+
+	stabilize();
 }
 
 
@@ -946,6 +1011,20 @@ void qtractorPluginForm::returnsSlot (void)
 }
 
 
+// Auto-connect (MIDI Controller Send) slot.
+void qtractorPluginForm::autoConnectSlot ( bool bOn )
+{
+	if (m_pMidiControlPluginWidget) {
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= m_pMidiControlPluginWidget->midiControlPlugin();
+		if (pMidiControlPlugin) {
+			pMidiControlPlugin->setControlAutoConnect(bOn);
+			m_pMidiControlPluginWidget->dirtyNotify();
+		}
+	}
+}
+
+
 // Audio bus name (aux-send) select slot.
 void qtractorPluginForm::changeAuxSendBusNameSlot ( int iAuxSendBusName )
 {
@@ -970,6 +1049,8 @@ void qtractorPluginForm::changeAuxSendBusNameSlot ( int iAuxSendBusName )
 
 	pSession->execute(
 		new qtractorAuxSendPluginCommand(m_pPlugin, sAuxSendBusName));
+
+	qtractorPluginListView::updateAuxSendPluginBus(m_pPlugin);
 }
 
 
@@ -1011,6 +1092,47 @@ void qtractorPluginForm::clickAuxSendBusNameSlot (void)
 	// Check if any buses have changed...
 	if (busForm.isDirty())
 		updateAuxSendBusName();
+}
+
+
+// Audio bus I/O matrix (aux-send) edit slot.
+void qtractorPluginForm::clickAuxSendIOMatrixSlot (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	if (m_pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	if (pType->index() == 0) // index == 0 => MIDI aux-send.
+		return;
+
+	qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+		= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
+	if (pAudioAuxSendPlugin == nullptr)
+		return;
+
+	qtractorAudioBus *pAudioBus = pAudioAuxSendPlugin->audioBus();
+	if (pAudioBus == nullptr)
+		return;
+
+	qtractorAudioIOMatrixForm dialog(this);
+	dialog.setWindowTitle(m_pPlugin->editorTitle());
+	dialog.setChannels(pAudioAuxSendPlugin->channels(), pAudioBus->channels());
+	dialog.setMatrix(pAudioAuxSendPlugin->audioBusMatrix());
+	dialog.refresh();
+	if (dialog.exec() == QDialog::Accepted) {
+		pSession->execute(
+			new qtractorAuxSendIOMatrixCommand(m_pPlugin, dialog.matrix()));
+	}
 }
 
 
@@ -1071,6 +1193,23 @@ void qtractorPluginForm::changeDirectAccessParamSlot (void)
 			new qtractorDirectAccessParamCommand(m_pPlugin, iDirectAccessParamIndex));
 
 	--m_iUpdate;
+}
+
+
+void qtractorPluginForm::updateParamRangeSlot (void)
+{
+	if (m_pPlugin == nullptr)
+		return;
+
+	if (m_pMidiControlPluginWidget == nullptr)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	QListIterator<qtractorPluginParamWidget *> iter(m_paramWidgets);
+	while (iter.hasNext())
+		iter.next()->updateParamRange();
 }
 
 
@@ -1163,6 +1302,16 @@ void qtractorPluginForm::stabilize (void)
 		bEnabled && (!bExists || m_iDirtyCount > 0));
 	m_ui.DeletePresetToolButton->setEnabled(
 		bEnabled && bExists);
+
+	if (pType->typeHint() == qtractorPluginType::AuxSend
+		&& pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+		qtractorAudioBus *pAudioBus = nullptr;
+		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+			= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
+		if (pAudioAuxSendPlugin)
+			pAudioBus = pAudioAuxSendPlugin->audioBus();
+		m_ui.AuxSendIOMatrixToolButton->setEnabled(pAudioBus != nullptr);
+	}
 }
 
 
@@ -1176,6 +1325,11 @@ void qtractorPluginForm::clear (void)
 	m_paramWidgets.clear();
 
 	m_pDirectAccessParamMenu->clear();
+
+	if (m_pMidiControlPluginWidget) {
+		delete m_pMidiControlPluginWidget;
+		m_pMidiControlPluginWidget = nullptr;
+	}
 }
 
 
@@ -1424,10 +1578,11 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		}
 		else
 		if (m_pParam->isInteger()) {
+			int iCol = 0;
 			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-			pGridLayout->addWidget(pLabel, 0, 0);
+			pGridLayout->addWidget(pLabel, 0, iCol++);
 			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
-			m_pSpinBox->setMinimumWidth(64);
+			m_pSpinBox->setMinimumWidth(52);
 			m_pSpinBox->setMaximumWidth(96);
 			m_pSpinBox->setDecimals(0);
 			m_pSpinBox->setMinimum(m_pParam->minValue());
@@ -1435,16 +1590,16 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pSpinBox->setAlignment(pProp ? Qt::AlignRight : Qt::AlignHCenter);
 			m_pSpinBox->setSubject(m_pParam->subject());
 		//	m_pSpinBox->setValue(int(m_pParam->value()));
-			pGridLayout->addWidget(m_pSpinBox, 0, 1,
-				Qt::AlignRight | Qt::AlignVCenter);
-			pGridLayout->setColumnStretch(1, 2);
+			pGridLayout->setColumnStretch(iCol, 2);
 			if (m_pParam->isDisplay()) {
 				m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
-				m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+				m_pDisplay->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			//	m_pDisplay->setText(m_pParam->display());
 				m_pDisplay->setMinimumWidth(64);
-				pGridLayout->addWidget(m_pDisplay, 0, 2);
+				pGridLayout->addWidget(m_pDisplay, 0, iCol++);
 			}
+			pGridLayout->addWidget(m_pSpinBox, 0, iCol,
+				Qt::AlignRight | Qt::AlignVCenter);
 		} else {
 			if (m_pParam->isDisplay()) {
 				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
@@ -1593,6 +1748,27 @@ void qtractorPluginParamWidget::refresh (void)
 	}
 
 	updateCurveButton();
+}
+
+
+// Special range updater.
+void qtractorPluginParamWidget::updateParamRange (void)
+{
+	const float fValue = m_pParam->value();
+
+	if (m_pSpinBox) {
+		const bool bSpinBox = m_pSpinBox->blockSignals(true);
+		m_pSpinBox->setMinimum(m_pParam->minValue());
+		m_pSpinBox->setMaximum(m_pParam->maxValue());
+		m_pSpinBox->setValue(fValue);
+		m_pSpinBox->blockSignals(bSpinBox);
+	}
+
+	if (m_pSlider) {
+		const bool bSlider = m_pSlider->blockSignals(true);
+		m_pSlider->setValue(m_pSlider->scaleFromValue(fValue));
+		m_pSlider->blockSignals(bSlider);
+	}
 }
 
 
