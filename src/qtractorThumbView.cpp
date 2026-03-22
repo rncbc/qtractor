@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -428,14 +428,13 @@ void qtractorThumbView::mousePressEvent ( QMouseEvent *pMouseEvent )
 
 	// Only expected behavior with left-button pressed...
 	if (pMouseEvent->button() == Qt::LeftButton) {
-		const QRect& rect = m_pRubberBand->geometry();
-		m_posDrag = pMouseEvent->pos();
 		QFrame::setCursor(QCursor(Qt::PointingHandCursor));
-		if (rect.contains(m_posDrag)) {
+		m_posDrag = pMouseEvent->pos();
+		const QRect& rect = m_pRubberBand->geometry();
+		if (rect.contains(pMouseEvent->pos())) {
 			m_dragState = DragStart;
 		} else {
 			m_dragState = DragClick;
-			m_posDrag.setX(((rect.left() + rect.right()) >> 1));
 		}
 	}
 	else
@@ -461,7 +460,7 @@ void qtractorThumbView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_dragState = DragMove;
 			QFrame::setCursor(QCursor(Qt::SizeHorCursor));
 		}
-		if (m_dragState == DragMove) {
+		if (m_dragState == DragMove && rect().contains(pos)) {
 			updateView(pos.x() - m_posDrag.x());
 			m_posDrag.setX(pos.x());
 		}
@@ -481,8 +480,11 @@ void qtractorThumbView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		if (m_dragState == DragMove)
 			updateView(pos.x() - m_posDrag.x());
 		else {
-			if (m_dragState == DragClick)
+			if (m_dragState == DragStart || m_dragState == DragClick) {
+				const QRect& rect = m_pRubberBand->geometry();
+				m_posDrag.setX(((rect.left() + rect.right()) >> 1));
 				updateView(pos.x() - m_posDrag.x());
+			}
 			// Make it change playhead?...
 			if (pMouseEvent->modifiers()
 				& (Qt::ShiftModifier | Qt::ControlModifier))

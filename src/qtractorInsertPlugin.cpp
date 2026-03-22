@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -131,24 +131,27 @@ static inline void sse_process_add (
 	__m128 v0 = _mm_load_ps1(&fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i] + iOffset;
-		float *pFrames = ppFrames[i];
-		unsigned int nframes = iFrames;
-		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
-			*pBuffer++ += fGain * *pFrames++;
-		for (; nframes >= 4; nframes -= 4) {
-			_mm_store_ps(pBuffer,
-				_mm_add_ps(
-					_mm_loadu_ps(pBuffer),
-					_mm_mul_ps(
-						_mm_loadu_ps(pFrames), v0)
-					)
-			);
-			pFrames += 4;
-			pBuffer += 4;
+		float *pBuffer = ppBuffer[i];
+		if (pBuffer) {
+			pBuffer += iOffset;
+			float *pFrames = ppFrames[i];
+			unsigned int nframes = iFrames;
+			for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
+				*pBuffer++ += fGain * *pFrames++;
+			for (; nframes >= 4; nframes -= 4) {
+				_mm_store_ps(pBuffer,
+					_mm_add_ps(
+						_mm_loadu_ps(pBuffer),
+						_mm_mul_ps(
+							_mm_loadu_ps(pFrames), v0)
+						)
+				);
+				pFrames += 4;
+				pBuffer += 4;
+			}
+			for (; nframes > 0; --nframes)
+				*pBuffer++ += fGain * *pFrames++;
 		}
-		for (; nframes > 0; --nframes)
-			*pBuffer++ += fGain * *pFrames++;
 	}
 }
 
@@ -223,22 +226,25 @@ static inline void neon_process_add (
 	float32x4_t vGain = vdupq_n_f32(fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i] + iOffset;
-		float *pFrames = ppFrames[i];
-		unsigned int nframes = iFrames;
-		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
-			*pBuffer++ += fGain * *pFrames++;
-		for (; nframes >= 4; nframes -= 4) {
-			float32x4_t vBuffer = vld1q_f32(pBuffer);
-			float32x4_t vFrames = vld1q_f32(pFrames);
-			//Vr[i] := Va[i] + Vb[i] * Vc[i]
-			vBuffer = vmlaq_f32(vBuffer, vGain, vFrames);
-			vst1q_f32(pBuffer, vBuffer);
-			pFrames += 4;
-			pBuffer += 4;
+		float *pBuffer = ppBuffer[i];
+		if (pBuffer) {
+			pBuffer += iOffset;
+			float *pFrames = ppFrames[i];
+			unsigned int nframes = iFrames;
+			for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
+				*pBuffer++ += fGain * *pFrames++;
+			for (; nframes >= 4; nframes -= 4) {
+				float32x4_t vBuffer = vld1q_f32(pBuffer);
+				float32x4_t vFrames = vld1q_f32(pFrames);
+				//Vr[i] := Va[i] + Vb[i] * Vc[i]
+				vBuffer = vmlaq_f32(vBuffer, vGain, vFrames);
+				vst1q_f32(pBuffer, vBuffer);
+				pFrames += 4;
+				pBuffer += 4;
+			}
+			for (; nframes > 0; --nframes)
+				*pBuffer++ += fGain * *pFrames++;
 		}
-		for (; nframes > 0; --nframes)
-			*pBuffer++ += fGain * *pFrames++;
 	}
 }
 
@@ -276,10 +282,13 @@ static inline void std_process_add (
 	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i] + iOffset;
-		float *pFrames = ppFrames[i];
-		for (unsigned int n = 0; n < iFrames; ++n)
-			*pBuffer++ += fGain * *pFrames++;
+		float *pBuffer = ppBuffer[i];
+		if (pBuffer) {
+			pBuffer += iOffset;
+			float *pFrames = ppFrames[i];
+			for (unsigned int n = 0; n < iFrames; ++n)
+				*pBuffer++ += fGain * *pFrames++;
+		}
 	}
 }
 
@@ -339,7 +348,7 @@ bool qtractorAudioInsertPluginType::open (void)
 	m_iUniqueID = qHash(m_sLabel) ^ qHash(iChannels);
 
 	// Pseudo-plugin port counts...
-	m_iControlIns  = 2;
+	m_iControlIns  = 4;
 	m_iControlOuts = 0;
 	m_iAudioIns    = iChannels;
 	m_iAudioOuts   = iChannels;
@@ -401,7 +410,7 @@ bool qtractorMidiInsertPluginType::open (void)
 	m_iUniqueID = qHash(m_sLabel);//^ qHash(iChannels);
 
 	// Pseudo-plugin port counts...
-	m_iControlIns  = 2;
+	m_iControlIns  = 3;
 	m_iControlOuts = 0;
 	m_iAudioIns    = 0;
 	m_iAudioOuts   = 0;
@@ -493,6 +502,10 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	m_pWetGainParam->setValue(1.0f, false);
 	addParam(m_pWetGainParam);
 
+	// Latency param applies to tracks only...
+	m_pLatencyParam = nullptr;
+	m_fLatencyValue = 0.0f;
+
 	// Setup plugin instance...
 	//setChannels(channels());
 }
@@ -542,6 +555,14 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 		m_pAudioBus = nullptr;
 	}
 
+	// Latency param is recreated here, on tracks only...
+	if (m_pLatencyParam) {
+		m_fLatencyValue = m_pLatencyParam->value(); // Save!
+		removeParam(m_pLatencyParam);
+		delete m_pLatencyParam;
+		m_pLatencyParam = nullptr;
+	}
+
 	// Set new instance number...
 	setInstances(iInstances);
 	if (iInstances < 1) {
@@ -553,6 +574,18 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	qDebug("qtractorAudioInsertPlugin[%p]::setChannels(%u) instances=%u",
 		this, iChannels, iInstances);
 #endif
+
+	// Latency param is also recreated here, but only for tracks...
+	const unsigned int iFlags = list()->flags();
+	if ((iFlags & qtractorPluginList::Bus) == 0) {
+		m_pLatencyParam = new LatencyParam(this, 3);
+		m_pLatencyParam->setName(QObject::tr("Latency (frames)"));
+		m_pLatencyParam->setMinValue(0.0f);
+		m_pLatencyParam->setMaxValue(float(pAudioEngine->sampleRate() << 1));
+		m_pLatencyParam->setDefaultValue(m_fLatencyValue); // Restore!
+		m_pLatencyParam->setValue(m_fLatencyValue, false); //
+		addParam(m_pLatencyParam);
+	}
 
 	// Audio bus name -- it must be unique...
 	int iBusName = 1;
@@ -760,6 +793,40 @@ QString qtractorAudioInsertPlugin::title (void) const
 	}
 
 	return sTitle;
+}
+
+
+// Report latency.
+unsigned long qtractorAudioInsertPlugin::latency (void) const
+{
+	if (m_pLatencyParam)
+		return (unsigned long) m_pLatencyParam->value();
+	else
+		return 0;
+}
+
+
+// Display latency in milliseconds (ms)
+QString qtractorAudioInsertPlugin::LatencyParam::display (void) const
+{
+	QString sDisplay;
+
+	// Maximum latency is supposed to be settled to 2secs.
+	const float fSampleRate
+		= 0.5f * Param::maxValue();
+	if (fSampleRate > 0.0f) {
+		 // Latency in millisecs.
+		const float fLatency
+			= (1000.0f * Param::value()) / fSampleRate;
+		if (fLatency > 0.0f) {
+			const int iDecimals
+				= (fLatency < 1.0f ? 3 : (fLatency < 100.0f ? 1 : 0));
+			sDisplay = QObject::tr("%1 ms")
+				.arg(QString::number(fLatency, 'f', iDecimals));
+		}
+	}
+
+	return sDisplay;
 }
 
 
@@ -1277,6 +1344,10 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
+
+	// Audio bus I/O matrix buffers.
+	m_ppOBuffers = nullptr;
+	m_piOBuffers = nullptr;
 }
 
 
@@ -1316,9 +1387,11 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	const bool bActivated = isActivated();
 	setChannelsActivated(iChannels, false);
 
-	// Cleanup bus...
+	// Cleanup bus and buffers...
 	if (m_pAudioBus)
 		m_pAudioBus = nullptr;
+
+	updateAudioBusMatrix(0);
 
 	// Set new instance number...
 	setInstances(iInstances);
@@ -1368,7 +1441,7 @@ void qtractorAudioAuxSendPlugin::setAudioBusName (
 	if (pAudioBus) {
 		qtractorPluginList *pPluginList = list();
 		if (pPluginList
-			&& (pPluginList->flags() & qtractorPluginList::AudioOutBus)) {
+			&& (pPluginList->flags() == qtractorPluginList::AudioOutBus)) {
 			for (qtractorBus *pBus = pAudioEngine->buses().first();
 					pBus; pBus = pBus->next()) {
 				if ((pBus->busMode() & qtractorBus::Output) &&
@@ -1381,7 +1454,7 @@ void qtractorAudioAuxSendPlugin::setAudioBusName (
 		}
 	}
 
-	if (pAudioBus && pAudioBus->channels() == channels()) {
+	if (pAudioBus) {
 		if (bReset && sAudioBusName != m_sAudioBusName)
 			pAudioEngine->resetAudioOutBus(pAudioBus, list());
 		m_pAudioBus = pAudioBus;
@@ -1394,6 +1467,8 @@ void qtractorAudioAuxSendPlugin::setAudioBusName (
 	}
 
 	updateAudioBusName();
+
+	updateAudioBusMatrix(channels());
 }
 
 const QString& qtractorAudioAuxSendPlugin::audioBusName (void) const
@@ -1415,6 +1490,52 @@ void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 	QListIterator<qtractorPluginListItem *> iter(items());
 	while (iter.hasNext())
 		iter.next()->setText(sTitle);
+}
+
+
+// Audio bus I/O matrix.
+void qtractorAudioAuxSendPlugin::setAudioBusMatrix ( const QList<int>& matrix )
+{
+	m_matrix = matrix;
+
+	updateAudioBusMatrix(channels());
+}
+
+
+const QList<int>& qtractorAudioAuxSendPlugin::audioBusMatrix (void) const
+{
+	return m_matrix;
+}
+
+
+void qtractorAudioAuxSendPlugin::updateAudioBusMatrix ( unsigned short iChannels )
+{
+	if (m_ppOBuffers) {
+		delete [] m_ppOBuffers;
+		m_ppOBuffers = nullptr;
+	}
+
+	if (m_piOBuffers) {
+		delete [] m_piOBuffers;
+		m_piOBuffers = nullptr;
+	}
+
+	// Setup audio bus I/O matrix and buffers...
+	if (iChannels > 0 && m_pAudioBus) {
+		const unsigned short iOBuffers = m_pAudioBus->channels();
+		const unsigned short iIBuffers = iChannels;
+		m_ppOBuffers = new float * [iIBuffers];
+		m_piOBuffers = new int [iIBuffers];
+		int j = 0;
+		for (unsigned short i = 0; i < iIBuffers; ++i) {
+			m_ppOBuffers[i] = nullptr;
+			if (i < m_matrix.size())
+				m_piOBuffers[i] = m_matrix.at(i);
+			else
+				m_piOBuffers[i] = j;
+			if (++j >= iOBuffers) j = 0;
+		}
+	}
 }
 
 
@@ -1456,9 +1577,20 @@ void qtractorAudioAuxSendPlugin::process (
 
 	float **ppOut = m_pAudioBus->out();
 	const unsigned int iOffset = pAudioEngine->bufferOffset();
-	const unsigned short iChannels = channels();
+	const unsigned short iOBuffers = m_pAudioBus->channels();
+	const unsigned short iIBuffers = channels();
 	const float fGain = m_pSendGainParam->value();
-	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iOffset, iChannels, fGain);
+
+	if (m_ppOBuffers && m_piOBuffers) {
+		for (unsigned short i = 0; i < iIBuffers; ++i) {
+			const int j = m_piOBuffers[i];
+			if (j >= 0 && j < iOBuffers)
+				m_ppOBuffers[i] = ppOut[j];
+		}
+		ppOut = m_ppOBuffers;
+	}
+
+	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iOffset, iIBuffers, fGain);
 
 //	m_pAudioBus->process_commit(nframes);
 }
@@ -1486,6 +1618,13 @@ void qtractorAudioAuxSendPlugin::configure (
 
 	if (sKey == "audioBusName")
 		setAudioBusName(sValue);
+	else
+	if (sKey == "audioBusMatrix") {
+		m_matrix.clear();
+		QStringListIterator iter(sValue.split(';'));
+		while (iter.hasNext())
+			m_matrix.append(iter.next().toInt());
+	}
 }
 
 
@@ -1499,6 +1638,14 @@ void qtractorAudioAuxSendPlugin::freezeConfigs (void)
 	clearConfigs();
 
 	setConfig("audioBusName", m_sAudioBusName);
+
+	if (!m_matrix.isEmpty()) {
+		QStringList vlist;
+		QListIterator<int> iter(m_matrix);
+		while (iter.hasNext())
+			vlist.append(QString::number(iter.next()));
+		setConfig("audioBusMatrix", vlist.join(';'));
+	}
 }
 
 
@@ -1631,7 +1778,7 @@ void qtractorMidiAuxSendPlugin::setMidiBusName ( const QString& sMidiBusName )
 	if (pMidiBus) {
 		qtractorPluginList *pPluginList = list();
 		if (pPluginList
-			&& (pPluginList->flags() & qtractorPluginList::MidiOutBus)) {
+			&& (pPluginList->flags() == qtractorPluginList::MidiOutBus)) {
 			for (qtractorBus *pBus = pMidiEngine->buses().first();
 					pBus; pBus = pBus->next()) {
 				if ((pBus->busMode() & qtractorBus::Output) &&

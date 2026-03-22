@@ -1,7 +1,7 @@
 // qtractorPluginCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -123,6 +123,23 @@ public:
 
 
 //----------------------------------------------------------------------
+// class qtractorAddMidiControlPluginCommand - declaration.
+//
+
+class qtractorAddMidiControlPluginCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorAddMidiControlPluginCommand(qtractorPlugin *pPlugin = nullptr);
+
+	// Plugin insertion command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorAuxSendPluginCommand - declaration.
 //
 
@@ -142,6 +159,29 @@ private:
 
 	// Instance variables.
 	QString m_sAuxSendBusName;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorAuxSendIOMatrixCommand - declaration.
+//
+
+class qtractorAuxSendIOMatrixCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorAuxSendIOMatrixCommand(
+		qtractorPlugin *pPlugin, const QList<int>& matrix);
+
+	// Plugin insertion command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	QList<int> m_matrix;
 };
 
 

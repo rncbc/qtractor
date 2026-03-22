@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,6 +39,9 @@
 #include "qtractorConnections.h"
 
 #include "qtractorInsertPlugin.h"
+#include "qtractorMidiControlPlugin.h"
+
+#include "qtractorMixer.h"
 
 #include <QItemDelegate>
 #include <QPainter>
@@ -189,7 +192,7 @@ protected:
 		const QStyleOptionViewItem& option, const QModelIndex& index ) const
 	{
 		QSize size(QItemDelegate::sizeHint(option, index));
-		size.setHeight(16);
+		size.setHeight(qMax(size.height(), 16));
 		return size;
 	}
 
@@ -279,6 +282,9 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	// Common tiny scrollbar style stuff.
 	m_pTinyScrollBarStyle = nullptr;
 
+	// To track the current item...
+	m_pCurrentItem = nullptr;
+
 //	QListWidget::setDragEnabled(true);
 	QListWidget::setAcceptDrops(true);
 	QListWidget::setDropIndicatorShown(true);
@@ -300,15 +306,16 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	// Trap for help/tool-tips events.
 	QListWidget::viewport()->installEventFilter(this);
 
-	// Double-click handling...
+	// Double/simple-click handling...
 	QObject::connect(this,
 		SIGNAL(itemDoubleClicked(QListWidgetItem*)),
 		SLOT(itemDoubleClickedSlot(QListWidgetItem*)));
-#if 0
 	QObject::connect(this,
-		SIGNAL(itemActivated(QListWidgetItem*)),
-		SLOT(itemActivatedSlot(QListWidgetItem*)));
-#endif
+		SIGNAL(itemClicked(QListWidgetItem*)),
+		SLOT(itemClickedSlot(QListWidgetItem*)));
+	QObject::connect(this,
+		SIGNAL(currentRowChanged(int)),
+		SLOT(currentRowChangedSlot(int)));
 }
 
 
@@ -385,6 +392,8 @@ void qtractorPluginListView::refresh (void)
 // Master clean-up.
 void qtractorPluginListView::clear (void)
 {
+	m_pCurrentItem = nullptr;
+
 	dragLeaveEvent(nullptr);
 
 	QListWidget::clear();
@@ -559,6 +568,9 @@ void qtractorPluginListView::removePlugin (void)
 		return;
 
 	pSession->execute(new qtractorRemovePluginCommand(pPlugin));
+
+	if (m_pCurrentItem == pItem)
+		m_pCurrentItem = nullptr;
 
 	emit contentsChanged();
 }
@@ -1155,6 +1167,37 @@ void qtractorPluginListView::addMidiAuxSendPlugin (void)
 }
 
 
+// Add a MIDI Controller pseudo-plugin slot.
+void qtractorPluginListView::addMidiControlPlugin (void)
+{
+	if (m_pPluginList == nullptr)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Create our special pseudo-plugin type...
+	qtractorPlugin *pPlugin
+		= qtractorMidiControlPluginType::createPlugin(m_pPluginList);
+
+	if (pPlugin) {
+		// Make it a undoable command...
+		pSession->execute(new qtractorAddMidiControlPluginCommand(pPlugin));
+		// Show the plugin form right away...
+		pPlugin->openForm();
+	}
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
+}
+
+
 // Send/return insert specific slots.
 void qtractorPluginListView::insertPluginOutputs (void)
 {
@@ -1210,7 +1253,62 @@ void qtractorPluginListView::insertPluginBus (
 			}
 		}
 	}
+	else
+	if (pType->typeHint() == qtractorPluginType::Control) {
+		// Should be a MIDI controller pseudo-plugin...
+		qtractorBus *pMidiControlPluginBus = nullptr;
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= static_cast<qtractorMidiControlPlugin *> (pPlugin);
+		if (pMidiControlPlugin)
+			pMidiControlPluginBus = pMidiControlPlugin->midiBus();
+		// Show MIDI Controller send-bus connections...
+		if (pMidiControlPluginBus) {
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm && pMainForm->connections()) {
+				(pMainForm->connections())->showBus(
+					pMidiControlPluginBus, qtractorBus::BusMode(iBusMode));
+			}
+		}
+	}
 }
+
+
+// Show selected Aux-Send bus on the mixer outputs pane. [static]
+void qtractorPluginListView::updateAuxSendPluginBus (
+	qtractorPlugin *pPlugin )
+{
+	if (pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == nullptr)
+		return;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == nullptr)
+		return;
+
+	if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+			= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+		if (pAudioAuxSendPlugin)
+			pMixer->setSelectedOutputBus(pAudioAuxSendPlugin->audioBus());
+
+	} else {
+		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+			= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
+		if (pMidiAuxSendPlugin)
+			pMixer->setSelectedOutputBus(pMidiAuxSendPlugin->midiBus());
+	}
+}
+
 
 
 // Audio specific slots.
@@ -1299,13 +1397,36 @@ void qtractorPluginListView::audioOutputAutoConnect (void)
 }
 
 
-// Show an existing plugin form slot.
-void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
+void qtractorPluginListView::midiControlAutoConnect (void)
 {
-	itemActivatedSlot(item);
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
+	if (pItem == nullptr)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == nullptr)
+		return;
+
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType == nullptr)
+		return;
+
+	if (pType->typeHint() == qtractorPluginType::Control
+		&& pType->index() == 0) {
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= static_cast<qtractorMidiControlPlugin *> (pPlugin);
+		if (pMidiControlPlugin) {
+			pMidiControlPlugin->setControlAutoConnect(
+				!pMidiControlPlugin->isControlAutoConnect()); // Toggle!
+			pMidiControlPlugin->updateFormMidiControlAutoConnect();
+		}
+	}
 }
 
-void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
+
+// Double-click handler.
+void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 {
 	if (m_pPluginList == nullptr)
 		return;
@@ -1332,6 +1453,47 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 		pPlugin->openEditor();
 	else
 		pPlugin->openForm();
+}
+
+
+// Simple-click handler.
+void qtractorPluginListView::itemClickedSlot ( QListWidgetItem *item )
+{
+	if (m_pPluginList == nullptr)
+		return;
+
+	if (m_pPluginList->flags() & qtractorPluginList::Bus)
+		return;
+
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (item);
+	if (pItem == nullptr)
+		return;
+
+	if (m_pCurrentItem == pItem)
+		return;
+
+	updateAuxSendPluginBus(pItem->plugin());
+
+	m_pCurrentItem = pItem;
+}
+
+
+// Row-change handler.
+void qtractorPluginListView::currentRowChangedSlot ( int iCurrentRow )
+{
+	itemClickedSlot(QListWidget::item(iCurrentRow));
+}
+
+
+// Focus-in handler.
+void qtractorPluginListView::focusInEvent ( QFocusEvent *pFocusEvent )
+{
+	QListWidget::focusInEvent(pFocusEvent);
+
+	m_pCurrentItem = nullptr;
+
+	itemClickedSlot(QListWidget::currentItem());
 }
 
 
@@ -1764,7 +1926,7 @@ void qtractorPluginListView::contextMenuEvent (
 	if (pSession == nullptr)
 		return;
 
-	QMenu menu(this);
+	QMenu menu;
 	QAction *pAction;
 
 	const int iItemCount = QListWidget::count();
@@ -1812,17 +1974,26 @@ void qtractorPluginListView::contextMenuEvent (
 		tr("&Returns"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bAudioInsertPlugin);
 
+	const bool bMidiPluginList = m_pPluginList->isMidi();
+	const bool bMidiControlPlugin = (pType
+		&& pType->typeHint() == qtractorPluginType::Control
+		&& pType->index() == 0);
+
 	QMenu *pMidiInsertsMenu = pInsertsMenu->addMenu(
 		QIcon::fromTheme("trackMidi"), tr("&MIDI"));
-	pMidiInsertsMenu->setEnabled(m_pPluginList->isMidi());
+//	pMidiInsertsMenu->setEnabled(bMidiPluginList);
 	pAction = pMidiInsertsMenu->addAction(
 		QIcon::fromTheme("formAdd"),
 		tr("Add &Insert"), this, SLOT(addMidiInsertPlugin()));
+	pAction->setEnabled(bMidiPluginList);
 	pAction = pMidiInsertsMenu->addAction(
 		QIcon::fromTheme("formAdd"),
 		tr("Add &Aux Send"), this, SLOT(addMidiAuxSendPlugin()));
-//	pAction->setEnabled(
-//		m_pPluginList->flags() != qtractorPluginList::MidiOutBus);
+	pAction->setEnabled(bMidiPluginList);
+	pMidiInsertsMenu->addSeparator();
+	pAction = pMidiInsertsMenu->addAction(
+		QIcon::fromTheme("formAdd"),
+		tr("Add &Controller"), this, SLOT(addMidiControlPlugin()));
 	pMidiInsertsMenu->addSeparator();
 	const bool bMidiInsertPlugin = (pType
 		&& pType->typeHint() == qtractorPluginType::Insert
@@ -1830,11 +2001,23 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction = pMidiInsertsMenu->addAction(
 		QIcon::fromTheme("itemMidiPortOut"),
 		tr("&Sends"), this, SLOT(insertPluginOutputs()));
-	pAction->setEnabled(bMidiInsertPlugin);
+	pAction->setEnabled(bMidiInsertPlugin || bMidiControlPlugin);
 	pAction = pMidiInsertsMenu->addAction(
 		QIcon::fromTheme("itemMidiPortIn"),
 		tr("&Returns"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bMidiInsertPlugin);
+	pMidiInsertsMenu->addSeparator();
+	pAction = pMidiInsertsMenu->addAction(
+		tr("&Auto-connect"), this, SLOT(midiControlAutoConnect()));
+	pAction->setCheckable(true);
+	pAction->setEnabled(bMidiControlPlugin);
+	if (bMidiControlPlugin) {
+		qtractorMidiControlPlugin *pMidiControlPlugin
+			= static_cast<qtractorMidiControlPlugin *> (pPlugin);
+		if (pMidiControlPlugin)
+			pAction->setChecked(pMidiControlPlugin->isControlAutoConnect());
+	}
+
 	menu.addSeparator();
 
 	const bool bAutoDeactivated = m_pPluginList->isAutoDeactivated();

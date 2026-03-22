@@ -425,6 +425,8 @@ void qtractorTrack::clear (void)
 		delete m_pSyncThread;
 		m_pSyncThread = nullptr;
 	}
+
+	m_iZoomHeightBase = -1;
 }
 
 
@@ -1241,6 +1243,28 @@ void qtractorTrack::updateZoomHeight (void)
 }
 
 
+// Visual height minimize/toggle.
+int qtractorTrack::minimizeZoomHeight (void)
+{
+	int iZoomHeight = m_iZoomHeight;
+
+	if (iZoomHeight > HeightMin) {
+		m_iZoomHeightBase = iZoomHeight;
+		iZoomHeight = HeightMin;
+	}
+	else
+	if (m_iZoomHeightBase > HeightMin)
+		iZoomHeight = m_iZoomHeightBase;
+	else
+	if (m_pSession) {
+		iZoomHeight = (HeightBase * m_pSession->verticalZoom()) / 100;
+		m_iZoomHeightBase = iZoomHeight;
+	}
+
+	return iZoomHeight;
+}
+
+
 // Clip list management methods.
 const qtractorList<qtractorClip>& qtractorTrack::clips (void) const
 {
@@ -1400,7 +1424,7 @@ unsigned long qtractorTrack::clipRecordEnd ( unsigned long iFrameTime ) const
 	}
 
 	unsigned long iClipRecordEnd = iFrameTime;
-	if (iClipRecordEnd  > m_iClipRecordStart)
+	if (iClipRecordEnd >= m_iClipRecordStart)
 		iClipRecordEnd -= m_iClipRecordStart;
 	if (m_pClipRecord)
 		iClipRecordEnd += m_pClipRecord->clipStart();
@@ -1690,21 +1714,22 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				iClipOffset += (iTrackStart - iClipStart);
 				iClipStart = iTrackStart;
 			}
-			if (iClipEnd > iTrackEnd) {
+			if (iClipEnd > iTrackEnd)
 				iClipEnd = iTrackEnd;
-			}
 			const int x1 = m_pSession->pixelFromFrame(iClipStart) - x0;
 			const int x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
-			pPainter->setPen(pen);
-			pPainter->setBrush(brush);
-			// Draw the clip...
-			const QRect clipRect(x1, y, x2 - x1, h);
-			pClip->drawClip(pPainter, clipRect, iClipOffset);
-			if (pClip == pClipRecordEx)
-				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
-			else
-			if (pClip->isClipMute())
-				pPainter->fillRect(clipRect, QColor(0, 0, 0, 60));
+			if (x1 < x2) {
+				pPainter->setPen(pen);
+				pPainter->setBrush(brush);
+				// Draw the clip...
+				const QRect clipRect(x1, y, x2 - x1, h);
+				pClip->drawClip(pPainter, clipRect, iClipOffset);
+				if (pClip == pClipRecordEx)
+					pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
+				else
+				if (pClip->isClipMute())
+					pPainter->fillRect(clipRect, QColor(0, 0, 0, 60));
+			}
 		}
 		pClip = pClip->next();
 	}

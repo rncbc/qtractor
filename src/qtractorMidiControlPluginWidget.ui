@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,22 +20,8 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  </comment>
- <class>qtractorMidiControlObserverForm</class>
- <widget class="QDialog" name="qtractorMidiControlObserverForm">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>360</width>
-    <height>180</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>MIDI Controller</string>
-  </property>
-  <property name="windowIcon">
-   <iconset theme="itemControllers" />
-  </property>
+ <class>qtractorMidiControlPluginWidget</class>
+ <widget class="QWidget" name="MidiControlPluginWidget">
   <layout class="QGridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="ControlTypeTextLabel">
@@ -71,7 +57,7 @@
     </spacer>
    </item>
    <item row="0" column="3">
-    <widget class="QLabel" name="ChannelTextLabel">
+    <widget class="QLabel" name="ControlChannelTextLabel">
      <property name="text">
       <string>Cha&amp;nnel:</string>
      </property>
@@ -79,12 +65,12 @@
       <set>Qt::AlignRight|Qt::AlignVCenter</set>
      </property>
      <property name="buddy">
-      <cstring>ChannelSpinBox</cstring>
+      <cstring>ControlChannelSpinBox</cstring>
      </property>
     </widget>
    </item>
    <item row="0" column="4">
-    <widget class="QSpinBox" name="ChannelSpinBox">
+    <widget class="QSpinBox" name="ControlChannelSpinBox">
      <property name="toolTip">
       <string>MIDI channel</string>
      </property>
@@ -99,18 +85,8 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="6" rowspan="8">
-    <widget class="QDialogButtonBox" name="DialogButtonBox">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="ParamTextLabel">
+    <widget class="QLabel" name="ControlParamTextLabel">
      <property name="text">
       <string>&amp;Parameter:</string>
      </property>
@@ -118,53 +94,39 @@
       <set>Qt::AlignRight|Qt::AlignVCenter</set>
      </property>
      <property name="buddy">
-      <cstring>ParamComboBox</cstring>
+      <cstring>ControlParamComboBox</cstring>
      </property>
     </widget>
    </item>
    <item row="1" column="1" colspan="4">
-    <widget class="QComboBox" name="ParamComboBox">
+    <widget class="QComboBox" name="ControlParamComboBox">
      <property name="toolTip">
       <string>MIDI parameter</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1" colspan="4">
-    <widget class="QCheckBox" name="LogarithmicCheckBox">
+    <widget class="QCheckBox" name="ControlLogarithmicCheckBox">
      <property name="text">
       <string>&amp;Logarithmic</string>
      </property>
     </widget>
    </item>
    <item row="3" column="1" colspan="4">
-    <widget class="QCheckBox" name="FeedbackCheckBox">
-     <property name="text">
-      <string>&amp;Feedback</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="4">
-    <widget class="QCheckBox" name="InvertCheckBox">
+    <widget class="QCheckBox" name="ControlInvertCheckBox">
      <property name="text">
       <string>In&amp;vert</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="4">
-    <widget class="QCheckBox" name="HookCheckBox">
+   <item row="4" column="1" colspan="4">
+    <widget class="QCheckBox" name="ControlBipolarCheckBox">
      <property name="text">
-      <string>&amp;Hook</string>
+      <string>&amp;Bipolar</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1" colspan="4">
-    <widget class="QCheckBox" name="LatchCheckBox">
-     <property name="text">
-      <string>L&amp;atch</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="5" rowspan="7">
+   <item row="0" column="5" rowspan="5">
     <spacer>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -177,64 +139,17 @@
      </property>
     </spacer>
    </item>
-   <item row="7" column="1" colspan="4">
-    <layout class="QHBoxLayout">
-     <item>
-      <widget class="QPushButton" name="InputsPushButton">
-       <property name="toolTip">
-        <string>Control input connections</string>
-       </property>
-       <property name="text">
-        <string>&amp;Inputs</string>
-       </property>
-       <property name="icon">
-        <iconset theme="itemMidiPortIn" />
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="OutputsPushButton">
-       <property name="toolTip">
-        <string>Control output connections</string>
-       </property>
-       <property name="text">
-        <string>&amp;Outputs</string>
-       </property>
-       <property name="icon">
-        <iconset theme="itemMidiPortOut" />
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint">
-        <size>
-         <width>8</width>
-         <height>8</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
   </layout>
  </widget>
- <layoutdefault spacing="4" margin="8"/>
+ <layoutdefault spacing="4" margin="4"/>
+ <customwidgets/>
  <tabstops>
   <tabstop>ControlTypeComboBox</tabstop>
-  <tabstop>ChannelSpinBox</tabstop>
-  <tabstop>ParamComboBox</tabstop>
-  <tabstop>LogarithmicCheckBox</tabstop>
-  <tabstop>FeedbackCheckBox</tabstop>
-  <tabstop>InvertCheckBox</tabstop>
-  <tabstop>HookCheckBox</tabstop>
-  <tabstop>LatchCheckBox</tabstop>
-  <tabstop>InputsPushButton</tabstop>
-  <tabstop>OutputsPushButton</tabstop>
-  <tabstop>DialogButtonBox</tabstop>
+  <tabstop>ControlChannelSpinBox</tabstop>
+  <tabstop>ControlParamComboBox</tabstop>
+  <tabstop>ControlLogarithmicCheckBox</tabstop>
+  <tabstop>ControlInvertCheckBox</tabstop>
+  <tabstop>ControlBipolarCheckBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc"/>

@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,10 +25,12 @@
 #include "qtractorOptions.h"
 
 #include "qtractorAudioFile.h"
+#include "qtractorAudioEngine.h"
 #include "qtractorMidiTimer.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
 #include "qtractorSession.h"
+#include "qtractorClip.h"
 
 #include "qtractorPluginFactory.h"
 
@@ -167,6 +169,14 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 			sSessionExt);
 	}
 
+	// Populate the fade-in/out types combo-boxes.
+	const qtractorClip::FadeTypes& fadeTypes = qtractorClip::fadeTypes();
+	for (int i = 0; i < fadeTypes.count(); ++i) {
+		const qtractorClip::FadeTypeInfo& info = fadeTypes.value(i);
+		m_ui.ClipFadeInTypeComboBox->addItem(info.iconFadeIn, info.name);
+		m_ui.ClipFadeOutTypeComboBox->addItem(info.iconFadeOut, info.name);
+	}
+
 	// Populate the MIDI capture quantize combo-box.
 	const QIcon& snapIcon = QIcon::fromTheme("itemBeat");
 	const QStringList& snapItems = qtractorTimeScale::snapItems();
@@ -248,6 +258,12 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.AudioCaptureQualitySpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioCaptureLatencyComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.AudioCaptureLatencySpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(audioCaptureLatencyChanged(int)));
 	QObject::connect(m_ui.AudioResampleTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -426,6 +442,12 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.DisplayFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(displayFormatChanged(int)));
+	QObject::connect(m_ui.ClipFadeInTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ClipFadeOutTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -637,6 +659,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		m_pOptions->sAudioCaptureExt, m_pOptions->iAudioCaptureType);
 	m_ui.AudioCaptureFormatComboBox->setCurrentIndex(m_pOptions->iAudioCaptureFormat);
 	m_ui.AudioCaptureQualitySpinBox->setValue(m_pOptions->iAudioCaptureQuality);
+	m_ui.AudioCaptureLatencyComboBox->setCurrentIndex(m_pOptions->iAudioCaptureLatencyMode);
+	m_ui.AudioCaptureLatencySpinBox->setValue(m_pOptions->iAudioCaptureLatency);
 	m_ui.AudioResampleTypeComboBox->setCurrentIndex(m_pOptions->iAudioResampleType);
 	m_ui.TransportModeComboBox->setCurrentIndex(m_pOptions->iTransportMode);
 	m_ui.TimebaseCheckBox->setChecked(m_pOptions->bTimebase);
@@ -811,6 +835,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
 	m_ui.ShiftKeyModifierCheckBox->setChecked(m_pOptions->bShiftKeyModifier);
 	m_ui.MidButtonModifierCheckBox->setChecked(m_pOptions->bMidButtonModifier);
+	m_ui.ClipFadeInTypeComboBox->setCurrentIndex(m_pOptions->iClipFadeInType);
+	m_ui.ClipFadeOutTypeComboBox->setCurrentIndex(m_pOptions->iClipFadeOutType);
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
 	m_ui.LoopRecordingModeComboBox->setCurrentIndex(m_pOptions->iLoopRecordingMode);
 	m_ui.DisplayFormatComboBox->setCurrentIndex(m_pOptions->iDisplayFormat);
@@ -941,6 +967,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioCaptureType    = m_ui.AudioCaptureTypeComboBox->currentType(handle);
 		m_pOptions->iAudioCaptureFormat  = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
+		m_pOptions->iAudioCaptureLatencyMode = m_ui.AudioCaptureLatencyComboBox->currentIndex();
+		m_pOptions->iAudioCaptureLatency = m_ui.AudioCaptureLatencySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
 		m_pOptions->iTransportMode       = m_ui.TransportModeComboBox->currentIndex();
 		m_pOptions->bTimebase            = m_ui.TimebaseCheckBox->isChecked();
@@ -1000,6 +1028,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
 		m_pOptions->bShiftKeyModifier    = m_ui.ShiftKeyModifierCheckBox->isChecked();
 		m_pOptions->bMidButtonModifier   = m_ui.MidButtonModifierCheckBox->isChecked();
+		m_pOptions->iClipFadeInType      = m_ui.ClipFadeInTypeComboBox->currentIndex();
+		m_pOptions->iClipFadeOutType     = m_ui.ClipFadeOutTypeComboBox->currentIndex();
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
 		m_pOptions->iLoopRecordingMode   = m_ui.LoopRecordingModeComboBox->currentIndex();
 		m_pOptions->iDisplayFormat       = m_ui.DisplayFormatComboBox->currentIndex();
@@ -1185,6 +1215,24 @@ void qtractorOptionsForm::audioCaptureTypeChanged ( int iIndex )
 		m_ui.AudioCaptureFormatComboBox->setCurrentIndex(iFormat);
 		m_ui.AudioCaptureFormatComboBox->blockSignals(bBlockSignals);
 	}
+
+	changed();
+}
+
+
+// Audio latency compensation stuff.
+void qtractorOptionsForm::audioCaptureLatencyChanged ( int iLatency )
+{
+	QString sLatencyMs;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (iLatency > 0 && pSession) {
+		const float fLatencyMs
+			= 1000.0f * float(iLatency) / float(pSession->sampleRate());
+		sLatencyMs = tr("%1 ms").arg(QString::number(fLatencyMs, 'f', 1));
+	}
+
+	m_ui.AudioCaptureLatencyMsTextLabel->setText(sLatencyMs);
 
 	changed();
 }
@@ -2208,6 +2256,15 @@ void qtractorOptionsForm::stabilizeForm (void)
 		bValid  = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
 	}
 
+	const qtractorAudioEngine::LatencyMode latencyMode
+		= qtractorAudioEngine::LatencyMode(
+			m_ui.AudioCaptureLatencyComboBox->currentIndex());
+	const bool bCaptureLatency
+		= (latencyMode == qtractorAudioEngine::Add
+		|| latencyMode == qtractorAudioEngine::Fixed);
+	m_ui.AudioCaptureLatencySpinBox->setEnabled(bCaptureLatency);
+	m_ui.AudioCaptureLatencyMsTextLabel->setEnabled(bCaptureLatency);
+
 	m_ui.AudioWsolaQuickSeekCheckBox->setEnabled(
 		m_ui.AudioWsolaTimeStretchCheckBox->isChecked());
 
@@ -2287,7 +2344,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.SessionTemplatePathToolButton->setEnabled(bSessionTemplate);
 	if (bSessionTemplate && bValid) {
 		const QString& sPath = m_ui.SessionTemplatePathComboBox->currentText();
-		bValid = !sPath.isEmpty() && QFileInfo(sPath).exists();
+		bValid = !sPath.isEmpty() && QFileInfo::exists(sPath);
 	}
 
 	m_ui.SessionBackupModeComboBox->setEnabled(

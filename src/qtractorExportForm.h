@@ -1,7 +1,7 @@
 // qtractorExportForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,6 +52,10 @@ public:
 	// Retrieve current audio file suffix.
 	const QString& exportExt() const;
 
+	// Settle/retrieve the export path.
+	void setExportPath(const QString& sExportPath);
+	QString exportPath() const;
+
 	// Retrieve current aliased file format index.
 	int audioExportFormat() const;
 	int midiExportFormat() const;
@@ -81,6 +85,9 @@ protected:
 
 	// Save export options (settings).
 	void saveExportOptions();
+
+	// Query whether the export-path already exists.
+	bool checkExportPath(void);
 
 	// Range types.
 	enum RangeType { Session = 0, Loop, Punch, Edit, Custom };
@@ -143,10 +150,6 @@ public:
 	qtractorExportClipForm(QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorExportClipForm();
-
-	// Settle/retrieve the export path.
-	void setExportPath(const QString& sExportPath);
-	QString exportPath() const;
 
 protected slots:
 
