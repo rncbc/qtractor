@@ -4,6 +4,131 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+1.5.12  2026-03-20  An Early-Spring'26 Release.
+
+- New audio clip capture/recording latency compensation options
+  are now in effect (cf. View/Options.../Audio/Capture/Latency).
+
+- Filter out zero-duration note events when importing MIDI files.
+
+- Fixed step input on offsetted MIDI clips.
+
+- Fixed audio Aux-Sends inserted on audio input buses to not
+  affect output buses processing order anymore.
+
+- Clip/Merge, Export... now allowed on simple highlighted clips.
+
+- Make sure to ask whether to replace already existing files on
+  Clip/Merge, Export...
+
+- Make sure all LV2 plug-in state paths are stored as relative.
+
+
+1.5.11  2025-12-30  An End-of-Year'25 Release.
+
+- Refactored Clip/Tempo Adjust.. tempo/beat-detection function to
+  Breakfastquay::minibpm as a submodule, in alternative to the now
+  being deprecated (lib)aubio.
+
+
+1.5.10  2025-12-19  An Early Winter'25 Release.
+
+- Fixed 'mime-info' file to the correct MIME-type icon names.
+
+- Improved/updated audio clip recording latency compensation.
+
+- Save/load all plugin's paths always as relative only to declared
+  search paths (cf. View/Options.../Plugins/Paths)
+
+- Audio Insert pseudo-plugins now have an extra user supplied
+  input parameter: Latency (frames).
+
+- Default Clip Fade-In/Out types (Linear, Quadratic, Cubic) are
+  now settable as user preference options (cf. View/Options.../
+  /General/Clips).
+
+- Updated to CLAP v1.2.7
+
+- Updated to VST3 SDK v3.8.0.build.66
+
+
+1.5.9  2025-10-31  A Halloween'25 Release.
+
+- Main menu and toolbar Edit/Select Mode/Clip, Range, Rectangle
+  and Automation actions are now self-toggled when triggered.
+
+- Slightly better positioning and centering when just clicking
+  but not dragging the main and MIDI editor thumb-views around.
+  
+- Mixer: temporarily hide/show either Audio or MIDI buses, from
+  the respective Inputs and/or Outputs rack pane.
+
+- Add underlying platform name (eg. xcb, wayland) to Qt version
+  string.
+
+
+1.5.8  2025-08-29  A Late Summer'25 Release.
+
+- When selecting an Aux-Send pseudo-plugin, also highlight the
+  respective target output bus mixer strip.
+
+- Mitigate and compensate for padding and start-delay/latency to
+  (lib)RubberBand time-stretching and pitch-shifting processing.
+
+- Avoid warning when auto-saving an extracted archive/zip session.
+
+- Fixed all empty/void audio clips created when aborting an armed
+  recording session; revisited.
+
+- Added new Track/Height/Minimize menu item.
+
+- Fixed initial Aux-Send audio bus I/O matrix functionality; also
+  when input channel count is greater than output count.
+
+- Fixed WSOLA time-stretching crashing on greater-than-2-channels
+  /stereo audio clips.
+
+- Fix misaligned LV2 Atoms.
+
+
+1.5.7  2025-07-19  A Summer'25 Release.
+
+- Give some slack time to stabilize, when updating or changing
+  audio bus channel counts, mitigating the probability to fault
+  when unregistering old and registering new PipeWire/JACK ports
+  in immediate succession.
+
+- Transport/Loop Set behavior slightly changed, now toggling the
+  loop range if the edit-head/tail match current loop-start/end.
+
+- Introducing Aux-Send audio bus I/O matrix functionality.
+
+- Corrected greater-than-2-channel audio clip waveform drawing,
+  while on certain zoom levels, an old bug lurking there since
+  dawn, quite an example to the evil of too-early optimization ;)
+
+- Draw all audio clip peaks+rms waveforms slightly compressed, so
+  that low-level signals have improved visibility.
+
+- Warn when saving any type of session into an extracted archive
+  directory.
+
+
+1.5.6  2025-06-06  An End-of-Spring'25 Release.
+
+- MIDI clip editor (aka. piano-roll): Transport/Step/Note/Backward,
+  Forward, now plays the step-selected notes, provided send/Preview
+  is on and playback is not rolling.
+
+- MIDI Tools: Normalize now finally fixed to an absolute Value,
+  ie. without a Percent(age) factor applied.
+
+- MIDI Controller Observer: 'Hook' attribute is now on by default.
+
+- MIDI Controller Send pseudo-plugin introduced: accessible from
+  plugins menu/Inserts/MIDI/Add Controller...
+
+
 1.5.5  2025-05-21  A Mid-Spring'25 Release.
 
 - Fixed negative time values displayed in tool-tips, when dragging
@@ -13,7 +138,7 @@ ChangeLog
 - A warning is now issued when an audio self connection is made
   (eg. connecting an output bus (or insert send) directly into
   an input bus (or insert return).
-  
+
 - Files item selection mode switching corrected.
 
 - Mitigate or postpone a 'too many open files' condition as much 
@@ -86,7 +211,7 @@ ChangeLog
   into a single undo-able command, reflecting only the first value
   change in the series, dropping the previous old algorithm, which
   was dead wrong if not utterly defective.
-  
+
 - Unique track names resolve to the first line only.
 
 - Help/Shortcuts... Search tool gets implemented; all changed MIDI
@@ -134,12 +259,12 @@ ChangeLog
 - Double-click on slider for default value, replicating the behavior
   of middle-click.
 
-- Fixed bug: Aux Send loses state when reordered in a strip.
+- Fixed bug: Aux-Send loses state when reordered in a strip.
 
 - Create/Add new bus below that which is used as source in View/Buses
   dialog.
 
-- Mitigate truncated bus names in Aux Send Bus dialog.
+- Mitigate truncated bus names in Aux-Send bus dialog.
 
 - Fixed yet another old bug regarding the flush of all pending MIDI
   Note-Off events when playback stops, shuts-off or panics, especially
@@ -183,7 +308,7 @@ ChangeLog
 - Fixed MIDI clip offset resizing, most especially when drag-moving
   the left-edge.
 
-- Audio Aux-sends inserted on audio output buses are not restricted
+- Audio Aux-Sends inserted on audio output buses are not restricted
   to later buses anymore; the only restriction now is that no cyclic
   or loop-back routes are allowed; audio output buses are now sorted
   internally in-place for correct processing order.
@@ -484,7 +609,7 @@ ChangeLog
 - Fixed an allegedly old and incorrect 0dBfs notch position on MIDI
   track/buses audio meter sidekicks.
 
-- Send/return and Aux-send inserts now show the proper name and the
+- Send/return and Aux-Send inserts now show the proper name and the
   target output bus name on the properties editor title respectively.
 
 - Fixed a zero-day blunder that was keeping the real-time process
@@ -1540,7 +1665,7 @@ ChangeLog
   supported (input only).
 
 - Fixed a sure immediate crash on removing audio buses that are
-  current targets of any active Aux-send inserts.
+  current targets of any active Aux-Send inserts.
 
 - Fixed yet another old bummer that was reaping off assigned MIDI
   controllers on existing track's gain/volume or panning controls, when
@@ -1670,7 +1795,7 @@ ChangeLog
 
 - Introducing brand new track icons property.
 
-- Old Dry/Wet Insert and Aux-send pseudo-plugin parameters are now
+- Old Dry/Wet Insert and Aux-Send pseudo-plugin parameters are now
   split into separate Dry and Wet controls, what else could it possibly
   be? :)
 

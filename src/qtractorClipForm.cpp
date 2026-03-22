@@ -52,49 +52,6 @@ static inline float pow10f2 ( float x )
 
 
 //----------------------------------------------------------------------------
-// Fade types curves.
-
-struct FadeTypeInfo
-{
-	QString name;
-	QIcon iconFadeIn;
-	QIcon iconFadeOut;
-};
-
-static QHash<int, FadeTypeInfo> g_fadeTypes;
-
-
-void qtractorClipForm::initFadeTypes (void)
-{
-	const char *s_aFadeTypeNames[] = {
-
-		QT_TR_NOOP("Linear"),		// Linear (obvious:)
-		QT_TR_NOOP("Quadratic 1"),	// InQuad
-		QT_TR_NOOP("Quadratic 2"),	// OutQuad
-		QT_TR_NOOP("Quadratic 3"),	// InOutQuad
-		QT_TR_NOOP("Cubic 1"),		// InCubic
-		QT_TR_NOOP("Cubic 2"),		// OutCubic
-		QT_TR_NOOP("Cubic 3"),		// InOutCubic
-
-		nullptr
-	};
-
-	if (g_fadeTypes.isEmpty()) {
-		const QPixmap& pmFadeIn
-			= QIcon::fromTheme("fadeIn").pixmap(7 * 16, 16);
-		const QPixmap& pmFadeOut
-			= QIcon::fromTheme("fadeOut").pixmap(7 * 16, 16);
-		for (int i = 0; s_aFadeTypeNames[i]; ++i) {
-			FadeTypeInfo& info = g_fadeTypes[i];
-			info.name = tr(s_aFadeTypeNames[i]);
-			info.iconFadeIn  = pmFadeIn.copy(i << 4, 0, 16, 16);
-			info.iconFadeOut = pmFadeOut.copy(i << 4, 0, 16, 16);
-		}
-	}
-}
-
-
-//----------------------------------------------------------------------------
 // qtractorClipForm -- UI wrapper form.
 
 // Constructor.
@@ -114,11 +71,12 @@ qtractorClipForm::qtractorClipForm ( QWidget *pParent )
 	m_iDirtyCount = 0;
 	m_iDirtySetup = 0;
 
-	initFadeTypes();
 	m_ui.FadeInTypeComboBox->clear();
 	m_ui.FadeOutTypeComboBox->clear();
-	for (int i = 0; i < g_fadeTypes.count(); ++i) {
-		const FadeTypeInfo& info = g_fadeTypes.value(i);
+
+	const qtractorClip::FadeTypes& fadeTypes = qtractorClip::fadeTypes();
+	for (int i = 0; i < fadeTypes.count(); ++i) {
+		const qtractorClip::FadeTypeInfo& info = fadeTypes.value(i);
 		m_ui.FadeInTypeComboBox->addItem(info.iconFadeIn, info.name);
 		m_ui.FadeOutTypeComboBox->addItem(info.iconFadeOut, info.name);
 	}
@@ -280,10 +238,10 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	// Fade In/Out...
 	m_ui.FadeInLengthSpinBox->setValue(m_pClip->fadeInLength());
 	m_ui.FadeInTypeComboBox->setCurrentIndex(
-		indexFromFadeType(m_pClip->fadeInType()));
+		qtractorClip::indexFromFadeType(m_pClip->fadeInType()));
 	m_ui.FadeOutLengthSpinBox->setValue(m_pClip->fadeOutLength());
 	m_ui.FadeOutTypeComboBox->setCurrentIndex(
-		indexFromFadeType(m_pClip->fadeOutType()));
+		qtractorClip::indexFromFadeType(m_pClip->fadeOutType()));
 
 	// Set proper time scales display format...
 	m_ui.FormatComboBox->setCurrentIndex(
@@ -447,10 +405,12 @@ void qtractorClipForm::accept (void)
 		const unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
 		const unsigned long iFadeInLength = m_ui.FadeInLengthSpinBox->value();
 		qtractorClip::FadeType fadeInType
-			= fadeTypeFromIndex(m_ui.FadeInTypeComboBox->currentIndex());
+			= qtractorClip::fadeTypeFromIndex(
+				m_ui.FadeInTypeComboBox->currentIndex());
 		const unsigned long iFadeOutLength = m_ui.FadeOutLengthSpinBox->value();
 		qtractorClip::FadeType fadeOutType
-			= fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex());
+			= qtractorClip::fadeTypeFromIndex(
+				m_ui.FadeOutTypeComboBox->currentIndex());
 		const bool bClipMute = m_ui.ClipMuteCheckBox->isChecked();
 		int iFileChange = 0;
 		int iFlagsChange = 0;
@@ -698,18 +658,6 @@ void qtractorClipForm::stabilizeForm (void)
 	bValid = bValid && !sFilename.isEmpty() && QFileInfo(sFilename).exists();
 	bValid = bValid && (iClipLength > 0);
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
-}
-
-
-// Fade type index converters.
-qtractorClip::FadeType qtractorClipForm::fadeTypeFromIndex ( int iIndex ) const
-{
-	return qtractorClip::FadeType(iIndex);
-}
-
-int qtractorClipForm::indexFromFadeType ( qtractorClip::FadeType fadeType ) const
-{
-	return int(fadeType);
 }
 
 

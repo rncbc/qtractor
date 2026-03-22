@@ -1,7 +1,7 @@
 // qtractorVst3Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -62,10 +62,6 @@
 #include <QMap>
 
 #include <QRegularExpression>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#define CONFIG_VST3_XCB
-#endif
 
 #ifdef CONFIG_VST3_XCB
 #include <xcb/xcb.h>
@@ -190,8 +186,8 @@ private:
 	QMultiHash<IEventHandler *, int> m_eventHandlers;
 
 #ifdef CONFIG_VST3_XCB
-	xcb_connection_t *m_pXcbConnection;
-	int               m_iXcbFileDescriptor;
+	xcb_connection_t   *m_pXcbConnection;
+	int                 m_iXcbFileDescriptor;
 #endif
 
 	Vst::ProcessContext m_processContext;

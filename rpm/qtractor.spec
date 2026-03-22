@@ -1,7 +1,7 @@
 #
 # spec file for package qtractor
 #
-# Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+# Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -17,19 +17,13 @@
 
 Summary:	An Audio/MIDI multi-track sequencer
 Name:		qtractor
-Version:	1.5.5
-Release:	12.1
+Version:	1.5.12
+Release:	19.1
 License:	GPL-2.0-or-later
 Group:		Productivity/Multimedia/Sound/Midi
 Source:		%{name}-%{version}.tar.gz
 URL:		https://qtractor.org/
 #Packager:	rncbc.org
-
-%if 0%{?fedora_version} >= 34 || 0%{?suse_version} > 1500 || ( 0%{?sle_version} == 150200 && 0%{?is_opensuse} )
-%define qt_major_version  6
-%else
-%define qt_major_version  5
-%endif
 
 BuildRequires:	coreutils
 BuildRequires:	pkgconfig
@@ -46,7 +40,6 @@ BuildRequires:	gcc-c++ >= 10
 %define _GCC	/usr/bin/gcc
 %define _GXX	/usr/bin/g++
 %endif
-%if 0%{qt_major_version} == 6
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
 BuildRequires:	qtbase6.9-static >= 6.9
 BuildRequires:	qttools6.9-static
@@ -60,16 +53,6 @@ BuildRequires:	pkgconfig(Qt6Widgets)
 BuildRequires:	pkgconfig(Qt6Svg)
 BuildRequires:	pkgconfig(Qt6Xml)
 BuildRequires:	pkgconfig(Qt6Network)
-%endif
-%else
-BuildRequires:	cmake(Qt5LinguistTools)
-BuildRequires:	pkgconfig(Qt5Core)
-BuildRequires:	pkgconfig(Qt5Gui)
-BuildRequires:	pkgconfig(Qt5Widgets)
-BuildRequires:	pkgconfig(Qt5Svg)
-BuildRequires:	pkgconfig(Qt5Xml)
-BuildRequires:	pkgconfig(Qt5Network)
-BuildRequires:	pkgconfig(Qt5X11Extras)
 %endif
 %if %{defined fedora}
 BuildRequires:	jack-audio-connection-kit-devel
@@ -93,14 +76,12 @@ BuildRequires:	pkgconfig(serd-0)
 BuildRequires:	pkgconfig(sord-0)
 BuildRequires:	pkgconfig(sratom-0)
 BuildRequires:	pkgconfig(lilv-0)
-%if 0%{qt_major_version} < 6
-BuildRequires:	pkgconfig(suil-0)
-%endif
+#BuildRequires:	pkgconfig(suil-0)
 BuildRequires:	pkgconfig(vorbis)
 BuildRequires:	pkgconfig(samplerate)
 BuildRequires:	pkgconfig(dssi)
 BuildRequires:	pkgconfig(zlib)
-BuildRequires:	pkgconfig(aubio)
+#BuildRequires:	pkgconfig(aubio)
 
 BuildRequires:	gtk2-devel
 %if %{defined fedora}
@@ -192,6 +173,20 @@ cmake --install build
 
 
 %changelog
+* Fri Mar 20 2026 Rui Nuno Capela <rncbc@rncbc.org> 1.5.12
+- An Early-Spring'26 Release.
+* Tue Dec 30 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.11
+- An End-of-Year'25 Release.
+* Fri Dec 19 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.10
+- An Early Winter'25 Release.
+* Fri Oct 31 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.9
+- A Halloween'25 Release.
+* Fri Aug 29 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.8
+- A Late Summer'25 Release.
+* Sat Jul 19 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.7
+- A Summer'25 Release.
+* Fri Jun  6 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.6
+- An End-of-Spring'25 Release.
 * Wed May 21 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.5
 - A Mid-Spring'25 Release.
 * Fri Apr  4 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.4

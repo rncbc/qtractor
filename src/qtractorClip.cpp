@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -100,8 +100,8 @@ void qtractorClip::clear (void)
 	m_iFadeInTime     = 0;
 	m_iFadeOutTime    = 0;
 
-	setFadeInType(InQuad);
-	setFadeOutType(OutQuad);
+	setFadeInType(g_defaultFadeInType);
+	setFadeOutType(g_defaultFadeOutType);
 
 	m_bDirty = false;
 }
@@ -319,13 +319,14 @@ void qtractorClip::updateClipTime (void)
 	m_iClipStart = pSession->frameFromTick(m_iClipStartTime);
 	m_iClipLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iClipLengthTime);
-#if 0// FIXUP: Don't quantize to MIDI metronomic time-scale...
-	m_iClipOffsetTime = pSession->tickFromFrameRange(
-		m_iClipStart, m_iClipStart + m_iClipOffset, true);
-#else
-	m_iClipOffset = pSession->frameFromTickRange(
-		m_iClipStartTime, m_iClipStartTime + m_iClipOffsetTime, true);
-#endif
+	// FIXUP: Don't quantize to MIDI metronomic time-scale...
+	if (m_pTrack->trackType() == qtractorTrack::Audio) {
+		m_iClipOffsetTime = pSession->tickFromFrameRange(
+			m_iClipStart, m_iClipStart + m_iClipOffset, true);
+	} else {
+		m_iClipOffset = pSession->frameFromTickRange(
+			m_iClipStartTime, m_iClipStartTime + m_iClipOffsetTime, true);
+	}
 
 	m_iFadeInLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iFadeInTime);
@@ -1260,6 +1261,81 @@ qtractorClip::FadeFunctor *qtractorClip::createFadeFunctor (
 	}
 
 	return nullptr;
+}
+
+
+//----------------------------------------------------------------------------
+// Clip fade-in/out types.
+
+qtractorClip::FadeType qtractorClip::g_defaultFadeInType  = qtractorClip::InQuad;
+qtractorClip::FadeType qtractorClip::g_defaultFadeOutType = qtractorClip::OutQuad;
+
+
+void qtractorClip::setDefaultFadeInType(FadeType fadeType)
+{
+	g_defaultFadeInType = fadeType;
+}
+
+qtractorClip::FadeType qtractorClip::defaultFadeInType (void)
+{
+	return g_defaultFadeInType;
+}
+
+
+void qtractorClip::setDefaultFadeOutType ( FadeType fadeType )
+{
+	g_defaultFadeOutType = fadeType;
+}
+
+qtractorClip::FadeType qtractorClip::defaultFadeOutType (void)
+{
+	return g_defaultFadeOutType;
+}
+
+
+qtractorClip::FadeTypes& qtractorClip::fadeTypes (void)
+{
+	static const char *s_aFadeTypeNames[] = {
+
+		QT_TR_NOOP("Linear"),		// Linear (obvious:)
+		QT_TR_NOOP("Quadratic 1"),	// InQuad
+		QT_TR_NOOP("Quadratic 2"),	// OutQuad
+		QT_TR_NOOP("Quadratic 3"),	// InOutQuad
+		QT_TR_NOOP("Cubic 1"),		// InCubic
+		QT_TR_NOOP("Cubic 2"),		// OutCubic
+		QT_TR_NOOP("Cubic 3"),		// InOutCubic
+
+		nullptr
+	};
+
+	static FadeTypes s_fadeTypes;
+
+	if (s_fadeTypes.isEmpty()) {
+		const QPixmap& pmFadeIn
+			= QIcon::fromTheme("fadeIn").pixmap(7 * 16, 16);
+		const QPixmap& pmFadeOut
+			= QIcon::fromTheme("fadeOut").pixmap(7 * 16, 16);
+		for (int i = 0; s_aFadeTypeNames[i]; ++i) {
+			FadeTypeInfo& info = s_fadeTypes[i];
+			info.name = QObject::tr(s_aFadeTypeNames[i]);
+			info.iconFadeIn  = pmFadeIn.copy(i << 4, 0, 16, 16);
+			info.iconFadeOut = pmFadeOut.copy(i << 4, 0, 16, 16);
+		}
+	}
+
+	return s_fadeTypes;
+}
+
+
+// Fade type index converters.
+qtractorClip::FadeType qtractorClip::fadeTypeFromIndex ( int iIndex )
+{
+	return qtractorClip::FadeType(iIndex);
+}
+
+int qtractorClip::indexFromFadeType ( FadeType fadeType )
+{
+	return int(fadeType);
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,6 +37,7 @@
 #include "qtractorMidiEditCommand.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorTracks.h"
 
 #include "qtractorOptions.h"
 
@@ -1646,11 +1647,7 @@ void qtractorMidiClip::setStepInputHead ( unsigned long iStepInputHead )
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iStepInputHead);
 
 	m_iStepInputHead = pNode->frameSnap(iStepInputHead);
-	const unsigned long iClipOffset = clipOffset();
-	unsigned long iStepInputHead2 = m_iStepInputHead;
-	if (iStepInputHead2 >= iClipOffset)
-		iStepInputHead2 -= iClipOffset;
-	m_iStepInputHeadTime = pNode->tickFromFrame(iStepInputHead2);
+	m_iStepInputHeadTime = pNode->tickFromFrame(m_iStepInputHead);
 
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
 	unsigned long iStepInputDuration = pNode->ticksPerBeat;
@@ -1658,7 +1655,7 @@ void qtractorMidiClip::setStepInputHead ( unsigned long iStepInputHead )
 		iStepInputDuration /= iSnapPerBeat;
 
 	m_iStepInputTailTime = m_iStepInputHeadTime + iStepInputDuration;
-	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime) + iClipOffset;
+	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime);
 	m_iStepInputLast = 0;
 }
 
@@ -1711,11 +1708,7 @@ void qtractorMidiClip::advanceStepInput (void)
 	}
 
 	m_iStepInputHead = m_iStepInputTail;
-	const unsigned long iClipOffset = clipOffset();
-	unsigned long iStepInputHead2 = m_iStepInputHead;
-	if (iStepInputHead2 >= iClipOffset)
-		iStepInputHead2 -= iClipOffset;
-	m_iStepInputHeadTime = pNode->tickFromFrame(iStepInputHead2);
+	m_iStepInputHeadTime = pNode->tickFromFrame(m_iStepInputHead);
 
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
 	unsigned long iStepInputDuration = pNode->ticksPerBeat;
@@ -1723,7 +1716,7 @@ void qtractorMidiClip::advanceStepInput (void)
 		iStepInputDuration /= iSnapPerBeat;
 
 	m_iStepInputTailTime = m_iStepInputHeadTime + iStepInputDuration;
-	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime) + iClipOffset;
+	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime);
 //	m_iStepInputLast = 0;
 }
 
@@ -1793,11 +1786,17 @@ bool qtractorMidiClip::processInpEvents (
 	if (pSeq == nullptr)
 		return false;
 
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return false;
+
 	qtractorCommandList *pCommandList = nullptr;
 	if (m_pMidiEditorForm == nullptr) {
-		qtractorTrack *pTrack = track();
-		if (pTrack && pTrack->session())
-			pCommandList = pTrack->session()->commands();
+		pCommandList = pSession->commands();
 	} else {
 		pCommandList = commands();
 	}
@@ -1820,6 +1819,8 @@ bool qtractorMidiClip::processInpEvents (
 		m_iInpEventsCommand = 0;
 		m_bInpEventsOverdub = bOverdub;
 	}
+
+	const unsigned long iOldDuration = pSeq->duration();
 
 	QListIterator<qtractorMidiEvent *> iter(events);
 	while (iter.hasNext()) {
@@ -1846,9 +1847,28 @@ bool qtractorMidiClip::processInpEvents (
 
 	m_pInpEventsCommand->adjust();
 
+	if (!m_bInpEventsOverdub) {
+		const unsigned long iDuration = pSeq->duration();
+		if (iDuration > iOldDuration) {
+			const unsigned long t1 = clipStartTime() + iDuration;
+			setClipLengthEx(pSession->frameFromTick(t1) - clipStart());
+			pSeq->setTimeLength(iDuration);
+			updateEditorEx(false);
+		}
+	}
+
 	setDirtyEx(true);
 	update();
 	updateEditorContents();
+
+	if (!m_bInpEventsOverdub) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorTracks *pTracks = pMainForm->tracks();
+			if (pTracks)
+				pTracks->updateContents(true);
+		}
+	}
 
 	if (++m_iInpEventsCommand > 1)
 		return true;

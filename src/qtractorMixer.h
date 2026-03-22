@@ -349,10 +349,27 @@ public:
 	QList<qtractorMixerStrip *> findAudioOutputBusStrips(
 		qtractorAudioBus *pAudioOutputBus) const;
 
+	// Whether a strip type is hidden.
+	void setStripTypeHidden(qtractorTrack::TrackType stripType);
+	bool isStripTypeHidden(qtractorTrack::TrackType stripType) const;
+
+	// Check for this being any special rack.
+	bool isInputRack() const;
+	bool isTrackRack() const;
+	bool isOutputRack() const;
+
 signals:
 
 	// Selection changed signal.
 	void selectionChanged();
+
+public slots:
+
+	// Bus context menu slots.
+	void busPropertiesSlot();
+
+	void busAudioStripsSlot();
+	void busMidiStripsSlot();
 
 private:
 
@@ -369,6 +386,9 @@ private:
 
 	// The inner rack scroll-area/workspace widget.
 	qtractorMixerRackWidget *m_pRackWidget;
+
+	// Current hidden-strip type.
+	qtractorTrack::TrackType m_hiddenStripType;
 };
 
 
@@ -420,6 +440,10 @@ public:
 
 	// Multi-row workspace layout method.
 	void updateWorkspaces();
+
+	// Current selected output bus (usually an Aux-Send target) accessors.
+	void setSelectedOutputBus(qtractorBus *pOutputBus);
+	qtractorBus *selectedOutputBus() const;
 
 protected:
 

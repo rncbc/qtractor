@@ -1,7 +1,7 @@
 // qtractorClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,8 @@
 #define __qtractorClip_h
 
 #include "qtractorTrack.h"
+
+#include <QIcon>
 
 
 // Forward declarations.
@@ -140,6 +142,8 @@ public:
 	void setFadeInLength(unsigned long iFadeInLength);
 	unsigned long fadeInLength() const
 		{ return m_iFadeInLength; }
+	unsigned long fadeInTime() const
+		{ return m_iFadeInTime; }
 
 	// Clip fade-out accessors
 	void setFadeOutType(FadeType fadeType);
@@ -149,9 +153,23 @@ public:
 	void setFadeOutLength(unsigned long iFadeOutLength);
 	unsigned long fadeOutLength() const
 		{ return m_iFadeOutLength; }
+	unsigned long fadeOutTime() const
+		{ return m_iFadeOutTime; }
 
 	// Compute clip gain, given current fade-in/out slopes.
 	float fadeInOutGain(unsigned long iOffset) const;
+
+	// Clip fade-in/out types helpers
+	//
+	struct FadeTypeInfo {
+		QString name;
+		QIcon iconFadeIn;
+		QIcon iconFadeOut;
+	};
+
+	typedef QHash<int, FadeTypeInfo> FadeTypes;
+
+	static FadeTypes& fadeTypes();
 
 	// Clip time reference settler method.
 	void updateClipTime();
@@ -221,6 +239,16 @@ public:
 	static FadeType fadeInTypeFromText(const QString& sText);
 	static FadeType fadeOutTypeFromText(const QString& sText);
 	static QString textFromFadeType(FadeType fadeType);
+
+	static FadeType fadeTypeFromIndex(int iIndex);
+	static int indexFromFadeType(FadeType fadeType);
+
+
+	static void setDefaultFadeInType(FadeType fadeType);
+	static FadeType defaultFadeInType();
+
+	static void setDefaultFadeOutType(FadeType fadeType);
+	static FadeType defaultFadeOutType();
 
 	// Take(record) descriptor.
 	//
@@ -409,6 +437,9 @@ private:
 	// Approximations to exponential fade interpolation.
 	FadeFunctor *m_pFadeInFunctor;
 	FadeFunctor *m_pFadeOutFunctor;
+
+	static FadeType g_defaultFadeInType;
+	static FadeType g_defaultFadeOutType;
 
 	// Local active/dirty flags.
 	bool m_bActive;

@@ -34,6 +34,7 @@ class qtractorPluginParamWidget;
 class qtractorPluginPropertyWidget;
 
 class qtractorMidiControlObserver;
+class qtractorMidiControlPluginWidget;
 
 class qtractorObserverCheckBox;
 class qtractorObserverSlider;
@@ -74,6 +75,8 @@ public:
 	void updateActivated();
 	void updateDirtyCount();
 
+	void updateMidiControlAutoConnect();
+
 	void updateAuxSendBusName();
 
 	void toggleEditor(bool bOn);
@@ -99,14 +102,19 @@ protected slots:
 	void sendsSlot();
 	void returnsSlot();
 
+	void autoConnectSlot(bool bOn);
+
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);
 
 	void changeAuxSendBusNameSlot(int iAuxSendBusName);
 	void clickAuxSendBusNameSlot();
+	void clickAuxSendIOMatrixSlot();
 
 	void updateDirectAccessParamSlot();
 	void changeDirectAccessParamSlot();
+
+	void updateParamRangeSlot();
 
 protected:
 
@@ -139,6 +147,8 @@ private:
 
 	QList<qtractorPluginParamWidget *> m_paramWidgets;
 
+	qtractorMidiControlPluginWidget *m_pMidiControlPluginWidget;
+
 	QMenu *m_pDirectAccessParamMenu;
 
 	int m_iDirtyCount;
@@ -169,6 +179,9 @@ public:
 
 	// Refreshner-loader method.
 	void refresh();
+
+	// Special range updater.
+	void updateParamRange();
 
 protected slots:
 

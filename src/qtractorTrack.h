@@ -198,6 +198,9 @@ public:
 	int zoomHeight() const;
 	int zoomHeightBase() const;
 
+	// Visual height minimize/toggle.
+	int minimizeZoomHeight();
+
 	// Clip list management methods.
 	const qtractorList<qtractorClip>& clips() const;
 
@@ -402,6 +405,7 @@ private:
 	int              m_iHeight;     // View height (normalized).
 	int              m_iHeightBase; // View height (base).
 	int              m_iZoomHeight; // View height (zoomed).
+	int              m_iZoomHeightBase; // View height (minimize/restore).
 
 	qtractorList<qtractorClip> m_clips; // List of clips.
 

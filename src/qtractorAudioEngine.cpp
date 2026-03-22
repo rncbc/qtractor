@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -510,6 +510,25 @@ static void qtractorAudioEngine_property_change (
 #endif
 
 
+#ifdef CONFIG_JACK_LATENCY
+//----------------------------------------------------------------------
+// qtractorAudioEngine_latency -- JACK latency callabck
+//
+static void qtractorAudioEngine_latency (
+	jack_latency_callback_mode_t mode, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	if (mode == JackCaptureLatency)
+		pAudioEngine->updateLatency_in();
+	else
+	if (mode == JackPlaybackLatency)
+		pAudioEngine->updateLatency_out();
+}
+#endif
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioEngine -- JACK client instance (singleton).
 //
@@ -589,6 +608,10 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	// Time(base)/BBT time info.
 	::memset(&m_timeInfo, 0, sizeof(TimeInfo));
+
+	// Audio latency compensation stuff.
+	m_captureLatencyMode = Auto;
+	m_iCaptureLatency    = 0;
 }
 
 
@@ -849,6 +872,14 @@ bool qtractorAudioEngine::activate (void)
 
 	// Initialize time(base) information for sure...
 	updateTimeInfo(0);
+
+#ifdef CONFIG_JACK_LATENCY
+	// Set latency callback.
+	if (jack_set_latency_callback) {
+		jack_set_latency_callback(m_pJackClient,
+			qtractorAudioEngine_latency, this);
+	}
+#endif
 
 	// Reset all dependable monitoring...
 	resetAllMonitors();
@@ -1767,21 +1798,20 @@ bool qtractorAudioEngine::fileExport (
 	if (iExportStart >= iExportEnd)
 		return false;
 
-	// We'll grab the first bus around, as reference...
-	qtractorAudioBus *pExportBus = nullptr;
-	QListIterator<qtractorBus *> iter(buses2());
+	// We'll grab the minimum number of channels around, as reference...
+	unsigned short iChannels = 0;
+	QListIterator<qtractorAudioBus *> iter(exportBuses);
 	while (iter.hasNext()) {
-		qtractorBus *pBus = iter.next();
-		if (pBus->busMode() & qtractorBus::Output) {
-			pExportBus = static_cast<qtractorAudioBus *> (pBus);
-			break;
+		qtractorAudioBus *pAudioBus = iter.next();
+		if (pAudioBus->busMode() & qtractorBus::Output
+			&& iChannels < pAudioBus->channels()) {
+			iChannels = pAudioBus->channels();
 		}
 	}
-	if (pExportBus == nullptr)
+	if (iChannels < 1)
 		return false;
 
 	// Get proper file type class...
-	const unsigned int iChannels = pExportBus->channels();
 	qtractorAudioFile *pExportFile
 		= qtractorAudioFileFactory::createAudioFile(sExportPath,
 			iChannels, sampleRate(), bufferSizeEx(), iExportFormat);
@@ -2646,7 +2676,7 @@ void qtractorAudioEngine::resetAudioOutBus (
 
 	if (pPluginList == nullptr)
 		return;
-	if ((pPluginList->flags() & qtractorPluginList::AudioOutBus) == 0)
+	if (pPluginList->flags() != qtractorPluginList::AudioOutBus)
 		return;
 
 	qtractorAudioBus *pAfterBus = nullptr;
@@ -2729,6 +2759,60 @@ void qtractorAudioEngine::transport_locate ( unsigned long iFrame )
 }
 
 
+// Audio I/O latency callbacks.
+void qtractorAudioEngine::updateLatency_in (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAudioEngine::updateLatency_in()");
+#endif
+
+	for (qtractorBus *pBus = buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus && (pAudioBus->busMode() & qtractorBus::Input))
+			pAudioBus->updateLatency_in();
+	}
+}
+
+void qtractorAudioEngine::updateLatency_out (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAudioEngine::updateLatency_out()");
+#endif
+
+	for (qtractorBus *pBus = buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus && (pAudioBus->busMode() & qtractorBus::Input))
+			pAudioBus->updateLatency_out();
+	}
+}
+
+
+// Audio latency compensation stuff.
+void qtractorAudioEngine::setCaptureLatencyMode ( LatencyMode latencyMode )
+{
+	m_captureLatencyMode = latencyMode;
+}
+
+qtractorAudioEngine::LatencyMode qtractorAudioEngine::captureLatencyMode (void) const
+{
+	return m_captureLatencyMode;
+}
+
+void qtractorAudioEngine::setCaptureLatency ( unsigned int iCaptureLatency )
+{
+	m_iCaptureLatency = iCaptureLatency;
+}
+
+unsigned int qtractorAudioEngine::captureLatency (void) const
+{
+	return m_iCaptureLatency;
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioBus -- Managed JACK port set
 //
@@ -2767,6 +2851,9 @@ qtractorAudioBus::qtractorAudioBus (
 
 	m_ppXBuffer = nullptr;
 	m_ppYBuffer = nullptr;
+
+	m_iILatency = 0;
+	m_iOLatency = 0;
 
 	m_bEnabled  = false;
 
@@ -2957,6 +3044,7 @@ void qtractorAudioBus::close (void)
 			delete [] m_ppIBuffer;
 		}
 		m_ppIBuffer = nullptr;
+		m_iILatency = 0;
 	}
 
 	if (busMode & qtractorBus::Output) {
@@ -2978,6 +3066,7 @@ void qtractorAudioBus::close (void)
 		if (m_ppOBuffer)
 			delete [] m_ppOBuffer;
 		m_ppOBuffer = nullptr;
+		m_iOLatency = 0;
 	}
 
 	// Free internal buffers.
@@ -3289,89 +3378,88 @@ qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 }
 
 
-// Audio I/O port latency accessors.
-unsigned int qtractorAudioBus::latency_in (void) const
+// Audio I/O port latency callbacks.
+void qtractorAudioBus::updateLatency_in (void)
 {
-	if (m_ppIPorts == nullptr)
-		return 0;
-
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == nullptr)
-		return 0;
+		return;
 
-	unsigned int iLatencyIn = 0;
+	m_iILatency = pAudioEngine->bufferSize();
 
-#ifdef CONFIG_JACK_LATENCY
-	jack_nframes_t range_max = 0;
-	jack_latency_range_t range;
-	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppIPorts[i] == nullptr)
-			continue;
-		jack_port_get_latency_range(m_ppIPorts[i], JackCaptureLatency, &range);
-		if (range_max > range.max || i == 0)
-			range_max = range.max;
+	if (m_ppIPorts) {
+	#ifdef CONFIG_JACK_LATENCY
+		jack_nframes_t range_max = 0;
+		jack_latency_range_t range;
+		for (unsigned int i = 0; i < m_iChannels; ++i) {
+			if (m_ppIPorts[i] == nullptr)
+				continue;
+			jack_port_get_latency_range(m_ppIPorts[i], JackCaptureLatency, &range);
+			if (range_max > range.max || i == 0)
+				range_max = range.max;
+		}
+		m_iILatency += range_max;
+	#else
+		jack_nframes_t lat, lat_min = 0;
+		for (unsigned int i = 0; i < m_iChannels; ++i) {
+			if (m_ppIPorts[i] == nullptr)
+				continue;
+			lat = jack_port_get_latency(m_ppIPorts[i]);
+			if (lat_max > lat || i == 0)
+				lat_max = lat;
+		}
+		m_iILatency += lat_max;
+	#endif
 	}
-	iLatencyIn += range_max;
-#else
-	jack_nframes_t lat, lat_min = 0;
-	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppIPorts[i] == nullptr)
-			continue;
-		lat = jack_port_get_latency(m_ppIPorts[i]);
-		if (lat_max > lat || i == 0)
-			lat_max = lat;
+}
+
+
+void qtractorAudioBus::updateLatency_out (void)
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == nullptr)
+		return;
+
+	m_iOLatency = pAudioEngine->bufferSize();
+
+	if (m_ppOPorts) {
+	#ifdef CONFIG_JACK_LATENCY
+		jack_nframes_t range_max = 0;
+		jack_latency_range_t range;
+		for (unsigned int i = 0; i < m_iChannels; ++i) {
+			if (m_ppOPorts[i] == nullptr)
+				continue;
+			jack_port_get_latency_range(m_ppOPorts[i], JackPlaybackLatency, &range);
+			if (range_max > range.max || i == 0)
+				range_max = range.max;
+		}
+		m_iOLatency += range_max;
+	#else
+		jack_nframes_t lat, lat_max = 0;
+		for (unsigned int i = 0; i < m_iChannels; ++i) {
+			if (m_ppOPorts[i] == nullptr)
+				continue;
+			lat = jack_port_get_latency(m_ppOPorts[i]);
+			if (lat_max > lat || i == 0)
+				lat_max = lat;
+		}
+		m_iOLatency += lat_max;
+	#endif
 	}
-	iLatencyIn += lat_max;
-#endif
+}
 
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-	if (iLatencyIn  < iBufferSize)
-		iLatencyIn += iBufferSize;
 
-	return iLatencyIn;
+// Audio I/O port latency accessors.
+unsigned int qtractorAudioBus::latency_in (void) const
+{
+	return m_iILatency;
 }
 
 unsigned int qtractorAudioBus::latency_out (void) const
 {
-	if (m_ppOPorts == nullptr)
-		return 0;
-
-	qtractorAudioEngine *pAudioEngine
-		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == nullptr)
-		return 0;
-
-	unsigned int iLatencyOut = 0;
-
-#ifdef CONFIG_JACK_LATENCY
-	jack_nframes_t range_max = 0;
-	jack_latency_range_t range;
-	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppOPorts[i] == nullptr)
-			continue;
-		jack_port_get_latency_range(m_ppOPorts[i], JackPlaybackLatency, &range);
-		if (range_max > range.max || i == 0)
-			range_max = range.max;
-	}
-	iLatencyOut += range_max;
-#else
-	jack_nframes_t lat, lat_max = 0;
-	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppOPorts[i] == nullptr)
-			continue;
-		lat = jack_port_get_latency(m_ppOPorts[i]);
-		if (lat_max > lat || i == 0)
-			lat_max = lat;
-	}
-	iLatencyOut += lat_max;
-#endif
-
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-	if (iLatencyOut  < iBufferSize)
-		iLatencyOut += iBufferSize;
-
-	return iLatencyOut;
+	return m_iOLatency;
 }
 
 
