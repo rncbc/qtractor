@@ -1,7 +1,7 @@
 // qtractorOscControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -33,15 +33,25 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 
+#include <QAction>
+#include <QMenu>
+
 
 //---------------------------------------------------------------------------
 // qtractorOscPath - impl.
 
-// Constructor.
+// Constructors.
 qtractorOscPath::qtractorOscPath (
 	const QString& path, QMetaType::Type vtype, QObject *pParent)
 	: QObject(pParent), m_path(path), m_vtype(vtype),
-		m_host(QHostAddress::Null), m_port(0)
+		m_action(nullptr), m_host(QHostAddress::Null), m_port(0)
+{
+}
+
+qtractorOscPath::qtractorOscPath (
+	const QString& path, QAction *pAction, QObject *pParent)
+	: QObject(pParent), m_path(path), m_vtype(QMetaType::QObjectStar),
+		m_action(pAction), m_host(QHostAddress::Null), m_port(0)
 {
 }
 
@@ -55,6 +65,12 @@ const QString& qtractorOscPath::path (void) const
 QMetaType::Type qtractorOscPath::vtype (void) const
 {
 	return m_vtype;
+}
+
+
+QAction *qtractorOscPath::action (void) const
+{
+	return m_action;
 }
 
 
@@ -332,10 +348,39 @@ qtractorOscPath *qtractorOscNode::addPath (
 }
 
 
+qtractorOscPath *qtractorOscNode::addPath (
+	const QString& path, QAction *pAction )
+{
+	qtractorOscPath *pOscPath = new qtractorOscPath(path, pAction, this);
+	m_paths.insert(pOscPath->path(), pOscPath);
+	return pOscPath;
+}
+
+
 void qtractorOscNode::removePath ( qtractorOscPath *pOscPath )
 {
-	m_paths.remove(pOscPath->path());
-	delete pOscPath;
+	if (pOscPath) {
+		m_paths.remove(pOscPath->path());
+		delete pOscPath;
+	}
+}
+
+
+void qtractorOscNode::removePath ( const QString& path )
+{
+	removePath(m_paths.value(path, nullptr));
+}
+
+
+qtractorOscPath *qtractorOscNode::findPath ( const QString& path )
+{
+	return m_paths.value(path, nullptr);
+}
+
+
+QList<qtractorOscPath *> qtractorOscNode::paths (void) const
+{
+	return m_paths.values();
 }
 
 
@@ -417,9 +462,14 @@ void qtractorOscNode::readyReadSlot (void)
 				if (types.size() > 1)
 					args = list;
 			}
-			qtractorOscPath *pOscPath = m_paths.value(path, 0);
-			if (pOscPath)
-				pOscPath->notifyData(args, host, port);
+			qtractorOscPath *pOscPath = m_paths.value(path, nullptr);
+			if (pOscPath) {
+				QAction *pAction = pOscPath->action();
+				if (pAction)
+					pAction->trigger();
+				else
+					pOscPath->notifyData(args, host, port);
+			}
 			while (i < nread && data[++i] != '/');
 		}
 	}
@@ -520,6 +570,7 @@ qtractorOscControl::qtractorOscControl ( unsigned short port )
 	m_pOscServer = new qtractorOscServer(
 		qtractorOscSocket::Udp, QHostAddress::LocalHost, port);
 
+#ifdef CONFIG_OSC_FREEWHEELING
 	// Add some command action slots
 	m_pOscServer->addPath("/AddAudioTrack", QMetaType::QString,
 		this, SLOT(addAudioTrackSlot(const QVariant&)));
@@ -533,6 +584,7 @@ qtractorOscControl::qtractorOscControl ( unsigned short port )
 		this, SLOT(setGlobalTempoSlot(const QVariant&)));
 	m_pOscServer->addPath("/AdvanceLoopRange", QMetaType::QVariantList,
 		this, SLOT(advanceLoopRangeSlot(const QVariant&)));
+#endif
 
 	// Pseudo-singleton reference setup.
 	g_pOscControl = this;
@@ -555,6 +607,86 @@ qtractorOscControl *qtractorOscControl::getInstance (void)
 	return g_pOscControl;
 }
 
+
+// Action path registry.
+void qtractorOscControl::addAction ( QAction *pAction )
+{
+	m_pOscServer->addPath(actionPath(pAction), pAction);
+}
+
+void qtractorOscControl::removeAction ( QAction *pAction )
+{
+	m_pOscServer->removePath(actionPath(pAction));
+}
+
+void qtractorOscControl::clearActions (void)
+{
+	const QList<qtractorOscPath *> paths(m_pOscServer->paths());
+	QListIterator<qtractorOscPath *> iter(paths);
+	while (iter.hasNext()) {
+		qtractorOscPath *pOscPath = iter.next();
+		if (pOscPath && pOscPath->action())
+			m_pOscServer->removePath(pOscPath);
+	}
+}
+
+
+QAction *qtractorOscControl::findAction ( const QString& sPath ) const
+{
+	QAction *pAction = nullptr;
+
+	qtractorOscPath *pOscPath = m_pOscServer->findPath(sPath);
+	if (pOscPath)
+		pAction = pOscPath->action();
+
+	return pAction;
+}
+
+
+QList<QAction *> qtractorOscControl::actions (void) const
+{
+	QList<QAction *> actions;
+
+	QListIterator<qtractorOscPath *> iter(m_pOscServer->paths());
+	while (iter.hasNext()) {
+		qtractorOscPath *pOscPath = iter.next();
+		if (pOscPath) {
+			QAction *pAction = pOscPath->action();
+			if (pAction)
+				actions.append(pAction);
+		}
+	}
+
+	return actions;
+}
+
+
+QString qtractorOscControl::actionPath ( QAction *pAction, const QString& sPath )
+{
+	QString sActionPath = sPath;
+	if (sActionPath.isEmpty())
+		sActionPath = '/' + pAction->text();
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 2)
+	QListIterator<QObject *> iter(pAction->associatedObjects());
+#else
+	QListIterator<QWidget *> iter(pAction->associatedWidgets());
+#endif
+	while (iter.hasNext()) {
+		QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
+		if (pMenu) {
+			sActionPath = '/' + pMenu->title() + sActionPath;
+			pAction = pMenu->menuAction();
+			if (pAction)
+				sActionPath = actionPath(pAction, sActionPath);
+		}
+	}
+
+	return sActionPath.remove(' ').remove('&').remove('.');
+}
+
+
+#ifdef CONFIG_OSC_FREEWHEELING
 
 // AddAudioTrack s:track-name
 //
@@ -797,5 +929,6 @@ void qtractorOscControl::advanceLoopRangeSlot ( const QVariant& v )
 	pSession->execute(pLoopCommand);
 }
 
+#endif	// CONFIG_OSC_FREEWHEELING
 
 // end of qtractorOscControl.cpp

@@ -41,6 +41,11 @@
 
 #include "qtractorPaletteForm.h"
 
+#ifdef CONFIG_OSC
+#include "qtractorOscControl.h"
+#include "qtractorMainForm.h"
+#endif
+
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QColorDialog>
@@ -232,6 +237,15 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	m_ui.Lv2PresetDirToolButton->hide();
 #endif
 
+#ifdef CONFIG_OSC
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	// Some conveniency cleaner helper...
+	m_ui.OscActionsSearchComboBox->lineEdit()->setClearButtonEnabled(true);
+	m_ui.OscActionsSearchComboBox->lineEdit()->setPlaceholderText(
+		m_ui.OscActionsSearchComboBox->toolTip());
+#endif
+#endif
+
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
 	m_iDirtyCustomColorThemes = 0;
@@ -245,6 +259,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 
 	m_iDirtyBlacklist   = 0;
 
+#ifdef CONFIG_OSC
+	m_iDirtyOscActions  = 0;
+#endif
 	// Try to restore old window positioning.
 	adjustSize();
 
@@ -609,15 +626,45 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.TrackColorSaturationSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+#ifdef CONFIG_OSC
+	QObject::connect(m_ui.OscServerCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.OscServerPortSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.OscActionsSearchComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(refreshOscActions()));
+	QObject::connect(m_ui.OscActionsListWidget,
+		SIGNAL(itemChanged(QListWidgetItem *)),
+		SLOT(changeOscActionsItem(QListWidgetItem *)));
+	QObject::connect(m_ui.OscActionsFilterComboBox,
+		SIGNAL(activated(int)),
+		SLOT(refreshOscActions()));
+	QObject::connect(m_ui.OscActionsCheckToolButton,
+		SIGNAL(clicked()),
+		SLOT(checkOscActions()));
+	QObject::connect(m_ui.OscActionsUncheckToolButton,
+		SIGNAL(clicked()),
+		SLOT(uncheckOscActions()));
+	QObject::connect(m_ui.OscActionsResetToolButton,
+		SIGNAL(clicked()),
+		SLOT(resetOscActions()));
+#endif
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(rejected()),
 		SLOT(reject()));
+
+#ifndef CONFIG_OSC
+	m_ui.OptionsTabWidget->removeTab(
+		m_ui.OptionsTabWidget->indexOf(m_ui.OscTabPage));
+	delete m_ui.OscTabPage;
+	m_ui.OscTabPage = nullptr;
+#endif
 }
 
 
@@ -647,7 +694,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->loadComboBoxHistory(m_ui.SessionTemplatePathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.Lv2PresetDirComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.PluginBlacklistComboBox);
-
+#ifdef CONFIG_OSC
+	m_pOptions->loadComboBoxHistory(m_ui.OscActionsSearchComboBox);
+	m_ui.OscActionsSearchComboBox->setEditText(QString());
+#endif
 	// Time-scale related options...
 	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(m_pOptions->iDisplayFormat);
@@ -917,8 +967,11 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.StdoutCaptureCheckBox->setEnabled(false);
 #endif
 
+#ifdef CONFIG_OSC
 	// OSC options.
+	m_ui.OscServerCheckBox->setChecked(m_pOptions->bOscServer);
 	m_ui.OscServerPortSpinBox->setValue(m_pOptions->iOscServerPort);
+#endif
 
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
@@ -932,7 +985,11 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	m_iDirtyBlacklist   = 0;
 
+#ifdef CONFIG_OSC
+	resetOscActions();
+#else
 	stabilizeForm();
+#endif
 }
 
 
@@ -1095,8 +1152,11 @@ void qtractorOptionsForm::accept (void)
 			m_pOptions->sCustomStyleTheme.clear();
 		m_pOptions->sCustomStyleSheet = m_pOptions->comboBoxCurrentFile(m_ui.CustomStyleSheetComboBox);
 		m_pOptions->sCustomIconsTheme = m_pOptions->comboBoxCurrentFile(m_ui.CustomIconsThemeComboBox);
+	#ifdef CONFIG_OSC
 		// OSC options..
+		m_pOptions->bOscServer = m_ui.OscServerCheckBox->isChecked();
 		m_pOptions->iOscServerPort = m_ui.OscServerPortSpinBox->value();
+	#endif
 		// Reset dirty flags.
 		qtractorPluginFactory *pPluginFactory
 			= qtractorPluginFactory::getInstance();
@@ -1150,6 +1210,28 @@ void qtractorOptionsForm::accept (void)
 	m_pOptions->saveComboBoxHistory(m_ui.SessionTemplatePathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.Lv2PresetDirComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.PluginBlacklistComboBox);
+
+#ifdef CONFIG_OSC
+	m_pOptions->saveComboBoxHistory(m_ui.OscActionsSearchComboBox);
+	if (m_iDirtyOscActions > 0) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		qtractorOscControl *pOscControl = qtractorOscControl::getInstance();
+		if (pOscControl && pMainForm) {
+			QListIterator iter(m_oscActions.keys());
+			while (iter.hasNext()) {
+				QAction *pAction = iter.next();
+				if (pAction) {
+					if (m_oscActions.value(pAction, false))
+						pOscControl->addAction(pAction);
+					else
+						pOscControl->removeAction(pAction);
+				}
+			}
+			m_pOptions->saveOscActions(pMainForm);
+			m_iDirtyOscActions = 0;
+		}
+	}
+#endif
 
 	// Save/commit to disk.
 	m_pOptions->saveOptions();
@@ -2229,6 +2311,176 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 }
 
 
+// OSC server change slot.
+void qtractorOptionsForm::changeOscServer (void)
+{
+#ifdef CONFIG_OSC
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->updateOscControl();
+#endif
+	changed();
+}
+
+
+// OSC actions map change slot.
+void qtractorOptionsForm::changeOscActionsItem ( QListWidgetItem *pItem )
+{
+	QAction *pAction = pItem->data(Qt::UserRole).value<QAction *>();
+	if (pAction) {
+		m_oscActions.remove(pAction);
+		m_oscActions.insert(pAction, pItem->checkState() == Qt::Checked);
+	}
+
+	changeOscActions();
+}
+
+
+void qtractorOptionsForm::changeOscActions (void)
+{
+#ifdef CONFIG_OSC
+	++m_iDirtyOscActions;
+#endif
+	changed();
+}
+
+
+// OSC actions map (un)check slots.
+void qtractorOptionsForm::checkOscActions (void)
+{
+#ifdef CONFIG_OSC
+
+	const int iItemCount = m_ui.OscActionsListWidget->count();
+	for (int i = 0; i < iItemCount; ++i) {
+		QListWidgetItem *pItem = m_ui.OscActionsListWidget->item(i);
+		if (pItem && pItem->checkState() == Qt::Unchecked) {
+			QAction *pAction = pItem->data(Qt::UserRole).value<QAction *>();
+			if (pAction) {
+				m_oscActions.remove(pAction);
+				m_oscActions.insert(pAction, true);
+			}
+		}
+	}
+
+#endif
+	refreshOscActions();
+	changeOscActions();
+}
+
+
+void qtractorOptionsForm::uncheckOscActions (void)
+{
+#ifdef CONFIG_OSC
+
+	const int iItemCount = m_ui.OscActionsListWidget->count();
+	for (int i = 0; i < iItemCount; ++i) {
+		QListWidgetItem *pItem = m_ui.OscActionsListWidget->item(i);
+		if (pItem && pItem->checkState() == Qt::Checked) {
+			QAction *pAction = pItem->data(Qt::UserRole).value<QAction *>();
+			if (pAction) {
+				m_oscActions.remove(pAction);
+				m_oscActions.insert(pAction, false);
+			}
+		}
+	}
+
+#endif
+	refreshOscActions();
+	changeOscActions();
+}
+
+
+// OSC actions map reseth slot.
+void qtractorOptionsForm::resetOscActions (void)
+{
+#ifdef CONFIG_OSC
+
+	m_oscActions.clear();
+	m_ui.OscActionsListWidget->clear();
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == nullptr)
+		return;
+
+	qtractorOscControl *pOscControl = qtractorOscControl::getInstance();
+	if (pOscControl == nullptr)
+		return;
+
+	const int iFilter = m_ui.OscActionsFilterComboBox->currentIndex();
+	const QList<QAction *>& actions
+		= pMainForm->findChildren<QAction *> (QString(), Qt::FindDirectChildrenOnly);
+	QListIterator<QAction *> iter(actions);
+	while (iter.hasNext()) {
+		QAction *pAction = iter.next();
+		const QString& sActionPath
+			= qtractorOscControl::actionPath(pAction);
+		const bool bChecked
+			= (pOscControl->findAction(sActionPath) != nullptr);
+		m_oscActions.insert(pAction, bChecked);
+		if ((iFilter == 1 && !bChecked) ||
+			(iFilter == 2 &&  bChecked))
+			continue;
+		QListWidgetItem *pItem = new QListWidgetItem(sActionPath);
+		pItem->setCheckState(bChecked ? Qt::Checked : Qt::Unchecked);
+		pItem->setData(Qt::UserRole, QVariant::fromValue<QAction *> (pAction));
+		m_ui.OscActionsListWidget->addItem(pItem);
+	}
+
+	m_iDirtyOscActions = 0;
+
+#endif
+
+	stabilizeForm();
+}
+
+
+// OSC actions map refresh slot.
+void qtractorOptionsForm::refreshOscActions (void)
+{
+#ifdef CONFIG_OSC
+
+	m_ui.OscActionsListWidget->clear();
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == nullptr)
+		return;
+
+	qtractorOscControl *pOscControl = qtractorOscControl::getInstance();
+	if (pOscControl == nullptr)
+		return;
+
+	QString sSearch = m_ui.OscActionsSearchComboBox->currentText().simplified();
+	const QRegularExpression rx(sSearch.replace(
+		QRegularExpression("[\\s]+"), ".*"),
+		QRegularExpression::CaseInsensitiveOption);
+
+	const int iFilter = m_ui.OscActionsFilterComboBox->currentIndex();
+	const QList<QAction *>& actions
+		= pMainForm->findChildren<QAction *> (QString(), Qt::FindDirectChildrenOnly);
+	QListIterator<QAction *> iter(actions);
+	while (iter.hasNext()) {
+		QAction *pAction = iter.next();
+		const QString& sActionPath
+			= qtractorOscControl::actionPath(pAction);
+		if (!rx.pattern().isEmpty()
+			&& !rx.match(sActionPath).hasMatch())
+			continue;
+		const bool bChecked = m_oscActions.value(pAction, false);
+		if ((iFilter == 1 && !bChecked) ||
+			(iFilter == 2 &&  bChecked))
+			continue;
+		QListWidgetItem *pItem = new QListWidgetItem(sActionPath);
+		pItem->setCheckState(bChecked ? Qt::Checked : Qt::Unchecked);
+		pItem->setData(Qt::UserRole, QVariant::fromValue<QAction *> (pAction));
+		m_ui.OscActionsListWidget->addItem(pItem);
+	}
+
+#endif
+
+	stabilizeForm();
+}
+
+
 // Stabilize current form state.
 void qtractorOptionsForm::stabilizeForm (void)
 {
@@ -2372,6 +2624,27 @@ void qtractorOptionsForm::stabilizeForm (void)
 
 	m_ui.AudioOutputAutoConnectCheckBox->setEnabled(
 		m_ui.AudioOutputBusCheckBox->isChecked());
+
+#ifdef CONFIG_OSC
+	const bool bOscServer = m_ui.OscServerCheckBox->isChecked();
+	m_ui.OscServerPortTextLabel->setEnabled(bOscServer);
+	m_ui.OscServerPortSpinBox->setEnabled(bOscServer);
+	m_ui.OscActionsSearchComboBox->setEnabled(bOscServer);
+	m_ui.OscActionsListWidget->setEnabled(bOscServer);
+	int iCheckedCount = 0;
+	const int iItemCount = m_ui.OscActionsListWidget->count();
+	for (int i = 0; i < iItemCount; ++i) {
+		QListWidgetItem *pItem = m_ui.OscActionsListWidget->item(i);
+		if (pItem && pItem->checkState() == Qt::Checked)
+			++iCheckedCount;
+	}
+	m_ui.OscActionsCheckToolButton->setEnabled(
+		bOscServer && iCheckedCount < iItemCount);
+	m_ui.OscActionsUncheckToolButton->setEnabled(
+		bOscServer && iCheckedCount > 0);
+	m_ui.OscActionsResetToolButton->setEnabled(
+		m_iDirtyOscActions > 0);
+#endif
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }

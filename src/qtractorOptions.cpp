@@ -427,7 +427,8 @@ void qtractorOptions::loadOptions (void)
 
 	// OSC options.
 	m_settings.beginGroup("/Osc");
-	iOscServerPort = m_settings.value("/ServerPort", 5000).toInt();
+	bOscServer     = m_settings.value("/Server", false).toBool();
+	iOscServerPort = m_settings.value("/ServerPort", 0).toInt();
 	m_settings.endGroup();
 }
 
@@ -746,6 +747,7 @@ void qtractorOptions::saveOptions (void)
 
 	// OSC options.
 	m_settings.beginGroup("/Osc");
+	m_settings.setValue("/Server", bOscServer);
 	m_settings.setValue("/ServerPort", iOscServerPort);
 	m_settings.endGroup();
 
@@ -1350,6 +1352,75 @@ void qtractorOptions::saveActionControls ( QObject *pObject )
 	}
 
 	m_settings.endGroup();
+}
+
+
+//---------------------------------------------------------------------------
+// OSC action mapping persistence helper methods.
+
+#ifdef CONFIG_OSC
+#include "qtractorOscControl.h"
+#endif
+
+void qtractorOptions::loadOscActions ( QObject *pObject )
+{
+#ifdef CONFIG_OSC
+
+	qtractorOscControl *pOscControl
+		= qtractorOscControl::getInstance();
+	if (pOscControl == nullptr)
+		return;
+
+	pOscControl->clearActions();
+
+	m_settings.beginGroup("/OscActions/" + pObject->objectName());
+
+	const QStringList& keys = m_settings.childKeys();
+	QStringListIterator iter(keys);
+	while (iter.hasNext()) {
+		const QString& sObjectName = iter.next();
+		const QList<QAction *>& actions
+			= pObject->findChildren<QAction *> (sObjectName);
+		if (actions.isEmpty())
+			continue;
+		QAction *pAction = actions.first();
+		pOscControl->addAction(pAction);
+	}
+
+	m_settings.endGroup();
+
+#endif
+}
+
+
+void qtractorOptions::saveOscActions ( QObject *pObject )
+{
+#ifdef CONFIG_OSC
+
+	qtractorOscControl *pOscControl
+		= qtractorOscControl::getInstance();
+	if (pOscControl == nullptr)
+		return;
+
+	m_settings.beginGroup("/OscActions/" + pObject->objectName());
+
+	const QStringList& keys = m_settings.childKeys();
+	QStringListIterator iter(keys);
+	while (iter.hasNext()) {
+		const QString& key = iter.next();
+		m_settings.remove(key);
+	}
+
+	QListIterator<QAction *> iter2(pOscControl->actions());
+	while (iter2.hasNext()) {
+		QAction *pAction = iter2.next();
+		const QString& sKey	= '/' + pAction->objectName();
+		m_settings.setValue(sKey, true);
+	}
+
+	m_settings.endGroup();
+
+#endif
 }
 
 

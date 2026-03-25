@@ -356,7 +356,8 @@ public:
 	QString sCustomIconsTheme;
 
 	// OSC options.
-	int iOscServerPort;
+	bool bOscServer;
+	int  iOscServerPort;
 
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget, bool bVisible = false);
@@ -383,6 +384,10 @@ public:
 	// Action MIDI observers persistence helper methods.
 	void loadActionControls(QObject *pObject);
 	void saveActionControls(QObject *pObject);
+
+	// OSC action mapping persistence helper methods.
+	void loadOscActions(QObject *pObject);
+	void saveOscActions(QObject *pObject);
 
 	// Singleton instance accessor.
 	static qtractorOptions *getInstance();

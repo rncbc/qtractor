@@ -92,6 +92,13 @@ protected slots:
 	void chooseMessagesFont();
 	void chooseMessagesLogPath();
 	void chooseSessionTemplatePath();
+	void changeOscServer();
+	void changeOscActionsItem(QListWidgetItem *);
+	void changeOscActions();
+	void checkOscActions();
+	void uncheckOscActions();
+	void resetOscActions();
+	void refreshOscActions();
 	void stabilizeForm();
 
 protected:
@@ -146,6 +153,10 @@ private:
 	int m_iDirtyLv2Paths;
 
 	int m_iDirtyBlacklist;
+
+	int m_iDirtyOscActions;
+
+	QHash<QAction *, bool> m_oscActions;
 };
 
 

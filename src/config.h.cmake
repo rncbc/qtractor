@@ -191,7 +191,7 @@
 /* Define if LV2 UI Request-value support is available. */
 #cmakedefine CONFIG_LV2_UI_REQ_VALUE @CONFIG_LV2_UI_REQ_VALUE@
 
-/* Define if LV2 UI Request-value support is available. (FAKE) */
+/* Define if LV2 UI Request-value fake support is available. */
 #cmakedefine CONFIG_LV2_UI_REQ_VALUE_FAKE @CONFIG_LV2_UI_REQ_VALUE_FAKE@
 
 /* Define if LV2 UI Idle interface support is available. */
@@ -226,6 +226,12 @@
 
 /* Define if jack_set_port_rename_callback is available. */
 #cmakedefine CONFIG_JACK_PORT_RENAME @CONFIG_JACK_PORT_RENAME@
+
+/* Define if OSC support is available. */
+#cmakedefine CONFIG_OSC @CONFIG_OSC@
+
+/* Define if OSC Freewheeling looper support is available. */
+#cmakedefine CONFIG_OSC_FREEWHEELING @CONFIG_OSC_FREEWHEELING@
 
 /* Define if NSM support is available. */
 #cmakedefine CONFIG_NSM @CONFIG_NSM@

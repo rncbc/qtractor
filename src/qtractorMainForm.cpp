@@ -109,7 +109,9 @@
 #include "qtractorNsmClient.h"
 #endif
 
+#ifdef CONFIG_OSC
 #include "qtractorOscControl.h"
+#endif
 
 #include <QApplication>
 #include <QMessageBox>
@@ -354,8 +356,10 @@ qtractorMainForm::qtractorMainForm (
 	// Add the midi controller map...
 	m_pMidiControl = new qtractorMidiControl();
 
-	// Also the OSC control server (TESTING)...
-	m_pOscControl = NULL;
+#ifdef CONFIG_OSC
+	// Also the OSC control server...
+	m_pOscControl = nullptr;
+#endif
 
 #ifdef HAVE_SIGNAL_H
 
@@ -1322,13 +1326,15 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pMidiControl)
 		delete m_pMidiControl;
 
-	// Remove OSC control server (TESTING).
-	if (m_pOscControl)
-		delete m_pOscControl;
-
 	// Remove (QAction) MIDI observer map.
 	if (m_pActionControl)
 		delete m_pActionControl;
+
+#ifdef CONFIG_OSC
+	// Remove OSC control server (TESTING).
+	if (m_pOscControl)
+		delete m_pOscControl;
+#endif
 
 	// Remove plugin path/files registry.
 	if (m_pPluginFactory)
@@ -1554,7 +1560,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMidiControl();
 	updateMidiMetronome();
 	updateSyncViewHold();
+#ifdef CONFIG_OSC
 	updateOscControl();
+#endif
 
 	// FIXME: This is what it should ever be,
 	// make it right from this very moment...
@@ -5474,6 +5482,7 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 	const QString sOldCustomStyleSheet   = m_pOptions->sCustomStyleSheet;
 	const QString sOldCustomIconsTheme   = m_pOptions->sCustomIconsTheme;
+	const bool    bOldOscServer          = m_pOptions->bOscServer;
 	const int     iOldOscServerPort      = m_pOptions->iOscServerPort;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
@@ -5693,9 +5702,11 @@ void qtractorMainForm::viewOptions (void)
 		if (iOldTrackColorSaturation != m_pOptions->iTrackColorSaturation)
 			qtractorTrack::setTrackColorSaturation(
 				m_pOptions->iTrackColorSaturation);
+	#ifdef CONFIG_OSC
 		// OSC service options...
 		if (iOldOscServerPort != m_pOptions->iOscServerPort)
 			updateOscControl();
+	#endif
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -7587,19 +7598,30 @@ void qtractorMainForm::updateSyncViewHold (void)
 }
 
 
-// Update OSC control connections. (TESTING)
+// Update OSC control connections.
 void qtractorMainForm::updateOscControl (void)
 {
-	if (m_pOptions == NULL)
+#ifdef CONFIG_OSC
+
+	if (m_pOptions == nullptr)
 		return;
 
 	if (m_pOscControl) {
 		delete m_pOscControl;
-		m_pOscControl = NULL;
+		m_pOscControl = nullptr;
 	}
 
-	// Update OSC server ...
-	m_pOscControl = new qtractorOscControl(m_pOptions->iOscServerPort);
+	// Update/enable the OSC server/listener ...
+	//
+	if (m_pOptions->iOscServerPort < qtractorOscControl::MINIMUM_SERVER_PORT)
+		m_pOptions->iOscServerPort = qtractorOscControl::DEFAULT_SERVER_PORT;
+
+	if (m_pOptions->bOscServer) {
+		m_pOscControl = new qtractorOscControl(m_pOptions->iOscServerPort);
+		m_pOptions->loadOscActions(this);
+	}
+
+#endif
 }
 
 

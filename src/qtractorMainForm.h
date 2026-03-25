@@ -135,6 +135,8 @@ public:
 
 	static QString styleSheet(const QString& sFilename);
 
+	void updateOscControl();
+
 public slots:
 
 	void fileNew();
@@ -442,7 +444,6 @@ protected:
 	void updateAudioCaptureLatency();
 	void updateMidiMetronome();
 	void updateSyncViewHold();
-	void updateOscControl();
 
 	void updateCustomColorTheme();
 	void updateCustomStyleTheme();

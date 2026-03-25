@@ -1,7 +1,7 @@
 // qtractorOscControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,18 +31,18 @@
 #include <QHostAddress>
 #include <QVariant>
 
+#include <QList>
+#include <QHash>
+
 
 // Forward declarations.
 class qtractorOscServer;
 class qtractorOscClient;
-
-
-// Forward declarations.
-class QAbstractSocket;
-
-class QTcpServer;
-
 class qtractorOscNode;
+
+class QAbstractSocket;
+class QTcpServer;
+class QAction;
 
 
 //---------------------------------------------------------------------------
@@ -55,11 +55,14 @@ class qtractorOscPath : public QObject
 public:
 
 	// Constructors.
-	qtractorOscPath(const QString& path, QMetaType::Type vtype, QObject *pParent = 0);
+	qtractorOscPath(const QString& path, QMetaType::Type vtype, QObject *pParent = nullptr);
+	qtractorOscPath(const QString& path, QAction *pAction, QObject *pParent = nullptr);
 
 	// Instance properties accessors.
 	const QString& path() const;
 	QMetaType::Type vtype() const;
+
+	QAction *action() const;
 
 	// Transient properties accessors.
 	const QHostAddress& host() const;
@@ -84,6 +87,8 @@ private:
 	QString         m_path;
 	QMetaType::Type m_vtype;
 
+	QAction        *m_action;
+
 	// Transient properties.
 	QHostAddress    m_host;
 	unsigned short  m_port;
@@ -101,7 +106,7 @@ public:
 	enum Type { Udp, Tcp };
 
 	// Constructor.
-	qtractorOscSocket(Type stype, QAbstractSocket *pSocket = 0);
+	qtractorOscSocket(Type stype, QAbstractSocket *pSocket = nullptr);
 
 	// Desstructor.
 	~qtractorOscSocket();
@@ -145,7 +150,14 @@ public:
 	qtractorOscPath *addPath(const QString& path,
 		QMetaType::Type vtype, const QObject *receiver, const char *method);
 
+	qtractorOscPath *addPath(const QString& path, QAction *pAction);
+
 	void removePath(qtractorOscPath *pOscPath);
+	void removePath(const QString& path);
+
+	qtractorOscPath *findPath(const QString& path);
+
+	QList<qtractorOscPath *> paths() const;
 
 	void clear();
 
@@ -156,7 +168,7 @@ signals:
 protected:
 
 	// Constructor.
-	qtractorOscNode(qtractorOscSocket::Type stype, QObject *pParent = 0);
+	qtractorOscNode(qtractorOscSocket::Type stype, QObject *pParent = nullptr);
 
 	// Destructor.
 	~qtractorOscNode();
@@ -208,7 +220,7 @@ public:
 
 	// Constructor.
 	qtractorOscServer(qtractorOscSocket::Type stype,
-		const QHostAddress& host, unsigned short port, QObject *pParent = 0);
+		const QHostAddress& host, unsigned short port, QObject *pParent = nullptr);
 
 	// Destructor.
 	~qtractorOscServer();
@@ -236,7 +248,7 @@ public:
 
 	// Constructor.
 	qtractorOscClient(qtractorOscSocket::Type stype,
-		const QHostAddress& host, unsigned short port, QObject *pParent = 0);
+		const QHostAddress& host, unsigned short port, QObject *pParent = nullptr);
 
 	// Instance accessors.
 	const QHostAddress& host() const;
@@ -258,9 +270,6 @@ private:
 //---------------------------------------------------------------------------
 // OSC command slots implementation...
 
-#define QTRACTOR_OSC_SERVER_PORT 5000
-
-
 class qtractorOscControl : public QObject
 {
 	Q_OBJECT
@@ -268,7 +277,7 @@ class qtractorOscControl : public QObject
 public:
 
 	// Constructor.
-	qtractorOscControl(unsigned short port = QTRACTOR_OSC_SERVER_PORT);
+	qtractorOscControl(unsigned short port = DEFAULT_SERVER_PORT);
 
 	// Destructor.
 	~qtractorOscControl();
@@ -276,14 +285,30 @@ public:
 	// Pseudo-singleton instance accessor.
 	static qtractorOscControl *getInstance();
 
-public slots:
+	// Action path registry.
+	void addAction(QAction *pAction);
+	void removeAction(QAction *pAction);
+	void clearActions();
 
+	QAction *findAction(const QString& sPath) const;
+
+	QList<QAction *> actions() const;
+
+	static QString actionPath(QAction *pAction, const QString& sPath = QString());
+
+	// Default OSC server port.
+	static const unsigned short MINIMUM_SERVER_PORT = 1024;
+	static const unsigned short DEFAULT_SERVER_PORT = 5000;
+
+#ifdef CONFIG_OSC_FREEWHEELING
+protected slots:
 	void addAudioTrackSlot(const QVariant& v);
 	void addAudioClipSlot(const QVariant& v);
 	void addAudioClipUniqueTrackSlot(const QVariant& v);
 	void ensureUniqueTrackSlot(const QVariant& v);
 	void setGlobalTempoSlot(const QVariant& v);
 	void advanceLoopRangeSlot(const QVariant& v);
+#endif	// CONFIG_OSC_FREEWHEELING
 
 private:
 
@@ -293,7 +318,6 @@ private:
 	// Pseudo-singleton instance.
 	static qtractorOscControl *g_pOscControl;
 };
-
 
 #endif  // __qtractorOscControl_h
 

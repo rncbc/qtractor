@@ -408,7 +408,7 @@ if (NOT CONFIG_QT6)
   target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::X11Extras)
 endif ()
 
-if (CONFIG_LIBLO OR CONFIG_XUNIQUE)
+if (CONFIG_LIBLO OR CONFIG_XUNIQUE OR CONFIG_OSC)
   target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 endif ()
 

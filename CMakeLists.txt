@@ -179,6 +179,12 @@ option (CONFIG_JACK_METADATA "Enable JACK metadata support (default=yes)" 1)
 # Enable NSM support.
 option (CONFIG_NSM "Enable NSM support (default=yes)" 1)
 
+# Enable OSC support.
+option (CONFIG_OSC "Enable OSC support (default=yes)" 1)
+
+# Enable OSC Freewheeling looper support.
+option (CONFIG_OSC_FREEWHEELING "Enable OSC Freewheeling looper support (default=no)" 0)
+
 # Enable unique/single instance.
 option (CONFIG_XUNIQUE "Enable unique/single instance (default=no)" 0)
 
@@ -220,7 +226,7 @@ if (NOT CONFIG_QT6)
   find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS X11Extras)
 endif ()
 
-if (CONFIG_LIBLO OR CONFIG_XUNIQUE)
+if (CONFIG_LIBLO OR CONFIG_XUNIQUE OR CONFIG_OSC)
   find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
 endif ()
 
@@ -825,6 +831,10 @@ if (CONFIG_LV2_UI_GTKMM2)
   endif ()
 endif ()
 
+if (NOT CONFIG_OSC)
+  set (CONFIG_OSC_FREEWHEELING 0)
+endif ()
+
 
 add_subdirectory (src)
 
@@ -884,7 +894,7 @@ show_option ("  LV2 plug-in MIDNAM support . . . . . . . . . . . ." CONFIG_LV2_M
 show_option ("  LV2 plug-in Presets support  . . . . . . . . . . ." CONFIG_LV2_PRESETS)
 show_option ("  LV2 plug-in Patch support  . . . . . . . . . . . ." CONFIG_LV2_PATCH)
 show_option ("  LV2 plug-in Port-event support . . . . . . . , . ." CONFIG_LV2_PORT_EVENT)
-show_option ("  LV2 plug-in Port-change request (EXPERIMENTAL) . ." CONFIG_LV2_PORT_CHANGE_REQUEST)
+show_option ("  LV2 plug-in Port-change request  . . . . . . . . ." CONFIG_LV2_PORT_CHANGE_REQUEST)
 show_option ("  LV2 plug-in Time support . . . . . . . . . . . . ." CONFIG_LV2_TIME)
 show_option ("  LV2 plug-in Time/position support  . . . . . . . ." CONFIG_LV2_TIME_POSITION)
 show_option ("  LV2 plug-in Options support  . . . . . . . . . . ." CONFIG_LV2_OPTIONS)
@@ -903,6 +913,8 @@ show_option ("  JACK Latency support . . . . . . . . . . . . . . ." CONFIG_JACK_
 show_option ("  JACK Metadata support  . . . . . . . . . . . . . ." CONFIG_JACK_METADATA)
 message     ("")
 show_option ("  Non/New Session Management (NSM) support . . . . ." CONFIG_NSM)
+message     ("")
+show_option ("  OSC Server/Actions support . . . . . . . . . . . ." CONFIG_OSC)
 message     ("")
 show_option ("  VeSTige header support . . . . . . . . . . . . . ." CONFIG_VESTIGE)
 show_option ("  Unique/Single instance support . . . . . . . . . ." CONFIG_XUNIQUE)
