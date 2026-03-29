@@ -2182,7 +2182,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	// Ask for the file to save...
 	if (bPrompt) {
 		// Prompt the guy...
-		QString sExt("qtr");
+		QString sExt = m_pOptions->sSessionExt; // Default session file format...
 		QStringList filters;
 	#ifdef CONFIG_LIBZ
 		filters.append(tr("Session files (*.%1 *.%2 *.%3)")
@@ -2192,14 +2192,18 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		filters.append(tr("Session files (*.%1 *.%2)")
 			.arg(sExt).arg(qtractorDocument::defaultExt()));
 	#endif
+		QString  sSelectedFilter = filters.first();
 		filters.append(tr("Template files (*.%1)")
 			.arg(qtractorDocument::templateExt()));
+		if (sExt == qtractorDocument::templateExt())
+			sSelectedFilter = filters.last();
 	#ifdef CONFIG_LIBZ
 		filters.append(tr("Archive files (*.%1)")
 			.arg(qtractorDocument::archiveExt()));
+		if (sExt == qtractorDocument::archiveExt())
+			sSelectedFilter = filters.last();
 	#endif
 		filters.append(tr("All files (*.*)"));
-		sExt = m_pOptions->sSessionExt; // Default session  file format...
 		const QString& sTitle
 			= tr("Save Session");
 		const QString& sFilter
@@ -2215,8 +2219,10 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		// Try to rename as if a backup is about...
 		sFilename = sessionBackupPath(sFilename);
 	#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
+		QString *pSelectedFilter = &sSelectedFilter;
 		sFilename = QFileDialog::getSaveFileName(pParentWidget,
-			sTitle, sFilename, sFilter, nullptr, options);
+			sTitle, sFilename, sFilter, pSelectedFilter, options);
+		if (pSelectedFilter) sSelectedFilter = *pSelectedFilter;
 	#else
 		// Construct save-file session/template dialog...
 		QFileDialog fileDialog(pParentWidget,
@@ -2226,11 +2232,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		fileDialog.setFileMode(QFileDialog::AnyFile);
 		fileDialog.setHistory(m_pOptions->recentFiles);
 		fileDialog.setDefaultSuffix(sExt);
-	#ifdef CONFIG_LIBZ
-		// Special case for archive by default...
-		if (sExt == qtractorDocument::archiveExt())
-			fileDialog.setNameFilter(filters.last());
-	#endif
+		fileDialog.setNameFilter(sSelectedFilter);
 		// Stuff sidebar...
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
@@ -2241,8 +2243,10 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			return false;
 		// Have the save-file name...
 		sFilename = fileDialog.selectedFiles().first();
+		sSelectedFilter = fileDialog.selectedNameFilter();
+	#endif
 		// Check whether we're on the template or archive filter...
-		switch (filters.indexOf(fileDialog.selectedNameFilter())) {
+		switch (filters.indexOf(sSelectedFilter)) {
 		case 1:
 			sExt = qtractorDocument::templateExt();
 			break;
@@ -2250,7 +2254,6 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			sExt = qtractorDocument::archiveExt();
 			break;
 		}
-	#endif
 		// Have we cancelled it?
 		if (sFilename.isEmpty() || sFilename.at(0) == '.')
 			return false;
