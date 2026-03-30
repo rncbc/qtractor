@@ -45,7 +45,9 @@
  <url type="homepage">https://qtractor.org</url>
  <url type="vcs-browser">https://github.com/rncbc/qtractor</url>
  <project_group>rncbc.org</project_group>
- <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
+ <developer id="rncbc.org">
+  <name>rncbc aka. Rui Nuno Capela</name>
+ </developer>
  <update_contact>rncbc@rncbc.org</update_contact>
  <releases>
   <release version="1.5.12" date="2026-03-20" urgency="low" />
