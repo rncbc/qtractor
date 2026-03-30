@@ -2182,28 +2182,44 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	// Ask for the file to save...
 	if (bPrompt) {
 		// Prompt the guy...
-		QString sExt = m_pOptions->sSessionExt; // Default session file format...
+		QString sExt("qtr");
 		QStringList filters;
+		// Default session file format...
 	#ifdef CONFIG_LIBZ
-		filters.append(tr("Session files (*.%1 *.%2 *.%3)")
-			.arg(sExt).arg(qtractorDocument::defaultExt())
-			.arg(qtractorDocument::archiveExt()));
+		const QString& sArchiveExt
+			= qtractorDocument::archiveExt();
+		const QString& sSessionFilter
+			= tr("Session files (*.%1 *.%2 *.%3)").arg(sExt)
+				.arg(qtractorDocument::defaultExt())
+				.arg(sArchiveExt);
 	#else
-		filters.append(tr("Session files (*.%1 *.%2)")
-			.arg(sExt).arg(qtractorDocument::defaultExt()));
+		const QString& sSessionFilter
+			= tr("Session files (*.%1 *.%2)").arg(sExt)
+				.arg(qtractorDocument::defaultExt()));
 	#endif
-		QString  sSelectedFilter = filters.first();
-		filters.append(tr("Template files (*.%1)")
-			.arg(qtractorDocument::templateExt()));
-		if (sExt == qtractorDocument::templateExt())
-			sSelectedFilter = filters.last();
+		filters.append(sSessionFilter);
+		const QString& sSessionExt
+			= m_pOptions->sSessionExt;
+		if (!sSessionExt.isEmpty())
+			sExt = sSessionExt;
+		QString sSelectedFilter = sSessionFilter;
+		// Template file format...
+		const QString& sTemplateExt
+			= qtractorDocument::templateExt();
+		const QString& sTemplateFilter
+			= tr("Template files (*.%1)").arg(sTemplateExt);
+		if (sExt == sTemplateExt)
+			sSelectedFilter = sTemplateFilter;
+		filters.append(sTemplateFilter);
 	#ifdef CONFIG_LIBZ
-		filters.append(tr("Archive files (*.%1)")
-			.arg(qtractorDocument::archiveExt()));
-		if (sExt == qtractorDocument::archiveExt())
-			sSelectedFilter = filters.last();
+		// Archive/zip file format...
+		const QString& sArchiveFilter
+			= tr("Archive files (*.%1)").arg(sArchiveExt);
+		if (sExt == sArchiveExt)
+			sSelectedFilter = sArchiveFilter;
+		filters.append(sArchiveFilter);
 	#endif
-		filters.append(tr("All files (*.*)"));
+	//	filters.append(tr("All files (*.*)"));
 		const QString& sTitle
 			= tr("Save Session");
 		const QString& sFilter
