@@ -1664,7 +1664,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pNsmClient->announce(QTRACTOR_TITLE, ":switch:dirty:optional-gui:");
 		m_sNsmExt = m_pOptions->sSessionExt;
 		if (m_sNsmExt.isEmpty())
-			m_sNsmExt = qtractorDocument::defaultExt();
+			m_sNsmExt = qtractorDocument::regularExt();
 		// Run-time special non-persistent options.
 		//m_pOptions->bDontUseNativeDialogs = true;
 		QMainWindow::hide();
@@ -2087,11 +2087,11 @@ bool qtractorMainForm::openSession (void)
 	// Ask for the filename to open...
 	QString sFilename;
 
-	QString sExt("qtr");
+	QString sExt(qtractorDocument::defaultExt());
 	QStringList filters;
 #ifdef CONFIG_LIBZ
 	filters.append(tr("Session files (*.%1 *.%2 *.%3)")
-		.arg(sExt).arg(qtractorDocument::defaultExt())
+		.arg(sExt).arg(qtractorDocument::regularExt())
 		.arg(qtractorDocument::archiveExt()));
 #else
 	filters.append(tr("Session files (*.%1 *.%2)")
@@ -2182,39 +2182,45 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	// Ask for the file to save...
 	if (bPrompt) {
 		// Prompt the guy...
-		QString sExt("qtr");
+		QString sExt(qtractorDocument::defaultExt());
 		QStringList filters;
-		// Default session file format...
-	#ifdef CONFIG_LIBZ
-		const QString& sArchiveExt
-			= qtractorDocument::archiveExt();
-		const QString& sSessionFilter
-			= tr("Session files (*.%1 *.%2 *.%3)").arg(sExt)
-				.arg(qtractorDocument::defaultExt())
-				.arg(sArchiveExt);
-	#else
-		const QString& sSessionFilter
-			= tr("Session files (*.%1 *.%2)").arg(sExt)
-				.arg(qtractorDocument::defaultExt()));
-	#endif
-		filters.append(sSessionFilter);
+		// Default session file formats...
+		const QString& sDefaultFilter
+			= tr("Default session files (*.%1)").arg(sExt);
+		filters.append(sDefaultFilter);
+		QString sSelectedFilter = sDefaultFilter;
+		// Make sure it gets a extension/suffix if it's missing...
 		const QString& sSessionExt
-			= m_pOptions->sSessionExt;
-		if (!sSessionExt.isEmpty())
+			= QFileInfo(sFilename).suffix();
+		if (qtractorDocument::isValidExt(sSessionExt)) {
 			sExt = sSessionExt;
-		QString sSelectedFilter = sSessionFilter;
+		} else {
+			if (!m_pOptions->sSessionExt.isEmpty())
+				sExt = m_pOptions->sSessionExt;
+			sFilename += '.' + sExt;
+		}
+		// Regular session file formats...
+		const QString& sRegularExt
+			= qtractorDocument::regularExt();
+		const QString& sRegularFilter
+			= tr("Regular session files (*.%1)").arg(sRegularExt);
+		if (sExt == sRegularExt)
+			sSelectedFilter = sRegularFilter;
+		filters.append(sRegularFilter);
 		// Template file format...
 		const QString& sTemplateExt
 			= qtractorDocument::templateExt();
 		const QString& sTemplateFilter
-			= tr("Template files (*.%1)").arg(sTemplateExt);
+			= tr("Template session files (*.%1)").arg(sTemplateExt);
 		if (sExt == sTemplateExt)
 			sSelectedFilter = sTemplateFilter;
 		filters.append(sTemplateFilter);
 	#ifdef CONFIG_LIBZ
 		// Archive/zip file format...
+		const QString& sArchiveExt
+			= qtractorDocument::archiveExt();
 		const QString& sArchiveFilter
-			= tr("Archive files (*.%1)").arg(sArchiveExt);
+			= tr("Archive session files (*.%1)").arg(sArchiveExt);
 		if (sExt == sArchiveExt)
 			sSelectedFilter = sArchiveFilter;
 		filters.append(sArchiveFilter);
@@ -2263,18 +2269,27 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	#endif
 		// Check whether we're on the template or archive filter...
 		switch (filters.indexOf(sSelectedFilter)) {
-		case 1:
+	#ifdef CONFIG_LIBZ
+		case 3:
+			sExt = qtractorDocument::archiveExt();
+			break;
+	#endif
+		case 2:
 			sExt = qtractorDocument::templateExt();
 			break;
-		case 2:
-			sExt = qtractorDocument::archiveExt();
+		case 1:
+			sExt = qtractorDocument::regularExt();
+			break;
+		case 0:
+		default:
+			sExt = qtractorDocument::defaultExt();
 			break;
 		}
 		// Have we cancelled it?
 		if (sFilename.isEmpty() || sFilename.at(0) == '.')
 			return false;
 		// Enforce extension...
-		if (QFileInfo(sFilename).suffix().isEmpty()) {
+		if (!qtractorDocument::isValidExt(QFileInfo(sFilename).suffix())) {
 			sFilename += '.' + sExt;
 			// Check if already exists...
 			if (sFilename != m_sFilename && QFileInfo(sFilename).exists()) {
@@ -2527,12 +2542,12 @@ bool qtractorMainForm::loadSessionFileEx (
 
 	// Flag whether we're about to load a template or archive...
 	QFileInfo info(sFilename);
-	const QString& sSuffix = info.suffix();
-	if (sSuffix == qtractorDocument::templateExt())
+	const QString& sExt = info.suffix();
+	if (sExt == qtractorDocument::templateExt())
 		iFlags |= qtractorDocument::Template;
 
 #ifdef CONFIG_LIBZ
-	if (sSuffix == qtractorDocument::archiveExt()) {
+	if (sExt == qtractorDocument::archiveExt()) {
 		iFlags |= qtractorDocument::Archive;
 		// Take special precaution for already
 		// existing non-temporary archive directory...
@@ -2694,11 +2709,11 @@ bool qtractorMainForm::saveSessionFileEx (
 
 	// Flag whether we're about to save as template or archive...
 	QFileInfo info(sFilename);
-	const QString& sSuffix = info.suffix();
-	if (sSuffix == qtractorDocument::templateExt())
+	const QString& sExt = info.suffix();
+	if (sExt == qtractorDocument::templateExt())
 		iFlags |= qtractorDocument::Template;
 #ifdef CONFIG_LIBZ
-	if (sSuffix == qtractorDocument::archiveExt()) {
+	if (sExt == qtractorDocument::archiveExt()) {
 		iFlags |= qtractorDocument::Archive;
 		// Warn when saving an archive session with
 		// same name of an existing directory...
@@ -2992,9 +3007,9 @@ void qtractorMainForm::openNsmSessionEx ( bool bOpenReply )
 			QStringList filters;
 			const QString& prefix_dot = display_name + "*.";
 			filters << prefix_dot + qtractorDocument::defaultExt();
+			filters << prefix_dot + qtractorDocument::regularExt();
 			filters << prefix_dot + qtractorDocument::templateExt();
 			filters << prefix_dot + qtractorDocument::archiveExt();
-			filters << prefix_dot + "qtr";
 			const QStringList& files
 				= dir.entryList(filters,
 					QDir::Files | QDir::NoSymLinks | QDir::Readable,
@@ -3185,7 +3200,7 @@ void qtractorMainForm::autoSaveSession (void)
 
 	const QString& sAutoSavePathname = QFileInfo(sAutoSaveDir,
 		qtractorSession::sanitize(sAutoSaveName)).filePath()
-		+ ".auto-save." + qtractorDocument::defaultExt();
+		+ ".auto-save." + qtractorDocument::regularExt();
 
 	const QString& sOldAutoSavePathname
 		= m_pOptions->sAutoSavePathname;
