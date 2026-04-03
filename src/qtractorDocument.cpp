@@ -235,7 +235,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 					QDir::Time | QDir::Reversed);
 			if (!dirs.isEmpty()) m_sName = dirs.first();
 		}
-		sDocname = m_sName + '.' + g_sDefaultExt;
+		sDocname = m_sName + '.' + g_sRegularExt;
 		if (QDir::setCurrent(m_sName))
 			g_extractedArchives.append(QDir::currentPath());
 	}
@@ -304,7 +304,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 			m_pZipFile = nullptr;
 			return false;
 		}
-		sDocname = m_sName + '.' + g_sDefaultExt;
+		sDocname = m_sName + '.' + g_sRegularExt;
 		m_pZipFile->setPrefix(m_sName);
 	}
 #endif
