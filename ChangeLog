@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed move/copy of Audio/MIDI Insert pseudo-plugins to keep
+  their respective send/return connections. (EXPERIMENTAL)
+
 - Improved main session File/Save As... requester dialogs, now
   taking into a better account the selected file type filters:
   Default session files (*.qtr), Regular session files (*.qts),

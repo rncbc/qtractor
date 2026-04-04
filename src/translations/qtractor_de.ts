@@ -521,7 +521,7 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2488"/>
+        <location filename="../qtractorPlugin.cpp" line="2498"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 PlugIn nicht gefunden.</translation>
     </message>
