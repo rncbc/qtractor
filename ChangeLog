@@ -4,6 +4,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed move/copy of Audio/MIDI Insert pseudo-plugins to keep
+  their respective send/return connections. (EXPERIMENTAL)
+
+- Improved main session File/Save As... requester dialogs, now
+  taking into a better account the selected file type filters:
+  Default session files (*.qtr), Regular session files (*.qts),
+  Template session files (*.qtt) and Archive/zip session files
+  (*.qtz); drop useless All files (*.*) filter. (EXPERIMENTAL)
+
+
 1.5.12  2026-03-20  An Early-Spring'26 Release.
 
 - New audio clip capture/recording latency compensation options

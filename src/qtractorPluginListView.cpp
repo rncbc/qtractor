@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1639,8 +1639,8 @@ void qtractorPluginListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			encodeItem(pMimeData, m_pDragItem);
 			QDrag *pDrag = new QDrag(this);
 			pDrag->setMimeData(pMimeData);
-			pDrag->setPixmap(m_pDragItem->icon().pixmap(16));
-			pDrag->setHotSpot(QPoint(-4, -12));
+			pDrag->setPixmap(QIcon::fromTheme("pluginEdit").pixmap(16));
+			pDrag->setHotSpot(QPoint(-4, -4));
 			pDrag->exec(Qt::CopyAction | Qt::MoveAction);
 			// We've dragged and maybe dropped it by now...
 			m_pDragItem = nullptr;
@@ -1807,7 +1807,6 @@ void qtractorPluginListView::dragLeaveEvent ( QDragLeaveEvent * )
 
 	m_pDragItem = nullptr;
 	m_pDropItem = nullptr;
-
 }
 
 
