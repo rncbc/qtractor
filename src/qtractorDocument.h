@@ -81,12 +81,16 @@ public:
 
 	// Filename extensions (suffix) accessors.
 	static void setDefaultExt  (const QString& sDefaultExt);
+	static void setRegularExt  (const QString& sRegularExt);
 	static void setTemplateExt (const QString& sTemplateExt);
 	static void setArchiveExt  (const QString& sArchiveExt);
 
 	static const QString& defaultExt();
+	static const QString& regularExt();
 	static const QString& templateExt();
 	static const QString& archiveExt();
+
+	static bool isValidExt(const QString& sExt);
 
 	// Extracted archive paths simple management.
 	static const QStringList& extractedArchives();
@@ -125,6 +129,7 @@ private:
 
 	// Filename extensions (file suffixes).
 	static QString g_sDefaultExt;
+	static QString g_sRegularExt;
 	static QString g_sTemplateExt;
 	static QString g_sArchiveExt;
 
