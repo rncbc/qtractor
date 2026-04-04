@@ -64,6 +64,7 @@ void qtractorSession::Properties::clear (void)
 	sessionDir = QDir().absolutePath();
 
 	sessionName.clear();
+	sessionNamePattern.clear(); // g3n
 	description.clear();
 	timeScale.clear();
 }
@@ -75,6 +76,7 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 	if (&props != this) {
 		sessionDir  = props.sessionDir;
 		sessionName = props.sessionName;
+		sessionNamePattern = props.sessionNamePattern; // g3n
 		description = props.description;
 		timeScale   = props.timeScale;
 	}
@@ -378,6 +380,17 @@ const QString& qtractorSession::sessionName (void) const
 	return m_props.sessionName;
 }
 
+// g3n { setSessionNamePattern identical to setSessionName
+void qtractorSession::setSessionNamePattern ( const QString& sSessionNamePattern )
+{
+	m_props.sessionNamePattern = sSessionNamePattern;
+}
+
+const QString& qtractorSession::sessionNamePattern (void) const
+{
+	return m_props.sessionNamePattern;
+}
+// }
 
 // Session description accessors.
 void qtractorSession::setDescription ( const QString& sDescription )
@@ -2143,9 +2156,38 @@ bool qtractorSession::loadElement (
 
 	// Templates have no session name...
 	const bool bTemplate = pDocument->isTemplate();
-	if (!bTemplate)
+// g3n { If it's a template setSessionNamePattern
+	if (!bTemplate) {
 		qtractorSession::setSessionName(pElement->attribute("name"));
+	} else {
+		qtractorSession::setSessionNamePattern(pElement->attribute("name-pattern"));
 
+		// g3n { If there a name pattern and is active and with auto-accept, process it
+		if ( !pElement->attribute("name-pattern").isEmpty() && pElement->attribute("name-pattern").contains("%ON") && pElement->attribute("name-pattern").contains("%OK")) {
+			QString NamePattern = pElement->attribute("name-pattern");
+			NamePattern.remove("%ON"); // boramos el patron %ON
+			NamePattern.remove("%OK"); // boramos el patron %OK
+
+			// Sanitized the text string for QDateTime
+			// Enclose all characters in single quotes
+			NamePattern.replace(QRegularExpression("(.)"), "'\\1'");
+
+			NamePattern.replace("'%''y'", "yy"); // 00
+			NamePattern.replace("'%''m'", "MM"); // 00
+			NamePattern.replace("'%''d'", "dd"); // 00
+			NamePattern.replace("'%''H'", "hh"); // 00
+			NamePattern.replace("'%''M'", "mm"); // 00
+			NamePattern = QDateTime::currentDateTime().toString(NamePattern);
+			// Clean up any excess quotation marks and spaces at the beginning
+			NamePattern = NamePattern.replace("'", "").trimmed();
+
+			qtractorSession::setSessionName(NamePattern);
+
+		}
+		// } g3n
+
+	}
+// } g3n
 	// Session state should be postponed...
 	unsigned long iLoopStart = 0;
 	unsigned long iLoopEnd   = 0;
@@ -2435,9 +2477,13 @@ bool qtractorSession::saveElement (
 
 	// Templates should have no session name...
 	const bool bTemplate = pDocument->isTemplate();
-	if (!bTemplate)
+// g3n { If it's a template setAttribute("name-pattern"
+	if (!bTemplate) {
 		pElement->setAttribute("name", qtractorSession::sessionName());
-
+	} else {
+		pElement->setAttribute("name-pattern", qtractorSession::sessionName());
+	}
+// }
 	// Save session properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
 	if (!pDocument->isArchive()) {

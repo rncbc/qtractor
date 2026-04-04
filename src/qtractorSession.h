@@ -76,6 +76,10 @@ public:
 	void setSessionName(const QString& sSessionName);
 	const QString& sessionName() const;
 
+	// g3n { Session NamePattern accessors for templates.
+	void setSessionNamePattern(const QString& sSessionNamePattern);
+	const QString& sessionNamePattern() const;
+	// }
 	// Session description accessors.
 	void setDescription(const QString& sDescription);
 	const QString& description() const;
@@ -390,6 +394,7 @@ public:
 		// Members.
 		QString sessionDir;
 		QString sessionName;
+		QString sessionNamePattern; // g3n add sessionNamePattern
 		QString description;
 		// Intrinsic time scale.
 		qtractorTimeScale timeScale;
