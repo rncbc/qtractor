@@ -84,7 +84,8 @@ static void remove_dir_list ( const QList<QFileInfo>& list )
 //
 
 // Default document type suffixes (file name extensions).
-QString qtractorDocument::g_sDefaultExt  = "qts";
+QString qtractorDocument::g_sDefaultExt  = "qtr";
+QString qtractorDocument::g_sRegularExt  = "qts";
 QString qtractorDocument::g_sTemplateExt = "qtt";
 QString qtractorDocument::g_sArchiveExt  = "qtz";
 
@@ -234,7 +235,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 					QDir::Time | QDir::Reversed);
 			if (!dirs.isEmpty()) m_sName = dirs.first();
 		}
-		sDocname = m_sName + '.' + g_sDefaultExt;
+		sDocname = m_sName + '.' + g_sRegularExt;
 		if (QDir::setCurrent(m_sName))
 			g_extractedArchives.append(QDir::currentPath());
 	}
@@ -303,7 +304,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 			m_pZipFile = nullptr;
 			return false;
 		}
-		sDocname = m_sName + '.' + g_sDefaultExt;
+		sDocname = m_sName + '.' + g_sRegularExt;
 		m_pZipFile->setPrefix(m_sName);
 	}
 #endif
@@ -503,6 +504,11 @@ void qtractorDocument::setDefaultExt ( const QString& sDefaultExt )
 	g_sDefaultExt = sDefaultExt;
 }
 
+void qtractorDocument::setRegularExt ( const QString& sRegularExt )
+{
+	g_sRegularExt = sRegularExt;
+}
+
 void qtractorDocument::setTemplateExt ( const QString& sTemplateExt )
 {
 	g_sTemplateExt = sTemplateExt;
@@ -519,6 +525,11 @@ const QString& qtractorDocument::defaultExt (void)
 	return g_sDefaultExt;
 }
 
+const QString& qtractorDocument::regularExt (void)
+{
+	return g_sRegularExt;
+}
+
 const QString& qtractorDocument::templateExt (void)
 {
 	return g_sTemplateExt;
@@ -527,6 +538,15 @@ const QString& qtractorDocument::templateExt (void)
 const QString& qtractorDocument::archiveExt (void)
 {
 	return g_sArchiveExt;
+}
+
+
+bool qtractorDocument::isValidExt ( const QString& sExt )
+{
+	return (sExt == g_sDefaultExt  ||
+			sExt == g_sRegularExt  ||
+			sExt == g_sTemplateExt ||
+			sExt == g_sArchiveExt);
 }
 
 

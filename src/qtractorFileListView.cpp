@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1106,7 +1106,7 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			QDrag *pDrag = new QDrag(this);
 			pDrag->setMimeData(pMimeData);
 			pDrag->setPixmap(m_pDragItem->icon(0).pixmap(16));
-			pDrag->setHotSpot(QPoint(-4, -12));
+			pDrag->setHotSpot(QPoint(-4, -4));
 			pDrag->exec(Qt::LinkAction);
 			// We've dragged and maybe dropped it by now...
 			// QTreeWidget::reset();

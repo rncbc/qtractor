@@ -2172,6 +2172,12 @@ void qtractorPluginList::movePlugin (
 			}
 			pParam->observer()->setCurveList(m_pCurveList);
 		}
+		// Maybe special for insert pseudo-plugins only,
+		// to restore their send/return connections?...
+		if (pPlugin->type()->typeHint() == qtractorPluginType::Insert) {
+			pPlugin->freezeConfigs();
+			pPlugin->freezeValues();
+		}
 		// Now for the real thing...
 		pPlugin->setChannels(0);
 		pPlugin->setPluginList(this);
@@ -2270,8 +2276,12 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->setValues(pPlugin->values());
 		pNewPlugin->realizeConfigs();
 		pNewPlugin->realizeValues();
-		pNewPlugin->releaseConfigs();
-		pNewPlugin->releaseValues();
+		// Maybe special for insert pseudo-plugins only,
+		// to copy/restore their send/return connections?...
+		if (pNewPlugin->type()->typeHint() != qtractorPluginType::Insert) {
+			pNewPlugin->releaseConfigs();
+			pNewPlugin->releaseValues();
+		}
 		pNewPlugin->setActivated(pPlugin->isActivated());
 		pNewPlugin->setDirectAccessParamIndex(
 			pPlugin->directAccessParamIndex());
