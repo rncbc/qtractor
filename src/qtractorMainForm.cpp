@@ -5738,7 +5738,9 @@ void qtractorMainForm::viewOptions (void)
 				m_pOptions->iTrackColorSaturation);
 	#ifdef CONFIG_OSC
 		// OSC service options...
-		if (iOldOscServerPort != m_pOptions->iOscServerPort)
+		if (( bOldOscServer && !m_pOptions->bOscServer) ||
+			(!bOldOscServer &&  m_pOptions->bOscServer) ||
+			(iOldOscServerPort != m_pOptions->iOscServerPort))
 			updateOscControl();
 	#endif
 		// Warn if something will be only effective on next time.

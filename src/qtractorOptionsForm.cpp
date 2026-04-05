@@ -2629,21 +2629,20 @@ void qtractorOptionsForm::stabilizeForm (void)
 	const bool bOscServer = m_ui.OscServerCheckBox->isChecked();
 	m_ui.OscServerPortTextLabel->setEnabled(bOscServer);
 	m_ui.OscServerPortSpinBox->setEnabled(bOscServer);
-	m_ui.OscActionsSearchComboBox->setEnabled(bOscServer);
-	m_ui.OscActionsListWidget->setEnabled(bOscServer);
-	int iCheckedCount = 0;
-	const int iItemCount = m_ui.OscActionsListWidget->count();
-	for (int i = 0; i < iItemCount; ++i) {
-		QListWidgetItem *pItem = m_ui.OscActionsListWidget->item(i);
-		if (pItem && pItem->checkState() == Qt::Checked)
-			++iCheckedCount;
+	const bool bOscActions = bOscServer && qtractorOscControl::getInstance();
+	m_ui.OscActionsGroupBox->setEnabled(bOscActions);
+	if (bOscActions) {
+		int iCheckedCount = 0;
+		const int iItemCount = m_ui.OscActionsListWidget->count();
+		for (int i = 0; i < iItemCount; ++i) {
+			QListWidgetItem *pItem = m_ui.OscActionsListWidget->item(i);
+			if (pItem && pItem->checkState() == Qt::Checked)
+				++iCheckedCount;
+		}
+		m_ui.OscActionsCheckToolButton->setEnabled(iCheckedCount < iItemCount);
+		m_ui.OscActionsUncheckToolButton->setEnabled(iCheckedCount > 0);
+		m_ui.OscActionsResetToolButton->setEnabled(m_iDirtyOscActions > 0);
 	}
-	m_ui.OscActionsCheckToolButton->setEnabled(
-		bOscServer && iCheckedCount < iItemCount);
-	m_ui.OscActionsUncheckToolButton->setEnabled(
-		bOscServer && iCheckedCount > 0);
-	m_ui.OscActionsResetToolButton->setEnabled(
-		m_iDirtyOscActions > 0);
 #endif
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
