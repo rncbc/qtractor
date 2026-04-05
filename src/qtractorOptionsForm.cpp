@@ -260,6 +260,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	m_iDirtyBlacklist   = 0;
 
 #ifdef CONFIG_OSC
+	m_bOldOscServer     = false;
+	m_iOldOscServerPort = qtractorOscControl::DEFAULT_SERVER_PORT;
+	m_iDirtyOscServer   = 0;
 	m_iDirtyOscActions  = 0;
 #endif
 	// Try to restore old window positioning.
@@ -629,7 +632,7 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 #ifdef CONFIG_OSC
 	QObject::connect(m_ui.OscServerCheckBox,
 		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
+		SLOT(changeOscServer()));
 	QObject::connect(m_ui.OscServerPortSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -986,6 +989,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_iDirtyBlacklist   = 0;
 
 #ifdef CONFIG_OSC
+	m_bOldOscServer     = m_pOptions->bOscServer;
+	m_iOldOscServerPort = m_pOptions->iOscServerPort;
+	m_iDirtyOscServer   = 0;
 	resetOscActions();
 #else
 	stabilizeForm();
@@ -1213,8 +1219,14 @@ void qtractorOptionsForm::accept (void)
 
 #ifdef CONFIG_OSC
 	m_pOptions->saveComboBoxHistory(m_ui.OscActionsSearchComboBox);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if ((m_iDirtyOscServer > 0) ||
+		(m_iOldOscServerPort != m_pOptions->iOscServerPort)) {
+		if (pMainForm)
+			pMainForm->updateOscControl(m_pOptions->bOscServer);
+		m_iDirtyOscServer = 0;
+	}
 	if (m_iDirtyOscActions > 0) {
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		qtractorOscControl *pOscControl = qtractorOscControl::getInstance();
 		if (pOscControl && pMainForm) {
 			QListIterator iter(m_oscActions.keys());
@@ -1267,8 +1279,15 @@ void qtractorOptionsForm::reject (void)
 		}
 	}
 
-	if (bReject)
+	if (bReject) {
+		if (m_iDirtyOscServer > 0) {
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm)
+				pMainForm->updateOscControl(m_bOldOscServer);
+			m_iDirtyOscServer = 0;
+		}
 		QDialog::reject();
+	}
 }
 
 
@@ -2315,10 +2334,13 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 void qtractorOptionsForm::changeOscServer (void)
 {
 #ifdef CONFIG_OSC
+	const bool bOscServer = m_ui.OscServerCheckBox->isChecked();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
-		pMainForm->updateOscControl();
+		pMainForm->updateOscControl(bOscServer);
+	++m_iDirtyOscServer;
 #endif
+	resetOscActions();
 	changed();
 }
 
@@ -2403,8 +2425,6 @@ void qtractorOptionsForm::resetOscActions (void)
 		return;
 
 	qtractorOscControl *pOscControl = qtractorOscControl::getInstance();
-	if (pOscControl == nullptr)
-		return;
 
 	const int iFilter = m_ui.OscActionsFilterComboBox->currentIndex();
 	const QList<QAction *>& actions
@@ -2415,7 +2435,7 @@ void qtractorOptionsForm::resetOscActions (void)
 		const QString& sActionPath
 			= qtractorOscControl::actionPath(pAction);
 		const bool bChecked
-			= (pOscControl->findAction(sActionPath) != nullptr);
+			= (pOscControl && pOscControl->findAction(sActionPath) != nullptr);
 		m_oscActions.insert(pAction, bChecked);
 		if ((iFilter == 1 && !bChecked) ||
 			(iFilter == 2 &&  bChecked))
@@ -2443,10 +2463,6 @@ void qtractorOptionsForm::refreshOscActions (void)
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == nullptr)
-		return;
-
-	qtractorOscControl *pOscControl = qtractorOscControl::getInstance();
-	if (pOscControl == nullptr)
 		return;
 
 	QString sSearch = m_ui.OscActionsSearchComboBox->currentText().simplified();

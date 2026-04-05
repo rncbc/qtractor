@@ -1560,8 +1560,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMidiControl();
 	updateMidiMetronome();
 	updateSyncViewHold();
+
 #ifdef CONFIG_OSC
-	updateOscControl();
+	updateOscControl(m_pOptions->bOscServer);
 #endif
 
 	// FIXME: This is what it should ever be,
@@ -5516,8 +5517,6 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 	const QString sOldCustomStyleSheet   = m_pOptions->sCustomStyleSheet;
 	const QString sOldCustomIconsTheme   = m_pOptions->sCustomIconsTheme;
-	const bool    bOldOscServer          = m_pOptions->bOscServer;
-	const int     iOldOscServerPort      = m_pOptions->iOscServerPort;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
 	const QString sOldLv2Paths           = m_pOptions->lv2Paths.join(sep);
@@ -5736,13 +5735,6 @@ void qtractorMainForm::viewOptions (void)
 		if (iOldTrackColorSaturation != m_pOptions->iTrackColorSaturation)
 			qtractorTrack::setTrackColorSaturation(
 				m_pOptions->iTrackColorSaturation);
-	#ifdef CONFIG_OSC
-		// OSC service options...
-		if (( bOldOscServer && !m_pOptions->bOscServer) ||
-			(!bOldOscServer &&  m_pOptions->bOscServer) ||
-			(iOldOscServerPort != m_pOptions->iOscServerPort))
-			updateOscControl();
-	#endif
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -7635,7 +7627,7 @@ void qtractorMainForm::updateSyncViewHold (void)
 
 
 // Update OSC control connections.
-void qtractorMainForm::updateOscControl (void)
+void qtractorMainForm::updateOscControl ( bool bOscServer )
 {
 #ifdef CONFIG_OSC
 
@@ -7652,7 +7644,7 @@ void qtractorMainForm::updateOscControl (void)
 	if (m_pOptions->iOscServerPort < qtractorOscControl::MINIMUM_SERVER_PORT)
 		m_pOptions->iOscServerPort = qtractorOscControl::DEFAULT_SERVER_PORT;
 
-	if (m_pOptions->bOscServer) {
+	if (bOscServer) {
 		m_pOscControl = new qtractorOscControl(m_pOptions->iOscServerPort);
 		m_pOptions->loadOscActions(this);
 	}

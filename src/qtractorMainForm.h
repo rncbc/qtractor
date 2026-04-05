@@ -135,7 +135,7 @@ public:
 
 	static QString styleSheet(const QString& sFilename);
 
-	void updateOscControl();
+	void updateOscControl(bool bOscServer);
 
 public slots:
 

@@ -154,9 +154,14 @@ private:
 
 	int m_iDirtyBlacklist;
 
-	int m_iDirtyOscActions;
+	int  m_iDirtyOscServer;
+	int  m_iDirtyOscActions;
+
+	bool m_bOldOscServer;
+	int  m_iOldOscServerPort;
 
 	QHash<QAction *, bool> m_oscActions;
+
 };
 
 
