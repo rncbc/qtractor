@@ -2156,36 +2156,54 @@ bool qtractorSession::loadElement (
 
 	// Templates have no session name...
 	const bool bTemplate = pDocument->isTemplate();
-// g3n { If it's a template setSessionNamePattern
+// g3n {
+	QString PatternToName = "";
+	bool OkAutoSessionProperties = false ;
+	bool OKAutoSessionDir = false ;
+
 	if (!bTemplate) {
 		qtractorSession::setSessionName(pElement->attribute("name"));
 	} else {
-		qtractorSession::setSessionNamePattern(pElement->attribute("name-pattern"));
-
-		// g3n { If there a name pattern and is active and with auto-accept, process it
-		if ( !pElement->attribute("name-pattern").isEmpty() && pElement->attribute("name-pattern").contains("%ON") && pElement->attribute("name-pattern").contains("%OK")) {
-			QString NamePattern = pElement->attribute("name-pattern");
-			NamePattern.remove("%ON"); // boramos el patron %ON
-			NamePattern.remove("%OK"); // boramos el patron %OK
-
-			// Sanitized the text string for QDateTime
-			// Enclose all characters in single quotes
-			NamePattern.replace(QRegularExpression("(.)"), "'\\1'");
-
-			NamePattern.replace("'%''y'", "yy"); // 00
-			NamePattern.replace("'%''m'", "MM"); // 00
-			NamePattern.replace("'%''d'", "dd"); // 00
-			NamePattern.replace("'%''H'", "hh"); // 00
-			NamePattern.replace("'%''M'", "mm"); // 00
-			NamePattern = QDateTime::currentDateTime().toString(NamePattern);
-			// Clean up any excess quotation marks and spaces at the beginning
-			NamePattern = NamePattern.replace("'", "").trimmed();
-
-			qtractorSession::setSessionName(NamePattern);
-
+		// If it's a template setSessionNamePattern.
+		if ( !pElement->attribute("name-pattern").isEmpty()) {
+			// If it is not active.
+			if (!pElement->attribute("name-pattern").contains("%ON")) {
+				qtractorSession::setSessionNamePattern(""); // Empty it.
+			} else {
+				// Process pattern to name.
+				PatternToName = pElement->attribute("name-pattern");
+				if (pElement->attribute("name-pattern").contains("%OK")) {
+					OkAutoSessionProperties = true ; // Active OkAutoSessionProperties.
+					// OKAutoSessionDir can only be active if OkAutoSessionProperties is active.
+					if (pElement->attribute("name-pattern").contains("%OK/DIR")) {
+						OKAutoSessionDir = true ; // Active OKAutoSessionDir.
+					}
+				}
+				PatternToName.remove("%OK/DIR"); // Delete %OK/DIR, the option already served its purpose.
+				PatternToName.remove("%OK"); // Delete %OK, the option already served its purpose.
+				PatternToName.remove("%ON"); // Delete %ON, the option already served its purpose.
+				// Sanitized the text string for QDateTime:
+				// Enclose all characters in single quotes.
+				// This ensures that QDateTime does not recognize
+				// any pattern unless we provide it in converted form.
+				PatternToName.replace(QRegularExpression("(.)"), "'\\1'");
+				// Convert
+				PatternToName.replace("'%''y'", "yy"); // 00
+				PatternToName.replace("'%''m'", "MM"); // 00
+				PatternToName.replace("'%''d'", "dd"); // 00
+				PatternToName.replace("'%''H'", "hh"); // 00
+				PatternToName.replace("'%''M'", "mm"); // 00
+				PatternToName = QDateTime::currentDateTime().toString(PatternToName);
+				// Clean up any quotes and spaces at the beginning.
+				PatternToName = PatternToName.replace("'", "").trimmed();
+				// Assign
+				qtractorSession::setSessionNamePattern(PatternToName);
+				// If %OK, must also assign it to the session name.
+				if (OkAutoSessionProperties) {
+					qtractorSession::setSessionName(PatternToName);
+				}
+			}
 		}
-		// } g3n
-
 	}
 // } g3n
 	// Session state should be postponed...
@@ -2214,8 +2232,16 @@ bool qtractorSession::loadElement (
 				QDomElement eProp = nProp.toElement();
 				if (eProp.isNull())
 					continue;
-				if (eProp.tagName() == "directory")
-					qtractorSession::setSessionDir(eProp.text());
+				if (eProp.tagName() == "directory") {
+					// g3n { OKAutoSessionDir
+					if (OKAutoSessionDir && !sessionNamePattern().isEmpty()) {
+						QDir(eProp.text()).mkdir(PatternToName); // Create dir.
+						qtractorSession::setSessionDir(QDir(eProp.text()).filePath(PatternToName)); // Set dir.
+					} else {
+						qtractorSession::setSessionDir(eProp.text());
+					}
+					// } g3n
+				}
 				else if (eProp.tagName() == "description")
 					qtractorSession::setDescription(eProp.text());
 				else if (eProp.tagName() == "sample-rate" && !bTemplate)

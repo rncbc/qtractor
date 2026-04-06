@@ -203,26 +203,9 @@ void qtractorSessionForm::setSession (
 	m_iDirtyCount = 0;
 
 	// g3n { If there a name pattern and is active
-	if (m_bNewSession && !m_props.sessionNamePattern.isEmpty() && m_props.sessionNamePattern.contains("%ON")) {
-
-		m_props.sessionNamePattern.remove("%ON"); // Delete ON pattern
-
-		// Sanitized the text string for QDateTime
-		// Enclose all characters in single quotes
-		m_props.sessionNamePattern.replace(QRegularExpression("(.)"), "'\\1'");
-
-		m_props.sessionNamePattern.replace("'%''y'", "yy"); // 00
-		m_props.sessionNamePattern.replace("'%''m'", "MM"); // 00
-		m_props.sessionNamePattern.replace("'%''d'", "dd"); // 00
-		m_props.sessionNamePattern.replace("'%''H'", "hh"); // 00
-		m_props.sessionNamePattern.replace("'%''M'", "mm"); // 00
-		m_props.sessionNamePattern = QDateTime::currentDateTime().toString(m_props.sessionNamePattern);
-		// We clean up any excess quotation marks and spaces at the beginning
-		m_props.sessionNamePattern = m_props.sessionNamePattern.replace("'", "").trimmed();
-		QString NamePattern = m_props.sessionNamePattern;
-
-		// Assign NamePattern to the LineEdit
-		m_ui.SessionNameLineEdit->setText(NamePattern);
+	if (m_bNewSession && !m_props.sessionNamePattern.isEmpty()) {
+		// Assign sessionNamePattern to the LineEdit
+		m_ui.SessionNameLineEdit->setText(m_props.sessionNamePattern);
 		//If the automatic directory option is enabled, the change is executed
 		if ( m_ui.AutoSessionDirCheckBox->isChecked()) {
 			changeAutoSessionDir ( true );
