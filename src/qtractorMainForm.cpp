@@ -109,6 +109,10 @@
 #include "qtractorNsmClient.h"
 #endif
 
+#ifdef CONFIG_OSC
+#include "qtractorOscControl.h"
+#endif
+
 #include <QApplication>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -351,6 +355,11 @@ qtractorMainForm::qtractorMainForm (
 
 	// Add the midi controller map...
 	m_pMidiControl = new qtractorMidiControl();
+
+#ifdef CONFIG_OSC
+	// Also the OSC control server...
+	m_pOscControl = nullptr;
+#endif
 
 #ifdef HAVE_SIGNAL_H
 
@@ -1321,6 +1330,12 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pActionControl)
 		delete m_pActionControl;
 
+#ifdef CONFIG_OSC
+	// Remove OSC control server (TESTING).
+	if (m_pOscControl)
+		delete m_pOscControl;
+#endif
+
 	// Remove plugin path/files registry.
 	if (m_pPluginFactory)
 		delete m_pPluginFactory;
@@ -1545,6 +1560,10 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMidiControl();
 	updateMidiMetronome();
 	updateSyncViewHold();
+
+#ifdef CONFIG_OSC
+	updateOscControl(m_pOptions->bOscServer);
+#endif
 
 	// FIXME: This is what it should ever be,
 	// make it right from this very moment...
@@ -5502,6 +5521,7 @@ void qtractorMainForm::viewOptions (void)
 	const QString sep(':'); 
 	const QString sOldLv2Paths           = m_pOptions->lv2Paths.join(sep);
 #endif
+
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -7603,6 +7623,33 @@ void qtractorMainForm::updateSyncViewHold (void)
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext())
 		(iter.next()->editor())->setSyncViewHold(m_pOptions->bSyncViewHold);
+}
+
+
+// Update OSC control connections.
+void qtractorMainForm::updateOscControl ( bool bOscServer )
+{
+#ifdef CONFIG_OSC
+
+	if (m_pOptions == nullptr)
+		return;
+
+	if (m_pOscControl) {
+		delete m_pOscControl;
+		m_pOscControl = nullptr;
+	}
+
+	// Update/enable the OSC server/listener ...
+	//
+	if (m_pOptions->iOscServerPort < qtractorOscControl::MINIMUM_SERVER_PORT)
+		m_pOptions->iOscServerPort = qtractorOscControl::DEFAULT_SERVER_PORT;
+
+	if (bOscServer) {
+		m_pOscControl = new qtractorOscControl(m_pOptions->iOscServerPort);
+		m_pOptions->loadOscActions(this);
+	}
+
+#endif
 }
 
 
