@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- OSC (Open Sound Control) support has been finally introduced,
+  similar to keyboard and MIDI controller shortcuts, it allows
+  the discrete mapping of OSC handlers to any main menu command
+  actions (cf. View/Options.../OSC) (EXPERIMENTAL)
+
 - Fixed move/copy of Audio/MIDI Insert pseudo-plugins to keep
   their respective send/return connections. (EXPERIMENTAL)
 
