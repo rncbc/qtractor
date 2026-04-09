@@ -914,7 +914,7 @@ show_option ("  JACK Metadata support  . . . . . . . . . . . . . ." CONFIG_JACK_
 message     ("")
 show_option ("  Non/New Session Management (NSM) support . . . . ." CONFIG_NSM)
 message     ("")
-show_option ("  OSC Server/Actions support . . . . . . . . . . . ." CONFIG_OSC)
+show_option ("  OSC Server/Actions support (EXPERIMENTAL)  . . . ." CONFIG_OSC)
 message     ("")
 show_option ("  VeSTige header support . . . . . . . . . . . . . ." CONFIG_VESTIGE)
 show_option ("  Unique/Single instance support . . . . . . . . . ." CONFIG_XUNIQUE)
