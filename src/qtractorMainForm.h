@@ -58,6 +58,8 @@ class qtractorActionControl;
 class qtractorMidiControlObserver;
 class qtractorSubject;
 
+class qtractorOscControl;
+
 class qtractorNsmClient;
 
 class QLabel;
@@ -132,6 +134,8 @@ public:
 	void addMidiFile(const QString& sFilename);
 
 	static QString styleSheet(const QString& sFilename);
+
+	void updateOscControl(bool bOscServer);
 
 public slots:
 
@@ -504,6 +508,7 @@ private:
 	qtractorInstrumentMenu *m_pInstrumentMenu;
 	qtractorActionControl *m_pActionControl;
 	qtractorMidiControl *m_pMidiControl;
+	qtractorOscControl *m_pOscControl;
 	qtractorNsmClient *m_pNsmClient;
 	QString m_sNsmFile;
 	QString m_sNsmExt;
