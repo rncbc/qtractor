@@ -94,6 +94,13 @@ protected slots:
 	void chooseMessagesLogPath();
 	void chooseSessionTemplatePath();
 	void showMidiImportDialog();
+	void changeOscServer();
+	void changeOscActionsItem(QListWidgetItem *);
+	void changeOscActions();
+	void checkOscActions();
+	void uncheckOscActions();
+	void resetOscActions();
+	void refreshOscActions();
 	void stabilizeForm();
 
 protected:
@@ -151,6 +158,14 @@ private:
 
 	// Midi import settings handler.
 	qtractorMidiImportExtender *m_pMidiImportExtender;
+
+	int  m_iDirtyOscServer;
+	int  m_iDirtyOscActions;
+
+	bool m_bOldOscServer;
+	int  m_iOldOscServerPort;
+
+	QHash<QAction *, bool> m_oscActions;
 };
 
 
