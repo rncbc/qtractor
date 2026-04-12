@@ -41,10 +41,10 @@ BuildRequires:	gcc-c++ >= 10
 %define _GXX	/usr/bin/g++
 %endif
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
-BuildRequires:	qtbase6.9-static >= 6.9
-BuildRequires:	qttools6.9-static
-BuildRequires:	qttranslations6.9-static
-BuildRequires:	qtsvg6.9-static
+BuildRequires:	qtbase6.11-static >= 6.11
+BuildRequires:	qttools6.11-static
+BuildRequires:	qtsvg6.11-static
+BuildRequires:	qttranslations6.11-static
 %else
 BuildRequires:	cmake(Qt6LinguistTools)
 BuildRequires:	pkgconfig(Qt6Core)
@@ -112,7 +112,7 @@ the personal home-studio.
 
 %build
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
-source /opt/qt6.9-static/bin/qt6.9-static-env.sh
+source /opt/qt6.11-static/bin/qt6.11-static-env.sh
 %endif
 CXX=%{_GXX} CC=%{_GCC} \
 cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build
