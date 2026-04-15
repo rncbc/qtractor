@@ -818,10 +818,16 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
 
 #ifdef CONFIG_JACK_SESSION
-	parser.addOption({{"s", "session-id"},
+	const QString s_session_id = "session-id";
+#endif
+	const QString s_help       = "help";
+
+#ifdef CONFIG_JACK_SESSION
+	parser.addOption({{"s", s_session_id},
 		QObject::tr("Set session identification (uuid)"), "uuid"});
 #endif
-	const QCommandLineOption& helpOption = parser.addHelpOption();
+	parser.addOption({{"h", s_help},
+		QObject::tr("Displays help on command-line options.")});
 	const QCommandLineOption& versionOption = parser.addVersionOption();
 	parser.addPositionalArgument("session-file",
 		QObject::tr("Session file (.qtr)"),
@@ -832,7 +838,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		return false;
 	}
 
-	if (parser.isSet(helpOption)) {
+	if (parser.isSet(s_help)) {
 		show_error(parser.helpText());
 		return false;
 	}
@@ -857,7 +863,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 	}
 
 #ifdef CONFIG_JACK_SESSION
-	if (parser.isSet("session-id")) {
+	if (parser.isSet(s_session_id)) {
 		const QString& sVal = parser.value("session-id");
 		if (sVal.isEmpty()) {
 			show_error(QObject::tr("Option -s requires an argument (uuid)."));
