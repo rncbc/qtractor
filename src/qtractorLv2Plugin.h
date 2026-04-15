@@ -387,6 +387,12 @@ public:
 	// Load default plugin state.
 	void lv2_state_load_default();
 
+	// LV2 State/Presets: port value setter/getter.
+	void lv2_set_port_value(
+		uint32_t port_index, const void *value, uint32_t size, uint32_t type);
+	const void *lv2_get_port_value(
+		uint32_t port_index, uint32_t *size, uint32_t *type);
+
 #endif
 
 #ifdef CONFIG_LV2_STATE_FILES

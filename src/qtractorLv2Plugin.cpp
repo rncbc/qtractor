@@ -1194,7 +1194,6 @@ static void qtractor_lv2_midnam_update ( LV2_Midnam_Handle handle )
 
 #endif	// CONFIG_LV2_MIDNAME
 
-
 #ifdef CONFIG_LV2_STATE
 
 // LV2 State/Presets: port value settler.
@@ -1210,30 +1209,18 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	if (plugin == nullptr)
 		return;
 
-	if (size != sizeof(float) || type != g_lv2_urids.atom_Float)
-		return;
-
 	LilvNode *symbol = lilv_new_string(g_lv2_world, port_symbol);
 
 	const LilvPort *port
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
 	if (port) {
-		const float fValue = *(float *) value;
-		const unsigned long iIndex = lilv_port_get_index(plugin, port);
-		qtractorPlugin::Param *pParam = pLv2Plugin->findParam(iIndex);
-		if (pParam)
-			pParam->setValue(fValue, false);
+		const uint32_t port_index = lilv_port_get_index(plugin, port);
+		pLv2Plugin->lv2_set_port_value(port_index, value, size, type);
 	}
 
 	lilv_node_free(symbol);
 }
 
-#endif	// CONFIG_LV2_STATE
-
-#ifdef CONFIG_LV2_PRESETS
-
-// LV2 Presets: have sort avaliable.
-#include <algorithm>
 
 // LV2 Presets: port value getter.
 static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
@@ -1258,19 +1245,21 @@ static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
 	const LilvPort *port
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
 	if (port) {
-		unsigned long iIndex = lilv_port_get_index(plugin, port);
-		qtractorPlugin::Param *pParam = pLv2Plugin->findParam(iIndex);
-		if (pParam) {
-			*size = sizeof(float);
-			*type = g_lv2_urids.atom_Float;
-			retv = (const void *) (pParam->subject())->data();
-		}
+		const uint32_t port_index = lilv_port_get_index(plugin, port);
+		retv = pLv2Plugin->lv2_get_port_value(port_index, size, type);
 	}
 
 	lilv_node_free(symbol);
 
 	return retv;
 }
+
+#endif	// CONFIG_LV2_STATE
+
+#ifdef CONFIG_LV2_PRESETS
+
+// LV2 Presets: have sort avaliable.
+#include <algorithm>
 
 // Remove specific dir/file path.
 static void qtractor_lv2_remove_file (const QFileInfo& info);
@@ -5149,6 +5138,44 @@ const void *qtractorLv2Plugin::lv2_state_retrieve (
 		*flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
 
 	return data.constData();
+}
+
+
+// LV2 State/Presets: port value setter.
+void qtractorLv2Plugin::lv2_set_port_value (
+	uint32_t port_index, const void *value, uint32_t size, uint32_t type )
+{
+	if (size != sizeof(float) || type != g_lv2_urids.atom_Float)
+		return;
+
+	const float fValue = *(float *) value;
+	qtractorPlugin::Param *pParam = findParam(port_index);
+	if (pParam)
+		pParam->setValue(fValue, false);
+
+#ifdef CONFIG_LV2_UI
+	if (m_lv2_ui_descriptor && m_lv2_ui_descriptor->port_event) {
+		(*m_lv2_ui_descriptor->port_event)(m_lv2_ui_handle,
+			port_index, size, 0, value);
+	}
+#endif
+}
+
+
+// LV2 State/Presets: port value getter.
+const void *qtractorLv2Plugin::lv2_get_port_value (
+	uint32_t port_index, uint32_t *size, uint32_t *type )
+{
+	const void *retv = nullptr;
+
+	qtractorPlugin::Param *pParam =findParam(port_index);
+	if (pParam) {
+		*size = sizeof(float);
+		*type = g_lv2_urids.atom_Float;
+		retv = (const void *) (pParam->subject())->data();
+	}
+
+	return retv;
 }
 
 #endif	// CONFIG_LV2_STATE
