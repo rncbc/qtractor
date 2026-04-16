@@ -796,10 +796,10 @@ void qtractorOptions::print_usage ( const QString& arg0 )
 	out << QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE) + sEol;
 	out << QObject::tr("Options:") + sEol;
 #ifdef CONFIG_JACK_SESSION
-	out << "  -s, --session-id=[uuid]" + sEot +
+	out << "  -s, --session-id <uuid>" + sEot +
 		QObject::tr("Set session identification (uuid)") + sEol;
 #endif
-	out << "  -h, --help" + sEot +
+	out << "  -?, --help" + sEot +
 		QObject::tr("Show help about command line options") + sEol;
 	out << "  -v, --version" + sEot +
 		QObject::tr("Show version information") + sEol;
@@ -826,7 +826,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 	parser.addOption({{"s", s_session_id},
 		QObject::tr("Set session identification (uuid)"), "uuid"});
 #endif
-	parser.addOption({{"h", s_help},
+	parser.addOption({{"?", s_help},
 		QObject::tr("Displays help on command-line options.")});
 	const QCommandLineOption& versionOption = parser.addVersionOption();
 	parser.addPositionalArgument("session-file",
@@ -918,7 +918,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		}
 		else
 	#endif
-		if (sArg == "-h" || sArg == "--help") {
+		if (sArg == "-?" || sArg == "--help") {
 			print_usage(args.at(0));
 			return false;
 		}
