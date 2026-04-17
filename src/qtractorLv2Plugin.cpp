@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -795,10 +795,14 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI__Qt5UI	LV2_UI_PREFIX "Qt5UI"
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#define LV2_UI_HOST_URI	LV2_UI__Qt4UI
-#else
+#ifndef LV2_UI__Qt6UI
+#define LV2_UI__Qt6UI	LV2_UI_PREFIX "Qt6UI"
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #define LV2_UI_HOST_URI	LV2_UI__Qt5UI
+#else
+#define LV2_UI_HOST_URI	LV2_UI__Qt6UI
 #endif
 
 #ifndef LV2_UI__windowTitle
