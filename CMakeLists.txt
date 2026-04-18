@@ -1,16 +1,16 @@
 cmake_minimum_required (VERSION 3.15)
 
-project (Qtractor
+project (NebulaQuasar
   VERSION 1.5.12
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
-  HOMEPAGE_URL "https://qtractor.org"
+  HOMEPAGE_URL "https://nebula-audio.com"
   LANGUAGES C CXX)
 
 set (PROJECT_TITLE "${PROJECT_NAME}")
 string (TOLOWER "${PROJECT_TITLE}" PROJECT_NAME)
 
-set (PROJECT_COPYRIGHT "Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.")
-set (PROJECT_DOMAIN    "rncbc.org")
+set (PROJECT_COPYRIGHT "Copyright (C) 2005-2026, Nebula Audio. All rights reserved.")
+set (PROJECT_DOMAIN    "nebula-audio.com")
 
 execute_process (
   COMMAND git describe --tags --dirty --abbrev=6
@@ -90,10 +90,10 @@ option (CONFIG_LIBSUIL "Enable SUIL interface support (default=no)" 0)
 option (CONFIG_SSE "Enable SSE optimization (default=yes)" 1)
 
 # Enable LADSPA support.
-option (CONFIG_LADSPA "Enable LADSPA plug-in support (default=yes)" 1)
+option (CONFIG_LADSPA "Enable LADSPA plug-in support (default=no)" 0)
 
 # Enable DSSI support.
-option (CONFIG_DSSI "Enable DSSI plug-in support (default=yes)" 1)
+option (CONFIG_DSSI "Enable DSSI plug-in support (default=no)" 0)
 
 # Enable VST support.
 option (CONFIG_VST2 "Enable VST2 plug-in support (default=yes)" 1)
@@ -313,44 +313,89 @@ endif ()
 # Find package modules
 include (FindPkgConfig)
 
-# Check for JACK libraries.
-pkg_check_modules (JACK REQUIRED IMPORTED_TARGET jack>=0.100.0)
-if (JACK_FOUND)
-  find_library (JACK_LIBRARY NAMES ${JACK_LIBRARIES} HINTS ${JACK_LIBDIR})
-endif ()
-if (JACK_LIBRARY)
-  set (CONFIG_LIBJACK 1)
-  set (CMAKE_REQUIRED_LIBRARIES "${JACK_LIBRARY};${CMAKE_REQUIRED_LIBRARIES}")
-  # Check for JACK session event callback availability.
-  if (CONFIG_JACK_SESSION)
-    check_function_exists (jack_set_session_callback CONFIG_JACK_SESSION)
+# Check for audio backend libraries based on platform
+if (APPLE)
+  # macOS: Use CoreAudio
+  find_library (COREAUDIO_LIBRARY CoreAudio REQUIRED)
+  find_library (AUDIOTOOLBOX_LIBRARY AudioToolbox REQUIRED)
+  find_library (AUDIOUNIT_LIBRARY AudioUnit REQUIRED)
+  if (COREAUDIO_LIBRARY AND AUDIOTOOLBOX_LIBRARY AND AUDIOUNIT_LIBRARY)
+    set (CONFIG_COREAUDIO 1)
+  else ()
+    message (FATAL_ERROR "*** CoreAudio libraries not found.")
+    set (CONFIG_COREAUDIO 0)
   endif ()
-  # Check for (new) JACK latency support availability.
-  if (CONFIG_JACK_LATENCY)
-    check_function_exists (jack_port_get_latency_range CONFIG_JACK_LATENCY)
+  
+  # Check for AudioUnit SDK (AU plugins)
+  option (CONFIG_AU "Enable AudioUnit plug-in support (default=yes)" 1)
+  if (CONFIG_AU)
+    include (FetchContent)
+    FetchContent_Declare(
+      AudioUnitSDK
+      GIT_REPOSITORY https://github.com/apple/AudioUnitSDK.git
+      GIT_TAG main
+    )
+    FetchContent_MakeAvailable(AudioUnitSDK)
   endif ()
-  # Check for JACK metadata support availability.
-  if (CONFIG_JACK_METADATA)
-    check_function_exists (jack_get_property CONFIG_JACK_METADATA)
+  
+elseif (WIN32)
+  # Windows: WASAPI, WaveRT, ASIO support
+  set (CONFIG_WASAPI 1)
+  set (CONFIG_WAVERT 1)
+  
+  # ASIO SDK optional
+  option (CONFIG_ASIO "Enable ASIO plug-in support (default=yes)" 1)
+  if (CONFIG_ASIO)
+    # ASIO headers should be provided by user or downloaded
+    set (ASIO_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/asio)
+    if (EXISTS ${ASIO_INCLUDES})
+      include_directories (${ASIO_INCLUDES})
+      set (CONFIG_ASIO 1)
+    else ()
+      message (WARNING "*** ASIO SDK not found. ASIO support disabled.")
+      set (CONFIG_ASIO 0)
+    endif ()
   endif ()
-  # Check for jack_set_port_rename_callback.
-  check_function_exists (jack_set_port_rename_callback CONFIG_JACK_PORT_RENAME)
 else ()
-  message (FATAL_ERROR "*** JACK library not found.")
-  set (CONFIG_LIBJACK 0)
-endif ()
+  # Linux: JACK and ALSA (original behavior)
+  pkg_check_modules (JACK REQUIRED IMPORTED_TARGET jack>=0.100.0)
+  if (JACK_FOUND)
+    find_library (JACK_LIBRARY NAMES ${JACK_LIBRARIES} HINTS ${JACK_LIBDIR})
+  endif ()
+  if (JACK_LIBRARY)
+    set (CONFIG_LIBJACK 1)
+    set (CMAKE_REQUIRED_LIBRARIES "${JACK_LIBRARY};${CMAKE_REQUIRED_LIBRARIES}")
+    # Check for JACK session event callback availability.
+    if (CONFIG_JACK_SESSION)
+      check_function_exists (jack_set_session_callback CONFIG_JACK_SESSION)
+    endif ()
+    # Check for (new) JACK latency support availability.
+    if (CONFIG_JACK_LATENCY)
+      check_function_exists (jack_port_get_latency_range CONFIG_JACK_LATENCY)
+    endif ()
+    # Check for JACK metadata support availability.
+    if (CONFIG_JACK_METADATA)
+      check_function_exists (jack_get_property CONFIG_JACK_METADATA)
+    endif ()
+    # Check for jack_set_port_rename_callback.
+    check_function_exists (jack_set_port_rename_callback CONFIG_JACK_PORT_RENAME)
+  else ()
+    message (FATAL_ERROR "*** JACK library not found.")
+    set (CONFIG_LIBJACK 0)
+  endif ()
 
-# Check for ALSA libraries.
-pkg_check_modules (ALSA REQUIRED IMPORTED_TARGET alsa)
-if (ALSA_FOUND)
-  find_library (ALSA_LIBRARY NAMES ${ALSA_LIBRARIES} HINTS ${ALSA_LIBDIR})
-endif ()
-if (ALSA_LIBRARY)
-  set (CONFIG_LIBASOUND 1)
- #set (CMAKE_REQUIRED_LIBRARIES "${ALSA_LIBRARY};${CMAKE_REQUIRED_LIBRARIES}")
-else ()
-  message (FATAL_ERROR "*** ALSA library not found.")
-  set (CONFIG_LIBASOUND 0)
+  # Check for ALSA libraries.
+  pkg_check_modules (ALSA REQUIRED IMPORTED_TARGET alsa)
+  if (ALSA_FOUND)
+    find_library (ALSA_LIBRARY NAMES ${ALSA_LIBRARIES} HINTS ${ALSA_LIBDIR})
+  endif ()
+  if (ALSA_LIBRARY)
+    set (CONFIG_LIBASOUND 1)
+   #set (CMAKE_REQUIRED_LIBRARIES "${ALSA_LIBRARY};${CMAKE_REQUIRED_LIBRARIES}")
+  else ()
+    message (FATAL_ERROR "*** ALSA library not found.")
+    set (CONFIG_LIBASOUND 0)
+  endif ()
 endif ()
 
 # Check for SNDFILE libraries.

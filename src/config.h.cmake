@@ -44,6 +44,21 @@
 /* Define if round is available. */
 #cmakedefine CONFIG_ROUND @CONFIG_ROUND@
 
+/* Define if CoreAudio library is available (macOS). */
+#cmakedefine CONFIG_COREAUDIO @CONFIG_COREAUDIO@
+
+/* Define if AudioUnit plug-in support is available (macOS). */
+#cmakedefine CONFIG_AU @CONFIG_AU@
+
+/* Define if WASAPI is available (Windows). */
+#cmakedefine CONFIG_WASAPI @CONFIG_WASAPI@
+
+/* Define if WaveRT is available (Windows). */
+#cmakedefine CONFIG_WAVERT @CONFIG_WAVERT@
+
+/* Define if ASIO is available (Windows). */
+#cmakedefine CONFIG_ASIO @CONFIG_ASIO@
+
 /* Define if JACK library is available. */
 #cmakedefine CONFIG_LIBJACK @CONFIG_LIBJACK@
 

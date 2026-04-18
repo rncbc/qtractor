@@ -1,2 +1,43 @@
-build*
-*.txt.user
+```
+# Build artifacts
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# CMake build directories
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+compile_commands.json
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+
+# Dependencies (if any)
+node_modules/
+vendor/
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Distribution files
+dist/
+```

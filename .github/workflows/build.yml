@@ -1,0 +1,151 @@
+name: Build Nebula Quasar
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-macos-arm64:
+    runs-on: macos-latest
+    name: macOS ARM64 Build
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Install Dependencies
+      run: |
+        brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil clap-sdk
+    
+    - name: Configure CMake
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCONFIG_QT6=ON \
+          -DCONFIG_LADSPA=OFF \
+          -DCONFIG_DSSI=OFF \
+          -DCONFIG_AU=ON \
+          -DCONFIG_VST2=ON \
+          -DCONFIG_VST3=ON \
+          -DCONFIG_LV2=ON \
+          -DCONFIG_CLAP=ON \
+          -DCMAKE_OSX_ARCHITECTURES=arm64
+    
+    - name: Build
+      run: |
+        cd build
+        make -j$(sysctl -n hw.ncpu)
+    
+    - name: Create DMG
+      run: |
+        cd build
+        hdiutil create -volname "NebulaQuasar" -srcfolder "src/NebulaQuasar.app" -ov -format UDZO ../NebulaQuasar-macOS-arm64.dmg
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NebulaQuasar-macOS-arm64
+        path: NebulaQuasar-macOS-arm64.dmg
+
+  build-macos-x86_64:
+    runs-on: macos-13
+    name: macOS x86_64 Build
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Install Dependencies
+      run: |
+        brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil clap-sdk
+    
+    - name: Configure CMake
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCONFIG_QT6=ON \
+          -DCONFIG_LADSPA=OFF \
+          -DCONFIG_DSSI=OFF \
+          -DCONFIG_AU=ON \
+          -DCONFIG_VST2=ON \
+          -DCONFIG_VST3=ON \
+          -DCONFIG_LV2=ON \
+          -DCONFIG_CLAP=ON \
+          -DCMAKE_OSX_ARCHITECTURES=x86_64
+    
+    - name: Build
+      run: |
+        cd build
+        make -j$(sysctl -n hw.ncpu)
+    
+    - name: Create DMG
+      run: |
+        cd build
+        hdiutil create -volname "NebulaQuasar" -srcfolder "src/NebulaQuasar.app" -ov -format UDZO ../NebulaQuasar-macOS-x86_64.dmg
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NebulaQuasar-macOS-x86_64
+        path: NebulaQuasar-macOS-x86_64.dmg
+
+  build-windows-x86_64:
+    runs-on: windows-latest
+    name: Windows x86_64 Build
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Install Dependencies
+      run: |
+        choco install qt6-full cmake pkgconfiglite -y
+        
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Download VST3 SDK
+      run: |
+        mkdir -p src/vst3
+        # VST3 SDK would need to be downloaded from Steinberg
+        # For CI purposes, we'll skip VST3 or use a mock
+        echo "VST3 SDK not available in CI"
+        
+    - name: Configure CMake
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. `
+          -DCMAKE_BUILD_TYPE=Release `
+          -DCONFIG_QT6=ON `
+          -DCONFIG_LADSPA=OFF `
+          -DCONFIG_DSSI=OFF `
+          -DCONFIG_WASAPI=ON `
+          -DCONFIG_WAVERT=ON `
+          -DCONFIG_ASIO=OFF `
+          -DCONFIG_VST2=ON `
+          -DCONFIG_VST3=OFF `
+          -DCONFIG_LV2=ON `
+          -DCONFIG_CLAP=ON `
+          -G "Visual Studio 17 2022" `
+          -A x64
+    
+    - name: Build
+      run: |
+        cd build
+        cmake --build . --config Release -j $env:NUMBER_OF_PROCESSORS
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NebulaQuasar-Windows-x86_64
+        path: build/src/Release/*.exe

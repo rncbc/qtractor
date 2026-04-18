@@ -42,7 +42,6 @@ set (HEADERS
   qtractorCurveFile.h
   qtractorCurveSelect.h
   qtractorDocument.h
-  qtractorDssiPlugin.h
   qtractorEngine.h
   qtractorEngineCommand.h
   qtractorFileList.h
@@ -52,7 +51,6 @@ set (HEADERS
   qtractorInsertPlugin.h
   qtractorInstrument.h
   qtractorInstrumentMenu.h
-  qtractorLadspaPlugin.h
   qtractorList.h
   qtractorLv2Plugin.h
   qtractorLv2Gtk2Plugin.h
@@ -180,7 +178,6 @@ set (SOURCES
   qtractorCurveCommand.cpp
   qtractorCurveFile.cpp
   qtractorCurveSelect.cpp
-  qtractorDssiPlugin.cpp
   qtractorEngine.cpp
   qtractorEngineCommand.cpp
   qtractorFileList.cpp
@@ -190,7 +187,6 @@ set (SOURCES
   qtractorInsertPlugin.cpp
   qtractorInstrument.cpp
   qtractorInstrumentMenu.cpp
-  qtractorLadspaPlugin.cpp
   qtractorLv2Plugin.cpp
   qtractorLv2Gtk2Plugin.cpp
   qtractorMessageBox.cpp
