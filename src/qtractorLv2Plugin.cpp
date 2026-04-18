@@ -774,8 +774,8 @@ static const LV2_Feature *g_lv2_features[] =
 #include <dlfcn.h>
 
 #define LV2_UI_TYPE_NONE       0
-#define LV2_UI_TYPE_QT4        1
-#define LV2_UI_TYPE_QT5        2
+#define LV2_UI_TYPE_QT5        1
+#define LV2_UI_TYPE_QT6        2
 #define LV2_UI_TYPE_GTK        3
 #define LV2_UI_TYPE_X11        4
 #define LV2_UI_TYPE_EXTERNAL   5
@@ -1012,8 +1012,8 @@ static LilvNode *g_lv2_external_ui_deprecated_class = nullptr;
 #endif
 static LilvNode *g_lv2_x11_ui_class = nullptr;
 static LilvNode *g_lv2_gtk_ui_class = nullptr;
-static LilvNode *g_lv2_qt4_ui_class = nullptr;
 static LilvNode *g_lv2_qt5_ui_class = nullptr;
+static LilvNode *g_lv2_qt6_ui_class = nullptr;
 #endif	// CONFIG_LV2_UI
 
 // Supported plugin features.
@@ -1660,13 +1660,13 @@ bool qtractorLv2PluginType::open (void)
 			else
 			if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
 				++uis_count;
-		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+		#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 			else
-			if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
+			if (lilv_ui_is_a(ui, g_lv2_qt5_ui_class))
 				++uis_count;
 		#else
 			else
-			if (lilv_ui_is_a(ui, g_lv2_qt5_ui_class))
+			if (lilv_ui_is_a(ui, g_lv2_qt6_ui_class))
 				++uis_count;
 		#endif
 		#ifdef CONFIG_LV2_UI_SHOW
@@ -1814,8 +1814,8 @@ void qtractorLv2PluginType::lv2_open (void)
 #endif	// CONFIG_LV2_EXTERNAL_UI
 	g_lv2_x11_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__X11UI);
 	g_lv2_gtk_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__GtkUI);
-	g_lv2_qt4_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__Qt4UI);
 	g_lv2_qt5_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__Qt5UI);
+	g_lv2_qt6_ui_class = lilv_new_uri(g_lv2_world, LV2_UI__Qt6UI);
 #endif	// CONFIG_LV2_UI
 
 	// Set up the feature we may want to know (as hints).
@@ -2059,8 +2059,8 @@ void qtractorLv2PluginType::lv2_close (void)
 #endif	// CONFIG_LV2_EXTERNAL_UI
 	lilv_node_free(g_lv2_x11_ui_class);
 	lilv_node_free(g_lv2_gtk_ui_class);
-	lilv_node_free(g_lv2_qt4_ui_class);
 	lilv_node_free(g_lv2_qt5_ui_class);
+	lilv_node_free(g_lv2_qt6_ui_class);
 #endif	// CONFIG_LV2_UI
 
 	lilv_world_free(g_lv2_world);
@@ -2123,8 +2123,8 @@ void qtractorLv2PluginType::lv2_close (void)
 #endif	// CONFIG_LV2_EXTERNAL_UI
 	g_lv2_x11_ui_class = nullptr;
 	g_lv2_gtk_ui_class = nullptr;
-	g_lv2_qt4_ui_class = nullptr;
 	g_lv2_qt5_ui_class = nullptr;
+	g_lv2_qt6_ui_class = nullptr;
 #endif	// CONFIG_LV2_UI
 
 	g_lv2_plugins = nullptr;
@@ -3381,16 +3381,14 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 			ui_map.insert(ui_key(LV2_UI_TYPE_GTK_NATIVE), ui);
 		#endif
 		}
-	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-		else
-		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
-			ui_map.insert(ui_key(LV2_UI_TYPE_QT4), ui);
-	#else
 	#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 		else
 		if (lilv_ui_is_a(ui, g_lv2_qt5_ui_class))
 			ui_map.insert(ui_key(LV2_UI_TYPE_QT5), ui);
-	#endif
+	#else
+		else
+		if (lilv_ui_is_a(ui, g_lv2_qt6_ui_class))
+			ui_map.insert(ui_key(LV2_UI_TYPE_QT6), ui);
 	#endif
 	#ifdef CONFIG_LV2_UI_SHOW
 		else
@@ -3445,16 +3443,14 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 			case LV2_UI_TYPE_GTK_NATIVE:
 				pRadioButton = new QRadioButton(QObject::tr("Gtk2 (native)"));
 				break;
-		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-			case LV2_UI_TYPE_QT4:
-				pRadioButton = new QRadioButton(QObject::tr("Qt4"));
-				break;
-		#else
 		#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 			case LV2_UI_TYPE_QT5:
 				pRadioButton = new QRadioButton(QObject::tr("Qt5"));
 				break;
-		#endif
+		#else
+			case LV2_UI_TYPE_QT6:
+				pRadioButton = new QRadioButton(QObject::tr("Qt6"));
+				break;
 		#endif
 			case LV2_UI_TYPE_OTHER:
 			default:
@@ -3514,16 +3510,14 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 	case LV2_UI_TYPE_GTK:
 		ui_type_uri = LV2_UI__GtkUI;
 		break;
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	case LV2_UI_TYPE_QT4:
-		ui_type_uri = LV2_UI__Qt4UI;
-		break;
-#else
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 	case LV2_UI_TYPE_QT5:
 		ui_type_uri = LV2_UI__Qt5UI;
 		break;
-#endif
+#else
+	case LV2_UI_TYPE_QT6:
+		ui_type_uri = LV2_UI__Qt6UI;
+		break;
 #endif
 	default:
 		break;
@@ -3962,8 +3956,8 @@ void qtractorLv2Plugin::setEditorVisible ( bool bVisible )
 		if (m_pQtWidget) {
 			// Guaranteeing a reasonable window type:
 			// ie. not Qt::Dialog or Qt::Popup from the seemingly good choices.
-			if (m_lv2_ui_type == LV2_UI_TYPE_QT4 ||
-				m_lv2_ui_type == LV2_UI_TYPE_QT5) {
+			if (m_lv2_ui_type == LV2_UI_TYPE_QT5 ||
+				m_lv2_ui_type == LV2_UI_TYPE_QT6) {
 				const Qt::WindowFlags wflags
 					= m_pQtWidget->windowFlags() & ~Qt::WindowType_Mask;
 				m_pQtWidget->setWindowFlags(wflags | Qt::Widget);
