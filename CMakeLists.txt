@@ -3,14 +3,12 @@ cmake_minimum_required (VERSION 3.15)
 project (NebulaQuasar
   VERSION 1.5.12
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
-  HOMEPAGE_URL "https://nebula-audio.com"
   LANGUAGES C CXX)
 
 set (PROJECT_TITLE "${PROJECT_NAME}")
 string (TOLOWER "${PROJECT_TITLE}" PROJECT_NAME)
 
 set (PROJECT_COPYRIGHT "Copyright (C) 2005-2026, Nebula Audio. All rights reserved.")
-set (PROJECT_DOMAIN    "nebula-audio.com")
 
 execute_process (
   COMMAND git describe --tags --dirty --abbrev=6

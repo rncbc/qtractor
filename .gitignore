@@ -4,6 +4,10 @@ build/
 dist/
 *.o
 *.obj
+*.a
+*.so
+*.dll
+*.exe
 *.out
 
 # Dependencies
@@ -12,6 +16,14 @@ venv/
 .venv/
 __pycache__/
 *.egg-info/
+.Python
+
+# CMake specific
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
 
 # Logs and temp files
 *.log
@@ -28,13 +40,11 @@ __pycache__/
 *.env.*
 
 # Coverage
-.coverage
 coverage/
 htmlcov/
+.coverage
 
-# CMake specific
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
+# OS
+.DS_Store
+Thumbs.db
 ```

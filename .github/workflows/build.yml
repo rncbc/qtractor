@@ -21,7 +21,8 @@ jobs:
         brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil
         # CLAP SDK - install from header-only repo
         git clone --depth 1 https://github.com/u-he/clap.git /tmp/clap
-        sudo cp -r /tmp/clap/include/clap /usr/local/include/
+        mkdir -p /usr/local/include
+        cp -r /tmp/clap/include/clap /usr/local/include/
     
     - name: Configure CMake
       run: |
@@ -69,7 +70,8 @@ jobs:
         brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil
         # CLAP SDK - install from header-only repo
         git clone --depth 1 https://github.com/u-he/clap.git /tmp/clap
-        sudo cp -r /tmp/clap/include/clap /usr/local/include/
+        mkdir -p /usr/local/include
+        cp -r /tmp/clap/include/clap /usr/local/include/
     
     - name: Configure CMake
       run: |
@@ -117,18 +119,12 @@ jobs:
         git clone https://github.com/microsoft/vcpkg.git --depth 1
         cd vcpkg
         .\bootstrap-vcpkg.bat
-        .\vcpkg install qt6-base:x64-windows qt6-tools:x64-windows libsndfile:x64-windows rubberband:x64-windows zlib:x64-windows lv2:x64-windows lilv:x64-windows suil:x64-windows clap:x64-windows samplerate:x64-windows liblo:x64-windows
+        .\vcpkg install qtbase:x64-windows qttools:x64-windows libsndfile:x64-windows rubberband:x64-windows zlib:x64-windows lv2:x64-windows lilv:x64-windows suil:x64-windows clap:x64-windows samplerate:x64-windows liblo:x64-windows steinberg-vst3-sdk:x64-windows
         echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
         
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
     
-    - name: Download VST3 SDK
-      run: |
-        # VST3 SDK is available via vcpkg package steinberg-vst3-sdk
-        .\vcpkg\vcpkg install steinberg-vst3-sdk:x64-windows
-        echo "VST3 SDK installed via vcpkg"
-        
     - name: Configure CMake
       run: |
         mkdir -p build
