@@ -808,10 +808,10 @@ void qtractorOptions::print_usage ( const QString& arg0 )
 	out << QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE) + sEol;
 	out << QObject::tr("Options:") + sEol;
 #ifdef CONFIG_JACK_SESSION
-	out << "  -s, --session-id=[uuid]" + sEot +
+	out << "  -s, --session-id <uuid>" + sEot +
 		QObject::tr("Set session identification (uuid)") + sEol;
 #endif
-	out << "  -h, --help" + sEot +
+	out << "  -?, --help" + sEot +
 		QObject::tr("Show help about command line options") + sEol;
 	out << "  -v, --version" + sEot +
 		QObject::tr("Show version information") + sEol;
@@ -830,10 +830,16 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
 
 #ifdef CONFIG_JACK_SESSION
-	parser.addOption({{"s", "session-id"},
+	const QString s_session_id = "session-id";
+#endif
+	const QString s_help       = "help";
+
+#ifdef CONFIG_JACK_SESSION
+	parser.addOption({{"s", s_session_id},
 		QObject::tr("Set session identification (uuid)"), "uuid"});
 #endif
-	const QCommandLineOption& helpOption = parser.addHelpOption();
+	parser.addOption({{"?", s_help},
+		QObject::tr("Displays help on command-line options.")});
 	const QCommandLineOption& versionOption = parser.addVersionOption();
 	parser.addPositionalArgument("session-file",
 		QObject::tr("Session file (.qtr)"),
@@ -844,7 +850,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		return false;
 	}
 
-	if (parser.isSet(helpOption)) {
+	if (parser.isSet(s_help)) {
 		show_error(parser.helpText());
 		return false;
 	}
@@ -869,7 +875,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 	}
 
 #ifdef CONFIG_JACK_SESSION
-	if (parser.isSet("session-id")) {
+	if (parser.isSet(s_session_id)) {
 		const QString& sVal = parser.value("session-id");
 		if (sVal.isEmpty()) {
 			show_error(QObject::tr("Option -s requires an argument (uuid)."));
@@ -924,7 +930,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		}
 		else
 	#endif
-		if (sArg == "-h" || sArg == "--help") {
+		if (sArg == "-?" || sArg == "--help") {
 			print_usage(args.at(0));
 			return false;
 		}
