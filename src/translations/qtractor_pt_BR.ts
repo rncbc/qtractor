@@ -155,18 +155,23 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>Mostrar informações da versão</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="827"/>
+        <location filename="../qtractorOptions.cpp" line="830"/>
+        <source>Displays help on command-line options.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="833"/>
         <source>Session file (.qtr)</source>
         <translation>Arquivo do projeto (.qtr)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="828"/>
+        <location filename="../qtractorOptions.cpp" line="834"/>
         <source>[session-file]</source>
         <translation>[arquivo do projeto]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="863"/>
-        <location filename="../qtractorOptions.cpp" line="906"/>
+        <location filename="../qtractorOptions.cpp" line="869"/>
+        <location filename="../qtractorOptions.cpp" line="912"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation>Opção -s requer argumento (uuid).</translation>
     </message>
@@ -393,67 +398,67 @@ MIDI:	</translation>
         <translation>gravador de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2193"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2186"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3429"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3422"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3441"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3434"/>
         <source>External</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3444"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3437"/>
         <source>X11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3447"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3440"/>
         <source>X11 (native)</source>
         <translation>X11 (nativo)</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3450"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3443"/>
         <source>Gtk2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3453"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3446"/>
         <source>Gtk2 (native)</source>
         <translation>Gtk2 (nativo)</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3457"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3450"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3462"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3455"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3468"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3461"/>
         <source>Other</source>
         <translation>Outro</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3476"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3469"/>
         <source>Don&apos;t ask this again</source>
         <translation>Não pergunte novamente</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3863"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3856"/>
         <source>plugin parameters</source>
         <translation>parametros do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4286"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4279"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translatorcomment>parametro_para_requisição_da_interface_lv2</translatorcomment>
@@ -655,7 +660,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="800"/>
-        <location filename="../qtractorOptions.cpp" line="822"/>
+        <location filename="../qtractorOptions.cpp" line="827"/>
         <source>Set session identification (uuid)</source>
         <translation>Nomear sessão (uuid)</translation>
     </message>
@@ -830,7 +835,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2201"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2194"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
