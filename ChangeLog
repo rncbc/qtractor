@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Probable fix to LV2 plug-in UIs in reflecting state/preset
+  changes visually. (EXPERIMENTAL)
+
 - OSC (Open Sound Control) support has been finally introduced,
   similar to keyboard and MIDI controller shortcuts, it allows
   the discrete mapping of OSC handlers to any main menu command
