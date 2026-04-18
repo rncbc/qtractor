@@ -18,7 +18,7 @@ jobs:
     
     - name: Install Dependencies
       run: |
-        brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil clap-sdk
+        brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil clap
     
     - name: Configure CMake
       run: |
@@ -63,7 +63,7 @@ jobs:
     
     - name: Install Dependencies
       run: |
-        brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil clap-sdk
+        brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil clap
     
     - name: Configure CMake
       run: |
@@ -106,9 +106,13 @@ jobs:
       with:
         submodules: recursive
     
-    - name: Install Dependencies
+    - name: Install Dependencies via vcpkg
       run: |
-        choco install qt6-full cmake pkgconfiglite -y
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        .\bootstrap-vcpkg.bat
+        .\vcpkg install qt6-base:x64-windows qt6-tools:x64-windows libsndfile:x64-windows rubberband:x64-windows zlib:x64-windows lv2:x64-windows lilv:x64-windows suil:x64-windows clap:x64-windows
+        echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
         
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
@@ -116,9 +120,8 @@ jobs:
     - name: Download VST3 SDK
       run: |
         mkdir -p src/vst3
-        # VST3 SDK would need to be downloaded from Steinberg
-        # For CI purposes, we'll skip VST3 or use a mock
-        echo "VST3 SDK not available in CI"
+        # VST3 SDK will be handled by vcpkg package
+        echo "VST3 SDK available via vcpkg"
         
     - name: Configure CMake
       run: |
@@ -133,11 +136,12 @@ jobs:
           -DCONFIG_WAVERT=ON `
           -DCONFIG_ASIO=OFF `
           -DCONFIG_VST2=ON `
-          -DCONFIG_VST3=OFF `
+          -DCONFIG_VST3=ON `
           -DCONFIG_LV2=ON `
           -DCONFIG_CLAP=ON `
           -G "Visual Studio 17 2022" `
-          -A x64
+          -A x64 `
+          -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
     
     - name: Build
       run: |

@@ -25,7 +25,20 @@
 #include "qtractorAtomic.h"
 #include "qtractorEngine.h"
 
-#include <jack/jack.h>
+// Platform-specific audio backend includes
+#ifdef __APPLE__
+    // macOS CoreAudio backend
+    #include <CoreAudio/CoreAudioTypes.h>
+    #include <AudioUnit/AudioUnit.h>
+#elif defined(_WIN32)
+    // Windows WASAPI/WaveRT backend
+    #include <windows.h>
+    #include <mmdeviceapi.h>
+    #include <audioclient.h>
+#else
+    // Linux JACK backend (original)
+    #include <jack/jack.h>
+#endif
 
 #include <QObject>
 
@@ -87,7 +100,7 @@ signals:
 
 
 //----------------------------------------------------------------------
-// class qtractorAudioEngine -- JACK client instance (singleton).
+// class qtractorAudioEngine -- Audio engine instance (singleton).
 //
 
 class qtractorAudioEngine : public qtractorEngine
@@ -113,14 +126,24 @@ public:
 	void notifyPropEvent();
 	void notifySelfEvent();
 
-	// JACK client descriptor accessor.
+	// Audio client descriptor accessor (platform-specific).
+#ifdef __APPLE__
+	AudioComponentInstance audioUnit() const;
+#elif defined(_WIN32)
+	IAudioClient *audioClient() const;
+#else
 	jack_client_t *jackClient() const;
+#endif
 
 	// Process cycle executive.
 	int process(unsigned int nframes);
 
-	// Timebase master callback.
+	// Timebase master callback (Linux JACK only).
+#ifndef _WIN32
+#ifndef __APPLE__
 	void timebase(jack_position_t *pPos, int iNewPos);
+#endif
+#endif
 
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
@@ -243,6 +266,14 @@ public:
 	// return the effective number of connection attempts.
 	int updateConnects();
 
+	// Transport mode accessors (platform-specific).
+#ifdef __APPLE__
+	void setTransportMode(qtractorBus::BusMode transportMode);
+	qtractorBus::BusMode transportMode() const;
+#elif defined(_WIN32)
+	void setTransportMode(qtractorBus::BusMode transportMode);
+	qtractorBus::BusMode transportMode() const;
+#else
 	// JACK Transport mode accessors.
 	void setTransportMode(qtractorBus::BusMode transportMode);
 	qtractorBus::BusMode transportMode() const;
@@ -250,8 +281,11 @@ public:
 	// JACK Transport latency accessors.
 	void setTransportLatency(unsigned int iTransportLatency);
 	unsigned int transportLatency() const;
+#endif
 
-	// JACK Timebase mode accessors.
+	// Timebase mode accessors (Linux JACK only).
+#ifndef _WIN32
+#ifndef __APPLE__
 	void setTimebase(bool bTimebase);
 	bool isTimebase() const;
 	bool isTimebaseEx() const;
@@ -261,6 +295,8 @@ public:
 
 	// Absolute number of frames elapsed since engine start.
 	unsigned long jackFrameTime() const;
+#endif
+#endif
 
 	// Reset all audio monitoring...
 	void resetAllMonitors();
@@ -347,11 +383,21 @@ private:
 	// Special event notifier proxy object.
 	qtractorAudioEngineProxy m_proxy;
 
-	// Audio device instance variables.
-	jack_client_t *m_pJackClient;
+	// Audio device instance variables (platform-specific).
+#ifdef __APPLE__
+	AudioComponentInstance m_pAudioUnit;      // macOS CoreAudio
+#elif defined(_WIN32)
+	IAudioClient *m_pAudioClient;             // Windows WASAPI
+#else
+	jack_client_t *m_pJackClient;             // Linux JACK
+#endif
 
-	// JACK Session UUID.
+	// Session UUID (Linux JACK Session only).
+#ifndef _WIN32
+#ifndef __APPLE__
 	QString m_sSessionId;
+#endif
+#endif
 
 	// Initial sample-rate and buffer size.
 	unsigned int m_iSampleRate;
@@ -422,15 +468,23 @@ private:
 	qtractorAudioBuffer *m_pPlayerBuff;
 	unsigned long        m_iPlayerFrame;
 
-	// JACK Transport mode.
+	// Transport mode.
 	qtractorBus::BusMode m_transportMode;
 
-	// JACK Transport latency.
+	// Transport latency (Linux JACK only).
+#ifndef _WIN32
+#ifndef __APPLE__
 	unsigned int         m_iTransportLatency;
+#endif
+#endif
 
-	// JACK Timebase mode and control.
+	// Timebase mode and control (Linux JACK only).
+#ifndef _WIN32
+#ifndef __APPLE__
 	bool                 m_bTimebase;
 	unsigned int         m_iTimebase;
+#endif
+#endif
 
 	// Time(base)/BBT time info.
 	TimeInfo             m_timeInfo;
@@ -554,9 +608,21 @@ private:
 	qtractorPluginList *m_pIPluginList;
 	qtractorPluginList *m_pOPluginList;
 
-	// Specific JACK ports stuff.
+	// Platform-specific port handles.
+#ifdef __APPLE__
+	// macOS CoreAudio - AudioUnit I/O
+	AudioUnit m_audioUnitIO;
+#elif defined(_WIN32)
+	// Windows WASAPI - IAudioRenderClient/IAudioCaptureClient
+	void *m_pRenderClient;
+	void *m_pCaptureClient;
+#else
+	// Linux JACK ports.
 	jack_port_t **m_ppIPorts;
 	jack_port_t **m_ppOPorts;
+#endif
+
+	// Common buffer pointers (all platforms).
 	float       **m_ppIBuffer;
 	float       **m_ppOBuffer;
 	float       **m_ppXBuffer;

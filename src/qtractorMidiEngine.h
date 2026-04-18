@@ -27,7 +27,18 @@
 #include "qtractorMmcEvent.h"
 #include "qtractorCtlEvent.h"
 
-#include <alsa/asoundlib.h>
+// Platform-specific MIDI backend includes
+#ifdef __APPLE__
+    // macOS CoreMIDI backend
+    #include <CoreMIDI/CoreMIDI.h>
+#elif defined(_WIN32)
+    // Windows MIDI backend (WinMM/MME)
+    #include <windows.h>
+    #include <mmsystem.h>
+#else
+    // Linux ALSA backend (original)
+    #include <alsa/asoundlib.h>
+#endif
 
 #include <QMultiHash>
 #include <QMutex>
@@ -88,7 +99,7 @@ signals:
 
 
 //----------------------------------------------------------------------
-// class qtractorMidiEngine -- ALSA sequencer client instance (singleton).
+// class qtractorMidiEngine -- MIDI engine instance (singleton).
 //
 
 class qtractorMidiEngine : public qtractorEngine
@@ -104,6 +115,13 @@ public:
 	// Special event notifier proxy object.
 	qtractorMidiEngineProxy *proxy();
 
+	// MIDI client descriptor accessor (platform-specific).
+#ifdef __APPLE__
+	MIDIClientRef midiClient() const;
+#elif defined(_WIN32)
+	HMIDIIN midiInClient() const;
+	HMIDIOUT midiOutClient() const;
+#else
 	// ALSA client descriptor accessor.
 	snd_seq_t *alsaSeq() const;
 	int alsaClient() const;
@@ -115,6 +133,7 @@ public:
 	// ALSA subscription port notifier.
 	QSocketNotifier *alsaNotifier() const;
 	void alsaNotifyAck();
+#endif
 
 	// Read ahead frames configuration.
 	void setReadAhead(unsigned int iReadAhead);
@@ -146,6 +165,9 @@ public:
 	// Shut-off all MIDI tracks (panic)...
 	void shutOffAllTracks();
 
+	// Port input registry methods (platform-specific).
+#ifndef _WIN32
+#ifndef __APPLE__
 	// ALSA port input registry methods.
 	void addInputBus(qtractorMidiBus *pMidiBus);
 	void removeInputBus(qtractorMidiBus *pMidiBus);
@@ -156,6 +178,8 @@ public:
 
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
+#endif
+#endif
 
 	// MIDI event enqueue method.
 	void enqueue(qtractorTrack *pTrack, qtractorMidiEvent *pEvent,
@@ -615,8 +639,19 @@ protected:
 
 private:
 
-	// Instance variables.
+	// Platform-specific port handles.
+#ifdef __APPLE__
+	// macOS CoreMIDI - MIDI endpoint refs
+	MIDIEndpointRef m_midiEndpointIn;
+	MIDIEndpointRef m_midiEndpointOut;
+#elif defined(_WIN32)
+	// Windows WinMM - MIDI handles
+	HMIDIIN m_hMidiIn;
+	HMIDIOUT m_hMidiOut;
+#else
+	// Linux ALSA sequencer port.
 	int m_iAlsaPort;
+#endif
 
 	// Specific monitor instances.
 	qtractorMidiMonitor *m_pIMidiMonitor;
