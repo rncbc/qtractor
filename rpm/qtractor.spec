@@ -92,10 +92,6 @@ BuildRequires:	gtkmm24-devel
 BuildRequires:	gtkmm2-devel
 %endif
 
-%if 0%{?is_opensuse}
-BuildRequires:	libicu-devel
-%endif
-
 Requires(post):		desktop-file-utils, shared-mime-info
 Requires(postun):	desktop-file-utils, shared-mime-info
 
