@@ -279,6 +279,26 @@ set (SOURCES
   qtractorTrackForm.cpp
 )
 
+# Platform-specific source files
+if (APPLE)
+  # macOS CoreAudio and CoreMIDI backends
+  list (APPEND SOURCES
+    qtractorCoreAudioEngine.cpp
+    qtractorCoreMidiEngine.cpp
+  )
+  # AudioUnit plugin support
+  if (CONFIG_AU)
+    list (APPEND SOURCES
+      qtractorAuPlugin.cpp
+    )
+  endif ()
+elseif (WIN32)
+  # Windows WASAPI/WaveRT backend
+  list (APPEND SOURCES
+    qtractorWasapiEngine.cpp
+  )
+endif ()
+
 set (FORMS
   qtractorAudioIOMatrixForm.ui
   qtractorBusForm.ui
@@ -421,6 +441,28 @@ endif ()
 
 if (CONFIG_LIBASOUND)
   target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::ALSA)
+endif ()
+
+# Platform-specific libraries
+if (APPLE)
+  # macOS CoreAudio frameworks
+  target_link_libraries (${PROJECT_NAME} PRIVATE 
+    ${COREAUDIO_LIBRARY}
+    ${AUDIOTOOLBOX_LIBRARY}
+    ${AUDIOUNIT_LIBRARY}
+  )
+  # AudioUnit SDK if enabled
+  if (CONFIG_AU AND AudioUnitSDK_FOUND)
+    target_link_libraries (${PROJECT_NAME} PRIVATE AudioUnitSDK::AudioUnitSDK)
+  endif ()
+elseif (WIN32)
+  # Windows WASAPI/WaveRT libraries
+  target_link_libraries (${PROJECT_NAME} PRIVATE 
+    ole32
+    mfplat
+    mfreadwrite
+    mfuuid
+  )
 endif ()
 
 if (CONFIG_LIBSNDFILE)
