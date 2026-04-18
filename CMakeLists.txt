@@ -84,7 +84,7 @@ option (CONFIG_LIBZ "Enable libz interface (default=yes)" 1)
 option (CONFIG_LIBLILV "Enable LILV interface support (default=yes)" 1)
 
 # Enable SUIL support.
-option (CONFIG_LIBSUIL "Enable SUIL interface support (default=yes)" 1)
+option (CONFIG_LIBSUIL "Enable SUIL interface support (default=no)" 0)
 
 # Enable SSE optimization.
 option (CONFIG_SSE "Enable SSE optimization (default=yes)" 1)
@@ -597,11 +597,6 @@ if (NOT CONFIG_LIBLILV)
   set (CONFIG_LIBSUIL 0)
 endif ()
 
-# Disable libsuil upon Qt >= 6.0.0 ...
-if (CONFIG_LIBSUIL AND QT_VERSION_MAJOR GREATER_EQUAL 6)
-  set (CONFIG_LIBSUIL 0)
-endif ()
-
 # Check for LV2 new UI instantiation availability (libsuil).
 if (CONFIG_LIBSUIL)
   pkg_check_modules (SUIL IMPORTED_TARGET suil-0)
@@ -609,7 +604,6 @@ if (CONFIG_LIBSUIL)
     find_library (SUIL_LIBRARY NAMES ${SUIL_LIBRARIES} HINTS ${SUIL_LIBDIR})
   endif ()
   if (SUIL_LIBRARY)
-    set (CONFIG_LIBSUIL 1)
     set (CMAKE_REQUIRED_LIBRARIES "${SUIL_LIBRARY};${CMAKE_REQUIRED_LIBRARIES}")
     check_function_exists (suil_instance_get_handle CONFIG_SUIL_INSTANCE_GET_HANDLE)
   else ()

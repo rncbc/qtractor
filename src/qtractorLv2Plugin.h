@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -386,6 +386,12 @@ public:
 
 	// Load default plugin state.
 	void lv2_state_load_default();
+
+	// LV2 State/Presets: port value setter/getter.
+	void lv2_set_port_value(
+		uint32_t port_index, const void *value, uint32_t size, uint32_t type);
+	const void *lv2_get_port_value(
+		uint32_t port_index, uint32_t *size, uint32_t *type);
 
 #endif
 
