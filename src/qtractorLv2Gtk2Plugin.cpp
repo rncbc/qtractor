@@ -1,7 +1,7 @@
 // qtractorLv2Gtk2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -71,6 +71,16 @@ void exit_main (void)
 			g_lv2_ui_gtkmm2_main = nullptr;
 		}
 	#endif
+	}
+}
+
+
+// Idle main loop.
+void idle_main (void)
+{
+	if (g_lv2_ui_gtk2_init > 0) {
+		while (::gtk_events_pending()
+			&& ::gtk_main_iteration_do(false));
 	}
 }
 
