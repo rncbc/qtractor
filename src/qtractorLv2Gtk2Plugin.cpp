@@ -78,7 +78,10 @@ void exit_main (void)
 // Idle main loop.
 void idle_main (void)
 {
-	while (::gtk_events_pending() && ::gtk_main_iteration_do(false));
+	if (g_lv2_ui_gtk2_init > 0) {
+		while (::gtk_events_pending()
+			&& ::gtk_main_iteration_do(false));
+	}
 }
 
 }	// namespace qtractorLv2Gtk2Plugin

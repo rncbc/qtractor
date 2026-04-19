@@ -3930,10 +3930,6 @@ void qtractorLv2Plugin::idleEditor (void)
 			closeEditorEx();
 	}
 #endif
-#ifdef CONFIG_LV2_UI_GTK2
-	if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_GTK)
-		qtractorLv2Gtk2Plugin::idle_main();
-#endif
 }
 
 
@@ -4150,6 +4146,10 @@ void qtractorLv2Plugin::idleEditorAll (void)
 	QListIterator<qtractorLv2Plugin *> iter(g_lv2Plugins);
 	while (iter.hasNext())
 		iter.next()->idleEditor();
+
+#ifdef CONFIG_LV2_UI_GTK2
+	qtractorLv2Gtk2Plugin::idle_main();
+#endif
 }
 
 
