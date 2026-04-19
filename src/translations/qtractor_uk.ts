@@ -502,7 +502,7 @@ End:	%3	Length:	%4</source>
         <translation>параметри додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4273"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4277"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Відкрити файл</translation>

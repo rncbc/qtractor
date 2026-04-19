@@ -1,7 +1,7 @@
 // qtractorLv2Gtk2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -72,6 +72,13 @@ void exit_main (void)
 		}
 	#endif
 	}
+}
+
+
+// Idle main loop.
+void idle_main (void)
+{
+	while (::gtk_events_pending() && ::gtk_main_iteration_do(false));
 }
 
 }	// namespace qtractorLv2Gtk2Plugin

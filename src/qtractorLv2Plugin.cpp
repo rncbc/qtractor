@@ -3649,7 +3649,7 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		gtk_widget_show_all(pGtkWindow);
 		// Embed native GTK+ window into a Qt widget...
 		const WId wid = GDK_WINDOW_XID(gtk_widget_get_window(pGtkWindow));
-	//	const WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
+	//	const WId wid = gtk_plug_get_id(GTK_PLUG(pGtkWindow));
 		QWindow *pQtWindow = QWindow::fromWinId(wid);
 		// Create the new parent frame...
 		QWidget *pQtWidget = new QWidget(pParent, wflags);
@@ -3929,6 +3929,10 @@ void qtractorLv2Plugin::idleEditor (void)
 		if ((*m_lv2_ui_idle_interface->idle)(m_lv2_ui_handle))
 			closeEditorEx();
 	}
+#endif
+#ifdef CONFIG_LV2_UI_GTK2
+	if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_GTK)
+		qtractorLv2Gtk2Plugin::idle_main();
 #endif
 }
 
