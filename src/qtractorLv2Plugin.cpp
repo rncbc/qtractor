@@ -3766,8 +3766,9 @@ void qtractorLv2Plugin::closeEditor (void)
 	if (m_pGtkWindow) {
 		gtk_widget_destroy(m_pGtkWindow);
 		m_pGtkWindow = nullptr;
+		// Surely it was a LV2_UI_TYPE_GTK...
+		qtractorLv2Gtk2Plugin::exit_main();
 	}
-	qtractorLv2Gtk2Plugin::exit_main();
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
 
