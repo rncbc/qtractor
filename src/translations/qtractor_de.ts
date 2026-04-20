@@ -917,12 +917,12 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Nicht mehr nachfragen</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3850"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3851"/>
         <source>plugin parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4277"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4278"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Datei öffnen</translation>
