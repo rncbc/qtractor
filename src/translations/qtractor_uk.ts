@@ -497,12 +497,12 @@ End:	%3	Length:	%4</source>
         <translation>Більше не питати</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3850"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3851"/>
         <source>plugin parameters</source>
         <translation>параметри додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4277"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4278"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Відкрити файл</translation>
