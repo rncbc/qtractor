@@ -458,7 +458,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="830"/>
         <source>Displays help on command-line options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche l&apos;aide relative aux options de ligne de commande.</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="833"/>
@@ -905,7 +905,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3452"/>
         <source>Qt6</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt6</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3457"/>
@@ -6002,22 +6002,22 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2208"/>
         <source>Default session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de session par défaut (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2225"/>
         <source>Regular session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de session standard (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2233"/>
         <source>Template session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de session de modèle (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2242"/>
         <source>Archive session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archiver les fichiers de session (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2249"/>
