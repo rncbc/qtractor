@@ -815,6 +815,8 @@ if (CONFIG_LV2_UI_GTK2)
     set (CONFIG_LV2_UI_GTK2 0)
     set (CONFIG_LV2_UI_GTKMM2 0)
   endif ()
+else ()
+  set (CONFIG_LV2_UI_GTKMM2 0)
 endif ()
 
 if (CONFIG_LV2_UI_GTKMM2)
