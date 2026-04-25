@@ -19,8 +19,12 @@ jobs:
     - name: Install Dependencies
       run: |
         brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil
-        # CLAP SDK - install from header-only repo
-        git clone --depth 1 https://github.com/u-he/clap.git /tmp/clap
+        # Set paths for keg-only zlib
+        export LDFLAGS="-L/opt/homebrew/opt/zlib/lib"
+        export CPPFLAGS="-I/opt/homebrew/opt/zlib/include"
+        export PKG_CONFIG_PATH="/opt/homebrew/opt/zlib/lib/pkgconfig:$PKG_CONFIG_PATH"
+        # CLAP SDK - use the correct repo (free-audio/clap)
+        git clone --depth 1 https://github.com/free-audio/clap.git /tmp/clap
         mkdir -p /usr/local/include
         cp -r /tmp/clap/include/clap /usr/local/include/
     
@@ -68,8 +72,12 @@ jobs:
     - name: Install Dependencies
       run: |
         brew install qt@6 cmake pkg-config libsamplerate libsndfile rubberband liblo zlib lv2 lilv suil
-        # CLAP SDK - install from header-only repo
-        git clone --depth 1 https://github.com/u-he/clap.git /tmp/clap
+        # Set paths for keg-only zlib (Intel Mac path)
+        export LDFLAGS="-L/usr/local/opt/zlib/lib"
+        export CPPFLAGS="-I/usr/local/opt/zlib/include"
+        export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig:$PKG_CONFIG_PATH"
+        # CLAP SDK - use the correct repo (free-audio/clap)
+        git clone --depth 1 https://github.com/free-audio/clap.git /tmp/clap
         mkdir -p /usr/local/include
         cp -r /tmp/clap/include/clap /usr/local/include/
     
@@ -119,7 +127,8 @@ jobs:
         git clone https://github.com/microsoft/vcpkg.git --depth 1
         cd vcpkg
         .\bootstrap-vcpkg.bat
-        .\vcpkg install qtbase:x64-windows qttools:x64-windows libsndfile:x64-windows rubberband:x64-windows zlib:x64-windows lv2:x64-windows lilv:x64-windows suil:x64-windows clap:x64-windows samplerate:x64-windows liblo:x64-windows steinberg-vst3-sdk:x64-windows
+        # Note: lv2, lilv, suil are not available in vcpkg - LV2 support disabled on Windows
+        .\vcpkg install qtbase:x64-windows qttools:x64-windows libsndfile:x64-windows rubberband:x64-windows zlib:x64-windows clap:x64-windows samplerate:x64-windows liblo:x64-windows steinberg-vst3-sdk:x64-windows
         echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
         
     - name: Setup MSVC
