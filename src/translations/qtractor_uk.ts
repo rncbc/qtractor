@@ -484,7 +484,7 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3452"/>
         <source>Qt6</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt6</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3457"/>
@@ -639,7 +639,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="830"/>
         <source>Displays help on command-line options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Показує довідку щодо параметрів командного рядка.</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="833"/>
@@ -6019,22 +6019,22 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2208"/>
         <source>Default session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>файли типового сеансу (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2225"/>
         <source>Regular session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>файли звичайного сеансу (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2233"/>
         <source>Template session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>файли шаблонів сеансу (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2242"/>
         <source>Archive session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>файли архівів сеансу (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2249"/>
@@ -8967,12 +8967,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="687"/>
         <source>Shivaranjani</source>
-        <translation type="unfinished"></translation>
+        <translation>шиваранаджані</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="688"/>
         <source>Marwa</source>
-        <translation type="unfinished"></translation>
+        <translation>марва</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="690"/>
@@ -13529,92 +13529,92 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4637"/>
         <source>&amp;OSC</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4655"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4670"/>
         <source>Whether to enable OSC control server/listener</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід вмикати сервер/обробник керування OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4673"/>
         <source>Enable &amp;OSC server/listener</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути сервер/обробник &amp;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4699"/>
         <source>&amp;URL: osc.udp://localhost:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Адреса: osc.udp://localhost:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4715"/>
         <source>OSC server/listener port</source>
-        <translation type="unfinished"></translation>
+        <translation>Порт сервера/обробника OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4740"/>
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4755"/>
         <source>OSC actions search string (regular expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Рядок пошуку дій OSC (формальний вираз)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4771"/>
         <source>OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4798"/>
         <source>OSC actions filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фільтр дій OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4802"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Усі</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4807"/>
         <source>Checked</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначені</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4812"/>
         <source>Unchecked</source>
-        <translation type="unfinished"></translation>
+        <translation>Непозначені</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4832"/>
         <source>Check OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначити дії OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4835"/>
         <source>&amp;Check</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Позначити</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4857"/>
         <source>Uncheck OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Зняти позначення з дій OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4860"/>
         <source>U&amp;ncheck</source>
-        <translation type="unfinished"></translation>
+        <translation>З&amp;няти позначення</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4895"/>
         <source>Reset OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Скинути дії OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="85"/>
