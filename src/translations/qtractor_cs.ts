@@ -236,7 +236,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="830"/>
         <source>Displays help on command-line options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazí nápovědu k volbám (argumentům) příkazového řádku.</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="833"/>
@@ -906,7 +906,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3452"/>
         <source>Qt6</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt6</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3457"/>
@@ -2905,22 +2905,22 @@ Promiňte.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2208"/>
         <source>Default session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory s výchozím sezením (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2225"/>
         <source>Regular session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory s běžným sezením (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2233"/>
         <source>Template session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory s předlohou sezení (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2242"/>
         <source>Archive session files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory s archivovaným sezením (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2348"/>
@@ -13653,92 +13653,92 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4637"/>
         <source>&amp;OSC</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4655"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Server</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4670"/>
         <source>Whether to enable OSC control server/listener</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda povolit server/posluchač pro ovládání OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4673"/>
         <source>Enable &amp;OSC server/listener</source>
-        <translation type="unfinished"></translation>
+        <translation>Povolit server/posluchač &amp;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4699"/>
         <source>&amp;URL: osc.udp://localhost:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;URL: osc.udp://localhost:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4715"/>
         <source>OSC server/listener port</source>
-        <translation type="unfinished"></translation>
+        <translation>Přípojka pro server/posluchač OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4740"/>
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Činnosti</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4755"/>
         <source>OSC actions search string (regular expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyhledávací řetězec pro činnosti OSC (regulární výraz)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4771"/>
         <source>OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Činnosti OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4798"/>
         <source>OSC actions filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtr činností OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4802"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Vše</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4807"/>
         <source>Checked</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaškrtnuto</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4812"/>
         <source>Unchecked</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaškrtnutí zrušeno</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4832"/>
         <source>Check OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaškrtnout činnosti OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4835"/>
         <source>&amp;Check</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zaškrtnout</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4857"/>
         <source>Uncheck OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit zaškrtnutí činností OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4860"/>
         <source>U&amp;ncheck</source>
-        <translation type="unfinished"></translation>
+        <translation>Zr&amp;ušit zaškrtnutí</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4895"/>
         <source>Reset OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Obnovit výchozí nastavení činností OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4404"/>
