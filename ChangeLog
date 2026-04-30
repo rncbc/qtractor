@@ -4,24 +4,24 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.6.0  2026-05-01  A Spring'26 Release.
 
 - Probable fix to LV2 plug-in UIs in reflecting state/preset
-  changes visually. (EXPERIMENTAL)
+  changes visually.
 
 - OSC (Open Sound Control) support has been finally introduced,
   similar to keyboard and MIDI controller shortcuts, it allows
   the discrete mapping of OSC handlers to any main menu command
-  actions (cf. View/Options.../OSC) (EXPERIMENTAL)
+  actions (cf. View/Options.../OSC)
 
 - Fixed move/copy of Audio/MIDI Insert pseudo-plugins to keep
-  their respective send/return connections. (EXPERIMENTAL)
+  their respective send/return connections.
 
 - Improved main session File/Save As... requester dialogs, now
   taking into a better account the selected file type filters:
   Default session files (*.qtr), Regular session files (*.qts),
   Template session files (*.qtt) and Archive/zip session files
-  (*.qtz); drop useless All files (*.*) filter. (EXPERIMENTAL)
+  (*.qtz); drop useless All files (*.*) filter.
 
 
 1.5.12  2026-03-20  An Early-Spring'26 Release.
