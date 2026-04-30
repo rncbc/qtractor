@@ -17,8 +17,8 @@
 
 Summary:	An Audio/MIDI multi-track sequencer
 Name:		qtractor
-Version:	1.5.12
-Release:	19.1
+Version:	1.6.0
+Release:	20.1
 License:	GPL-2.0-or-later
 Group:		Productivity/Multimedia/Sound/Midi
 Source:		%{name}-%{version}.tar.gz
@@ -171,41 +171,5 @@ cmake --install build
 
 
 %changelog
-* Fri Mar 20 2026 Rui Nuno Capela <rncbc@rncbc.org> 1.5.12
-- An Early-Spring'26 Release.
-* Tue Dec 30 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.11
-- An End-of-Year'25 Release.
-* Fri Dec 19 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.10
-- An Early Winter'25 Release.
-* Fri Oct 31 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.9
-- A Halloween'25 Release.
-* Fri Aug 29 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.8
-- A Late Summer'25 Release.
-* Sat Jul 19 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.7
-- A Summer'25 Release.
-* Fri Jun  6 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.6
-- An End-of-Spring'25 Release.
-* Wed May 21 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.5
-- A Mid-Spring'25 Release.
-* Fri Apr  4 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.4
-- An Early Spring'25 Release.
-* Sun Feb  9 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.3
-- A Mid-Winter'25 Release.
-* Fri Jan 17 2025 Rui Nuno Capela <rncbc@rncbc.org> 1.5.2
-- A New-Year'25 Release.
-* Mon Dec 30 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.5.1
-- An(other) End-of-Year'24 Release.
-* Mon Dec 16 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.5.0
-- An End-of-Year'24 Release.
-* Fri Nov  1 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.4.0
-- A Halloween'24 Release.
-* Fri Oct  4 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.3.0
-- An Early-Fall'24 Release.
-* Thu Aug 29 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.2.0
-- A Mid-Summer'24 Release.
-* Mon Aug  5 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.1.1
-- A Summer'24 Hotfix Release.
-* Fri Aug  2 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.1.0
-- A Summer'24 Release.
-* Fri Jun 21 2024 Rui Nuno Capela <rncbc@rncbc.org> 1.0.0
-- An Unthinkable Release.
+* Fri May  1 2026 Rui Nuno Capela <rncbc@rncbc.org> 1.6.0
+- A Spring'26 Release.
