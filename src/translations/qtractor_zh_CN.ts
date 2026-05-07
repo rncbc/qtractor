@@ -8585,4 +8585,5613 @@ Do you want to apply the changes?</source>
         <translation>背景色</translation>
     </message>
 </context>
+<context>
+    <name>qtractorMidiControl</name>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="969" />
+        <source>Note On</source>
+        <translation>音符开</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="970" />
+        <source>Note Off</source>
+        <translation>音符关</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="971" />
+        <source>Key Press</source>
+        <translation type="unfinished">触后</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="972" />
+        <source>Controller</source>
+        <translation>控制器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="973" />
+        <source>Pgm Change</source>
+        <translation>音色改变</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="974" />
+        <source>Chan Press</source>
+        <translation type="unfinished">通道触后</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="975" />
+        <source>Pitch Bend</source>
+        <translation>弯音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="976" />
+        <source>RPN</source>
+        <translation>RPN</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="977" />
+        <source>NRPN</source>
+        <translation>NRPN</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="978" />
+        <source>Control 14</source>
+        <translation>14 位控制</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="1055" />
+        <source>Track Gain</source>
+        <translation>轨道增益</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="1056" />
+        <source>Track Panning</source>
+        <translation>轨道声像</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="1057" />
+        <source>Track Monitor</source>
+        <translation>轨道监听</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="1058" />
+        <source>Track Record</source>
+        <translation>轨道录音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="1059" />
+        <source>Track Mute</source>
+        <translation>轨道静音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="1060" />
+        <source>Track Solo</source>
+        <translation>轨道独奏</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiControlForm</name>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="34" />
+        <source>Controllers</source>
+        <translation>控制器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="43" />
+        <source>Controller files</source>
+        <translation>控制器文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="59" />
+        <source>Files</source>
+        <translation>文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="64" />
+        <source>Path</source>
+        <translation>路径</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="72" />
+        <source>Import controller files</source>
+        <translation>导入控制器文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="75" />
+        <source>&amp;Import...</source>
+        <translation>导入(&amp;I)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="85" />
+        <source>Remove controller file</source>
+        <translation>移除控制器文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="88" />
+        <source>&amp;Remove</source>
+        <translation>移除(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="98" />
+        <source>Move controller file up on list order</source>
+        <translation>在列表中将控制器文件上移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="101" />
+        <source>&amp;Up</source>
+        <translation>上移(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="111" />
+        <source>Move controller file down on list order</source>
+        <translation>在列表中将控制器文件下移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="114" />
+        <source>&amp;Down</source>
+        <translation>下移(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="124" />
+        <source>&amp;Type</source>
+        <translation>类型(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="137" />
+        <source>&amp;Channel</source>
+        <translation>通道(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="150" />
+        <source>&amp;Parameter</source>
+        <translation>参数(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="163" />
+        <source>Trac&amp;k</source>
+        <translation>轨道(&amp;K)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="176" />
+        <source>offse&amp;t</source>
+        <translation>偏移(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="189" />
+        <source>&amp;limit</source>
+        <translation>限制(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="202" />
+        <source>C&amp;ommand</source>
+        <translation>命令(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="215" />
+        <location filename="../qtractorMidiControlForm.ui" line="385" />
+        <source>Flags</source>
+        <translation>标志</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="238" />
+        <source>MIDI Event type</source>
+        <translation>MIDI 事件类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="245" />
+        <source>MIDI Channel</source>
+        <translation>MIDI 通道</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="252" />
+        <source>MIDI Controller (parameter)</source>
+        <translation>MIDI 控制器 (参数)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="259" />
+        <source>MIDI parameter (track offset)</source>
+        <translation>MIDI 参数 (轨道偏移)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="262" />
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="269" />
+        <source>Track offset</source>
+        <translation>轨道偏移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="282" />
+        <source>Track limit</source>
+        <translation>轨道限制</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="295" />
+        <source>Command action</source>
+        <translation>命令操作</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="302" />
+        <source>Command delta/momentary</source>
+        <translation type="unfinished">命令增量/瞬时</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="305" />
+        <source>D&amp;elta</source>
+        <translation type="unfinished">增量(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="312" />
+        <source>Command feedback</source>
+        <translation>命令反馈</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="315" />
+        <source>&amp;Feedback</source>
+        <translation>反馈(&amp;F)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="322" />
+        <source>Map/update controller command</source>
+        <translation>映射/更新控制器命令</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="325" />
+        <source>&amp;Map</source>
+        <translation>映射(&amp;M)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="341" />
+        <source>Controller map</source>
+        <translation>控制器映射</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="360" />
+        <source>Type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="365" />
+        <source>Channel</source>
+        <translation>通道</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="370" />
+        <source>Parameter</source>
+        <translation>参数</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="375" />
+        <source>Track</source>
+        <translation>轨道</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="380" />
+        <source>Command</source>
+        <translation>命令</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="776" />
+        <location filename="../qtractorMidiControlForm.cpp" line="869" />
+        <source>Feedback</source>
+        <translation>反馈</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="393" />
+        <source>Unmap/remove controller command</source>
+        <translation>取消映射/移除控制器命令</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="396" />
+        <source>U&amp;nmap</source>
+        <translation>取消映射(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="419" />
+        <source>Enable all controllers immediate sync (hook)</source>
+        <translation type="unfinished">启用所有控制器即时同步 (hook)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="422" />
+        <source>&amp;Sync</source>
+        <translation>同步(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="442" />
+        <source>Reload/apply all controller files</source>
+        <translation>重新加载/应用所有控制器文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="445" />
+        <source>Relo&amp;ad</source>
+        <translation>重新加载(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="455" />
+        <source>Export to controller file</source>
+        <translation>导出到控制器文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="458" />
+        <source>E&amp;xport...</source>
+        <translation>导出(&amp;X)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="468" />
+        <source>Close this dialog</source>
+        <translation>关闭此对话框</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="471" />
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="237" />
+        <source>Import Controller Files</source>
+        <translation>导入控制器文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="240" />
+        <location filename="../qtractorMidiControlForm.cpp" line="458" />
+        <source>Controller files (*.%1)</source>
+        <translation>控制器文件 (*.%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="241" />
+        <location filename="../qtractorMidiControlForm.cpp" line="459" />
+        <source>All files (*.*)</source>
+        <translation>所有文件 (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="322" />
+        <location filename="../qtractorMidiControlForm.cpp" line="508" />
+        <location filename="../qtractorMidiControlForm.cpp" line="523" />
+        <location filename="../qtractorMidiControlForm.cpp" line="561" />
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="323" />
+        <source>About to remove controller file:
+
+"%1"
+
+Are you sure?</source>
+        <translation>即将删除控制器文件：
+
+"%1"
+
+是否确认？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="455" />
+        <source>Export Controller File</source>
+        <translation>导出控制器文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="464" />
+        <source>controller</source>
+        <translation>控制器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="509" />
+        <source>The controller file already exists:
+
+"%1"
+
+Do you want to replace it?</source>
+        <translation>控制器文件已存在：
+
+"%1"
+
+是否替换？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="524" />
+        <source>Saved controller mappings may not be effective
+the next time you start this program.
+
+"%1"
+
+Do you want to apply to controller files?</source>
+        <translation>已保存的控制器映射可能
+在下次启动此程序时不会生效。
+
+"%1"
+
+是否保存更改？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="562" />
+        <source>Controller mappings have been changed.</source>
+        <translation>控制器映射已更改。</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="563" />
+        <source>Do you want to save the changes?</source>
+        <translation>是否保存更改？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.cpp" line="775" />
+        <location filename="../qtractorMidiControlForm.cpp" line="867" />
+        <source>Delta</source>
+        <translation type="unfinished">增量</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiControlObserverForm</name>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="43" />
+        <source>&amp;Type:</source>
+        <translation>类型(&amp;T)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="56" />
+        <source>MIDI event type</source>
+        <translation>MIDI 事件类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="76" />
+        <source>Cha&amp;nnel:</source>
+        <translation>通道(&amp;N)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="89" />
+        <source>MIDI channel</source>
+        <translation>MIDI 通道</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="115" />
+        <source>&amp;Parameter:</source>
+        <translation>参数(&amp;P)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="128" />
+        <source>MIDI parameter</source>
+        <translation>MIDI 参数</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="135" />
+        <source>&amp;Logarithmic</source>
+        <translation>对数(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="142" />
+        <source>&amp;Feedback</source>
+        <translation>反馈(&amp;F)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="149" />
+        <source>In&amp;vert</source>
+        <translation>反转(&amp;V)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="156" />
+        <source>&amp;Hook</source>
+        <translation type="unfinished">挂钩(&amp;H)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="163" />
+        <source>L&amp;atch</source>
+        <translation type="unfinished">锁定(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="185" />
+        <source>Control input connections</source>
+        <translation>控制输入连接</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="188" />
+        <source>&amp;Inputs</source>
+        <translation>输入(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="198" />
+        <source>Control output connections</source>
+        <translation>控制输出连接</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="201" />
+        <source>&amp;Outputs</source>
+        <translation>输出(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.ui" line="34" />
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="192" />
+        <source>MIDI Controller</source>
+        <translation>MIDI 控制器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="383" />
+        <source>MIDI controller is already assigned.
+
+Do you want to replace the mapping?</source>
+        <translation>MIDI 控制器已被分配。
+
+是否替换此映射？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="429" />
+        <source>Some settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation>某些设置已更改。
+
+是否应用这些更改？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="572" />
+        <source>&amp;MIDI Controller...</source>
+        <translation>MIDI 控制器(&amp;M)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="680" />
+        <source>&amp;Automation</source>
+        <translation>自动化(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="694" />
+        <source>&amp;Lock</source>
+        <translation>锁定(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="712" />
+        <source>&amp;Play</source>
+        <translation>播放(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="728" />
+        <source>&amp;Record</source>
+        <translation>录制(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="738" />
+        <source>&amp;Clear</source>
+        <translation>清除(&amp;C)</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiControlPluginWidget</name>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="29" />
+        <source>&amp;Type:</source>
+        <translation>类型(&amp;T)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="42" />
+        <source>MIDI event type</source>
+        <translation>MIDI 事件类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="62" />
+        <source>Cha&amp;nnel:</source>
+        <translation>通道(&amp;N)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="75" />
+        <source>MIDI channel</source>
+        <translation>MIDI 通道</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="91" />
+        <source>&amp;Parameter:</source>
+        <translation>参数(&amp;P)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="104" />
+        <source>MIDI parameter</source>
+        <translation>MIDI 参数</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="111" />
+        <source>&amp;Logarithmic</source>
+        <translation>对数(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="118" />
+        <source>In&amp;vert</source>
+        <translation>反转(&amp;V)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlPluginWidget.ui" line="125" />
+        <source>&amp;Bipolar</source>
+        <translation>双极(&amp;B)</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEditEvent</name>
+    <message>
+        <location filename="../qtractorMidiEditEvent.cpp" line="162" />
+        <source>Zoom in (horizontal)</source>
+        <translation>放大 (水平)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditEvent.cpp" line="163" />
+        <source>Zoom out (horizontal)</source>
+        <translation>缩小 (水平)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditEvent.cpp" line="164" />
+        <source>Zoom reset (horizontal)</source>
+        <translation>重置缩放 (水平)</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEditList</name>
+    <message>
+        <location filename="../qtractorMidiEditList.cpp" line="213" />
+        <source>C%1</source>
+        <translation>C%1</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEditTime</name>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="939" />
+        <source>Play-head</source>
+        <translation>播放头</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="942" />
+        <source>Edit-head</source>
+        <translation>编辑头</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="945" />
+        <source>Edit-tail</source>
+        <translation>编辑尾</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="948" />
+        <source>Loop-start</source>
+        <translation>循环起点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="951" />
+        <source>Loop-end</source>
+        <translation>循环终点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="954" />
+        <source>Punch-in</source>
+        <translation>插入录音入点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="957" />
+        <source>Punch-out</source>
+        <translation>插入录音出点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditTime.cpp" line="987" />
+        <source>Start:	%1
+End:	%2
+Length:	%3</source>
+        <translation>开始：	%1
+结束：	%2
+长度：	%3</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEditView</name>
+    <message>
+        <location filename="../qtractorMidiEditView.cpp" line="82" />
+        <source>Zoom in (vertical)</source>
+        <translation>放大 (垂直)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditView.cpp" line="83" />
+        <source>Zoom out (vertical)</source>
+        <translation>缩小 (垂直)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditView.cpp" line="84" />
+        <source>Zoom reset (vertical)</source>
+        <translation>重置缩放 (垂直)</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEditor</name>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="93" />
+        <source>C</source>
+        <translation>C</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="94" />
+        <source>C#/Db</source>
+        <translation>C#/Db</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="95" />
+        <source>D</source>
+        <translation>D</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="96" />
+        <source>D#/Eb</source>
+        <translation>D#/Eb</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="97" />
+        <source>E</source>
+        <translation>E</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="98" />
+        <source>F</source>
+        <translation>F</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="99" />
+        <source>F#/Gb</source>
+        <translation>F#/Gb</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="100" />
+        <source>G</source>
+        <translation>G</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="101" />
+        <source>G#/Ab</source>
+        <translation>G#/Ab</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="102" />
+        <source>A</source>
+        <translation>A</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="103" />
+        <source>A#/Bb</source>
+        <translation>A#/Bb</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="104" />
+        <source>B</source>
+        <translation>B</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="107" />
+        <source>Acoustic Bass Drum</source>
+        <translation>原声低音鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="108" />
+        <source>Bass Drum 1</source>
+        <translation>低音鼓 1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="109" />
+        <source>Side Stick</source>
+        <translation>边击</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="110" />
+        <source>Acoustic Snare</source>
+        <translation>原声军鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="111" />
+        <source>Hand Clap</source>
+        <translation>拍手</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="112" />
+        <source>Electric Snare</source>
+        <translation>电子军鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="113" />
+        <source>Low Floor Tom</source>
+        <translation>低音落地筒鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="114" />
+        <source>Closed Hi-Hat</source>
+        <translation>闭合踩镲</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="115" />
+        <source>High Floor Tom</source>
+        <translation>高音落地筒鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="116" />
+        <source>Pedal Hi-Hat</source>
+        <translation>踏板踩镲</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="117" />
+        <source>Low Tom</source>
+        <translation>低音筒鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="118" />
+        <source>Open Hi-Hat</source>
+        <translation>开镲</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="119" />
+        <source>Low-Mid Tom</source>
+        <translation>中低音筒鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="120" />
+        <source>Hi-Mid Tom</source>
+        <translation>中高音筒鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="121" />
+        <source>Crash Cymbal 1</source>
+        <translation>碎镲 1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="122" />
+        <source>High Tom</source>
+        <translation>高音筒鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="123" />
+        <source>Ride Cymbal 1</source>
+        <translation>叮镲 1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="124" />
+        <source>Chinese Cymbal</source>
+        <translation>中国镲</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="125" />
+        <source>Ride Bell</source>
+        <translation>镲帽</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="126" />
+        <source>Tambourine</source>
+        <translation>铃鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="127" />
+        <source>Splash Cymbal</source>
+        <translation>水镲</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="128" />
+        <source>Cowbell</source>
+        <translation>牛铃</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="129" />
+        <source>Crash Cymbal 2</source>
+        <translation>碎镲 2</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="130" />
+        <source>Vibraslap</source>
+        <translation>振击器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="131" />
+        <source>Ride Cymbal 2</source>
+        <translation>叮镲 2</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="132" />
+        <source>Hi Bongo</source>
+        <translation>高音邦戈</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="133" />
+        <source>Low Bongo</source>
+        <translation>低音邦戈</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="134" />
+        <source>Mute Hi Conga</source>
+        <translation>闷音高康加</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="135" />
+        <source>Open Hi Conga</source>
+        <translation>开音高康加</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="136" />
+        <source>Low Conga</source>
+        <translation>低音康加</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="137" />
+        <source>High Timbale</source>
+        <translation>高音天巴鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="138" />
+        <source>Low Timbale</source>
+        <translation>低音天巴鼓</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="139" />
+        <source>High Agogo</source>
+        <translation>高音阿戈戈</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="140" />
+        <source>Low Agogo</source>
+        <translation>低音阿戈戈</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="141" />
+        <source>Cabasa</source>
+        <translation>卡巴萨</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="142" />
+        <source>Maracas</source>
+        <translation>沙槌</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="143" />
+        <source>Short Whistle</source>
+        <translation>短哨</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="144" />
+        <source>Long Whistle</source>
+        <translation>长哨</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="145" />
+        <source>Short Guiro</source>
+        <translation>短刮瓜</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="146" />
+        <source>Long Guiro</source>
+        <translation>长刮瓜</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="147" />
+        <source>Claves</source>
+        <translation>响棒</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="148" />
+        <source>Hi Wood Block</source>
+        <translation>高音木鱼</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="149" />
+        <source>Low Wood Block</source>
+        <translation>低音木鱼</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="150" />
+        <source>Mute Cuica</source>
+        <translation>闷音奎卡</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="151" />
+        <source>Open Cuica</source>
+        <translation>开音奎卡</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="152" />
+        <source>Mute Triangle</source>
+        <translation>闷音三角铁</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="153" />
+        <source>Open Triangle</source>
+        <translation>开音三角铁</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="201" />
+        <source>Bank Select (coarse)</source>
+        <translation>音色库选择 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="202" />
+        <source>Modulation Wheel (coarse)</source>
+        <translation>调制轮 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="203" />
+        <source>Breath Controller (coarse)</source>
+        <translation>呼吸控制器 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="204" />
+        <source>Foot Pedal (coarse)</source>
+        <translation>脚踏板 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="205" />
+        <source>Portamento Time (coarse)</source>
+        <translation>滑音时间 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="206" />
+        <source>Data Entry (coarse)</source>
+        <translation>数据输入 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="207" />
+        <source>Volume (coarse)</source>
+        <translation>音量 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="208" />
+        <source>Balance (coarse)</source>
+        <translation>平衡 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="209" />
+        <source>Pan Position (coarse)</source>
+        <translation>声像位置 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="210" />
+        <source>Expression (coarse)</source>
+        <translation>表情 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="211" />
+        <source>Effect Control 1 (coarse)</source>
+        <translation>效果控制 1 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="212" />
+        <source>Effect Control 2 (coarse)</source>
+        <translation>效果控制 2 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="213" />
+        <source>General Purpose Slider 1</source>
+        <translation>通用滑块 1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="214" />
+        <source>General Purpose Slider 2</source>
+        <translation>通用滑块 2</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="215" />
+        <source>General Purpose Slider 3</source>
+        <translation>通用滑块 3</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="216" />
+        <source>General Purpose Slider 4</source>
+        <translation>通用滑块 4</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="217" />
+        <source>Bank Select (fine)</source>
+        <translation>音色库选择 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="218" />
+        <source>Modulation Wheel (fine)</source>
+        <translation>调制轮 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="219" />
+        <source>Breath Controller (fine)</source>
+        <translation>呼吸控制器 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="220" />
+        <source>Foot Pedal (fine)</source>
+        <translation>脚踏板 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="221" />
+        <source>Portamento Time (fine)</source>
+        <translation>滑音时间 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="222" />
+        <source>Data Entry (fine)</source>
+        <translation>数据输入 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="223" />
+        <source>Volume (fine)</source>
+        <translation>音量 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="224" />
+        <source>Balance (fine)</source>
+        <translation>平衡 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="225" />
+        <source>Pan Position (fine)</source>
+        <translation>声像位置 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="226" />
+        <source>Expression (fine)</source>
+        <translation>表情 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="227" />
+        <source>Effect Control 1 (fine)</source>
+        <translation>效果控制 1 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="228" />
+        <source>Effect Control 2 (fine)</source>
+        <translation>效果控制 2 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="229" />
+        <source>Hold Pedal (on/off)</source>
+        <translation>延音踏板 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="230" />
+        <source>Portamento (on/off)</source>
+        <translation>滑音 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="232" />
+        <source>Soft Pedal (on/off)</source>
+        <translation>弱音踏板 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="233" />
+        <source>Legato Pedal (on/off)</source>
+        <translation>连奏踏板 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="234" />
+        <source>Hold 2 Pedal (on/off)</source>
+        <translation>延音踏板 2 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="235" />
+        <source>Sound Variation</source>
+        <translation>音色变化</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="244" />
+        <source>General Purpose Button 1 (on/off)</source>
+        <translation>通用按钮 1 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="245" />
+        <source>General Purpose Button 2 (on/off)</source>
+        <translation>通用按钮 2 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="246" />
+        <source>General Purpose Button 3 (on/off)</source>
+        <translation>通用按钮 3 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="247" />
+        <source>General Purpose Button 4 (on/off)</source>
+        <translation>通用按钮 4 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="248" />
+        <source>Effects Level</source>
+        <translation>效果电平</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="250" />
+        <source>Chorus Level</source>
+        <translation>合唱电平</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="251" />
+        <source>Celeste Level</source>
+        <translation>钢片琴电平</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="252" />
+        <source>Phaser Level</source>
+        <translation>移相器电平</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="253" />
+        <source>Data Button Increment</source>
+        <translation>数据按钮递增</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="254" />
+        <source>Data Button Decrement</source>
+        <translation>数据按钮递减</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="255" />
+        <source>Non-Registered Parameter (fine)</source>
+        <translation>未注册参数 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="256" />
+        <source>Non-Registered Parameter (coarse)</source>
+        <translation>未注册参数 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="257" />
+        <source>Registered Parameter (fine)</source>
+        <translation>已注册参数 (微调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="258" />
+        <source>Registered Parameter (coarse)</source>
+        <translation>已注册参数 (粗调)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="259" />
+        <source>All Sound Off</source>
+        <translation>全部声音关闭</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="260" />
+        <source>All Controllers Off</source>
+        <translation>全部控制器关闭</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="261" />
+        <source>Local Keyboard (on/off)</source>
+        <translation>本地键盘 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="262" />
+        <source>All Notes Off</source>
+        <translation>全部音符关闭</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="263" />
+        <source>Omni Mode Off</source>
+        <translation>全通道模式关</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="264" />
+        <source>Omni Mode On</source>
+        <translation>全通道模式开</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="265" />
+        <source>Mono Operation</source>
+        <translation>单音操作</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="266" />
+        <source>Poly Operation</source>
+        <translation>复音操作</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="311" />
+        <source>Pitch Bend Sensitivity</source>
+        <translation>弯音灵敏度</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="312" />
+        <source>Fine Tune</source>
+        <translation>微调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="313" />
+        <source>Coarse Tune</source>
+        <translation>粗调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="314" />
+        <source>Tuning Program</source>
+        <translation>调音程序</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="315" />
+        <source>Tuning Bank</source>
+        <translation>调音库</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="241" />
+        <location filename="../qtractorMidiEditor.cpp" line="353" />
+        <source>Vibrato Rate</source>
+        <translation>颤音速率</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="242" />
+        <location filename="../qtractorMidiEditor.cpp" line="354" />
+        <source>Vibrato Depth</source>
+        <translation>颤音深度</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="243" />
+        <location filename="../qtractorMidiEditor.cpp" line="355" />
+        <source>Vibrato Delay</source>
+        <translation>颤音延迟</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="356" />
+        <source>Filter Cutoff</source>
+        <translation>滤波器截止</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="236" />
+        <location filename="../qtractorMidiEditor.cpp" line="357" />
+        <source>Filter Resonance</source>
+        <translation>滤波器共振</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="231" />
+        <source>Sostenuto Pedal (on/off)</source>
+        <translation>持音踏板 (开/关)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="237" />
+        <source>Release Time</source>
+        <translation>释音时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="238" />
+        <source>Attack Time</source>
+        <translation>起音时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="239" />
+        <source>Brightness</source>
+        <translation>亮度</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="240" />
+        <source>Decay Time</source>
+        <translation>衰减时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="249" />
+        <source>Tremolo Level</source>
+        <translation>震音电平</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="358" />
+        <source>EG Attack</source>
+        <translation>EG 起音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="359" />
+        <source>EG Decay</source>
+        <translation>EG 衰减</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="360" />
+        <source>EG Release</source>
+        <translation>EG 释音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="363" />
+        <source>Drum Filter Cutoff</source>
+        <translation>鼓滤波器截止</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="364" />
+        <source>Drum Filter Resonance</source>
+        <translation>鼓滤波器共振</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="365" />
+        <source>Drum EG Attack</source>
+        <translation>鼓 EG 起音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="366" />
+        <source>Drum EG Decay</source>
+        <translation>鼓 EG 衰减</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="367" />
+        <source>Drum Pitch Coarse</source>
+        <translation>鼓音高粗调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="368" />
+        <source>Drum Pitch Fine</source>
+        <translation>鼓音高微调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="369" />
+        <source>Drum Level</source>
+        <translation>鼓电平</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="370" />
+        <source>Drum Pan</source>
+        <translation>鼓声像</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="371" />
+        <source>Drum Reverb Send</source>
+        <translation>鼓混响发送</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="372" />
+        <source>Drum Chorus Send</source>
+        <translation>鼓合唱发送</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="373" />
+        <source>Drum Variation Send</source>
+        <translation>鼓变化发送</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="429" />
+        <source>Modulation Wheel (14bit)</source>
+        <translation>调制轮 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="430" />
+        <source>Breath Controller (14bit)</source>
+        <translation>呼吸控制器 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="431" />
+        <source>Foot Pedal (14bit)</source>
+        <translation>脚踏板 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="432" />
+        <source>Portamento Time (14bit)</source>
+        <translation>滑音时间 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="433" />
+        <source>Volume (14bit)</source>
+        <translation>音量 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="434" />
+        <source>Balance (14bit)</source>
+        <translation>平衡 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="435" />
+        <source>Pan Position (14bit)</source>
+        <translation>声像位置 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="436" />
+        <source>Expression (14bit)</source>
+        <translation>表情 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="437" />
+        <source>Effect Control 1 (14bit)</source>
+        <translation>效果控制 1 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="438" />
+        <source>Effect Control 2 (14bit)</source>
+        <translation>效果控制 2 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="439" />
+        <source>General Purpose Slider 1 (14bit)</source>
+        <translation>通用滑块 1 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="440" />
+        <source>General Purpose Slider 2 (14bit)</source>
+        <translation>通用滑块 2 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="441" />
+        <source>General Purpose Slider 3 (14bit)</source>
+        <translation>通用滑块 3 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="442" />
+        <source>General Purpose Slider 4 (14bit)</source>
+        <translation>通用滑块 4 (14 位)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="510" />
+        <source>Chromatic</source>
+        <translation>Chromatic</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="511" />
+        <source>Major</source>
+        <translation>大调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="512" />
+        <source>Minor</source>
+        <translation>小调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="513" />
+        <source>Melodic Minor (Asc)</source>
+        <translation>Melodic Minor (Asc)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="514" />
+        <source>Melodic Minor (Desc)</source>
+        <translation>Melodic Minor (Desc)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="515" />
+        <source>Whole Tone</source>
+        <translation>Whole Tone</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="516" />
+        <source>Pentatonic Major</source>
+        <translation>Pentatonic Major</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="517" />
+        <source>Pentatonic Minor</source>
+        <translation>Pentatonic Minor</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="518" />
+        <source>Pentatonic Blues</source>
+        <translation>Pentatonic Blues</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="519" />
+        <source>Pentatonic Neutral</source>
+        <translation>Pentatonic Neutral</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="520" />
+        <source>Octatonic (H-W)</source>
+        <translation>Octatonic (H-W)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="521" />
+        <source>Octatonic (W-H)</source>
+        <translation>Octatonic (W-H)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="522" />
+        <source>Ionian</source>
+        <translation>Ionian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="523" />
+        <source>Dorian</source>
+        <translation>Dorian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="524" />
+        <source>Phrygian</source>
+        <translation>Phrygian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="525" />
+        <source>Lydian</source>
+        <translation>Lydian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="526" />
+        <source>Mixolydian</source>
+        <translation>Mixolydian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="527" />
+        <source>Aeolian</source>
+        <translation>Aeolian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="528" />
+        <source>Locrian</source>
+        <translation>Locrian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="529" />
+        <source>Egyptian</source>
+        <translation>Egyptian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="530" />
+        <location filename="../qtractorMidiEditor.cpp" line="553" />
+        <source>Eight Tone Spanish</source>
+        <translation>Eight Tone Spanish</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="531" />
+        <source>Hawaiian</source>
+        <translation>Hawaiian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="532" />
+        <source>Hindu</source>
+        <translation>Hindu</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="533" />
+        <source>Hirajoshi</source>
+        <translation>Hirajoshi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="534" />
+        <source>Hungarian Major</source>
+        <translation>Hungarian Major</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="535" />
+        <source>Hungarian Minor</source>
+        <translation>Hungarian Minor</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="536" />
+        <source>Hungarian Gypsy</source>
+        <translation>Hungarian Gypsy</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="537" />
+        <source>Japanese (A)</source>
+        <translation>Japanese (A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="538" />
+        <source>Japanese (B)</source>
+        <translation>Japanese (B)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="539" />
+        <source>Jewish (Adonai Malakh)</source>
+        <translation>Jewish (Adonai Malakh)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="540" />
+        <source>Jewish (Ahaba Rabba)</source>
+        <translation>Jewish (Ahaba Rabba)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="541" />
+        <source>Jewish (Magen Abot)</source>
+        <translation>Jewish (Magen Abot)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="542" />
+        <source>Oriental (A)</source>
+        <translation>Oriental (A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="543" />
+        <source>Oriental (B)</source>
+        <translation>Oriental (B)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="544" />
+        <source>Oriental (C)</source>
+        <translation>Oriental (C)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="545" />
+        <source>Roumanian Minor</source>
+        <translation>Roumanian Minor</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="546" />
+        <source>Neapolitan</source>
+        <translation>Neapolitan</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="547" />
+        <source>Neapolitan Major</source>
+        <translation>Neapolitan Major</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="548" />
+        <source>Neapolitan Minor</source>
+        <translation>Neapolitan Minor</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="550" />
+        <source>Overtone</source>
+        <translation>Overtone</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="554" />
+        <source>Leading Whole Tone</source>
+        <translation>Leading Whole Tone</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="555" />
+        <source>Nine Tone Scale</source>
+        <translation>Nine Tone Scale</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="556" />
+        <source>Dominant Seventh</source>
+        <translation>Dominant Seventh</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="557" />
+        <source>Augmented</source>
+        <translation>Augmented</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="558" />
+        <source>Algerian</source>
+        <translation>Algerian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="559" />
+        <source>Arabian (A)</source>
+        <translation>Arabian (A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="560" />
+        <source>Arabian (B)</source>
+        <translation>Arabian (B)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="562" />
+        <source>Balinese</source>
+        <translation>Balinese</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="567" />
+        <source>Chinese</source>
+        <translation>Chinese</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="569" />
+        <source>Diminished</source>
+        <translation>Diminished</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="575" />
+        <source>Japanese (Ichikosucho)</source>
+        <translation>Japanese (Ichikosucho)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="576" />
+        <source>Japanese (Taishikicho)</source>
+        <translation>Japanese (Taishikicho)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="577" />
+        <source>Javaneese</source>
+        <translation>Javaneese</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="582" />
+        <source>Marva Theta</source>
+        <translation>Marva Theta</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="584" />
+        <source>Mela Bhavapriya</source>
+        <translation>Mela Bhavapriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="585" />
+        <source>Mela Chakravakam</source>
+        <translation>Mela Chakravakam</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="586" />
+        <source>Mela Chalanata</source>
+        <translation>Mela Chalanata</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="588" />
+        <source>Mela Chitrambari</source>
+        <translation>Mela Chitrambari</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="589" />
+        <source>Mela Dharmavati</source>
+        <translation>Mela Dharmavati</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="590" />
+        <source>Mela Dhatuvardhani</source>
+        <translation>Mela Dhatuvardhani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="591" />
+        <source>Mela Dhavalambari</source>
+        <translation>Mela Dhavalambari</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="594" />
+        <source>Mela Divyamani</source>
+        <translation>Mela Divyamani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="596" />
+        <source>Mela Ganamurti</source>
+        <translation>Mela Ganamurti</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="597" />
+        <source>Mela Gangeyabhusani</source>
+        <translation>Mela Gangeyabhusani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="599" />
+        <source>Mela Gavambodhi</source>
+        <translation>Mela Gavambodhi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="600" />
+        <source>Mela Gayakapriya</source>
+        <translation>Mela Gayakapriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="603" />
+        <source>Mela Hatakambari</source>
+        <translation>Mela Hatakambari</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="605" />
+        <source>Mela Jalarnavam</source>
+        <translation>Mela Jalarnavam</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="606" />
+        <source>Mela Jhalavarali</source>
+        <translation>Mela Jhalavarali</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="607" />
+        <source>Mela Jhankaradhvani</source>
+        <translation>Mela Jhankaradhvani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="608" />
+        <source>Mela Jyotisvarupini</source>
+        <translation>Mela Jyotisvarupini</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="609" />
+        <source>Mela Kamavarardhani</source>
+        <translation>Mela Kamavarardhani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="611" />
+        <source>Mela Kantamani</source>
+        <translation>Mela Kantamani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="615" />
+        <source>Mela Kosalam</source>
+        <translation>Mela Kosalam</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="616" />
+        <source>Mela Latangi</source>
+        <translation>Mela Latangi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="617" />
+        <source>Mela Manavati</source>
+        <translation>Mela Manavati</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="618" />
+        <source>Mela Mararanjani</source>
+        <translation>Mela Mararanjani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="621" />
+        <source>Mela Naganandini</source>
+        <translation>Mela Naganandini</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="622" />
+        <source>Mela Namanarayani</source>
+        <translation>Mela Namanarayani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="626" />
+        <source>Mela Navanitam</source>
+        <translation>Mela Navanitam</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="627" />
+        <source>Mela Nitimati</source>
+        <translation>Mela Nitimati</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="628" />
+        <source>Mela Pavani</source>
+        <translation>Mela Pavani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="629" />
+        <source>Mela Ragavardhani</source>
+        <translation>Mela Ragavardhani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="630" />
+        <source>Mela Raghupriya</source>
+        <translation>Mela Raghupriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="631" />
+        <source>Mela Ramapriya</source>
+        <translation>Mela Ramapriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="632" />
+        <source>Mela Rasikapriya</source>
+        <translation>Mela Rasikapriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="633" />
+        <source>Mela Ratnangi</source>
+        <translation>Mela Ratnangi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="634" />
+        <source>Mela Risabhapriya</source>
+        <translation>Mela Risabhapriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="635" />
+        <source>Mela Rupavati</source>
+        <translation>Mela Rupavati</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="636" />
+        <source>Mela Sadvidhamargini</source>
+        <translation>Mela Sadvidhamargini</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="637" />
+        <source>Mela Salagam</source>
+        <translation>Mela Salagam</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="638" />
+        <source>Mela Sanmukhapriya</source>
+        <translation>Mela Sanmukhapriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="639" />
+        <source>Mela Sarasangi</source>
+        <translation>Mela Sarasangi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="640" />
+        <source>Mela Senavati</source>
+        <translation>Mela Senavati</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="642" />
+        <source>Mela Subhapantuvarali</source>
+        <translation>Mela Subhapantuvarali</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="643" />
+        <source>Mela Sucharitra</source>
+        <translation>Mela Sucharitra</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="644" />
+        <source>Mela Sulini</source>
+        <translation>Mela Sulini</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="645" />
+        <source>Mela Suryakantam</source>
+        <translation>Mela Suryakantam</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="647" />
+        <source>Mela Syamalangi</source>
+        <translation>Mela Syamalangi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="648" />
+        <source>Mela Tanarupi</source>
+        <translation>Mela Tanarupi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="650" />
+        <source>Mela Vagadhisvari</source>
+        <translation>Mela Vagadhisvari</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="652" />
+        <source>Mela Vanaspati</source>
+        <translation>Mela Vanaspati</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="653" />
+        <source>Mela Varunapriya</source>
+        <translation>Mela Varunapriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="655" />
+        <source>Mela Yagapriya</source>
+        <translation>Mela Yagapriya</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="658" />
+        <source>Persian</source>
+        <translation>Persian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="659" />
+        <source>Purvi Theta</source>
+        <translation>Purvi Theta</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="660" />
+        <source>Spanish Gypsy</source>
+        <translation>Spanish Gypsy</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="661" />
+        <source>Todi Theta</source>
+        <translation>Todi Theta</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="665" />
+        <source>Enigmatic</source>
+        <translation>Enigmatic</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="666" />
+        <source>Kumoi</source>
+        <translation>Kumoi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="667" />
+        <source>Lydian Augmented</source>
+        <translation>Lydian Augmented</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="668" />
+        <source>Pelog</source>
+        <translation>Pelog</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="669" />
+        <source>Prometheus</source>
+        <translation>Prometheus</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="670" />
+        <source>Prometheus Neapolitan</source>
+        <translation>Prometheus Neapolitan</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="671" />
+        <source>Six Tone Symmetrical</source>
+        <translation>Six Tone Symmetrical</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="672" />
+        <source>Super Locrian</source>
+        <translation>Super Locrian</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="673" />
+        <source>Lydian Minor</source>
+        <translation>Lydian Minor</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="674" />
+        <source>Lydian Diminished</source>
+        <translation>Lydian Diminished</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="678" />
+        <source>Half Diminished</source>
+        <translation>Half Diminished</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="679" />
+        <source>Bhairav</source>
+        <translation>Bhairav</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="680" />
+        <source>Yaman</source>
+        <translation>Yaman</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="681" />
+        <source>Todi</source>
+        <translation>Todi</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="682" />
+        <source>Jog</source>
+        <translation>Jog</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="683" />
+        <source>Multani</source>
+        <translation>Multani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="684" />
+        <source>Darbari</source>
+        <translation>Darbari</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="685" />
+        <source>Malkauns</source>
+        <translation>Malkauns</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="686" />
+        <source>Bhoopali</source>
+        <translation>Bhoopali</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="687" />
+        <source>Shivaranjani</source>
+        <translation>Shivaranjani</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="688" />
+        <source>Marwa</source>
+        <translation>Marwa</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="690" />
+        <source>Minor 5</source>
+        <translation>Minor 5</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="691" />
+        <source>Major 5</source>
+        <translation>Major 5</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="692" />
+        <source>5</source>
+        <translation>5</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="693" />
+        <source>45</source>
+        <translation>45</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="694" />
+        <source>457</source>
+        <translation>457</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="695" />
+        <source>M 6</source>
+        <translation>M 6</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="900" />
+        <source>MIDI Editor</source>
+        <translation>MIDI 编辑器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="1919" />
+        <source>cut</source>
+        <translation>剪切</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="2139" />
+        <source>delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="2448" />
+        <source>insert range</source>
+        <translation>插入范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="2524" />
+        <source>remove range</source>
+        <translation>移除范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="4425" />
+        <source>move</source>
+        <translation>移动</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="4484" />
+        <source>edit</source>
+        <translation>编辑</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="4484" />
+        <location filename="../qtractorMidiEditor.cpp" line="4714" />
+        <source>resize</source>
+        <translation>调整</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="4564" />
+        <source>rescale</source>
+        <translation>缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="4653" />
+        <source>paste</source>
+        <translation>粘贴</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5436" />
+        <source>Time:	%1
+Type:	</source>
+        <translation>时间：	%1
+类型：	</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5445" />
+        <source>Note On (%1) %2
+Velocity:	%3
+Duration: %4</source>
+        <translation>音符开 (%1) %2
+力度：	%3
+时长：%4</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5452" />
+        <source>Key Press (%1) %2
+Value:	%3</source>
+        <translation type="unfinished">触后 (%1) %2
+值：	%3</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5458" />
+        <source>Controller (%1)
+Name:	%2
+Value:	%3</source>
+        <translation>控制器 (%1)
+名称：	%2
+值：	%3</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5464" />
+        <source>RPN (%1)
+Name:	%2
+Value:	%3</source>
+        <translation>RPN (%1)
+名称：	%2
+值：	%3</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5470" />
+        <source>NRPN (%1)
+Name:	%2
+Value:	%3</source>
+        <translation>NRPN (%1)
+名称：	%2
+值：	%3</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5476" />
+        <source>Control 14 (%1)
+Name:	%2
+Value:	%3</source>
+        <translation>14 位控制 (%1)
+名称：	%2
+值：	%3</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5482" />
+        <source>Pgm Change (%1)</source>
+        <translation>音色改变 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5486" />
+        <source>Chan Press (%1)</source>
+        <translation type="unfinished">通道触后 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5490" />
+        <source>Pitch Bend (%1)</source>
+        <translation>弯音 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5497" />
+        <source>SysEx (%1 bytes)
+Data: </source>
+        <translation>系统专用信息 (%1 字节)
+数据：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5513" />
+        <source>Unknown (%1)</source>
+        <translation>未知 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditor.cpp" line="5781" />
+        <source>Start:	%1
+End:	%2
+Length:	%3</source>
+        <translation>开始：	%1
+结束：	%2
+长度：	%3</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEditorForm</name>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="34" />
+        <location filename="../qtractorMidiEditorForm.cpp" line="2421" />
+        <source>MIDI Editor</source>
+        <translation>MIDI 编辑器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="54" />
+        <source>&amp;Track</source>
+        <translation>轨道(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="50" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1096" />
+        <source>&amp;File</source>
+        <translation>文件(&amp;F)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="193" />
+        <source>Select &amp;Mode</source>
+        <translation>选择模式(&amp;M)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="202" />
+        <source>&amp;Select</source>
+        <translation>选择(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="212" />
+        <source>I&amp;nsert</source>
+        <translation>插入(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="219" />
+        <source>Remo&amp;ve</source>
+        <translation>移除(&amp;V)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="176" />
+        <source>&amp;Tools</source>
+        <translation>工具(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="189" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1113" />
+        <source>&amp;Edit</source>
+        <translation>编辑(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="86" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1130" />
+        <source>&amp;View</source>
+        <translation>视图(&amp;V)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="58" />
+        <source>Instrum&amp;ent</source>
+        <translation>乐器(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="90" />
+        <source>&amp;Toolbars</source>
+        <translation>工具栏(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="102" />
+        <source>&amp;Windows</source>
+        <translation>窗口(&amp;W)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="108" />
+        <source>Not&amp;e Type</source>
+        <translation>音符类型(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="113" />
+        <source>Val&amp;ue Type</source>
+        <translation>值类型(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="118" />
+        <source>&amp;Ghost Track</source>
+        <translation type="unfinished">幽灵轨道(&amp;G)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="123" />
+        <source>&amp;Zoom</source>
+        <translation>缩放(&amp;Z)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="139" />
+        <source>S&amp;nap</source>
+        <translation>吸附(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="144" />
+        <source>Sc&amp;ale</source>
+        <translation>音阶(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="243" />
+        <source>T&amp;ransport</source>
+        <translation>走带(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="247" />
+        <source>&amp;Note</source>
+        <translation>音符(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="254" />
+        <source>St&amp;ep</source>
+        <translation>步进(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="282" />
+        <source>&amp;Help</source>
+        <translation>帮助(&amp;H)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="433" />
+        <source>&amp;Save</source>
+        <translation>保存(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="436" />
+        <location filename="../qtractorMidiEditorForm.ui" line="439" />
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="442" />
+        <source>Save current MIDI clip to existing file name</source>
+        <translation>将当前 MIDI 剪辑保存到已有文件名</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="447" />
+        <source>Save &amp;As...</source>
+        <translation>另存为(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="450" />
+        <source>Save As</source>
+        <translation>另存为</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="453" />
+        <source>Save as</source>
+        <translation>另存为</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="456" />
+        <source>Save current MIDI clip with another file name</source>
+        <translation>用另一个文件名保存当前 MIDI 剪辑</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="464" />
+        <source>&amp;Mute</source>
+        <translation>静音(&amp;M)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="467" />
+        <location filename="../qtractorMidiEditorForm.ui" line="470" />
+        <source>Mute</source>
+        <translation>静音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="473" />
+        <source>Mute current MIDI clip</source>
+        <translation>将当前 MIDI 剪辑静音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="478" />
+        <source>&amp;Unlink</source>
+        <translation>取消链接(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="481" />
+        <location filename="../qtractorMidiEditorForm.ui" line="484" />
+        <source>Unlink</source>
+        <translation>取消链接</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="487" />
+        <source>Unlink current MIDI clip</source>
+        <translation>取消链接当前 MIDI 剪辑</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="498" />
+        <source>Recor&amp;d</source>
+        <translation>录制(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="507" />
+        <source>Record current MIDI clip (overdub)</source>
+        <translation>录制当前 MIDI 剪辑 (叠加)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="512" />
+        <source>&amp;Inputs</source>
+        <translation>输入(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="515" />
+        <source>Track Inputs</source>
+        <translation>轨道输入</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="518" />
+        <source>Track inputs</source>
+        <translation>轨道输入</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="521" />
+        <source>Show current MIDI clip/track input bus connections</source>
+        <translation>显示当前 MIDI 剪辑/轨道输入总线连接</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="526" />
+        <source>&amp;Outputs</source>
+        <translation>输出(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="529" />
+        <source>Track Outputs</source>
+        <translation>轨道输出</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="532" />
+        <source>Track outputs</source>
+        <translation>轨道输出</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="535" />
+        <source>Show current MIDI clip/track output bus connections</source>
+        <translation>显示当前 MIDI 剪辑/轨道输出总线连接</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="543" />
+        <location filename="../qtractorMidiEditorForm.ui" line="563" />
+        <source>&amp;Properties...</source>
+        <translation>属性(&amp;P)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="546" />
+        <source>Track Properties</source>
+        <translation>轨道属性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="549" />
+        <source>Track properties</source>
+        <translation>轨道属性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="552" />
+        <source>Edit current MIDI clip/track properties</source>
+        <translation>编辑当前 MIDI 剪辑/轨道属性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="555" />
+        <source>Shift+F2</source>
+        <translation>Shift+F2</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="566" />
+        <location filename="../qtractorMidiEditorForm.ui" line="569" />
+        <source>Properties</source>
+        <translation>属性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="572" />
+        <source>Edit current MIDI clip properties</source>
+        <translation>编辑当前 MIDI 剪辑属性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="575" />
+        <source>F4</source>
+        <translation>F4</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="580" />
+        <source>&amp;Range Set</source>
+        <translation>设置范围(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="583" />
+        <source>Clip Range</source>
+        <translation>剪辑范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="586" />
+        <source>Clip range</source>
+        <translation>剪辑范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="589" />
+        <source>Set edit-range from clip extents</source>
+        <translation>从剪辑边界设置编辑范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="597" />
+        <source>&amp;Loop Set</source>
+        <translation>设置循环(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="600" />
+        <source>Clip Loop</source>
+        <translation>剪辑循环</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="603" />
+        <source>Clip loop</source>
+        <translation>剪辑循环</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="606" />
+        <source>Set loop-range from clip extents</source>
+        <translation>从剪辑边界设置循环范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="611" />
+        <source>&amp;Close</source>
+        <translation>关闭(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="614" />
+        <location filename="../qtractorMidiEditorForm.ui" line="617" />
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="620" />
+        <source>Close this MIDI clip editor</source>
+        <translation>关闭此 MIDI 剪辑编辑器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="628" />
+        <source>&amp;Undo</source>
+        <translation>撤销(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="631" />
+        <location filename="../qtractorMidiEditorForm.ui" line="634" />
+        <source>Undo</source>
+        <translation>撤销</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="637" />
+        <source>Undo last edit operation</source>
+        <translation>撤销上次编辑操作</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="640" />
+        <source>Ctrl+Z</source>
+        <translation>Ctrl+Z</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="648" />
+        <source>&amp;Redo</source>
+        <translation>重做(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="651" />
+        <location filename="../qtractorMidiEditorForm.ui" line="654" />
+        <source>Redo</source>
+        <translation>重做</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="657" />
+        <source>Redo last edit operation</source>
+        <translation>重做上次编辑操作</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="660" />
+        <source>Ctrl+Shift+Z</source>
+        <translation>Ctrl+Shift+Z</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="668" />
+        <source>Cu&amp;t</source>
+        <translation>剪切(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="671" />
+        <location filename="../qtractorMidiEditorForm.ui" line="674" />
+        <source>Cut</source>
+        <translation>剪切</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="677" />
+        <source>Cut current selection into the local clipboard</source>
+        <translation>将当前选择剪切到本地剪贴板</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="680" />
+        <source>Ctrl+X</source>
+        <translation>Ctrl+X</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="688" />
+        <source>&amp;Copy</source>
+        <translation>复制(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="691" />
+        <location filename="../qtractorMidiEditorForm.ui" line="694" />
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="697" />
+        <source>Copy current selection to the local clipboard</source>
+        <translation>将当前选择复制到本地剪贴板</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="700" />
+        <source>Ctrl+C</source>
+        <translation>Ctrl+C</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="708" />
+        <source>&amp;Paste</source>
+        <translation>粘贴(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="711" />
+        <location filename="../qtractorMidiEditorForm.ui" line="714" />
+        <source>Paste</source>
+        <translation>粘贴</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="717" />
+        <source>Paste local clipboard contents into the current MIDI clip</source>
+        <translation>将本地剪贴板内容粘贴到当前 MIDI 剪辑</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="720" />
+        <source>Ctrl+V</source>
+        <translation>Ctrl+V</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="725" />
+        <source>Past&amp;e Repeat...</source>
+        <translation>重复粘贴(&amp;E)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="728" />
+        <source>Paste Repeat</source>
+        <translation>重复粘贴</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="731" />
+        <source>Paste repeat</source>
+        <translation>重复粘贴</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="734" />
+        <source>Paste/repeat local clipboard contents into the current MIDI clip</source>
+        <translation>将本地剪贴板内容粘贴/重复到当前 MIDI 剪辑</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="737" />
+        <source>Ctrl+Shift+V</source>
+        <translation>Ctrl+Shift+V</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="745" />
+        <source>&amp;Delete</source>
+        <translation>删除(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="748" />
+        <location filename="../qtractorMidiEditorForm.ui" line="751" />
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="754" />
+        <source>Delete current selection</source>
+        <translation>删除当前选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="757" />
+        <source>Del</source>
+        <translation>Del</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="768" />
+        <source>Edit Of&amp;f</source>
+        <translation>编辑关闭(&amp;F)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="771" />
+        <source>Edit Off</source>
+        <translation>编辑关闭</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="774" />
+        <source>Edit off</source>
+        <translation>编辑关闭</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="777" />
+        <source>Set edit mode off</source>
+        <translation>关闭编辑模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="788" />
+        <source>Edit &amp;On</source>
+        <translation>编辑开启(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="791" />
+        <source>Edit On</source>
+        <translation>编辑开启</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="794" />
+        <source>Edit on</source>
+        <translation>编辑开启</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="797" />
+        <source>Set edit mode on</source>
+        <translation>开启编辑模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="808" />
+        <source>Edit &amp;Draw</source>
+        <translation>编辑绘制(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="811" />
+        <source>Edit draw mode</source>
+        <translation>编辑绘制模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="814" />
+        <source>Edit draw mode (notes)</source>
+        <translation>编辑绘制模式 (音符)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="822" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1429" />
+        <source>&amp;All</source>
+        <translation>全部(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="825" />
+        <source>Select All</source>
+        <translation>全选</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="828" />
+        <location filename="../qtractorMidiEditorForm.ui" line="831" />
+        <source>Select all</source>
+        <translation>全选</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="834" />
+        <source>Ctrl+A</source>
+        <translation>Ctrl+A</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="839" />
+        <location filename="../qtractorMidiEditorForm.cpp" line="2667" />
+        <source>&amp;None</source>
+        <translation>无(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="842" />
+        <source>Select None</source>
+        <translation>取消全选</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="845" />
+        <location filename="../qtractorMidiEditorForm.ui" line="848" />
+        <source>Select none</source>
+        <translation>取消全选</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="851" />
+        <source>Ctrl+Shift+A</source>
+        <translation>Ctrl+Shift+A</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="856" />
+        <source>&amp;Invert</source>
+        <translation>反转(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="859" />
+        <source>Select Invert</source>
+        <translation>反选</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="862" />
+        <location filename="../qtractorMidiEditorForm.ui" line="865" />
+        <source>Select invert</source>
+        <translation>反选</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="868" />
+        <source>Ctrl+I</source>
+        <translation>Ctrl+I</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="873" />
+        <location filename="../qtractorMidiEditorForm.ui" line="890" />
+        <location filename="../qtractorMidiEditorForm.ui" line="924" />
+        <source>&amp;Range</source>
+        <translation>范围(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="876" />
+        <source>Select Range</source>
+        <translation>选择范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="879" />
+        <source>Select range</source>
+        <translation>选择范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="882" />
+        <source>Mark range as selected</source>
+        <translation>标记范围为已选</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="885" />
+        <source>Ctrl+R</source>
+        <translation>Ctrl+R</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="893" />
+        <source>Insert Range</source>
+        <translation>插入范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="896" />
+        <source>Insert range</source>
+        <translation>插入范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="899" />
+        <source>Insert range as selected</source>
+        <translation>插入选中范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="902" />
+        <source>Ctrl+Ins</source>
+        <translation>Ctrl+Ins</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="907" />
+        <source>&amp;Step</source>
+        <translation>步进(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="910" />
+        <source>Insert step</source>
+        <translation>插入步进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="913" />
+        <location filename="../qtractorMidiEditorForm.ui" line="916" />
+        <source>Insert step (rest)</source>
+        <translation>插入步进 (休止)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="919" />
+        <source>Right</source>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
+        <translation>右</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="927" />
+        <source>Remove Range</source>
+        <translation>移除范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="930" />
+        <source>Remove range</source>
+        <translation>移除范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="933" />
+        <source>Remove range as selected</source>
+        <translation>移除选中范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="936" />
+        <source>Ctrl+Del</source>
+        <translation>Ctrl+Del</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="941" />
+        <source>&amp;Quantize...</source>
+        <translation>量化(&amp;Q)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="944" />
+        <location filename="../qtractorMidiEditorForm.ui" line="947" />
+        <source>Quantize</source>
+        <translation>量化</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="950" />
+        <source>Quantize selection</source>
+        <translation>量化选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="955" />
+        <source>&amp;Transpose...</source>
+        <translation>移调(&amp;T)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="958" />
+        <location filename="../qtractorMidiEditorForm.ui" line="961" />
+        <source>Transpose</source>
+        <translation>移调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="964" />
+        <source>Transpose selection</source>
+        <translation>移调选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="969" />
+        <source>&amp;Normalize...</source>
+        <translation>标准化(&amp;N)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="972" />
+        <location filename="../qtractorMidiEditorForm.ui" line="975" />
+        <source>Normalize</source>
+        <translation>标准化</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="978" />
+        <source>Normalize selection</source>
+        <translation>标准化选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="983" />
+        <source>&amp;Randomize...</source>
+        <translation>随机化(&amp;R)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="986" />
+        <location filename="../qtractorMidiEditorForm.ui" line="989" />
+        <source>Randomize</source>
+        <translation>随机化</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="992" />
+        <source>Randomize selection</source>
+        <translation>随机化选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="997" />
+        <source>Resi&amp;ze...</source>
+        <translation>调整(&amp;Z)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1000" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1003" />
+        <source>Resize</source>
+        <translation>调整</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1006" />
+        <source>Resize selection</source>
+        <translation>调整选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1011" />
+        <source>Re&amp;scale...</source>
+        <translation>缩放(&amp;S)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1014" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1017" />
+        <source>Rescale</source>
+        <translation>缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1020" />
+        <source>Rescale selection</source>
+        <translation>缩放选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1025" />
+        <source>T&amp;imeshift...</source>
+        <translation>时间偏移(&amp;I)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1028" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1031" />
+        <source>Timeshift</source>
+        <translation>时间偏移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1034" />
+        <source>Timeshift selection</source>
+        <translation>时间偏移选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1039" />
+        <source>T&amp;empo ramp...</source>
+        <translation>速度渐变(&amp;E)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1042" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1045" />
+        <source>Tempo ramp</source>
+        <translation>速度渐变</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1048" />
+        <source>Tempo ramp selection</source>
+        <translation>速度渐变选择</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1056" />
+        <source>&amp;Menubar</source>
+        <translation>菜单栏(&amp;M)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1059" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1062" />
+        <source>Menubar</source>
+        <translation>菜单栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1065" />
+        <source>Show/hide the menubar</source>
+        <translation>显示/隐藏菜单栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1068" />
+        <source>Ctrl+M</source>
+        <translation>Ctrl+M</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1076" />
+        <source>&amp;Statusbar</source>
+        <translation>状态栏(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1079" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1082" />
+        <source>Statusbar</source>
+        <translation>状态栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1085" />
+        <source>Show/hide the statusbar</source>
+        <translation>显示/隐藏状态栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1099" />
+        <source>File Toolbar</source>
+        <translation>文件工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1102" />
+        <source>File toolbar</source>
+        <translation>文件工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1105" />
+        <source>Show/hide the file toolbar</source>
+        <translation>显示/隐藏文件工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1116" />
+        <source>Edit Toolbar</source>
+        <translation>编辑工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1119" />
+        <source>Edit toolbar</source>
+        <translation>编辑工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1122" />
+        <source>Show/hide the edit toolbar</source>
+        <translation>显示/隐藏编辑工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1133" />
+        <source>View Toolbar</source>
+        <translation>视图工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1136" />
+        <source>View toolbar</source>
+        <translation>视图工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1139" />
+        <source>Show/hide the view toolbar</source>
+        <translation>显示/隐藏视图工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1147" />
+        <source>&amp;Transport</source>
+        <translation>走带(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1150" />
+        <source>Transport Toolbar</source>
+        <translation>走带工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1153" />
+        <source>Transport toolbar</source>
+        <translation>走带工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1156" />
+        <source>Show/hide the transport toolbar</source>
+        <translation>显示/隐藏走带工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1164" />
+        <source>T&amp;ime</source>
+        <translation>时间(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1167" />
+        <source>Time Toolbar</source>
+        <translation>时间工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1170" />
+        <source>Time toolbar</source>
+        <translation>时间工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1173" />
+        <source>Show/hide the time toolbar</source>
+        <translation>显示/隐藏时间工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1181" />
+        <source>&amp;Scale</source>
+        <translation>音阶(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1184" />
+        <source>Scale Toolbar</source>
+        <translation>音阶工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1187" />
+        <source>Scale toolbar</source>
+        <translation>音阶工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1190" />
+        <source>Show/hide the scale toolbar</source>
+        <translation>显示/隐藏音阶工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1198" />
+        <source>Thum&amp;b</source>
+        <translation>缩略图(&amp;B)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1201" />
+        <source>Thumb Toolbar</source>
+        <translation>缩略图工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1204" />
+        <source>Thumb toolbar</source>
+        <translation>缩略图工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1207" />
+        <source>Show/hide the thumb view toolbar</source>
+        <translation>显示/隐藏缩略视图工具栏</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1235" />
+        <source>Note &amp;Names</source>
+        <translation>音符名称(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1238" />
+        <source>Note Names</source>
+        <translation>音符名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1241" />
+        <source>Note names</source>
+        <translation>音符名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1244" />
+        <source>Whether to show note names</source>
+        <translation>是否显示音符名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1255" />
+        <source>Note &amp;Duration</source>
+        <translation>音符时长(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1258" />
+        <source>Note Duration</source>
+        <translation>音符时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1261" />
+        <source>Note duration</source>
+        <translation>音符时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1264" />
+        <source>Whether note events are shown proportional to duration</source>
+        <translation>是否按比例显示音符事件时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1275" />
+        <source>Note &amp;Color</source>
+        <translation>音符颜色(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1278" />
+        <source>Note Color</source>
+        <translation>音符颜色</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1281" />
+        <source>Note color</source>
+        <translation>音符颜色</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1284" />
+        <source>Whether note events are colored according to pitch</source>
+        <translation>是否按音高给音符事件着色</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1318" />
+        <source>&amp;Value Color</source>
+        <translation>值颜色(&amp;V)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1321" />
+        <source>Value Color</source>
+        <translation>值颜色</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1324" />
+        <source>Value color</source>
+        <translation>值颜色</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1327" />
+        <source>Whether note events are colored according to value (velocity)</source>
+        <translation>是否按力度给音符事件着色</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1298" />
+        <source>&amp;Drum Mode</source>
+        <translation>鼓模式(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1301" />
+        <source>Drum Mode</source>
+        <translation>鼓模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1304" />
+        <source>Drum mode</source>
+        <translation>鼓模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1307" />
+        <source>Whether note onset events are displayed as diamonds</source>
+        <translation>是否将音符起始事件显示为菱形</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1218" />
+        <source>&amp;Events</source>
+        <translation>事件(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1221" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1224" />
+        <source>View events</source>
+        <translation>查看事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1227" />
+        <source>Show/hide the events list</source>
+        <translation>显示/隐藏事件列表</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1517" />
+        <source>&amp;Preview Notes</source>
+        <translation>预览音符(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1520" />
+        <source>Preview Notes</source>
+        <translation>预览音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1523" />
+        <source>Preview notes</source>
+        <translation>预览音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1526" />
+        <source>Preview notes while editing (scrub)</source>
+        <translation type="unfinished">编辑时预览音符 (擦除)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1540" />
+        <source>F&amp;ollow Playhead</source>
+        <translation>跟随播放头(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1543" />
+        <source>Follow Playhead</source>
+        <translation>跟随播放头</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1546" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1549" />
+        <source>Follow playhead</source>
+        <translation>跟随播放头</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1338" />
+        <source>&amp;In</source>
+        <translation>放大(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1341" />
+        <source>Zoom In</source>
+        <translation>放大</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1344" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1347" />
+        <source>Zoom in</source>
+        <translation>放大</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1350" />
+        <source>Ctrl++</source>
+        <translation>Ctrl++</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1358" />
+        <source>&amp;Out</source>
+        <translation>缩小(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1361" />
+        <source>Zoom Out</source>
+        <translation>缩小</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1364" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1367" />
+        <source>Zoom out</source>
+        <translation>缩小</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1370" />
+        <source>Ctrl+-</source>
+        <translation>Ctrl+-</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1375" />
+        <source>&amp;Reset</source>
+        <translation>重置(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1378" />
+        <source>Zoom Reset</source>
+        <translation>重置缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1381" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1384" />
+        <source>Zoom reset</source>
+        <translation>重置缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1387" />
+        <source>Ctrl+1</source>
+        <translation>Ctrl+1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1395" />
+        <source>&amp;Horizontal</source>
+        <translation>水平(&amp;H)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1398" />
+        <source>Horizontal Zoom</source>
+        <translation>水平缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1401" />
+        <source>Horizontal zoom</source>
+        <translation>水平缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1404" />
+        <source>Horizontal zoom mode</source>
+        <translation>水平缩放模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1412" />
+        <source>&amp;Vertical</source>
+        <translation>垂直(&amp;V)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1415" />
+        <source>Vertical Zoom</source>
+        <translation>垂直缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1418" />
+        <source>Vertical zoom</source>
+        <translation>垂直缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1421" />
+        <source>Vertical zoom mode</source>
+        <translation>垂直缩放模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1432" />
+        <source>All Zoom</source>
+        <translation>全部缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1435" />
+        <source>All zoom</source>
+        <translation>全部缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1438" />
+        <source>All zoom mode</source>
+        <translation>全部缩放模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1446" />
+        <source>&amp;Zebra</source>
+        <translation>斑马线(&amp;Z)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1449" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1452" />
+        <source>Zebra</source>
+        <translation>斑马线</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1455" />
+        <source>Bar zebra view mode</source>
+        <translation>小节斑马线视图模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1463" />
+        <source>&amp;Grid</source>
+        <translation>网格(&amp;G)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1466" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1469" />
+        <source>Grid</source>
+        <translation>网格</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1472" />
+        <source>Snap grid view mode</source>
+        <translation>网格吸附视图模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1480" />
+        <source>Too&amp;l Tips</source>
+        <translation>工具提示(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1483" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1486" />
+        <source>Tool tips</source>
+        <translation>工具提示</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1489" />
+        <source>Floating tool tips view mode</source>
+        <translation>浮动工具提示视图模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1494" />
+        <source>&amp;Refresh</source>
+        <translation>刷新(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1497" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1500" />
+        <source>Refresh</source>
+        <translation>刷新</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1503" />
+        <source>Refresh views</source>
+        <translation>刷新视图</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1506" />
+        <source>F5</source>
+        <translation>F5</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1560" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1643" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1671" />
+        <source>&amp;Backward</source>
+        <translation>后退(&amp;B)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1563" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1566" />
+        <source>Backward</source>
+        <translation>后退</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1569" />
+        <source>Transport backward</source>
+        <translation>走带后退</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1572" />
+        <source>Backspace</source>
+        <translation>Backspace</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1583" />
+        <source>Re&amp;wind</source>
+        <translation>快退(&amp;W)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1586" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1589" />
+        <source>Rewind</source>
+        <translation>快退</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1592" />
+        <source>Transport rewind</source>
+        <translation>走带快退</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1606" />
+        <source>F&amp;ast Forward</source>
+        <translation>快进(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1609" />
+        <source>Fast Forward</source>
+        <translation>快进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1612" />
+        <source>Fast forward</source>
+        <translation>快进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1615" />
+        <source>Transport fast forward</source>
+        <translation>走带快进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1626" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1657" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1685" />
+        <source>&amp;Forward</source>
+        <translation>前进(&amp;F)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1629" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1632" />
+        <source>Forward</source>
+        <translation>前进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1635" />
+        <source>Transport forward</source>
+        <translation>走带前进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1646" />
+        <source>Step Backward</source>
+        <translation>步退</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1649" />
+        <source>Step backward</source>
+        <translation>步退</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1652" />
+        <source>Transport step backward</source>
+        <translation>走带步退</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1660" />
+        <source>Step Forward</source>
+        <translation>步进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1663" />
+        <source>Step forward</source>
+        <translation>步进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1666" />
+        <source>Transport step forward</source>
+        <translation>走带步进</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1674" />
+        <source>Note Backward</source>
+        <translation>后退音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1677" />
+        <source>Step note backward</source>
+        <translation>步退音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1680" />
+        <source>Transport step note backward</source>
+        <translation>走带步退音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1688" />
+        <source>Note Forward</source>
+        <translation>前进音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1691" />
+        <source>Step note forward</source>
+        <translation>步进音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1694" />
+        <source>Transport step note forward</source>
+        <translation>走带步进音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1705" />
+        <source>&amp;Loop</source>
+        <translation>循环(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1708" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1711" />
+        <source>Loop</source>
+        <translation>循环</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1714" />
+        <source>Transport loop</source>
+        <translation>走带循环</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1717" />
+        <source>Ctrl+Shift+L</source>
+        <translation>Ctrl+Shift+L</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1722" />
+        <source>Loop &amp;Set</source>
+        <translation>设置循环(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1725" />
+        <source>Loop Set</source>
+        <translation>设置循环</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1728" />
+        <source>Loop set</source>
+        <translation>设置循环</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1731" />
+        <source>Transport loop set</source>
+        <translation>走带循环设置</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1734" />
+        <source>Ctrl+L</source>
+        <translation>Ctrl+L</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1742" />
+        <source>&amp;Stop</source>
+        <translation>停止(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1745" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1748" />
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1751" />
+        <source>Transport stop</source>
+        <translation>走带停止</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1762" />
+        <source>&amp;Play</source>
+        <translation>播放(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1765" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1768" />
+        <source>Play</source>
+        <translation>播放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1771" />
+        <source>Transport play/pause</source>
+        <translation>走带播放/暂停</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1774" />
+        <source>Space</source>
+        <translation>Space</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1785" />
+        <source>&amp;Record</source>
+        <translation>录制(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="501" />
+        <location filename="../qtractorMidiEditorForm.ui" line="504" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1788" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1791" />
+        <source>Record</source>
+        <translation>录制</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1794" />
+        <source>Transport record</source>
+        <translation>走带录制</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1808" />
+        <source>&amp;Punch</source>
+        <translation>插入录音(&amp;P)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1811" />
+        <source>Punch</source>
+        <translation>插入录音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1814" />
+        <source>Punch in/out</source>
+        <translation>插入录音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1817" />
+        <source>Transport punch in/out</source>
+        <translation>走带插入录音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1820" />
+        <source>Ctrl+Shift+P</source>
+        <translation>Ctrl+Shift+P</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1825" />
+        <source>Punch Se&amp;t</source>
+        <translation>设置插入录音(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1828" />
+        <source>Punch Set</source>
+        <translation>设置插入录音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1831" />
+        <source>Punch in/out set</source>
+        <translation>插入录音设置</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1834" />
+        <source>Transport punch in/out set</source>
+        <translation>走带插入录音设置</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1837" />
+        <source>Ctrl+P</source>
+        <translation>Ctrl+P</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1845" />
+        <source>Pa&amp;nic</source>
+        <translation>紧急停止(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1848" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1851" />
+        <source>Panic</source>
+        <translation>紧急停止</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1854" />
+        <source>All MIDI tracks shut off (panic)</source>
+        <translation>关闭所有 MIDI 轨道 (紧急停止)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1862" />
+        <source>&amp;Shortcuts...</source>
+        <translation>快捷键(&amp;S)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1865" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1868" />
+        <source>Shortcuts</source>
+        <translation>快捷键</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1871" />
+        <source>Keyboard shortcuts</source>
+        <translation>键盘快捷键</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1879" />
+        <source>&amp;About...</source>
+        <translation>关于(&amp;A)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1882" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1885" />
+        <source>About</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1888" />
+        <source>Show information about this application program</source>
+        <translation>显示此应用程序的信息</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1896" />
+        <source>About &amp;Qt...</source>
+        <translation>关于 Qt(&amp;Q)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1899" />
+        <location filename="../qtractorMidiEditorForm.ui" line="1902" />
+        <source>About Qt</source>
+        <translation>关于 Qt</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="1905" />
+        <source>Show information about the Qt toolkit</source>
+        <translation>显示 Qt 工具包的信息</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="164" />
+        <source>Current time (play-head)</source>
+        <translation>当前时间 (播放头)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="177" />
+        <source>Current tempo (BPM)</source>
+        <translation>当前速度 (BPM)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="185" />
+        <source>Reset time-sig.</source>
+        <translation>重置拍号</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="216" />
+        <source>Set current snap to %1</source>
+        <translation>设置当前吸附为 %1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="257" />
+        <source>Note Velocity</source>
+        <translation>音符力度</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="270" />
+        <source>Snap/beat</source>
+        <translation>吸附/拍</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="271" />
+        <source>Note type</source>
+        <translation>音符类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="272" />
+        <source>Value type</source>
+        <translation>值类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="273" />
+        <source>Parameter type</source>
+        <translation>参数类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="274" />
+        <source>Scale key</source>
+        <translation>音阶调性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="275" />
+        <source>Scale type</source>
+        <translation>音阶类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="333" />
+        <source>MIDI clip name</source>
+        <translation>MIDI 剪辑名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="341" />
+        <source>MIDI file name</source>
+        <translation>MIDI 文件名</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="349" />
+        <source>MIDI track/channel</source>
+        <translation>MIDI 轨道/通道</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="354" />
+        <location filename="../qtractorMidiEditorForm.cpp" line="2456" />
+        <source>MOD</source>
+        <translation>修改</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="357" />
+        <source>MIDI modification state</source>
+        <translation>MIDI 修改状态</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="362" />
+        <location filename="../qtractorMidiEditorForm.cpp" line="2461" />
+        <source>REC</source>
+        <translation>录音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="365" />
+        <source>MIDI clip record state</source>
+        <translation>MIDI 剪辑录音状态</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="370" />
+        <location filename="../qtractorMidiEditorForm.cpp" line="2469" />
+        <source>MUTE</source>
+        <translation>静音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="373" />
+        <source>MIDI clip mute state</source>
+        <translation>MIDI 剪辑静音状态</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="378" />
+        <source>00:00:00.000</source>
+        <translation>00:00:00.000</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="381" />
+        <source>MIDI clip duration</source>
+        <translation>MIDI 剪辑时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="933" />
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="934" />
+        <source>The current MIDI clip has been changed:
+
+"%1"
+
+Do you want to save the changes?</source>
+        <translation>当前 MIDI 剪辑已更改：
+
+"%1"
+
+是否保存更改？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1292" />
+        <source>Save MIDI Clip</source>
+        <translation>保存 MIDI 剪辑</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1294" />
+        <source>MIDI files (*.%1 *.smf *.midi)</source>
+        <translation>MIDI 文件 (*.%1 *.smf *.midi)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1295" />
+        <source>All files (*.*)</source>
+        <translation>所有文件 (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2436" />
+        <source>Channel %1</source>
+        <translation>通道 %1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2439" />
+        <source>Track %1</source>
+        <translation>轨道 %1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2446" />
+        <source>[modified]</source>
+        <translation>[已修改]</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEventList</name>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="983" />
+        <source>Events</source>
+        <translation>事件</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEventListView::ItemDelegate</name>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="734" />
+        <source>edit %1</source>
+        <translation>编辑 %1</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEventListView::ItemModel</name>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="149" />
+        <location filename="../qtractorMidiEventList.cpp" line="186" />
+        <source>Time</source>
+        <translation>时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="150" />
+        <source>Type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="151" />
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="152" />
+        <source>Value</source>
+        <translation>值</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="153" />
+        <source>Duration/Data</source>
+        <translation>时长/数据</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="184" />
+        <source>Frame</source>
+        <translation>帧</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="188" />
+        <source>BBT</source>
+        <translation>BBT</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="402" />
+        <source>Note On (%1)</source>
+        <translation>音符开 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="404" />
+        <source>Note Off (%1)</source>
+        <translation>音符关 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="406" />
+        <source>Key Press (%1)</source>
+        <translation type="unfinished">触后 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="408" />
+        <source>Controller (%1)</source>
+        <translation>控制器 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="410" />
+        <source>Control 14 (%1)</source>
+        <translation>14 位控制 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="412" />
+        <source>RPN (%1)</source>
+        <translation>RPN (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="414" />
+        <source>NRPN (%1)</source>
+        <translation>NRPN (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="416" />
+        <source>Pgm Change</source>
+        <translation>音色改变</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="418" />
+        <source>Chan Press</source>
+        <translation type="unfinished">通道触后</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="420" />
+        <source>Pitch Bend</source>
+        <translation>弯音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="422" />
+        <source>SysEx</source>
+        <translation>系统专用信息</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="424" />
+        <source>Meta (%1)</source>
+        <translation>元数据 (%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="428" />
+        <source>Unknown (%1)</source>
+        <translation>未知 (%1)</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiListView</name>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="132" />
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="133" />
+        <source>Fmt</source>
+        <translation>格式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="134" />
+        <source>Tracks</source>
+        <translation>轨道</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="135" />
+        <source>tpqn</source>
+        <translation>tpqn</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="136" />
+        <source>Path</source>
+        <translation>路径</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="167" />
+        <source>%1: MIDI file not found.</source>
+        <translation>%1：未找到 MIDI 文件。</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="181" />
+        <source>Open MIDI Files</source>
+        <translation>打开 MIDI 文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="184" />
+        <source>MIDI files (*.%1 *.smf *.midi)</source>
+        <translation>MIDI 文件 (*.%1 *.smf *.midi)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiListView.cpp" line="185" />
+        <source>All files (*.*)</source>
+        <translation>所有文件 (*.*)</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiSysexForm</name>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="34" />
+        <source>MIDI SysEx</source>
+        <translation>MIDI 系统专用信息</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="58" />
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="63" />
+        <source>Size</source>
+        <translation>大小</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="68" />
+        <source>Data (hex)</source>
+        <translation>数据 (十六进制)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="76" />
+        <source>Import from SysEx file</source>
+        <translation>从系统专用信息文件导入</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="79" />
+        <source>&amp;Import...</source>
+        <translation>导入(&amp;I)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="89" />
+        <source>Export to SysEx file</source>
+        <translation>导出到系统专用信息文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="92" />
+        <source>E&amp;xport...</source>
+        <translation>导出(&amp;X)...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="115" />
+        <source>Move SysEx item up on list order</source>
+        <translation>在列表中将系统专用信息项上移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="118" />
+        <source>&amp;Up</source>
+        <translation>上移(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="128" />
+        <source>Move SysEx item down on list order</source>
+        <translation>在列表中将系统专用信息项下移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="131" />
+        <source>&amp;Down</source>
+        <translation>下移(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="144" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="449" />
+        <source>Open SysEx</source>
+        <translation>打开系统专用信息</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="160" />
+        <source>Sysex name</source>
+        <translation>系统专用信息名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="173" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="527" />
+        <source>Save SysEx</source>
+        <translation>保存系统专用信息</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="186" />
+        <source>Delete SysEx</source>
+        <translation>删除系统专用信息</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="196" />
+        <source>Create SysEx item</source>
+        <translation>创建系统专用信息项</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="199" />
+        <source>&amp;Add</source>
+        <translation>添加(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="218" />
+        <source>Update SysEx item</source>
+        <translation>更新系统专用信息项</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="221" />
+        <source>Upda&amp;te</source>
+        <translation>更新(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="231" />
+        <source>Remove SysEx item</source>
+        <translation>移除系统专用信息项</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.ui" line="234" />
+        <source>&amp;Remove</source>
+        <translation>移除(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="215" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="300" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="452" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="529" />
+        <source>SysEx files (*.%1)</source>
+        <translation>系统专用信息文件 (*.%1)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="216" />
+        <source>MIDI files (*.mid *.smf *.midi)</source>
+        <translation>MIDI 文件 (*.mid *.smf *.midi)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="217" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="301" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="453" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="530" />
+        <source>All files (*.*)</source>
+        <translation>所有文件 (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="212" />
+        <source>Import SysEx Files</source>
+        <translation>导入系统专用信息文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="297" />
+        <source>Export SysEx File</source>
+        <translation>导出系统专用信息文件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="342" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="564" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="608" />
+        <location filename="../qtractorMidiSysexForm.cpp" line="801" />
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="343" />
+        <source>The SysEx file already exists:
+
+"%1"
+
+Do you want to replace it?</source>
+        <translation>系统专用信息文件已存在：
+
+"%1"
+
+是否替换？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="565" />
+        <source>About to replace SysEx:
+
+"%1"
+
+Are you sure?</source>
+        <translation>即将替换系统专用信息：
+
+"%1"
+
+是否确认？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="609" />
+        <source>About to delete SysEx:
+
+"%1"
+
+Are you sure?</source>
+        <translation>即将删除系统专用信息：
+
+"%1"
+
+是否确认？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="802" />
+        <source>SysEx settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation>系统专用信息设置已更改。
+
+是否应用这些更改？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="1078" />
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiSysexForm.cpp" line="1079" />
+        <source>SysEx could not be loaded:
+
+"%1".
+
+Sorry.</source>
+        <translation>无法加载系统专用信息：
+
+"%1"。
+
+抱歉。</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiThumbView</name>
+    <message>
+        <location filename="../qtractorMidiThumbView.cpp" line="76" />
+        <source>MIDI Thumb view</source>
+        <translation>MIDI 缩略视图</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiToolsForm</name>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="34" />
+        <source>MIDI Tools</source>
+        <translation>MIDI 工具</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="63" />
+        <source>Preset name</source>
+        <translation>预设名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="76" />
+        <source>Save preset</source>
+        <translation>保存预设</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="92" />
+        <source>Delete preset</source>
+        <translation>删除预设</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="124" />
+        <location filename="../qtractorMidiToolsForm.ui" line="139" />
+        <source>&amp;Quantize</source>
+        <translation>量化(&amp;Q)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="136" />
+        <source>Quantize selected events</source>
+        <translation>量化选中的事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="162" />
+        <location filename="../qtractorMidiToolsForm.ui" line="466" />
+        <location filename="../qtractorMidiToolsForm.ui" line="758" />
+        <location filename="../qtractorMidiToolsForm.ui" line="1224" />
+        <source>&amp;Time:</source>
+        <translation>时间(&amp;T)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="169" />
+        <source>Quantize time</source>
+        <translation>量化时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="182" />
+        <source>Quantize time percent</source>
+        <translation>量化时间百分比</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="185" />
+        <location filename="../qtractorMidiToolsForm.ui" line="246" />
+        <location filename="../qtractorMidiToolsForm.ui" line="294" />
+        <location filename="../qtractorMidiToolsForm.ui" line="596" />
+        <location filename="../qtractorMidiToolsForm.ui" line="726" />
+        <location filename="../qtractorMidiToolsForm.ui" line="774" />
+        <location filename="../qtractorMidiToolsForm.ui" line="809" />
+        <location filename="../qtractorMidiToolsForm.ui" line="844" />
+        <location filename="../qtractorMidiToolsForm.ui" line="1240" />
+        <location filename="../qtractorMidiToolsForm.ui" line="1294" />
+        <location filename="../qtractorMidiToolsForm.ui" line="1335" />
+        <location filename="../qtractorMidiToolsForm.ui" line="1453" />
+        <source> %</source>
+        <translation> %</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="223" />
+        <location filename="../qtractorMidiToolsForm.ui" line="793" />
+        <location filename="../qtractorMidiToolsForm.ui" line="915" />
+        <location filename="../qtractorMidiToolsForm.ui" line="1278" />
+        <source>&amp;Duration:</source>
+        <translation>时长(&amp;D)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="230" />
+        <source>Quantize duration</source>
+        <translation>量化时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="243" />
+        <source>Quantize duration percent</source>
+        <translation>量化时长百分比</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="271" />
+        <source>S&amp;wing:</source>
+        <translation>摇摆(&amp;W)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="278" />
+        <source>Swing-quantize time</source>
+        <translation>摇摆量化时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="291" />
+        <source>Swing-quantize percent</source>
+        <translation>摇摆量化百分比</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="319" />
+        <source>Swing-quantize type</source>
+        <translation>摇摆量化类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="323" />
+        <source>Linear</source>
+        <translation>线性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="328" />
+        <source>Quadratic</source>
+        <translation>二次</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="333" />
+        <source>Cubic</source>
+        <translation>三次</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="354" />
+        <source>&amp;Scale:</source>
+        <translation>音阶(&amp;S)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="361" />
+        <source>Scale-quantize key</source>
+        <translation>音阶量化调性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="368" />
+        <source>Scale-quantize type</source>
+        <translation>音阶量化类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="389" />
+        <location filename="../qtractorMidiToolsForm.ui" line="404" />
+        <source>&amp;Transpose</source>
+        <translation>移调(&amp;T)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="401" />
+        <source>Transpose selected events</source>
+        <translation>移调选中的事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="427" />
+        <location filename="../qtractorMidiToolsForm.ui" line="710" />
+        <source>&amp;Note:</source>
+        <translation>音符(&amp;N)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="440" />
+        <source>Transpose note</source>
+        <translation>移调音符</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="479" />
+        <source>Transpose time</source>
+        <translation>移调时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="486" />
+        <source>Transpose time format</source>
+        <translation>移调时间格式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="490" />
+        <location filename="../qtractorMidiToolsForm.ui" line="939" />
+        <source>Frames</source>
+        <translation>帧</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="495" />
+        <location filename="../qtractorMidiToolsForm.ui" line="944" />
+        <source>Time</source>
+        <translation>时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="500" />
+        <location filename="../qtractorMidiToolsForm.ui" line="949" />
+        <source>BBT</source>
+        <translation>BBT</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="521" />
+        <source>&amp;Reverse</source>
+        <translation>反转(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="542" />
+        <location filename="../qtractorMidiToolsForm.ui" line="557" />
+        <source>&amp;Normalize</source>
+        <translation>标准化(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="554" />
+        <source>Normalize selected events</source>
+        <translation>标准化选中的事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="580" />
+        <source>&amp;Percent:</source>
+        <translation>百分比(&amp;P)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="593" />
+        <source>Normalize percent</source>
+        <translation>标准化百分比</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="628" />
+        <location filename="../qtractorMidiToolsForm.ui" line="828" />
+        <location filename="../qtractorMidiToolsForm.ui" line="970" />
+        <location filename="../qtractorMidiToolsForm.ui" line="1319" />
+        <source>&amp;Value:</source>
+        <translation>值(&amp;V)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="641" />
+        <source>Normalize value</source>
+        <translation>标准化值</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="651" />
+        <source>&amp;Compress</source>
+        <translation>压缩(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="672" />
+        <location filename="../qtractorMidiToolsForm.ui" line="687" />
+        <source>&amp;Randomize</source>
+        <translation>随机化(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="684" />
+        <source>Randomize selected events</source>
+        <translation>随机化选中的事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="723" />
+        <source>Randomize note/pitch</source>
+        <translation>随机化音符/音高</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="771" />
+        <source>Randomize time</source>
+        <translation>随机化时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="806" />
+        <source>Randomize duration</source>
+        <translation>随机化时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="841" />
+        <source>Randomize value</source>
+        <translation>随机化值</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="877" />
+        <location filename="../qtractorMidiToolsForm.ui" line="892" />
+        <source>Resi&amp;ze</source>
+        <translation>调整(&amp;Z)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="889" />
+        <source>Resize selected events</source>
+        <translation>调整选中的事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="928" />
+        <source>Resize duration</source>
+        <translation>调整时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="935" />
+        <source>Resize duration format</source>
+        <translation>调整时长格式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="983" />
+        <source>Resize value</source>
+        <translation>调整值</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="993" />
+        <source>Resize value mode</source>
+        <translation>调整值模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="997" />
+        <source>Flat</source>
+        <translation>平坦</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1002" />
+        <source>Ramp</source>
+        <translation>渐变</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1016" />
+        <source>Resize final value</source>
+        <translation>调整最终值</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1039" />
+        <source>&amp;Legato:</source>
+        <translation>连奏(&amp;L)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1052" />
+        <source>Legato trim/extend type</source>
+        <translation>连奏修剪/延伸类型</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1056" />
+        <source>Normal</source>
+        <translation>常规</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1061" />
+        <source>Trim</source>
+        <translation>修剪</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1066" />
+        <source>Extend</source>
+        <translation>延伸</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1074" />
+        <source>Legato trim/extend length</source>
+        <translation>连奏修剪/延伸长度</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1081" />
+        <source>Legato mode</source>
+        <translation>连奏模式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1085" />
+        <source>Mono</source>
+        <translation>单音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1090" />
+        <source>Poly</source>
+        <translation>复音</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1119" />
+        <source>&amp;Join</source>
+        <translation>连接(&amp;J)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1126" />
+        <source>&amp;Split:</source>
+        <translation>分割(&amp;S)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1133" />
+        <source>Split notes length</source>
+        <translation>分割音符长度</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1140" />
+        <source>Split notes offset</source>
+        <translation>分割音符偏移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1144" />
+        <source>Relative</source>
+        <translation>相对</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1149" />
+        <source>Absolute</source>
+        <translation>绝对</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1186" />
+        <location filename="../qtractorMidiToolsForm.ui" line="1201" />
+        <source>Re&amp;scale</source>
+        <translation>缩放(&amp;S)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1198" />
+        <source>Rescale selected events</source>
+        <translation>缩放选中的事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1237" />
+        <source>Rescale time</source>
+        <translation>缩放时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1291" />
+        <source>Rescale duration</source>
+        <translation>缩放时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1332" />
+        <source>Rescale value</source>
+        <translation>缩放值</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1360" />
+        <source>&amp;Invert</source>
+        <translation>反转(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1381" />
+        <source>T&amp;imeshift</source>
+        <translation>时间偏移(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1393" />
+        <source>Timeshift selected events</source>
+        <translation>时间偏移选中的事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1396" />
+        <source>Timeshift</source>
+        <translation>时间偏移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1419" />
+        <source>P:</source>
+        <translation>P：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1432" />
+        <source>Timeshift parameter</source>
+        <translation>时间偏移参数</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1460" />
+        <source>Timeshift parameter (log)</source>
+        <translation>时间偏移参数 (对数)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1497" />
+        <source>Timeshift curve</source>
+        <translation>时间偏移曲线</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1510" />
+        <source>P = 0 : no change.
+P &gt; 0 : accelerating shift.
+P &lt; 0 : slowing down shift.
+Edit head/tail (blue) markers define the shift range.</source>
+        <translation>P = 0：无变化。\nP &gt; 0：加速偏移。\nP &lt; 0：减速偏移。\n编辑头/尾 (蓝色) 标记定义渐变范围。</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1520" />
+        <source>Timeshift duration</source>
+        <translation>时间偏移时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1541" />
+        <source>T&amp;empo ramp</source>
+        <translation>速度渐变(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1553" />
+        <source>Tempo ramp selected events</source>
+        <translation>速度渐变选中的事件</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1556" />
+        <source>Tempo ramp</source>
+        <translation>速度渐变</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1579" />
+        <source>From</source>
+        <translation>从</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1592" />
+        <source>Tempo ramp start</source>
+        <translation>速度渐变起点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1599" />
+        <source>to</source>
+        <translation>到</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1612" />
+        <source>Temporamp end</source>
+        <translation>速度渐变终点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1632" />
+        <source>Edit head/tail (blue) markers define the ramp range.</source>
+        <translation>编辑头/尾 (蓝色) 标记定义渐变范围。</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1639" />
+        <source>Tempo ramp duration</source>
+        <translation>速度渐变时长</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="150" />
+        <source>(default)</source>
+        <translation>(默认)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="885" />
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="886" />
+        <source>About to delete preset:
+
+"%1"
+
+Are you sure?</source>
+        <translation>即将删除预设：
+
+"%1"
+
+是否确认？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="915" />
+        <source>none</source>
+        <translation>无</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="920" />
+        <source>quantize</source>
+        <translation>量化</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="922" />
+        <source>transpose</source>
+        <translation>移调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="924" />
+        <source>normalize</source>
+        <translation>标准化</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="926" />
+        <source>randomize</source>
+        <translation>随机化</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="928" />
+        <source>resize</source>
+        <translation>调整</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="930" />
+        <source>rescale</source>
+        <translation>缩放</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="932" />
+        <source>timeshift</source>
+        <translation>时间偏移</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.cpp" line="934" />
+        <source>temporamp</source>
+        <translation>速度渐变</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorTempoAdjustForm</name>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="37" />
+        <source>Tempo Adjust</source>
+        <translation>速度调整</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="54" />
+        <source>Metronome</source>
+        <translation>节拍器</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="82" />
+        <source>Tempo/Time signature</source>
+        <translation>速度/拍号</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="128" />
+        <source>&amp;Detect</source>
+        <translation>检测(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="105" />
+        <source>T&amp;ap</source>
+        <translation>点击(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="158" />
+        <source>Range</source>
+        <translation>范围</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="170" />
+        <source>&amp;Start:</source>
+        <translation>开始(&amp;S)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="186" />
+        <source>Range start</source>
+        <translation>范围起点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="228" />
+        <source>&amp;Beats:</source>
+        <translation>拍数(&amp;B)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="289" />
+        <source>Time</source>
+        <translation>时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="294" />
+        <source>BBT</source>
+        <translation>BBT</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="199" />
+        <source>&amp;Length:</source>
+        <translation>长度(&amp;L)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="66" />
+        <source>&amp;Tempo:</source>
+        <translation>速度(&amp;T)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="135" />
+        <source>R&amp;eset</source>
+        <translation>重置(&amp;E)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="215" />
+        <source>Range length</source>
+        <translation>范围长度</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="238" />
+        <source>Range beats</source>
+        <translation>范围拍数</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="251" />
+        <source>A&amp;djust</source>
+        <translation>调整(&amp;D)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="274" />
+        <source>Format</source>
+        <translation>格式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="280" />
+        <source>Time display format</source>
+        <translation>时间显示格式</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="284" />
+        <source>Frames</source>
+        <translation>帧</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="883" />
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="884" />
+        <source>Some settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation>某些设置已更改。
+
+是否应用这些更改？</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorTimeScale</name>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="995" />
+        <source>C</source>
+        <translation>C</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="995" />
+        <source>B#</source>
+        <translation>B#</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="996" />
+        <source>C#</source>
+        <translation>C#</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="996" />
+        <source>Db</source>
+        <translation>Db</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="997" />
+        <source>D</source>
+        <translation>D</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="998" />
+        <source>D#</source>
+        <translation>D#</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="998" />
+        <source>Eb</source>
+        <translation>Eb</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="999" />
+        <source>E</source>
+        <translation>E</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="999" />
+        <source>Fb</source>
+        <translation>Fb</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1000" />
+        <source>F</source>
+        <translation>F</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1000" />
+        <source>E#</source>
+        <translation>E#</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1001" />
+        <source>F#</source>
+        <translation>F#</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1001" />
+        <source>Gb</source>
+        <translation>Gb</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1002" />
+        <source>G</source>
+        <translation>G</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1003" />
+        <source>G#</source>
+        <translation>G#</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1003" />
+        <source>Ab</source>
+        <translation>Ab</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1004" />
+        <source>A</source>
+        <translation>A</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1005" />
+        <source>A#</source>
+        <translation>A#</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1005" />
+        <source>Bb</source>
+        <translation>Bb</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1006" />
+        <source>B</source>
+        <translation>B</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScale.cpp" line="1006" />
+        <source>Cb</source>
+        <translation>Cb</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorTimeScaleForm</name>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="72" />
+        <source>Bar</source>
+        <translation>小节</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="77" />
+        <source>Time</source>
+        <translation>时间</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="82" />
+        <source>Tempo</source>
+        <translation>速度</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="122" />
+        <source>&amp;Bar:</source>
+        <translation>小节(&amp;B)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="56" />
+        <source>Tempo map / Markers</source>
+        <translation>速度图谱 / 标记</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="92" />
+        <source>Marker</source>
+        <translation>标记</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="138" />
+        <source>Bar location</source>
+        <translation>小节位置</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="160" />
+        <source>T&amp;ime:</source>
+        <translation>时间(&amp;I)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="176" />
+        <source>Time/frame location</source>
+        <translation>时间/帧位置</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="199" />
+        <source>&amp;Tempo:</source>
+        <translation>速度(&amp;T)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="225" />
+        <source>T&amp;ap</source>
+        <translation>点击(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="322" />
+        <source>Marker text</source>
+        <translation>标记文本</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="338" />
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="335" />
+        <source>Marker color</source>
+        <translation>标记颜色</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="37" />
+        <source>Tempo Map / Markers</source>
+        <translation>速度图谱 / 标记</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="87" />
+        <source>Key</source>
+        <translation>调性</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="218" />
+        <source>Tempo (BPM) / Time signature</source>
+        <translation>速度 (BPM) / 拍号</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="248" />
+        <source>&amp;Key signature:</source>
+        <translation>调号(&amp;K)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="261" />
+        <source>Key signature (accidentals)</source>
+        <translation>调号 (升降号)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="271" />
+        <source>Key signature (mode)</source>
+        <translation>调号 (模式)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="278" />
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="283" />
+        <source>Major</source>
+        <translation>大调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="288" />
+        <source>Minor</source>
+        <translation>小调</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="312" />
+        <source>&amp;Marker:</source>
+        <translation>标记(&amp;M)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="364" />
+        <source>Tempo &amp;scale factor:</source>
+        <translation>速度缩放系数(&amp;S)：</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="377" />
+        <source>Tempo scale factor</source>
+        <translation>速度缩放系数</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="402" />
+        <source>App&amp;ly</source>
+        <translation>应用(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="421" />
+        <source>Refresh tempo map</source>
+        <translation>刷新速度图谱</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="424" />
+        <source>Re&amp;fresh</source>
+        <translation>刷新(&amp;F)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="450" />
+        <source>Add node</source>
+        <translation>添加节点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="453" />
+        <location filename="../qtractorTimeScaleForm.cpp" line="1177" />
+        <source>&amp;Add</source>
+        <translation>添加(&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="463" />
+        <source>Update node</source>
+        <translation>更新节点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="466" />
+        <location filename="../qtractorTimeScaleForm.cpp" line="1182" />
+        <source>&amp;Update</source>
+        <translation>更新(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="476" />
+        <source>Remove node</source>
+        <translation>移除节点</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="479" />
+        <location filename="../qtractorTimeScaleForm.cpp" line="1187" />
+        <source>&amp;Remove</source>
+        <translation>移除(&amp;R)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="489" />
+        <source>Close this dialog</source>
+        <translation>关闭此对话框</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.ui" line="492" />
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="564" />
+        <location filename="../qtractorTimeScaleForm.cpp" line="835" />
+        <location filename="../qtractorTimeScaleForm.cpp" line="1042" />
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="565" />
+        <source>Some settings have been changed.
+
+Do you want to apply the changes?</source>
+        <translation>某些设置已更改。
+
+是否应用这些更改？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="836" />
+        <source>About to remove tempo node:
+
+%1 (%2) %3  %4/%5
+
+Are you sure?</source>
+        <translation>即将删除速度节点：
+
+%1 (%2) %3  %4/%5
+
+是否确认？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1043" />
+        <source>Some settings have been changed.
+
+Do you want to discard the changes?</source>
+        <translation>某些设置已更改。
+
+是否放弃这些更改？</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1066" />
+        <source>tempo factor</source>
+        <translation>速度系数</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1143" />
+        <source>Marker Color</source>
+        <translation>标记颜色</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1194" />
+        <source>&amp;Refresh</source>
+        <translation>刷新(&amp;R)</translation>
+    </message>
+</context>
 </TS>
