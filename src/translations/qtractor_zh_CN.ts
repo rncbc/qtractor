@@ -6622,7 +6622,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorOptionsForm.ui" line="2712" />
         <location filename="../qtractorOptionsForm.ui" line="2802" />
         <source> ticks</source>
-        <translation type="unfinished"> 滴答</translation>
+        <translation> tick</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2599" />
@@ -8095,12 +8095,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorSessionForm.ui" line="275" />
         <source>T&amp;icks/Beat:</source>
-        <translation type="unfinished">滴答/拍(&amp;I)：</translation>
+        <translation>tick/拍(&amp;I)：</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="288" />
         <source>Resolution (ticks/beat; tpqn)</source>
-        <translation type="unfinished">分辨率 (滴答/拍；tpqn)</translation>
+        <translation>分辨率 (tick/拍；tpqn)</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="323" />
