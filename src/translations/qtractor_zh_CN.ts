@@ -8600,7 +8600,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="971" />
         <source>Key Press</source>
-        <translation type="unfinished">触后</translation>
+        <translation>键触后</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="972" />
@@ -8615,7 +8615,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="974" />
         <source>Chan Press</source>
-        <translation type="unfinished">通道触后</translation>
+        <translation>通道触后</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="975" />
@@ -8814,12 +8814,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="302" />
         <source>Command delta/momentary</source>
-        <translation type="unfinished">命令增量/瞬时</translation>
+        <translation>命令增量/瞬时</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="305" />
         <source>D&amp;elta</source>
-        <translation type="unfinished">增量(&amp;E)</translation>
+        <translation>增量(&amp;E)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="312" />
@@ -8890,7 +8890,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="419" />
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation type="unfinished">启用所有控制器即时同步 (hook)</translation>
+        <translation>启用所有控制器即时同步 (钩子)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="422" />
@@ -9017,7 +9017,7 @@ Do you want to apply to controller files?</source>
         <location filename="../qtractorMidiControlForm.cpp" line="775" />
         <location filename="../qtractorMidiControlForm.cpp" line="867" />
         <source>Delta</source>
-        <translation type="unfinished">增量</translation>
+        <translation>增量</translation>
     </message>
 </context>
 <context>
@@ -9070,12 +9070,12 @@ Do you want to apply to controller files?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="156" />
         <source>&amp;Hook</source>
-        <translation type="unfinished">挂钩(&amp;H)</translation>
+        <translation>钩子(&amp;H)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="163" />
         <source>L&amp;atch</source>
-        <translation type="unfinished">锁定(&amp;A)</translation>
+        <translation>锁定(&amp;A)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="185" />
@@ -10839,7 +10839,7 @@ Duration: %4</source>
         <location filename="../qtractorMidiEditor.cpp" line="5452" />
         <source>Key Press (%1) %2
 Value:	%3</source>
-        <translation type="unfinished">触后 (%1) %2
+        <translation>键触后 (%1) %2
 值：	%3</translation>
     </message>
     <message>
@@ -10886,7 +10886,7 @@ Value:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="5486" />
         <source>Chan Press (%1)</source>
-        <translation type="unfinished">通道触后 (%1)</translation>
+        <translation>通道触后 (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="5490" />
@@ -10999,7 +10999,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="118" />
         <source>&amp;Ghost Track</source>
-        <translation type="unfinished">幽灵轨道(&amp;G)</translation>
+        <translation>幽灵轨道(&amp;G)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="123" />
@@ -12036,7 +12036,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1526" />
         <source>Preview notes while editing (scrub)</source>
-        <translation type="unfinished">编辑时预览音符 (擦除)</translation>
+        <translation>编辑时预览音符 (擦除)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1540" />
@@ -12822,7 +12822,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="406" />
         <source>Key Press (%1)</source>
-        <translation type="unfinished">触后 (%1)</translation>
+        <translation>键触后 (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="408" />
@@ -12852,7 +12852,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="418" />
         <source>Chan Press</source>
-        <translation type="unfinished">通道触后</translation>
+        <translation>通道触后</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="420" />
