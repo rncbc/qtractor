@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Added simplified Chinese (zh_CN) translation.
+
+
 1.6.0  2026-05-01  A Spring'26 Release.
 
 - Probable fix to LV2 plug-in UIs in reflecting state/preset
