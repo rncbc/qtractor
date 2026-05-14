@@ -331,6 +331,7 @@ set (TRANSLATIONS
   translations/qtractor_pt_BR.ts
   translations/qtractor_ru.ts
   translations/qtractor_uk.ts
+  translations/qtractor_zh_CN.ts
 )
 
 if (QT_VERSION VERSION_LESS 5.15.0)
