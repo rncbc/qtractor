@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1833,32 +1833,12 @@ void qtractorTrackList::dropEvent ( QDropEvent *pDropEvent )
 		return;
 
 	// Let's see how many files there are...
-	QStringList midi_files;
-	QStringList audio_files;
-
+	QStringList files;
 	QListIterator<QUrl> iter(pMimeData->urls());
 	while (iter.hasNext()) {
 		const QString& sPath = iter.next().toLocalFile();
-		if (sPath.isEmpty())
-			continue;
-		// Try first as a MIDI file...
-		qtractorMidiFile file;
-		if (file.open(sPath)) {
-			midi_files.append(sPath);
-			file.close();
-			continue;
-		}
-		// Then as an audio file?...
-		qtractorAudioFile *pFile
-			= qtractorAudioFileFactory::createAudioFile(sPath);
-		if (pFile) {
-			if (pFile->open(sPath)) {
-				audio_files.append(sPath);
-				pFile->close();
-			}
-			delete pFile;
-			continue;
-		}
+		if (!sPath.isEmpty())
+			files.append(sPath);
 	}
 
 	// Depending on import type...
@@ -1866,17 +1846,7 @@ void qtractorTrackList::dropEvent ( QDropEvent *pDropEvent )
 	const unsigned long iClipStart = (pSession ? pSession->editHead() : 0);
 	qtractorTrack *pAfterTrack = currentTrack();
 
-	if (!midi_files.isEmpty()) {
-		qtractorMidiImportExtender midiImportExtenter;
-		m_pTracks->addMidiTracks(
-			midi_files, iClipStart, 0, 0, pAfterTrack, &midiImportExtenter);
-	}
-	if (!audio_files.isEmpty()) {
-		m_pTracks->addAudioTracks(
-			audio_files, iClipStart, 0, 0, pAfterTrack);
-	}
-
-	if (midi_files.isEmpty() && audio_files.isEmpty()) {
+	if (!m_pTracks->addTracks(files, iClipStart, 0, 0, pAfterTrack)) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
 			pMainForm->dropEvent(pDropEvent);

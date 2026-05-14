@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed the confusing behavior on drag-n-dropping audio and/or
+  MIDI files over the main window track-list (left pane).
+
 - Added simplified Chinese (zh_CN) translation.
 
 
