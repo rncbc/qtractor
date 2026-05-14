@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1841,7 +1841,7 @@ void qtractorTrackList::dropEvent ( QDropEvent *pDropEvent )
 	const unsigned long iClipStart = (pSession ? pSession->editHead() : 0);
 	qtractorTrack *pAfterTrack = currentTrack();
 
-	if (m_pTracks->addTracks(files, iClipStart, 0, 0, pAfterTrack)) {
+	if (!m_pTracks->addTracks(files, iClipStart, 0, 0, pAfterTrack)) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
 			pMainForm->dropEvent(pDropEvent);
