@@ -60,12 +60,12 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>Arquivo:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="258"/>
+        <location filename="../qtractorPlugin.cpp" line="263"/>
         <source>(Any)</source>
         <translation>(Todos)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="593"/>
+        <location filename="../qtractorPlugin.cpp" line="598"/>
         <source>Aux Send: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -788,7 +788,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="267"/>
+        <location filename="../qtractorPlugin.cpp" line="272"/>
         <source>(default)</source>
         <translation>(padrão)</translation>
     </message>
@@ -927,7 +927,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>remover marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="289"/>
+        <location filename="../qtractorPlugin.cpp" line="294"/>
         <source>Activate</source>
         <translation>Ativar</translation>
     </message>
@@ -937,7 +937,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2498"/>
+        <location filename="../qtractorPlugin.cpp" line="2503"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>

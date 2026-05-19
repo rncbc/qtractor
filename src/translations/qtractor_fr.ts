@@ -410,7 +410,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="267"/>
+        <location filename="../qtractorPlugin.cpp" line="272"/>
         <source>(default)</source>
         <translation>(défaut)</translation>
     </message>
@@ -512,22 +512,22 @@ MIDI:	</translation>
         <translation>Format SMF 1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="258"/>
+        <location filename="../qtractorPlugin.cpp" line="263"/>
         <source>(Any)</source>
         <translation>(Tous)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="289"/>
+        <location filename="../qtractorPlugin.cpp" line="294"/>
         <source>Activate</source>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="593"/>
+        <location filename="../qtractorPlugin.cpp" line="598"/>
         <source>Aux Send: %1</source>
         <translation>Envoi aux : %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2498"/>
+        <location filename="../qtractorPlugin.cpp" line="2503"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>

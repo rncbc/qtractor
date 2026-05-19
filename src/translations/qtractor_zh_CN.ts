@@ -411,7 +411,7 @@ MIDI：	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="267"/>
+        <location filename="../qtractorPlugin.cpp" line="272"/>
         <source>(default)</source>
         <translation>(默认)</translation>
     </message>
@@ -513,22 +513,22 @@ MIDI：	</translation>
         <translation>SMF 格式 1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="258"/>
+        <location filename="../qtractorPlugin.cpp" line="263"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="289"/>
+        <location filename="../qtractorPlugin.cpp" line="294"/>
         <source>Activate</source>
         <translation>激活</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="593"/>
+        <location filename="../qtractorPlugin.cpp" line="598"/>
         <source>Aux Send: %1</source>
         <translation>辅助发送：%1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2498"/>
+        <location filename="../qtractorPlugin.cpp" line="2503"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2)：未找到插件 %3。</translation>
     </message>

@@ -84,6 +84,11 @@ bool qtractorPluginFile::open (void)
 	if (m_module == nullptr) {
 		const QByteArray aFilename = m_sFilename.toUtf8();
 		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
+		if (!m_module) {
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorPluginFile::open() *** Error: %s.", ::dlerror());
+		#endif
+		}
 	}
 
 	// Done alright.

@@ -4502,6 +4502,13 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 
 	// Open UI library...
 	m_lv2_ui_module = ::dlopen(ui_binary_path, RTLD_LOCAL | RTLD_LAZY);
+	if (m_lv2_ui_module == nullptr) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorLv2Plugin[%p]::lv2_ui_instantiate()"
+			" *** Error: %s.", this, ::dlerror());
+	#endif
+		return false;
+	}
 
 	// Get UI descriptor discovery function...
 	LV2UI_DescriptorFunction pfnLv2UiDescriptor
