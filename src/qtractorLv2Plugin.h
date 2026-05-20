@@ -627,6 +627,7 @@ private:
 
 	EventFilter *m_pQtFilter;
 	QWidget     *m_pQtWidget;
+	QWindow     *m_pQtWindow;
 	bool         m_bQtDelete;
 
 	// Changed UI params hash-queue.
@@ -661,7 +662,6 @@ private:
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 	struct _GtkWidget *m_pGtkWindow;
-	QWindow           *m_pQtWindow;
 #endif	// CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_X11
 	LV2UI_Resize m_lv2_ui_resize;
