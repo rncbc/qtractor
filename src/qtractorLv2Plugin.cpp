@@ -4344,16 +4344,19 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11
-		&& m_pQtWindow && !m_lv2_ui_resizing
+		&& m_pQtWindow
 	#ifdef CONFIG_LIBSUIL
 		&& m_suil_instance == nullptr
 	#endif
 	) {
-		m_lv2_ui_resizing = true;
-		m_pQtWindow->resize(size);
-		return;
+		if (m_lv2_ui_resizing) {
+			m_lv2_ui_resizing = false;
+		} else {
+			m_lv2_ui_resizing = true;
+			m_pQtWindow->resize(size);
+			return;
+		}
 	}
-	m_lv2_ui_resizing = false;
 #endif	// CONFIG_LV2_UI_X11
 #endif
 
