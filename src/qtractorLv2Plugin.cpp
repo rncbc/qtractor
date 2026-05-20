@@ -2294,6 +2294,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_pGtkWindow(nullptr)
 		, m_pQtWindow(nullptr)
 	#endif	// CONFIG_LV2_UI_GTK2
+	#ifdef CONFIG_LV2_UI_X11
+		, m_lv2_ui_resizing(false)
+	#endif	// CONFIG_LV2_UI_X11
 	#endif
 	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_MIDNAM
@@ -4341,7 +4344,7 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11
-		&& m_lv2_ui_widget
+		&& m_lv2_ui_widget && !m_lv2_ui_resizing
 	#ifdef CONFIG_LIBSUIL
 		&& m_suil_instance == nullptr
 	#endif
@@ -4349,11 +4352,13 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 		const WId wid = WId(m_lv2_ui_widget);
 		QWindow *pWindow = QWindow::fromWinId(wid);
 		if (pWindow) {
+			m_lv2_ui_resizing = true;
 			pWindow->resize(size);
 			delete pWindow;
 			return;
 		}
 	}
+	m_lv2_ui_resizing = false;
 #endif	// CONFIG_LV2_UI_X11
 #endif
 

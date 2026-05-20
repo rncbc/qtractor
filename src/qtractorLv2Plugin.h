@@ -667,6 +667,7 @@ private:
 	LV2UI_Resize m_lv2_ui_resize;
 	LV2_Feature  m_lv2_ui_resize_feature;
 	LV2_Feature  m_lv2_ui_parent_feature;
+	bool         m_lv2_ui_resizing;
 #endif	// CONFIG_LV2_UI_X11
 #endif
 
