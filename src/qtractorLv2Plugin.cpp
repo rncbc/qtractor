@@ -2279,6 +2279,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 		, m_pQtFilter(nullptr)
 		, m_pQtWidget(nullptr)
+		, m_pQtWindow(nullptr)
 		, m_bQtDelete(false)
 	#ifdef CONFIG_LV2_UI_REQ_VALUE
 		, m_lv2_ui_req_value_busy(false)
@@ -2292,8 +2293,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 	#ifdef CONFIG_LV2_UI_GTK2
 		, m_pGtkWindow(nullptr)
-		, m_pQtWindow(nullptr)
 	#endif	// CONFIG_LV2_UI_GTK2
+	#ifdef CONFIG_LV2_UI_X11
+		, m_lv2_ui_resizing(false)
+	#endif	// CONFIG_LV2_UI_X11
 	#endif
 	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_MIDNAM
@@ -3615,12 +3618,11 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Initialize widget event filter...
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
+		m_pQtWindow = QWindow::fromWinId(WId(m_lv2_ui_widget));
 	//	m_bQtDelete = true;
 		// LV2 UI resize control...
 		QSize size = m_pQtWidget->sizeHint();
-	#ifdef CONFIG_LV2_UI_X11
 		qtractor_lv2_ui_size_hints(WId(m_lv2_ui_widget), size);
-	#endif
 		if (!size.isValid() || size.isNull())
 			size = m_pQtWidget->size();
 		if (size.isValid() && !size.isNull()) {
@@ -3628,7 +3630,7 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 				m_pQtWidget->setFixedSize(size);
 			else
 				m_pQtWidget->setMinimumSize(size);
-			lv2_ui_resize(size);
+		//	lv2_ui_resize(size);
 		}
 	//	m_pQtWidget->show();
 	}
@@ -3676,7 +3678,7 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 		m_bQtDelete = true; // owned!
 		// LV2 UI resize control...
-		lv2_ui_resize(QSize(alloc.width, alloc.height));
+	//	lv2_ui_resize(QSize(alloc.width, alloc.height));
 	//	m_pQtWidget->show();
 	}
 	else
@@ -3696,7 +3698,7 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 				m_pQtWidget->setFixedSize(size);
 			else
 				m_pQtWidget->setMinimumSize(size);
-			lv2_ui_resize(size);
+		//	lv2_ui_resize(size);
 		}
 	//	m_pQtWidget->show();
 	} else {
@@ -3758,11 +3760,6 @@ void qtractorLv2Plugin::closeEditor (void)
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
-	if (m_pQtWindow) {
-		m_pQtWindow->setParent(nullptr);
-		delete m_pQtWindow;
-		m_pQtWindow = nullptr;
-	}
 	if (m_pGtkWindow) {
 		gtk_widget_destroy(m_pGtkWindow);
 		m_pGtkWindow = nullptr;
@@ -3771,6 +3768,12 @@ void qtractorLv2Plugin::closeEditor (void)
 	}
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
+
+	if (m_pQtWindow) {
+		m_pQtWindow->setParent(nullptr);
+		delete m_pQtWindow;
+		m_pQtWindow = nullptr;
+	}
 
 	if (m_pQtWidget) {
 		if (m_bQtDelete) {
@@ -4341,16 +4344,16 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11
-		&& m_lv2_ui_widget
+		&& m_pQtWindow
 	#ifdef CONFIG_LIBSUIL
 		&& m_suil_instance == nullptr
 	#endif
 	) {
-		const WId wid = WId(m_lv2_ui_widget);
-		QWindow *pWindow = QWindow::fromWinId(wid);
-		if (pWindow) {
-			pWindow->resize(size);
-			delete pWindow;
+		if (m_lv2_ui_resizing) {
+			m_lv2_ui_resizing = false;
+		} else {
+			m_lv2_ui_resizing = true;
+			m_pQtWindow->resize(size);
 			return;
 		}
 	}
@@ -4502,6 +4505,13 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 
 	// Open UI library...
 	m_lv2_ui_module = ::dlopen(ui_binary_path, RTLD_LOCAL | RTLD_LAZY);
+	if (m_lv2_ui_module == nullptr) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorLv2Plugin[%p]::lv2_ui_instantiate()"
+			" *** Error: %s.", this, ::dlerror());
+	#endif
+		return false;
+	}
 
 	// Get UI descriptor discovery function...
 	LV2UI_DescriptorFunction pfnLv2UiDescriptor
