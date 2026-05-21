@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Mitigate some LV2 plug-in UI X11 (native) recursive resizing.
+  (EXPERIMENTAL)
+
 - Fixed the confusing behavior on drag-n-dropping audio and/or
   MIDI files over the main window track-list (left pane).
 

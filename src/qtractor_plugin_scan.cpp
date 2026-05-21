@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1002,9 +1002,14 @@ public:
 		close();
 
 		const QByteArray aFilename = sFilename.toUtf8();
-		m_module = ::dlopen(sFilename.toUtf8().constData(), RTLD_LOCAL | RTLD_LAZY);
-		if (!m_module)
+		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
+		if (!m_module) {
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractor_vst3_scan::Impl[%p]::open()"
+				" *** Error: %s.", this, ::dlerror());
+		#endif
 			return false;
+		}
 
 		typedef bool (*VST3_ModuleEntry)(void *);
 		const VST3_ModuleEntry module_entry
@@ -1433,8 +1438,13 @@ public:
 
 		const QByteArray aFilename = sFilename.toUtf8();
 		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
-		if (!m_module)
+		if (!m_module) {
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractor_clap_scan::Impl[%p]::open()"
+				" *** Error: %s.", this, ::dlerror());
+		#endif
 			return false;
+		}
 
 		m_entry = reinterpret_cast<const clap_plugin_entry *> (
 			::dlsym(m_module, "clap_entry"));
