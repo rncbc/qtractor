@@ -14220,49 +14220,49 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginListView</name>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="480"/>
+        <location filename="../qtractorPluginListView.cpp" line="540"/>
         <source>copy plugin</source>
         <translation>复制插件</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="620"/>
+        <location filename="../qtractorPluginListView.cpp" line="680"/>
         <source>activate all plugins</source>
         <translation>激活所有插件</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="651"/>
+        <location filename="../qtractorPluginListView.cpp" line="711"/>
         <source>deactivate all plugins</source>
         <translation>停用所有插件</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="682"/>
+        <location filename="../qtractorPluginListView.cpp" line="742"/>
         <source>remove all plugins</source>
         <translation>移除所有插件</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="868"/>
+        <location filename="../qtractorPluginListView.cpp" line="928"/>
         <source>Import Plugins</source>
         <translation>导入插件</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="871"/>
-        <location filename="../qtractorPluginListView.cpp" line="984"/>
+        <location filename="../qtractorPluginListView.cpp" line="931"/>
+        <location filename="../qtractorPluginListView.cpp" line="1044"/>
         <source>XML files (*.%1)</source>
         <translation>XML 文件 (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="872"/>
-        <location filename="../qtractorPluginListView.cpp" line="985"/>
+        <location filename="../qtractorPluginListView.cpp" line="932"/>
+        <location filename="../qtractorPluginListView.cpp" line="1045"/>
         <source>All files (*.*)</source>
         <translation>所有文件 (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="914"/>
+        <location filename="../qtractorPluginListView.cpp" line="974"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="915"/>
+        <location filename="../qtractorPluginListView.cpp" line="975"/>
         <source>About to remove and import all plugins:
 
 &quot;%1&quot;
@@ -14275,162 +14275,162 @@ Are you sure?</source>
 是否确认？</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="981"/>
+        <location filename="../qtractorPluginListView.cpp" line="1041"/>
         <source>Export Plugins</source>
         <translation>导出插件</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1522"/>
+        <location filename="../qtractorPluginListView.cpp" line="1582"/>
         <source>Aux Send: </source>
         <translation>辅助发送：</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1840"/>
+        <location filename="../qtractorPluginListView.cpp" line="1900"/>
         <source>&amp;Move Here</source>
         <translation>移动到此(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1841"/>
+        <location filename="../qtractorPluginListView.cpp" line="1901"/>
         <source>&amp;Copy Here</source>
         <translation>复制到此(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1844"/>
+        <location filename="../qtractorPluginListView.cpp" line="1904"/>
         <source>C&amp;ancel</source>
         <translation>取消(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1947"/>
+        <location filename="../qtractorPluginListView.cpp" line="2007"/>
         <source>&amp;Add Plugin...</source>
         <translation>添加插件(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1950"/>
+        <location filename="../qtractorPluginListView.cpp" line="2010"/>
         <source>I&amp;nserts</source>
         <translation>插入(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1953"/>
+        <location filename="../qtractorPluginListView.cpp" line="2013"/>
         <source>&amp;Audio</source>
         <translation>音频(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1957"/>
-        <location filename="../qtractorPluginListView.cpp" line="1986"/>
+        <location filename="../qtractorPluginListView.cpp" line="2017"/>
+        <location filename="../qtractorPluginListView.cpp" line="2046"/>
         <source>Add &amp;Insert</source>
         <translation>添加插入(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1960"/>
-        <location filename="../qtractorPluginListView.cpp" line="1990"/>
+        <location filename="../qtractorPluginListView.cpp" line="2020"/>
+        <location filename="../qtractorPluginListView.cpp" line="2050"/>
         <source>Add &amp;Aux Send</source>
         <translation>添加辅助发送(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1969"/>
-        <location filename="../qtractorPluginListView.cpp" line="2002"/>
+        <location filename="../qtractorPluginListView.cpp" line="2029"/>
+        <location filename="../qtractorPluginListView.cpp" line="2062"/>
         <source>&amp;Sends</source>
         <translation>发送(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1973"/>
-        <location filename="../qtractorPluginListView.cpp" line="2006"/>
+        <location filename="../qtractorPluginListView.cpp" line="2033"/>
+        <location filename="../qtractorPluginListView.cpp" line="2066"/>
         <source>&amp;Returns</source>
         <translation>返回(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1982"/>
+        <location filename="../qtractorPluginListView.cpp" line="2042"/>
         <source>&amp;MIDI</source>
         <translation>MIDI(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1995"/>
+        <location filename="../qtractorPluginListView.cpp" line="2055"/>
         <source>Add &amp;Controller</source>
         <translation>添加控制器(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2024"/>
+        <location filename="../qtractorPluginListView.cpp" line="2084"/>
         <source>Ac&amp;tivate</source>
         <translation>激活(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2031"/>
+        <location filename="../qtractorPluginListView.cpp" line="2091"/>
         <source>Acti&amp;vate All</source>
         <translation>全部激活(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2038"/>
+        <location filename="../qtractorPluginListView.cpp" line="2098"/>
         <source>Deactivate Al&amp;l</source>
         <translation>全部停用(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2047"/>
+        <location filename="../qtractorPluginListView.cpp" line="2107"/>
         <source>&amp;Remove</source>
         <translation>移除(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2051"/>
+        <location filename="../qtractorPluginListView.cpp" line="2111"/>
         <source>Re&amp;move All</source>
         <translation>全部移除(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2058"/>
+        <location filename="../qtractorPluginListView.cpp" line="2118"/>
         <source>Move &amp;Up</source>
         <translation>上移(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2063"/>
+        <location filename="../qtractorPluginListView.cpp" line="2123"/>
         <source>Move &amp;Down</source>
         <translation>下移(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2068"/>
+        <location filename="../qtractorPluginListView.cpp" line="2128"/>
         <source>Pre&amp;set</source>
         <translation>预设(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2087"/>
+        <location filename="../qtractorPluginListView.cpp" line="2147"/>
         <source>Dire&amp;ct Access</source>
         <translation>直接访问(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2106"/>
+        <location filename="../qtractorPluginListView.cpp" line="2166"/>
         <source>&amp;None</source>
         <translation>无(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2119"/>
+        <location filename="../qtractorPluginListView.cpp" line="2179"/>
         <source>&amp;Properties...</source>
         <translation>属性(&amp;P)...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2126"/>
+        <location filename="../qtractorPluginListView.cpp" line="2186"/>
         <source>&amp;Edit</source>
         <translation>编辑(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2134"/>
+        <location filename="../qtractorPluginListView.cpp" line="2194"/>
         <source>&amp;Import...</source>
         <translation>导入(&amp;I)...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2138"/>
+        <location filename="../qtractorPluginListView.cpp" line="2198"/>
         <source>E&amp;xport...</source>
         <translation>导出(&amp;X)...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2150"/>
+        <location filename="../qtractorPluginListView.cpp" line="2210"/>
         <source>&amp;Outputs</source>
         <translation>输出(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2168"/>
+        <location filename="../qtractorPluginListView.cpp" line="2228"/>
         <source>&amp;Dedicated</source>
         <translation>专用(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2010"/>
-        <location filename="../qtractorPluginListView.cpp" line="2172"/>
+        <location filename="../qtractorPluginListView.cpp" line="2070"/>
+        <location filename="../qtractorPluginListView.cpp" line="2232"/>
         <source>&amp;Auto-connect</source>
         <translation>自动连接(&amp;A)</translation>
     </message>
