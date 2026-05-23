@@ -43,6 +43,9 @@
 
 #include "qtractorMixer.h"
 
+#include "qtractorAudioMeter.h"
+#include "qtractorMidiMeter.h"
+
 #include <QItemDelegate>
 #include <QPainter>
 #include <QMenu>
@@ -124,6 +127,7 @@ protected:
 			} else {
 				rgbBack = pal.window().color();
 				rgbFore = pal.windowText().color();
+				pItem->overlayRgb(rgbBack);
 			}
 			// Fill the background...
 			pPainter->fillRect(option.rect, rgbBack);
@@ -222,6 +226,50 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 
 	QListWidgetItem::setText(m_pPlugin->title());
 
+	// Determine plugin's type...
+	qtractorPluginType *pPluginType = m_pPlugin->type();
+	qtractorTrack::TrackType pluginType = qtractorTrack::None;
+	switch (pPluginType->typeHint()) {
+	case qtractorPluginType::Insert: {
+		qtractorInsertPluginType *pInsertPluginType
+			= static_cast<qtractorInsertPluginType *> (pPluginType);
+		if (pInsertPluginType) {
+			if (pInsertPluginType->channels() > 0)
+				pluginType = qtractorTrack::Audio;
+			else
+				pluginType = qtractorTrack::Midi;
+		}
+		break;
+	}
+	case qtractorPluginType::AuxSend: {
+		qtractorAuxSendPluginType *pAuxSendPluginType
+			= static_cast<qtractorAuxSendPluginType *> (pPluginType);
+		if (pAuxSendPluginType) {
+			if (pAuxSendPluginType->channels() > 0)
+				pluginType = qtractorTrack::Audio;
+			else
+				pluginType = qtractorTrack::Midi;
+		}
+		break;
+	}
+	case qtractorPluginType::Control:
+		pluginType = qtractorTrack::Midi;
+		// Fall thru...
+	default:
+		break;
+	}
+	// Set plugin's overlay color...
+	switch (pluginType) {
+	case qtractorTrack::Audio:
+		m_rgbOverlay = qtractorAudioMeter::color(qtractorAudioMeter::Color10dB);
+		break;
+	case qtractorTrack::Midi:
+		m_rgbOverlay = qtractorMidiMeter::color(qtractorMidiMeter::ColorOver);
+		break;
+	default:
+		break;
+	}
+
 	updateActivated();
 }
 
@@ -261,6 +309,18 @@ void qtractorPluginListItem::updateActivated (void)
 	}
 
 	QListWidgetItem::setIcon(*g_pIcons[index]);
+}
+
+
+// Color overlay method.
+void qtractorPluginListItem::overlayRgb ( QColor& rgb ) const
+{
+	if (m_rgbOverlay.isValid()) {
+		rgb.setRgb(
+			(3 * rgb.red()   + m_rgbOverlay.red())   / 4,
+			(3 * rgb.green() + m_rgbOverlay.green()) / 4,
+			(3 * rgb.blue()  + m_rgbOverlay.blue())  / 4);
+	}
 }
 
 
