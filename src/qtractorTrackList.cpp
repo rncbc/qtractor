@@ -1310,6 +1310,12 @@ void qtractorTrackList::drawCell (
 			Qt::AlignLeft | Qt::AlignTop,
 			pItem->text.at(iCol - 1));
 	} else {
+		if (iCol == Name) { // Avoid overlapping track name and buttons...
+			if (qtractorTrack::HeightMin >= rectText.height() - 8)
+				rectText.setRight((pItem->buttons)->pos().x() - 4);
+			else
+				rectText.setBottom((pItem->buttons)->pos().y() - 4);
+		}
 		pPainter->drawText(rectText,
 			Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap,
 			pItem->text.at(iCol - 1));

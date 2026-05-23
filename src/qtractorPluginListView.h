@@ -24,6 +24,8 @@
 
 #include <QListWidget>
 
+#include <QColor>
+
 
 // Forward declarations.
 class qtractorPlugin;
@@ -61,10 +63,8 @@ public:
 	int directAccessWidth() const
 		{ return m_iDirectAccessWidth; }
 
-protected:
-
-	// Common item initializer.
-	void initItem(qtractorPlugin *pPlugin);
+	// Color overlay method.
+	void overlayRgb(QColor& rgb) const;
 
 private:
 
@@ -73,6 +73,9 @@ private:
 
 	// Last known item logical width.
 	int m_iDirectAccessWidth;
+
+	// Color overlay.
+	QColor m_rgbOverlay;
 
 	// Common (de)activated icon/pixmap stuff.
 	static QIcon *g_pIcons[3];
