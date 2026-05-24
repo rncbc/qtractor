@@ -6,6 +6,14 @@ ChangeLog
 
 GIT HEAD
 
+- Updated to CLAP v1.2.8
+
+- Distinguish all pseudo-plugin inserts by color, on whether their
+  processing type is either audio or MIDI (in plugin-list boxes).
+
+- Avoid overlapping track header name and buttons (R, M, S and A)
+  when reducing its height.
+
 - Mitigate some LV2 plug-in UI X11 (native) recursive resizing.
   (EXPERIMENTAL)
 
