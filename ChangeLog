@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Updated to CLAP v1.2.8
+
 - Distinguish all pseudo-plugin inserts by color, on whether their
   processing type is either audio or MIDI (in plugin-list boxes).
 
