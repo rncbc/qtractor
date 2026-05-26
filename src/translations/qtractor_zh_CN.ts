@@ -523,12 +523,12 @@ MIDI：	</translation>
         <translation>激活</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="598"/>
+        <location filename="../qtractorPlugin.cpp" line="611"/>
         <source>Aux Send: %1</source>
         <translation>辅助发送：%1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2503"/>
+        <location filename="../qtractorPlugin.cpp" line="2516"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2)：未找到插件 %3。</translation>
     </message>

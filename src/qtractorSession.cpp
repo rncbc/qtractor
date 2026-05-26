@@ -1178,6 +1178,8 @@ void qtractorSession::resetAllPlugins (void)
 // Force (deactivate) all plugin chains...
 void qtractorSession::deactivateAllPlugins (void)
 {
+	lock();
+
 	// All tracks...
 	for (qtractorTrack *pTrack = m_tracks.first();
 		 pTrack; pTrack = pTrack->next()) {
@@ -1209,6 +1211,8 @@ void qtractorSession::deactivateAllPlugins (void)
 				pAudioBus->pluginList_out()->deactivatePlugins();
 		}
 	}
+
+	unlock();
 }
 
 

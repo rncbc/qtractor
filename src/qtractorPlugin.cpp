@@ -408,6 +408,9 @@ bool qtractorPlugin::canBeConnectedToOtherTracks (void) const
 // Force (deactivate) all plugins...
 void qtractorPlugin::deactivatePlugin (void)
 {
+	closeEditor();
+	closeForm(true);
+
 	if (m_bActivated) {
 		m_bActivated = false;
 		deactivate();

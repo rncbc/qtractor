@@ -286,7 +286,6 @@ public:
 	unsigned long activateSubjectIndex() const
 		{ return m_iActivateSubjectIndex; }
 
-
 	// An accessible list of parameters.
 	class Param;
 

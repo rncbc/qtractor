@@ -2490,7 +2490,7 @@ bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 
 	// Acquire proper locking...
 	while (!ATOMIC_TAS(&m_playerLock))
-		pSession->stabilize();
+		qtractorSession::stabilize();
 
 	// May close it logically...
 	m_bPlayerOpen = false;
@@ -2521,7 +2521,7 @@ void qtractorAudioEngine::closePlayer (void)
 
 	// Acquire proper locking...
 	while (!ATOMIC_TAS(&m_playerLock))
-		pSession->stabilize();
+		qtractorSession::stabilize();
 
 	m_bPlayerOpen = false;
 
