@@ -286,6 +286,7 @@ public:
 	unsigned long activateSubjectIndex() const
 		{ return m_iActivateSubjectIndex; }
 
+
 	// An accessible list of parameters.
 	class Param;
 
@@ -614,6 +615,9 @@ public:
 	// Auto-plugin-deactivation
 	void autoDeactivatePlugin(bool bDeactivated);
 	bool canBeConnectedToOtherTracks() const;
+
+	// Force (deactivate) all plugins...
+	void deactivatePlugin();
 
 protected:
 
@@ -1111,6 +1115,9 @@ public:
 	// Special auto-deactivate methods
 	void autoDeactivatePlugins(bool bDeactivated, bool bForce = false);
 	bool isAutoDeactivated() const;
+
+	// Force (deactivate) all plugins...
+	void deactivatePlugins();
 
 	// Plugin chain total latency (in frames) methods...
 	void setLatency(bool bLatency)
