@@ -5112,14 +5112,15 @@ int qtractorMidiBus::updateConnects (
 			seq_addr.port   = pItem->port;
 			snd_seq_port_subscribe_set_dest(pPortSubs, &seq_addr);
 		}
-	#ifdef CONFIG_DEBUG
-		const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
-		qDebug("qtractorMidiBus[%p]::updateConnects(%d): "
-			"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, int(busMode),
+		// Do it!...
+		if (snd_seq_subscribe_port(pAlsaSeq, pPortSubs) == 0) {
+		#ifdef CONFIG_DEBUG
+			const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
+			qDebug("qtractorMidiBus[%p]::updateConnects(%d): "
+				"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, int(busMode),
 				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
 				pItem->client, pItem->portName.toUtf8().constData());
-	#endif
-		if (snd_seq_subscribe_port(pAlsaSeq, pPortSubs) == 0) {
+		#endif
 			const int iItem = connects.indexOf(pItem);
 			if (iItem >= 0) {
 				connects.removeAt(iItem);
@@ -5670,6 +5671,65 @@ void qtractorMidiBus::updateMidiAuxSends ( const QString& sMidiBusName )
 					&& pMidiAuxSendPlugin->midiBus() == this)
 					pMidiAuxSendPlugin->setMidiBusName(sMidiBusName);
 			}
+		}
+	}
+}
+
+
+// Force (disconnect) all existing connections.
+void qtractorMidiBus::disconnectAll ( BusMode busMode ) const
+{
+	ConnectList connects;
+	updateConnects(busMode, connects);
+	if (connects.isEmpty())
+		return;
+
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == nullptr)
+		return;
+
+	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
+	if (pAlsaSeq == nullptr)
+		return;
+
+	snd_seq_port_subscribe_t *pPortSubs;
+	snd_seq_port_subscribe_alloca(&pPortSubs);
+
+	snd_seq_addr_t seq_addr;
+
+	// For each (remaining) connection, try...
+	QListIterator<ConnectItem *> iter(connects);
+	while (iter.hasNext()) {
+		ConnectItem *pItem = iter.next();
+		// Don't care of non-valid client/ports...
+		if (pItem->client < 0 || pItem->port < 0)
+			continue;
+		// Mangle which is output and input...
+		if (busMode == qtractorBus::Input) {
+			seq_addr.client = pItem->client;
+			seq_addr.port   = pItem->port;
+			snd_seq_port_subscribe_set_sender(pPortSubs, &seq_addr);
+			seq_addr.client = pMidiEngine->alsaClient();
+			seq_addr.port   = m_iAlsaPort;
+			snd_seq_port_subscribe_set_dest(pPortSubs, &seq_addr);
+		} else {
+			seq_addr.client = pMidiEngine->alsaClient();
+			seq_addr.port   = m_iAlsaPort;
+			snd_seq_port_subscribe_set_sender(pPortSubs, &seq_addr);
+			seq_addr.client = pItem->client;
+			seq_addr.port   = pItem->port;
+			snd_seq_port_subscribe_set_dest(pPortSubs, &seq_addr);
+		}
+		// Do it!...
+		if (snd_seq_unsubscribe_port(pAlsaSeq, pPortSubs) == 0) {
+		#ifdef CONFIG_DEBUG
+			const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
+			qDebug("qtractorMidiBus[%p]::disconnectAll(%d): "
+				"snd_seq_unsubscribe_port: [%d:%s] => [%d:%s]\n", this, int(busMode),
+				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
+				pItem->client, pItem->portName.toUtf8().constData());
+		#endif
 		}
 	}
 }

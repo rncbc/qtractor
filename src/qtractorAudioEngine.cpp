@@ -3576,16 +3576,16 @@ int qtractorAudioBus::updateConnects (
 			sOutputPort = sClientPort.arg(pItem->index + 1);
 			sInputPort  = pItem->clientName + ':' + pItem->portName;
 		}
-	#ifdef CONFIG_DEBUG
-		qDebug("qtractorAudioBus[%p]::updateConnects(%d): "
-			"jack_connect: [%s] => [%s]", this, (int) busMode,
-				sOutputPort.toUtf8().constData(),
-				sInputPort.toUtf8().constData());
-	#endif
-		// Do it...
+		// Do it!...
 		if (jack_connect(pJackClient,
 				sOutputPort.toUtf8().constData(),
 				sInputPort.toUtf8().constData()) == 0) {
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorAudioBus[%p]::updateConnects(%d): "
+				"jack_connect: [%s] => [%s]", this, (int) busMode,
+				sOutputPort.toUtf8().constData(),
+				sInputPort.toUtf8().constData());
+		#endif
 			const int iItem = connects.indexOf(pItem);
 			if (iItem >= 0) {
 				connects.removeAt(iItem);
@@ -3808,6 +3808,59 @@ void qtractorAudioBus::updateAudioAuxSends ( const QString& sAudioBusName )
 					&& pAudioAuxSendPlugin->audioBus() == this)
 					pAudioAuxSendPlugin->setAudioBusName(sAudioBusName);
 			}
+		}
+	}
+}
+
+
+// Force (disconnect) all existing connections.
+void qtractorAudioBus::disconnectAll ( BusMode busMode ) const
+{
+	ConnectList connects;
+	updateConnects(busMode, connects);
+	if (connects.isEmpty())
+		return;
+
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == nullptr)
+		return;
+
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient == nullptr)
+		return;
+
+	// Our client:port prefix template...
+	QString sClientPort = pAudioEngine->clientName() + ':';
+	sClientPort += busName() + '/';
+	sClientPort += (busMode == qtractorBus::Input ? "in" : "out");
+	sClientPort += "_%1";
+
+	QString sOutputPort;
+	QString sInputPort;
+
+	// For each (remaining) connection, try...
+	QListIterator<ConnectItem *> iter(connects);
+	while (iter.hasNext()) {
+		ConnectItem *pItem = iter.next();
+		// Mangle which is output and input...
+		if (busMode == qtractorBus::Input) {
+			sOutputPort = pItem->clientName + ':' + pItem->portName;
+			sInputPort  = sClientPort.arg(pItem->index + 1);
+		} else {
+			sOutputPort = sClientPort.arg(pItem->index + 1);
+			sInputPort  = pItem->clientName + ':' + pItem->portName;
+		}
+		// Do it!...
+		if (jack_disconnect(pJackClient,
+				sOutputPort.toUtf8().constData(),
+				sInputPort.toUtf8().constData()) == 0) {
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorAudioBus[%p]::disconnectAll(%d): "
+				"jack_disconnect: [%s] => [%s]", this, (int) busMode,
+				sOutputPort.toUtf8().constData(),
+				sInputPort.toUtf8().constData());
+		#endif
 		}
 	}
 }

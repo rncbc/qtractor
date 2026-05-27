@@ -523,6 +523,9 @@ public:
 	// Update all aux-sends to this very bus...
 	void updateAudioAuxSends(const QString& sAudioBusName);
 
+	// Force (disconnect) all existing connections.
+	void disconnectAll(BusMode busMode) const;
+
 protected:
 
 	// Bus mode/name change events.

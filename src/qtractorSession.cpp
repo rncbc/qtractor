@@ -221,6 +221,8 @@ bool qtractorSession::open (void)
 // Close session engine(s).
 void qtractorSession::close (void)
 {
+	disconnectAll();
+
 	deactivateAllPlugins();
 
 	// Lock it up...
@@ -1160,6 +1162,19 @@ void qtractorSession::resetAllPlugins (void)
 		(pTrack->pluginList())->resetBuffers();
 	}
 
+	// All MIDI buses...
+	for (qtractorBus *pBus = m_pMidiEngine->buses().first();
+		 pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus) {
+			if (pMidiBus->pluginList_in())
+				pMidiBus->pluginList_in()->resetBuffers();
+			if (pMidiBus->pluginList_out())
+				pMidiBus->pluginList_out()->resetBuffers();
+		}
+	}
+
 	// All audio buses...
 	for (qtractorBus *pBus = m_pAudioEngine->buses().first();
 			pBus; pBus = pBus->next()) {
@@ -1211,6 +1226,18 @@ void qtractorSession::deactivateAllPlugins (void)
 				pAudioBus->pluginList_out()->deactivatePlugins();
 		}
 	}
+
+	unlock();
+}
+
+
+// Force (disconnect) all existing connections...
+void qtractorSession::disconnectAll (void)
+{
+	lock();
+
+	m_pMidiEngine->disconnectAll();
+	m_pAudioEngine->disconnectAll();
 
 	unlock();
 }
