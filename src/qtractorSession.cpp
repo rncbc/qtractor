@@ -221,6 +221,10 @@ bool qtractorSession::open (void)
 // Close session engine(s).
 void qtractorSession::close (void)
 {
+	disconnectAll();
+
+	deactivateAllPlugins();
+
 	// Lock it up...
 	lock();
 
@@ -1158,6 +1162,19 @@ void qtractorSession::resetAllPlugins (void)
 		(pTrack->pluginList())->resetBuffers();
 	}
 
+	// All MIDI buses...
+	for (qtractorBus *pBus = m_pMidiEngine->buses().first();
+		 pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus) {
+			if (pMidiBus->pluginList_in())
+				pMidiBus->pluginList_in()->resetBuffers();
+			if (pMidiBus->pluginList_out())
+				pMidiBus->pluginList_out()->resetBuffers();
+		}
+	}
+
 	// All audio buses...
 	for (qtractorBus *pBus = m_pAudioEngine->buses().first();
 			pBus; pBus = pBus->next()) {
@@ -1170,6 +1187,59 @@ void qtractorSession::resetAllPlugins (void)
 				pAudioBus->pluginList_out()->resetBuffers();
 		}
 	}
+}
+
+
+// Force (deactivate) all plugin chains...
+void qtractorSession::deactivateAllPlugins (void)
+{
+	lock();
+
+	// All tracks...
+	for (qtractorTrack *pTrack = m_tracks.first();
+		 pTrack; pTrack = pTrack->next()) {
+		(pTrack->pluginList())->deactivatePlugins();
+	}
+
+	// All MIDI buses...
+	for (qtractorBus *pBus = m_pMidiEngine->buses().first();
+		 pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus) {
+			if (pMidiBus->pluginList_in())
+				pMidiBus->pluginList_in()->deactivatePlugins();
+			if (pMidiBus->pluginList_out())
+				pMidiBus->pluginList_out()->deactivatePlugins();
+		}
+	}
+
+	// All audio buses...
+	for (qtractorBus *pBus = m_pAudioEngine->buses().first();
+		 pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus) {
+			if (pAudioBus->pluginList_in())
+				pAudioBus->pluginList_in()->deactivatePlugins();
+			if (pAudioBus->pluginList_out())
+				pAudioBus->pluginList_out()->deactivatePlugins();
+		}
+	}
+
+	unlock();
+}
+
+
+// Force (disconnect) all existing connections...
+void qtractorSession::disconnectAll (void)
+{
+	lock();
+
+	m_pMidiEngine->disconnectAll();
+	m_pAudioEngine->disconnectAll();
+
+	unlock();
 }
 
 
