@@ -218,6 +218,12 @@ public:
 	// Reset (reactivate) all plugin chains...
 	void resetAllPlugins();
 
+	// Force (deactivate) all plugin chains...
+	void deactivateAllPlugins();
+
+	// Force (disconnect) all existing connections...
+	void disconnectAll();
+
 	// Device engine accessors.
 	qtractorMidiEngine  *midiEngine() const;
 	qtractorAudioEngine *audioEngine() const;

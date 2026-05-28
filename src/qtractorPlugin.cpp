@@ -405,6 +405,19 @@ bool qtractorPlugin::canBeConnectedToOtherTracks (void) const
 }
 
 
+// Force (deactivate) all plugins...
+void qtractorPlugin::deactivatePlugin (void)
+{
+	closeEditor();
+	closeForm(true);
+
+	if (m_bActivated) {
+		m_bActivated = false;
+		deactivate();
+	}
+}
+
+
 // Activation stabilizers.
 void qtractorPlugin::updateActivated ( bool bActivated )
 {
@@ -2709,6 +2722,19 @@ void qtractorPluginList::forceNoProcessing(bool bForce)
 		++m_iForceNoProcessing;
 	else if (m_iForceNoProcessing > 0)
 		--m_iForceNoProcessing;
+}
+
+
+// Force (deactivate) all plugins...
+void qtractorPluginList::deactivatePlugins (void)
+{
+	// Pass to all plugins top to to bottom...
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		pPlugin->deactivatePlugin();
+	}
+
+	m_iActivated = 0;
 }
 
 

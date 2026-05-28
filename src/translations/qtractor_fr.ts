@@ -209,7 +209,7 @@ Fin :	%3	Longueur :	%4</translation>
         <translation>automation éditer la liste</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="546"/>
+        <location filename="../qtractorEngine.cpp" line="565"/>
         <location filename="../qtractorTrack.cpp" line="710"/>
         <source>%1 Monitor</source>
         <translation>%1 Moniteur</translation>
@@ -522,12 +522,12 @@ MIDI:	</translation>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="598"/>
+        <location filename="../qtractorPlugin.cpp" line="611"/>
         <source>Aux Send: %1</source>
         <translation>Envoi aux : %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2503"/>
+        <location filename="../qtractorPlugin.cpp" line="2516"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
