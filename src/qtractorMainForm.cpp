@@ -2715,7 +2715,7 @@ bool qtractorMainForm::loadSessionFileEx (
 	// Do initial auto-deactivate as late as possible to give tracks/plugins
 	// the chance to perform initial program-change events
 	if (m_pSession->isAutoDeactivate()) {
-		m_pSession->stabilize();
+		qtractorSession::stabilize();
 		m_pSession->autoDeactivatePlugins();
 	}
 

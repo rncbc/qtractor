@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -466,8 +466,27 @@ void qtractorEngine::clearConnects (void)
 		pBus->inputs().clear();
 	}
 }
-	
-	
+
+
+// Force (disconnect) all existing connections.
+void qtractorEngine::disconnectAll (void)
+{
+	qtractorBus *pBus;
+
+	pBus = m_buses.first();
+	for (; pBus; pBus = pBus->next()) {
+		pBus->disconnectAll(qtractorBus::Input);
+		pBus->disconnectAll(qtractorBus::Output);
+	}
+
+	pBus = m_busesEx.first();
+	for (; pBus; pBus = pBus->next()) {
+		pBus->disconnectAll(qtractorBus::Input);
+		pBus->disconnectAll(qtractorBus::Output);
+	}
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorBus -- Managed ALSA sequencer port set
 //
