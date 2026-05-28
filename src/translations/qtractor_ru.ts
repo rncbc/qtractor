@@ -298,12 +298,12 @@ MIDI:	</translation>
         <translation>Включить</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="598"/>
+        <location filename="../qtractorPlugin.cpp" line="611"/>
         <source>Aux Send: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2503"/>
+        <location filename="../qtractorPlugin.cpp" line="2516"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): плагин %3 не найден.</translation>
     </message>
@@ -620,7 +620,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>врезка в сессии</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="546"/>
+        <location filename="../qtractorEngine.cpp" line="565"/>
         <location filename="../qtractorTrack.cpp" line="710"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>

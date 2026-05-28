@@ -615,6 +615,9 @@ public:
 	void autoDeactivatePlugin(bool bDeactivated);
 	bool canBeConnectedToOtherTracks() const;
 
+	// Force (deactivate) all plugins...
+	void deactivatePlugin();
+
 protected:
 
 	// Instance number settler.
@@ -1111,6 +1114,9 @@ public:
 	// Special auto-deactivate methods
 	void autoDeactivatePlugins(bool bDeactivated, bool bForce = false);
 	bool isAutoDeactivated() const;
+
+	// Force (deactivate) all plugins...
+	void deactivatePlugins();
 
 	// Plugin chain total latency (in frames) methods...
 	void setLatency(bool bLatency)

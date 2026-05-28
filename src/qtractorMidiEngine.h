@@ -585,6 +585,9 @@ public:
 	// Update all aux-sends to this very bus...
 	void updateMidiAuxSends(const QString& sMidiBusName);
 
+	// Force (disconnect) all existing connections.
+	void disconnectAll(BusMode busMode) const;
+
 protected:
 
 	// Direct MIDI controller common helper.
