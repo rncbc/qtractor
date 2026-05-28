@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Force (disconnect) all buses/ports and (deactivate) all plugin
+  chains on session close. (EXPERIMENTAL)
+
 - Updated to CLAP v1.2.8
 
 - Distinguish all pseudo-plugin inserts by color, on whether their
@@ -15,7 +18,6 @@ GIT HEAD
   when reducing its height.
 
 - Mitigate some LV2 plug-in UI X11 (native) recursive resizing.
-  (EXPERIMENTAL)
 
 - Fixed the confusing behavior on drag-n-dropping audio and/or
   MIDI files over the main window track-list (left pane).

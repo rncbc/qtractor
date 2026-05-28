@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -105,6 +105,9 @@ public:
 
 	// Clear/reset all pending connections.
 	void clearConnects();
+
+	// Force (disconnect) all existing connections.
+	void disconnectAll();
 
 	// Front-end/UI buses accessors.
 	//
@@ -355,6 +358,9 @@ public:
 		// Container list.
 		QList<Connects *> m_list;
 	};
+
+	// Force (disconnect) all existing connections.
+	virtual void disconnectAll(BusMode busMode) const = 0;
 
 protected:
 
