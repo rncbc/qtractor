@@ -3564,7 +3564,7 @@ int qtractorAudioBus::updateConnects (
 	QString sInputPort;
 
 	// For each (remaining) connection, try...
-	int iUpdate = 0;
+	QList<ConnectItem *> items;
 	QListIterator<ConnectItem *> iter(connects);
 	while (iter.hasNext()) {
 		ConnectItem *pItem = iter.next();
@@ -3586,12 +3586,19 @@ int qtractorAudioBus::updateConnects (
 				sOutputPort.toUtf8().constData(),
 				sInputPort.toUtf8().constData());
 		#endif
-			const int iItem = connects.indexOf(pItem);
-			if (iItem >= 0) {
-				connects.removeAt(iItem);
-				delete pItem;
-				++iUpdate;
-			}
+			items.append(pItem);
+		}
+	}
+
+	int iUpdate = 0;
+	iter = items;
+	while (iter.hasNext()) {
+		ConnectItem *pItem = iter.next();
+		const int iItem = connects.indexOf(pItem);
+		if (iItem >= 0) {
+			connects.removeAt(iItem);
+			delete pItem;
+			++iUpdate;
 		}
 	}
 

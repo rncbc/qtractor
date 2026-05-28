@@ -645,7 +645,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Změnit taktové označení</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="546"/>
+        <location filename="../qtractorEngine.cpp" line="565"/>
         <location filename="../qtractorTrack.cpp" line="710"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>

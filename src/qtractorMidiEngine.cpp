@@ -5089,7 +5089,7 @@ int qtractorMidiBus::updateConnects (
 	snd_seq_port_subscribe_alloca(&pPortSubs);
 
 	// For each (remaining) connection, try...
-	int iUpdate = 0;
+	QList<ConnectItem *> items;
 	QListIterator<ConnectItem *> iter(connects);
 	while (iter.hasNext()) {
 		ConnectItem *pItem = iter.next();
@@ -5121,12 +5121,19 @@ int qtractorMidiBus::updateConnects (
 				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
 				pItem->client, pItem->portName.toUtf8().constData());
 		#endif
-			const int iItem = connects.indexOf(pItem);
-			if (iItem >= 0) {
-				connects.removeAt(iItem);
-				delete pItem;
-				++iUpdate;
-			}
+			items.append(pItem);
+		}
+	}
+
+	int iUpdate = 0;
+	iter = items;
+	while (iter.hasNext()) {
+		ConnectItem *pItem = iter.next();
+		const int iItem = connects.indexOf(pItem);
+		if (iItem >= 0) {
+			connects.removeAt(iItem);
+			delete pItem;
+			++iUpdate;
 		}
 	}
 

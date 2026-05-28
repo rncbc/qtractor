@@ -210,7 +210,7 @@ End:	%3	Length:	%4</source>
         <translation>自动化编辑列表</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="546"/>
+        <location filename="../qtractorEngine.cpp" line="565"/>
         <location filename="../qtractorTrack.cpp" line="710"/>
         <source>%1 Monitor</source>
         <translation>%1 监听</translation>

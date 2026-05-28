@@ -620,7 +620,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>врезка в сессии</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="546"/>
+        <location filename="../qtractorEngine.cpp" line="565"/>
         <location filename="../qtractorTrack.cpp" line="710"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>

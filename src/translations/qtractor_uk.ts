@@ -296,7 +296,7 @@ End:	%3	Length:	%4</source>
         <translation>%1: не знайдено файла автоматизації/кривої.</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="546"/>
+        <location filename="../qtractorEngine.cpp" line="565"/>
         <location filename="../qtractorTrack.cpp" line="710"/>
         <source>%1 Monitor</source>
         <translation>Монітор %1</translation>

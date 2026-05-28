@@ -210,7 +210,7 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>lista modifiche automazioni</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="546"/>
+        <location filename="../qtractorEngine.cpp" line="565"/>
         <location filename="../qtractorTrack.cpp" line="710"/>
         <source>%1 Monitor</source>
         <translation>%1 Monitor</translation>
