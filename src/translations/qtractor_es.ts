@@ -5881,7 +5881,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="656"/>
         <source>Session modification state</source>
-        <translation>Estado de modificación de la sesión</translation>
+        <translation>Estado de modificación de sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="662"/>
@@ -5892,7 +5892,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="665"/>
         <source>Session record state</source>
-        <translation>Estado de grabación de la sesión</translation>
+        <translation>Estado de grabación en sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="671"/>
@@ -5903,7 +5903,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="674"/>
         <source>Session muting state</source>
-        <translation>Estado de silenciamiento de la sesión</translation>
+        <translation>Estado de mute en sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="680"/>
@@ -5914,7 +5914,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="683"/>
         <source>Session soloing state</source>
-        <translation>Estado del solo de la sesión</translation>
+        <translation>Estado de solo en sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="689"/>
@@ -5925,17 +5925,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="692"/>
         <source>Session looping state</source>
-        <translation>Estado del bucle de la sesión</translation>
+        <translation>Estado de bucle en sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="710"/>
         <source>Session total time</source>
-        <translation>Timepo total de la sesión</translation>
+        <translation>Tiempo total de sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="729"/>
         <source>Session sample rate</source>
-        <translation>Frecuenciade muestreo de la sesión</translation>
+        <translation>Frecuencia de muestreo de sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1739"/>
@@ -5944,7 +5944,7 @@ Do you want to apply the changes?</source>
 %1
 
 Sorry.</source>
-        <translation>No se pudo fijar el directorio por defecto de la sesión:
+        <translation>No se pudo fijar el directorio por defecto de sesión:
 
 %1
 
@@ -5963,7 +5963,7 @@ Lo siento.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="720"/>
         <source>Session buffer size</source>
-        <translation>Tamaño del búfer de sesión</translation>
+        <translation>Tamaño del búfer en sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2042"/>
@@ -6545,7 +6545,7 @@ is not the same as the current audio engine (%2 Hz).
 
 Saving and reloading from a new session file
 is highly recommended.</source>
-        <translation>La frecuencia de muestreo de la sesión original (%1 Hz)
+        <translation>La frecuencia de muestreo de sesión original (%1 Hz)
 no es la mismo del motor de audio actual (%2 Hz).
 
 Guardar y recargar desde un nuevo archivo de sesión
@@ -6836,7 +6836,7 @@ el archivo de sesión actual.</translation>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="975"/>
         <source>Pitch Bend</source>
-        <translation>Portamento</translation>
+        <translation>Pitch Bend</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="976"/>
@@ -8086,7 +8086,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="311"/>
         <source>Pitch Bend Sensitivity</source>
-        <translation>Sensibilidad de Inflexión de Tono</translation>
+        <translation>Sensibilidad de Pitch Bend</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="312"/>
@@ -9104,7 +9104,7 @@ Valor:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="5490"/>
         <source>Pitch Bend (%1)</source>
-        <translation>Portamento (%1)</translation>
+        <translation>Pitch Bend (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="5497"/>
@@ -11070,7 +11070,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="420"/>
         <source>Pitch Bend</source>
-        <translation>Portamento</translation>
+        <translation>Pitch Bend</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="422"/>
