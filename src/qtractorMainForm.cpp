@@ -1088,6 +1088,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewToolbarThumbAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarThumb(bool)));
+	QObject::connect(m_ui.viewToolbarLockedAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarLocked(bool)));
 	QObject::connect(m_ui.viewFileSystemAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewFileSystem(bool)));
@@ -1465,6 +1468,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.viewToolbarTransportAction->setChecked(m_pOptions->bTransportToolbar);
 	m_ui.viewToolbarTimeAction->setChecked(m_pOptions->bTimeToolbar);
 	m_ui.viewToolbarThumbAction->setChecked(m_pOptions->bThumbToolbar);
+	m_ui.viewToolbarLockedAction->setChecked(m_pOptions->bLockedToolbar);
 	m_ui.viewSnapZebraAction->setChecked(pOptions->bTrackViewSnapZebra);
 	m_ui.viewSnapGridAction->setChecked(pOptions->bTrackViewSnapGrid);
 	m_ui.viewToolTipsAction->setChecked(pOptions->bTrackViewToolTips);
@@ -1489,6 +1493,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarTransport(m_pOptions->bTransportToolbar);
 	viewToolbarTime(m_pOptions->bTimeToolbar);
 	viewToolbarThumb(m_pOptions->bThumbToolbar);
+	viewToolbarLocked(m_pOptions->bLockedToolbar);
 
 	// Restore whole dock windows state.
 	const QByteArray aDockables
@@ -1826,6 +1831,7 @@ bool qtractorMainForm::queryClose (void)
 				m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
 				m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
 				m_pOptions->bThumbToolbar = m_ui.thumbViewToolbar->isVisible();
+				m_pOptions->bLockedToolbar = m_ui.viewToolbarLockedAction->isChecked();
 			}
 			m_pOptions->bTrackViewSnapZebra = m_ui.viewSnapZebraAction->isChecked();
 			m_pOptions->bTrackViewSnapGrid = m_ui.viewSnapGridAction->isChecked();
@@ -5248,6 +5254,20 @@ void qtractorMainForm::viewToolbarTime ( bool bOn )
 void qtractorMainForm::viewToolbarThumb ( bool bOn )
 {
 	m_ui.thumbViewToolbar->setVisible(bOn);
+}
+
+
+// Lock/unlock main program window toolbar positions.
+void qtractorMainForm::viewToolbarLocked ( bool bOn )
+{
+	m_ui.fileToolbar->setMovable(!bOn);
+	m_ui.editToolbar->setMovable(!bOn);
+	m_ui.trackToolbar->setMovable(!bOn);
+	m_ui.viewToolbar->setMovable(!bOn);
+	m_ui.optionsToolbar->setMovable(!bOn);
+	m_ui.transportToolbar->setMovable(!bOn);
+	m_ui.timeToolbar->setMovable(!bOn);
+	m_ui.thumbViewToolbar->setMovable(!bOn);
 }
 
 
