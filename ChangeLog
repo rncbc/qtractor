@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Added option to lock toolbars in place on the main and MIDI clip
+  editor windows. (GH PR#530)
+
 - Force (disconnect) all buses/ports and (deactivate) all plugin
   chains on session close. (EXPERIMENTAL)
 

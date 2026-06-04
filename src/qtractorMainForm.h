@@ -253,6 +253,7 @@ public slots:
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarTime(bool bOn);
 	void viewToolbarThumb(bool bOn);
+	void viewToolbarLocked(bool bOn);
 	void viewFileSystem(bool bOn);
 	void viewFiles(bool bOn);
 	void viewMessages(bool bOn);
