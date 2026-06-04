@@ -464,6 +464,8 @@
      <addaction name="viewToolbarTransportAction"/>
      <addaction name="viewToolbarTimeAction"/>
      <addaction name="viewToolbarThumbAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewToolbarLockedAction"/>
     </widget>
     <widget class="QMenu" name="viewWindowsMenu">
      <property name="title">
@@ -2317,6 +2319,23 @@
    <property name="statusTip">
     <string>Show/hide main program window thumb toolbar</string>
    </property>
+  </action>
+  <action name="viewToolbarLockedAction">
+    <property name="checkable">
+      <bool>true</bool>
+    </property>
+    <property name="text">
+      <string>Loc&amp;k Toolbars</string>
+    </property>
+    <property name="iconText">
+      <string>Lock Toolbar Positions</string>
+    </property>
+    <property name="toolTip">
+      <string>Lock Toolbar Positions</string>
+    </property>
+    <property name="statusTip">
+      <string>Lock/unlock main program window toolbar positions</string>
+    </property>
   </action>
   <action name="viewFileSystemAction">
    <property name="checkable">

@@ -96,6 +96,8 @@
      <addaction name="viewToolbarTimeAction"/>
      <addaction name="viewToolbarScaleAction"/>
      <addaction name="viewToolbarThumbAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewToolbarLockedAction"/>
     </widget>
     <widget class="QMenu" name="viewWindowsMenu">
      <property name="title">
@@ -1206,6 +1208,23 @@
    <property name="statusTip">
     <string>Show/hide the thumb view toolbar</string>
    </property>
+  </action>
+  <action name="viewToolbarLockedAction">
+    <property name="checkable">
+      <bool>true</bool>
+    </property>
+    <property name="text">
+      <string>Loc&amp;k Toolbars</string>
+    </property>
+    <property name="iconText">
+      <string>Lock Toolbar Positions</string>
+    </property>
+    <property name="toolTip">
+      <string>Lock Toolbar Positions</string>
+    </property>
+    <property name="statusTip">
+      <string>Lock/unlock midi window toolbar positions</string>
+    </property>
   </action>
   <action name="viewEventsAction">
    <property name="checkable">
