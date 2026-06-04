@@ -551,6 +551,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarThumbAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarThumb(bool)));
+	QObject::connect(m_ui.viewToolbarLockedAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarLocked(bool)));
 	QObject::connect(m_ui.viewEventsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewEvents(bool)));
@@ -707,6 +710,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarTimeAction->setChecked(pOptions->bMidiTimeToolbar);
 		m_ui.viewToolbarScaleAction->setChecked(pOptions->bMidiScaleToolbar);
 		m_ui.viewToolbarThumbAction->setChecked(pOptions->bMidiThumbToolbar);
+		m_ui.viewToolbarLockedAction->setChecked(pOptions->bMidiLockedToolbar);
 		m_ui.viewNoteNamesAction->setChecked(pOptions->bMidiNoteNames);
 		m_ui.viewNoteDurationAction->setChecked(pOptions->bMidiNoteDuration);
 		m_ui.viewNoteColorAction->setChecked(pOptions->bMidiNoteColor);
@@ -736,6 +740,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarTime(pOptions->bMidiTimeToolbar);
 		viewToolbarScale(pOptions->bMidiScaleToolbar);
 		viewToolbarThumb(pOptions->bMidiThumbToolbar);
+		viewToolbarLocked(pOptions->bMidiLockedToolbar);
 		m_pMidiEditor->setZoomMode(pOptions->iMidiZoomMode);
 		m_pMidiEditor->setHorizontalZoom(pOptions->iMidiHorizontalZoom);
 		m_pMidiEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
@@ -955,6 +960,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
 		pOptions->bMidiTimeToolbar = m_ui.timeToolbar->isVisible();
 		pOptions->bMidiScaleToolbar = m_ui.snapToScaleToolbar->isVisible();
+		pOptions->bMidiLockedToolbar = m_ui.viewToolbarLockedAction->isChecked();
 		pOptions->iMidiZoomMode = m_pMidiEditor->zoomMode();
 		pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
 		pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
@@ -1821,6 +1827,21 @@ void qtractorMidiEditorForm::viewToolbarScale ( bool bOn )
 void qtractorMidiEditorForm::viewToolbarThumb ( bool bOn )
 {
 	m_ui.thumbViewToolbar->setVisible(bOn);
+}
+
+
+// Lock/unlock midi window toolbar positions.
+void qtractorMidiEditorForm::viewToolbarLocked ( bool bOn )
+{
+	m_ui.fileToolbar->setMovable(!bOn);
+	m_ui.editToolbar->setMovable(!bOn);
+	m_ui.viewToolbar->setMovable(!bOn);
+	m_ui.transportToolbar->setMovable(!bOn);
+	m_ui.timeToolbar->setMovable(!bOn);
+	m_ui.snapToScaleToolbar->setMovable(!bOn);
+	m_ui.thumbViewToolbar->setMovable(!bOn);
+	m_ui.editEventToolbar->setMovable(!bOn);
+	m_ui.editViewToolbar->setMovable(!bOn);
 }
 
 

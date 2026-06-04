@@ -130,6 +130,7 @@ void qtractorOptions::loadOptions (void)
 	bTransportToolbar = m_settings.value("/TransportToolbar", true).toBool();
 	bTimeToolbar    = m_settings.value("/TimeToolbar", true).toBool();
 	bThumbToolbar   = m_settings.value("/ThumbToolbar", true).toBool();
+	bLockedToolbar    = m_settings.value("/LockedToolbar", true).toBool();
 	iZoomMode       = m_settings.value("/ZoomMode", 1).toInt();
 	m_settings.endGroup();
 
@@ -370,6 +371,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiScaleToolbar = m_settings.value("/ScaleToolbar", false).toBool();
 	bMidiTimeToolbar = m_settings.value("/TimeToolbar", false).toBool();
 	bMidiThumbToolbar = m_settings.value("/ThumbToolbar", true).toBool();
+	bMidiLockedToolbar    = m_settings.value("/LockedToolbar", true).toBool();
 	iMidiDisplayFormat = m_settings.value("/DisplayFormat", 2).toInt();
 	bMidiNoteNames   = m_settings.value("/NoteNames", false).toBool();
 	bMidiNoteDuration = m_settings.value("/NoteDuration", true).toBool();
@@ -479,6 +481,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TransportToolbar", bTransportToolbar);
 	m_settings.setValue("/TimeToolbar", bTimeToolbar);
 	m_settings.setValue("/ThumbToolbar", bThumbToolbar);
+	m_settings.setValue("/LockedToolbar", bLockedToolbar);
 	m_settings.setValue("/ZoomMode", iZoomMode);
 	m_settings.endGroup();
 
@@ -691,6 +694,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TimeToolbar", bMidiTimeToolbar);
 	m_settings.setValue("/ScaleToolbar", bMidiScaleToolbar);
 	m_settings.setValue("/ThumbToolbar", bMidiThumbToolbar);
+	m_settings.setValue("/LockedToolbar", bMidiLockedToolbar);
 	m_settings.setValue("/DisplayFormat", iMidiDisplayFormat);
 	m_settings.setValue("/NoteNames", bMidiNoteNames);
 	m_settings.setValue("/NoteDuration", bMidiNoteDuration);
