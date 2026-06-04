@@ -5032,18 +5032,18 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2328"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>За&amp;фіксувати панелі інструментів</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2331"/>
         <location filename="../qtractorMainForm.ui" line="2334"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Зафіксувати позиції панелей інструментів</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2337"/>
         <source>Lock/unlock main program window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Зафіксувати або розблокувати позиції панелей інструментів у головному вікні програми</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2348"/>
@@ -10165,18 +10165,18 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1217"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>За&amp;фіксувати панелі інструментів</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1220"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1223"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Зафіксувати позиції панелей інструментів</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1226"/>
         <source>Lock/unlock midi window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Зафіксувати або розблокувати позиції панелей інструментів у головному вікні програми</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1237"/>
