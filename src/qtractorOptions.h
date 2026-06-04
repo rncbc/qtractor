@@ -95,6 +95,7 @@ public:
 	bool    bTransportToolbar;
 	bool    bTimeToolbar;
 	bool    bThumbToolbar;
+	bool    bLockedToolbar;
 	int     iZoomMode;
 
 	// Transport options...
@@ -310,6 +311,7 @@ public:
 	bool bMidiTimeToolbar;
 	bool bMidiScaleToolbar;
 	bool bMidiThumbToolbar;
+	bool bMidiLockedToolbar;
 	int  iMidiDisplayFormat;
 	bool bMidiNoteNames;
 	bool bMidiNoteDuration;
