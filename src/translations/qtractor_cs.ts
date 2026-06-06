@@ -5557,18 +5557,18 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2328"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Zam&amp;knout nástrojové pruhy</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2331"/>
         <location filename="../qtractorMainForm.ui" line="2334"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzamknout polohy nástrojových pruhů</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2337"/>
         <source>Lock/unlock main program window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknout/Zrušit uzamknutí poloh nástrojových pruhů v okně programu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2348"/>
@@ -10333,18 +10333,18 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1217"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Zam&amp;knout nástrojové pruhy</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1220"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1223"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzamknout polohy nástrojových pruhů</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1226"/>
         <source>Lock/unlock midi window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamknout/Zrušit uzamknutí poloh nástrojových pruhů v okně MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1254"/>
