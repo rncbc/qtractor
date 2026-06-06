@@ -9719,7 +9719,7 @@ Duración:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="841"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2689"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2690"/>
         <source>&amp;None</source>
         <translation>&amp;Nada</translation>
     </message>
@@ -10932,7 +10932,7 @@ Duración:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="370"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2491"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2492"/>
         <source>MUTE</source>
         <translation type="unfinished">MUTE</translation>
     </message>

@@ -9733,7 +9733,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="841"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2689"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2690"/>
         <source>&amp;None</source>
         <translation>无(&amp;N)</translation>
     </message>
@@ -10954,7 +10954,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="370"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2491"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2492"/>
         <source>MUTE</source>
         <translation>静音</translation>
     </message>
