@@ -7,10 +7,11 @@ ChangeLog
 GIT HEAD
 
 - Added option to lock toolbars in place on the main and MIDI clip
-  editor windows. (GH PR#530)
+  editor windows; fixed MIDI clip editor's thumb-view toolbar not
+  saving state after close.
 
 - Force (disconnect) all buses/ports and (deactivate) all plugin
-  chains on session close. (EXPERIMENTAL)
+  chains on session close.
 
 - Updated to CLAP v1.2.8
 
