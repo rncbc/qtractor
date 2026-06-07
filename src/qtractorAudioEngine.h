@@ -114,7 +114,8 @@ public:
 	void notifySelfEvent();
 
 	// JACK client descriptor accessor.
-	jack_client_t *jackClient() const;
+	jack_client_t *jackClient() const
+		{ return m_pJackClient; }
 
 	// Process cycle executive.
 	int process(unsigned int nframes);
@@ -127,37 +128,52 @@ public:
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Session UUID accessors.
-	void setSessionId(const QString& sSessionId);
-	const QString& sessionId() const;
+	void setSessionId(const QString& sSessionId)
+		{ m_sSessionId = sSessionId; }
+	const QString& sessionId() const
+		{ return m_sSessionId; }
 
 	// Internal sample-rate accessor.
-	unsigned int sampleRate() const;
+	unsigned int sampleRate() const
+		{ return m_iSampleRate; }
 
 	// Buffer size accessors.
-	unsigned int bufferSize() const;
-	unsigned int bufferSizeEx() const;
+	unsigned int bufferSize() const
+		{ return m_iBufferSize; }
+	unsigned int bufferSizeEx() const
+		{ return m_iBufferSizeEx; }
 
 	// Buffer offset accessor.
-	unsigned int bufferOffset() const;
+	unsigned int bufferOffset() const
+		{ return m_iBufferOffset; }
 
 	// Block-stride size (in frames) accessor.
-	unsigned int blockSize() const;
+	unsigned int blockSize() const
+		{ return m_iBlockSize; }
 
 	// Audio (Master) bus defaults accessors.
-	void setMasterAutoConnect(bool bMasterAutoConnect);
-	bool isMasterAutoConnect() const;
+	void setMasterAutoConnect(bool bMasterAutoConnect)
+		{ m_bMasterAutoConnect = bMasterAutoConnect; }
+	bool isMasterAutoConnect() const
+		{ return m_bMasterAutoConnect; }
 
 	// Audio-export freewheeling (internal) state.
-	void setFreewheel(bool bFreewheel);
-	bool isFreewheel() const;
+	void setFreewheel(bool bFreewheel)
+		{ m_bFreewheel = bFreewheel; }
+	bool isFreewheel() const
+		{ return m_bFreewheel; }
 
 	// Audio-export active state.
-	void setExporting(bool bExporting);
-	bool isExporting() const;
+	void setExporting(bool bExporting)
+		{ m_bExporting = bExporting; }
+	bool isExporting() const
+		{ return m_bExporting; }
 
 	// Last known export extents accessors.
-	unsigned long exportStart() const;
-	unsigned long exportOffset() const;
+	unsigned long exportStart() const
+		{ return m_iExportStart; }
+	unsigned long exportOffset() const
+		{ return m_iExportOffset; }
 	unsigned long exportLength() const;
 
 	// Audio-export method.
@@ -171,73 +187,101 @@ public:
 
 	// Metronome switching.
 	void setMetronome(bool bMetronome);
-	bool isMetronome() const;
+	bool isMetronome() const
+		{ return m_bMetronome; }
 
 	// Metronome enabled accessors.
 	void setMetroEnabled(bool bMetroEnabled);
-	bool isMetroEnabled() const;
+	bool isMetroEnabled() const
+		{ return m_bMetroEnabled; }
 
 	// Metronome bus mode accessors.
 	void setMetroBus(bool bMetroBus);
-	bool isMetroBus() const;
+	bool isMetroBus() const
+		{ return m_bMetroBus; }
+
 	void resetMetroBus();
 
 	// Metronome bus defaults accessors.
-	void setMetroAutoConnect(bool bMetroAutoConnect);
-	bool isMetroAutoConnect() const;
+	void setMetroAutoConnect(bool bMetroAutoConnect)
+		{ m_bMetroAutoConnect = bMetroAutoConnect; }
+	bool isMetroAutoConnect() const
+		{ return m_bMetroAutoConnect; }
 
 	// Metronome bar audio sample.
-	void setMetroBarFilename(const QString& sFilename);
-	const QString& metroBarFilename() const;
+	void setMetroBarFilename(const QString& sFilename)
+		{ m_sMetroBarFilename = sFilename; }
+	const QString& metroBarFilename() const
+		{ return m_sMetroBarFilename; }
 
 	// Metronome bar audio sample gain.
-	void setMetroBarGain(float fGain);
-	float metroBarGain() const;
+	void setMetroBarGain(float fGain)
+		{ m_fMetroBarGain = fGain; }
+	float metroBarGain() const
+		{ return m_fMetroBarGain; }
 
 	// Metronome beat audio sample.
-	void setMetroBeatFilename(const QString& sFilename);
-	const QString& metroBeatFilename() const;
+	void setMetroBeatFilename(const QString& sFilename)
+		{ m_sMetroBeatFilename = sFilename; }
+	const QString& metroBeatFilename() const
+		{ return m_sMetroBeatFilename; }
 
 	// Metronome beat audio sample gain.
-	void setMetroBeatGain(float fGain);
-	float metroBeatGain() const;
+	void setMetroBeatGain(float fGain)
+		{ m_fMetroBeatGain = fGain; }
+	float metroBeatGain() const
+		{ return m_fMetroBeatGain; }
 
 	// Metronome latency offset (in frames).
-	void setMetroOffset(unsigned long iMetroOffset);
-	unsigned long metroOffset() const;
+	void setMetroOffset(unsigned long iMetroOffset)
+		{ m_iMetroOffset = iMetroOffset; }
+	unsigned long metroOffset() const
+		{ return m_iMetroOffset; }
 
 	void resetMetro(bool bCountIn = false);
 
 	// Metronome count-in switching.
-	void setCountIn(bool bCountIn);
-	bool isCountIn() const;
+	void setCountIn(bool bCountIn)
+		{ bCountIn = bCountIn; }
+	bool isCountIn() const
+		{ return m_bCountIn; }
 
 	// Metronome count-in mode.
 	enum CountInMode { CountInNone = 0, CountInPlayback, CountInRecording };
 
-	void setCountInMode(CountInMode countInMode);
-	CountInMode countInMode() const;
+	void setCountInMode(CountInMode countInMode)
+		{ m_countInMode = countInMode; }
+	CountInMode countInMode() const
+		{ return m_countInMode; }
 
 	// Metronome count-in number of beats.
-	void setCountInBeats(unsigned short iCountInBeats);
-	unsigned short countInBeats() const;
+	void setCountInBeats(unsigned short iCountInBeats)
+		{ m_iCountInBeats = iCountInBeats; }
+	unsigned short countInBeats() const
+		{ return m_iCountInBeats; }
 
 	// Metronome count-in status.
-	unsigned short countIn() const;
+	unsigned short countIn() const
+		{ return m_iCountIn; }
 
 	// Audition/pre-listening bus mode accessors.
 	void setPlayerBus(bool bPlayerBus);
-	bool isPlayerBus() const;
+	bool isPlayerBus() const
+		{ return m_bPlayerBus; }
 
 	void resetPlayerBus();
 
 	// Audition/pre-listening bus defaults accessors.
-	void setPlayerAutoConnect(bool bPlayerAutoConnect);
-	bool isPlayerAutoConnect() const;
+	void setPlayerAutoConnect(bool bPlayerAutoConnect)
+		{ m_bPlayerAutoConnect = bPlayerAutoConnect; }
+	bool isPlayerAutoConnect() const
+		{ return m_bPlayerAutoConnect; }
 
-	bool isPlayerOpen() const;
 	bool openPlayer(const QString& sFilename);
 	void closePlayer();
+
+	bool isPlayerOpen() const
+		{ return m_bPlayerOpen; }
 
 	// Retrieve/restore all connections, on all audio buses;
 	// return the effective number of connection attempts.
@@ -245,16 +289,22 @@ public:
 
 	// JACK Transport mode accessors.
 	void setTransportMode(qtractorBus::BusMode transportMode);
-	qtractorBus::BusMode transportMode() const;
+	qtractorBus::BusMode transportMode() const
+		{ return m_transportMode; }
 
 	// JACK Transport latency accessors.
-	void setTransportLatency(unsigned int iTransportLatency);
-	unsigned int transportLatency() const;
+	void setTransportLatency(unsigned int iTransportLatency)
+		{ m_iTransportLatency = iTransportLatency; }
+	unsigned int transportLatency() const
+		{ return m_iTransportLatency; }
 
 	// JACK Timebase mode accessors.
-	void setTimebase(bool bTimebase);
-	bool isTimebase() const;
-	bool isTimebaseEx() const;
+	void setTimebase(bool bTimebase)
+		{ m_bTimebase = bTimebase; }
+	bool isTimebase() const
+		{ return m_bTimebase; }
+	bool isTimebaseEx() const
+		{ return (!m_bTimebase || m_iTimebase > 0); }
 
 	// JACK Timebase reset methods.
 	void resetTimebase();
@@ -309,11 +359,15 @@ public:
 	// Audio latency compensation stuff.
 	enum LatencyMode { Auto = 0, Add, Fixed };
 
-	void setCaptureLatencyMode(LatencyMode latencyMode);
-	LatencyMode captureLatencyMode() const;
+	void setCaptureLatencyMode(LatencyMode latencyMode)
+		{ m_captureLatencyMode = latencyMode; }
+	LatencyMode captureLatencyMode() const
+		{ return m_captureLatencyMode; }
 
-	void setCaptureLatency(unsigned int iCaptureLatency);
-	unsigned int captureLatency() const;
+	void setCaptureLatency(unsigned int iCaptureLatency)
+		{ m_iCaptureLatency = iCaptureLatency; }
+	unsigned int captureLatency() const
+		{ return m_iCaptureLatency; }
 
 protected:
 
@@ -459,11 +513,14 @@ public:
 
 	// Channel number property accessor.
 	void setChannels(unsigned short iChannels);
-	unsigned short channels() const;
+	unsigned short channels() const
+		{ return m_iChannels; }
 
 	// Auto-connection predicate.
-	void setAutoConnect(bool bAutoConnect);
-	bool isAutoConnect() const;
+	void setAutoConnect(bool bAutoConnect)
+		{ m_bAutoConnect = bAutoConnect; }
+	bool isAutoConnect() const
+		{ return m_bAutoConnect; }
 
 	// Concrete activation methods.
 	bool open();
@@ -492,24 +549,30 @@ public:
 	float **out() const { return m_ppOBuffer; }
 
 	// Virtual I/O bus-monitor accessors.
-	qtractorMonitor *monitor_in()  const;
+	qtractorMonitor *monitor_in() const;
 	qtractorMonitor *monitor_out() const;
 
 	// Audio I/O bus-monitor accessors.
-	qtractorAudioMonitor *audioMonitor_in()  const;
-	qtractorAudioMonitor *audioMonitor_out() const;
+	qtractorAudioMonitor *audioMonitor_in() const
+		{ return m_pIAudioMonitor; }
+	qtractorAudioMonitor *audioMonitor_out() const
+		{ return m_pOAudioMonitor; }
 
 	// Plugin-chain accessors.
-	qtractorPluginList *pluginList_in()  const;
-	qtractorPluginList *pluginList_out() const;
+	qtractorPluginList *pluginList_in() const
+		{ return m_pIPluginList; }
+	qtractorPluginList *pluginList_out() const
+		{ return m_pOPluginList; }
 
 	// Audio I/O port latency callbacks.
 	void updateLatency_in();
 	void updateLatency_out();
 
 	// Audio I/O port latency accessors.
-	unsigned int latency_in()  const;
-	unsigned int latency_out() const;
+	unsigned int latency_in() const
+		{ return m_iILatency; }
+	unsigned int latency_out() const
+		{ return m_iOLatency; }
 
 	// Retrieve/restore client:port connections;
 	// return the effective number of connection attempts...

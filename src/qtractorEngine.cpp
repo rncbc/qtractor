@@ -80,20 +80,6 @@ void qtractorEngine::clear (void)
 }
 
 
-// Session accessor.
-qtractorSession *qtractorEngine::session (void) const
-{
-	return m_pSession;
-}
-
-
-// Session cursor accessor.
-qtractorSessionCursor *qtractorEngine::sessionCursor (void) const
-{
-	return m_pSessionCursor;
-}
-
-
 // Engine type accessor.
 qtractorTrack::TrackType qtractorEngine::syncType (void) const
 {
@@ -105,20 +91,6 @@ qtractorTrack::TrackType qtractorEngine::syncType (void) const
 const QString& qtractorEngine::clientName (void) const
 {
 	return m_pSession->clientName();
-}
-
-
-// Activation status accessor.
-bool qtractorEngine::isActivated(void) const
-{
-	return m_bActivated;
-}
-
-
-// Buses list management methods.
-const qtractorList<qtractorBus>& qtractorEngine::buses (void) const
-{
-	return m_buses;
 }
 
 
@@ -202,13 +174,6 @@ qtractorBus *qtractorEngine::findOutputBus (
 }
 
 
-// Exo-buses list management methods.
-const qtractorList<qtractorBus>& qtractorEngine::busesEx (void) const
-{
-	return m_busesEx;
-}
-
-
 // Add an exo-bus to a device engine.
 void qtractorEngine::addBusEx ( qtractorBus *pBus )
 {
@@ -239,14 +204,6 @@ qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName ) const
 	}
 
 	return nullptr;
-}
-
-
-// Front-end/UI buses accessors.
-//
-const QList<qtractorBus *>& qtractorEngine::buses2 (void) const
-{
-	return m_buses2;
 }
 
 
@@ -406,11 +363,6 @@ void qtractorEngine::setPlaying ( bool bPlaying )
 	}
 }
 
-bool qtractorEngine::isPlaying(void) const
-{
-	return m_bPlaying;
-}
-
 
 // Retrieve/restore all connections, on all buses.
 // return the total number of effective (re)connection attempts...
@@ -530,13 +482,6 @@ qtractorBus::~qtractorBus (void)
 }
 
 
-// Engine accessor.
-qtractorEngine *qtractorBus::engine (void) const
-{
-	return m_pEngine;
-}
-
-
 // Bus type accessor.
 qtractorTrack::TrackType qtractorBus::busType (void) const
 {
@@ -550,11 +495,6 @@ void qtractorBus::setBusName ( const QString& sBusName )
 	m_sBusName = sBusName;
 
 	updateBusName();
-}
-
-const QString& qtractorBus::busName (void) const
-{
-	return m_sBusName;
 }
 
 
@@ -574,11 +514,6 @@ void qtractorBus::setBusMode ( qtractorBus::BusMode busMode )
 	updateBusMode();
 }
 
-qtractorBus::BusMode qtractorBus::busMode (void) const
-{
-	return m_busMode;
-}
-
 
 // Pass-thru mode accessor.
 void qtractorBus::setMonitor ( bool bMonitor )
@@ -590,18 +525,6 @@ void qtractorBus::setMonitor ( bool bMonitor )
 bool qtractorBus::isMonitor (void) const
 {
 	return (m_pMonitorSubject ? (m_pMonitorSubject->value() > 0.0f) : false);
-}
-
-
-// Bus state (monitor) button setup.
-qtractorSubject *qtractorBus::monitorSubject (void) const
-{
-	return m_pMonitorSubject;
-}
-
-qtractorMidiControlObserver *qtractorBus::monitorObserver (void) const
-{
-	return m_pMonitorObserver;
 }
 
 
