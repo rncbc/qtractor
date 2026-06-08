@@ -242,7 +242,7 @@ public:
 
 	// Metronome count-in switching.
 	void setCountIn(bool bCountIn)
-		{ bCountIn = bCountIn; }
+		{ m_bCountIn = bCountIn; }
 	bool isCountIn() const
 		{ return m_bCountIn; }
 
