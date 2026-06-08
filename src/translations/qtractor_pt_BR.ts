@@ -754,7 +754,7 @@ MIDI:	</translation>
         <translation>adicionar mandada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1600"/>
+        <location filename="../qtractorMidiManager.cpp" line="1601"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banco %2</translation>
     </message>

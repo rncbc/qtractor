@@ -585,7 +585,7 @@ MIDI:	</translation>
 %3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1600"/>
+        <location filename="../qtractorMidiManager.cpp" line="1601"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - банк %2</translation>
     </message>

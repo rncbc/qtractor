@@ -345,7 +345,7 @@ End:	%3	Length:	%4</source>
         <translation>%1 音色库 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1600"/>
+        <location filename="../qtractorMidiManager.cpp" line="1601"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - 音色库 %2</translation>
     </message>
