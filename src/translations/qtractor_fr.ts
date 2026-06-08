@@ -5031,18 +5031,18 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2328"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verrouiller les barres d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2331"/>
         <location filename="../qtractorMainForm.ui" line="2334"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouiller la position des barres d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2337"/>
         <source>Lock/unlock main program window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouiller/déverrouiller la position des barres d&apos;outils de la fenêtre principale du programme</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2348"/>
@@ -10157,18 +10157,18 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1217"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verrouiller les barres d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1220"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1223"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouiller la position des barres d&apos;outils</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1226"/>
         <source>Lock/unlock midi window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouiller/déverrouiller la position des barres d&apos;outils de la fenêtre MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1254"/>
@@ -13207,92 +13207,92 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4637"/>
         <source>&amp;OSC</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4655"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Serveur</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4670"/>
         <source>Whether to enable OSC control server/listener</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer ou non le serveur/écouteur de contrôle OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4673"/>
         <source>Enable &amp;OSC server/listener</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer le serveur/écouteur &amp;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4699"/>
         <source>&amp;URL: osc.udp://localhost:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;URL: osc.udp://localhost:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4715"/>
         <source>OSC server/listener port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port du serveur/écouteur OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4740"/>
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Actions</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4755"/>
         <source>OSC actions search string (regular expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaîne de recherche pour les actions OSC (expression régulière)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4771"/>
         <source>OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Actions OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4798"/>
         <source>OSC actions filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Actions OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4802"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4807"/>
         <source>Checked</source>
-        <translation type="unfinished"></translation>
+        <translation>Coché</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4812"/>
         <source>Unchecked</source>
-        <translation type="unfinished"></translation>
+        <translation>Décoché</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4832"/>
         <source>Check OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier les actions de l&apos;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4835"/>
         <source>&amp;Check</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cocher</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4857"/>
         <source>Uncheck OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Décocher les actions OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4860"/>
         <source>U&amp;ncheck</source>
-        <translation type="unfinished"></translation>
+        <translation>Décoc&amp;her</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4895"/>
         <source>Reset OSC actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser les actions OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3115"/>
