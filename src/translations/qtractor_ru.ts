@@ -33,18 +33,18 @@ Audio:	%1 channels, %2 Hz</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="3188"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3479"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4358"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4940"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2863"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3118"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4054"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4593"/>
         <source>%1 In</source>
         <translation>Вход %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="3197"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3479"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4367"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4940"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2872"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3118"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4063"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4593"/>
         <source>%1 Out</source>
         <translation>Выход %1</translation>
     </message>
@@ -151,7 +151,7 @@ End:	%3	Length:	%4</source>
         <translation>%1 банк %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1600"/>
+        <location filename="../qtractorMidiManager.cpp" line="1601"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Банк %2</translation>
     </message>
@@ -620,7 +620,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>врезка в сессии</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="565"/>
+        <location filename="../qtractorEngine.cpp" line="505"/>
         <location filename="../qtractorTrack.cpp" line="710"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>
@@ -741,24 +741,24 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4360"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4369"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4056"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4065"/>
         <location filename="../qtractorTrack.cpp" line="718"/>
         <source>%1 Volume</source>
         <translation>Громкость %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="3190"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3199"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2865"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2874"/>
         <location filename="../qtractorTrack.cpp" line="721"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="3192"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3201"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4362"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4371"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2867"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2876"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4058"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4067"/>
         <location filename="../qtractorTrack.cpp" line="724"/>
         <source>%1 Pan</source>
         <translation type="unfinished"></translation>

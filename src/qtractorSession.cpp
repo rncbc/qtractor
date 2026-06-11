@@ -342,20 +342,6 @@ bool qtractorSession::execute ( qtractorCommand *pCommand )
 }
 
 
-// The global undoable command list reference.
-qtractorCommandList *qtractorSession::commands (void) const
-{
-	return m_pCommands;
-}
-
-
-// Session instruments repository.
-qtractorInstrumentList *qtractorSession::instruments (void) const
-{
-	return m_pInstruments;
-}
-
-
 // Session directory path accessors.
 void qtractorSession::setSessionDir ( const QString& sSessionDir )
 {
@@ -365,35 +351,6 @@ void qtractorSession::setSessionDir ( const QString& sSessionDir )
 		if (!QFileInfo(m_props.sessionDir).isWritable())
 			m_props.sessionDir = QDir::homePath();
 	}
-}
-
-const QString& qtractorSession::sessionDir (void) const
-{
-	return m_props.sessionDir;
-}
-
-
-// Session filename accessors.
-void qtractorSession::setSessionName ( const QString& sSessionName )
-{
-	m_props.sessionName = sSessionName;
-}
-
-const QString& qtractorSession::sessionName (void) const
-{
-	return m_props.sessionName;
-}
-
-
-// Session description accessors.
-void qtractorSession::setDescription ( const QString& sDescription )
-{
-	m_props.description = sDescription;
-}
-
-const QString& qtractorSession::description (void) const
-{
-	return m_props.description;
 }
 
 
@@ -463,73 +420,11 @@ void qtractorSession::updateSession (
 }
 
 
-// Session start/end accessors.
-unsigned long qtractorSession::sessionStart (void) const
-{
-	return m_iSessionStart;
-}
-
-
-unsigned long qtractorSession::sessionEnd (void) const
-{
-	return m_iSessionEnd;
-}
-
-
-// Time-scale helper accessors.
-qtractorTimeScale *qtractorSession::timeScale (void)
-{
-	return &(m_props.timeScale);
-}
-
-
-// Device engine common client name accessors.
-void qtractorSession::setClientName ( const QString& sClientName )
-{
-	m_sClientName = sClientName;
-}
-
-const QString& qtractorSession::clientName (void) const
-{
-	return m_sClientName;
-}
-
-
-// Sample rate accessors.
-void qtractorSession::setSampleRate ( unsigned int iSampleRate )
-{
-	m_props.timeScale.setSampleRate(iSampleRate);
-}
-
-unsigned int qtractorSession::sampleRate (void) const
-{
-	return m_props.timeScale.sampleRate();
-}
-
-
 // Session tempo accessors.
 void qtractorSession::setTempo ( float fTempo )
 {
 	m_props.timeScale.setTempo(fTempo);
 	m_props.timeScale.updateScale();
-}
-
-float qtractorSession::tempo (void) const
-{
-	return m_props.timeScale.tempo();
-}
-
-
-// Tempo beat type accessors.
-void qtractorSession::setBeatType ( unsigned short iBeatType )
-{
-	m_props.timeScale.setBeatType(iBeatType);
-}
-
-
-unsigned short qtractorSession::beatType (void) const
-{
-	return m_props.timeScale.beatType();
 }
 
 
@@ -545,85 +440,6 @@ void qtractorSession::setTicksPerBeat ( unsigned short iTicksPerBeat )
 	m_props.timeScale.setTicksPerBeat(iTicksPerBeat);
 }
 
-unsigned short qtractorSession::ticksPerBeat (void) const
-{
-	return m_props.timeScale.ticksPerBeat();
-}
-
-
-// Beats/Bar(measure) accessors.
-void qtractorSession::setBeatsPerBar ( unsigned short iBeatsPerBar )
-{
-	m_props.timeScale.setBeatsPerBar(iBeatsPerBar);
-}
-
-
-unsigned short qtractorSession::beatsPerBar (void) const
-{
-	return m_props.timeScale.beatsPerBar();
-}
-
-
-// Time signature (denominator) accessors.
-void qtractorSession::setBeatDivisor ( unsigned short iBeatDivisor )
-{
-	m_props.timeScale.setBeatDivisor(iBeatDivisor);
-}
-
-
-unsigned short qtractorSession::beatDivisor (void) const
-{
-	return m_props.timeScale.beatDivisor();
-}
-
-
-// Pixels per beat (width).
-void qtractorSession::setPixelsPerBeat ( unsigned short iPixelsPerBeat )
-{
-	m_props.timeScale.setPixelsPerBeat(iPixelsPerBeat);
-}
-
-unsigned short qtractorSession::pixelsPerBeat (void) const
-{
-	return m_props.timeScale.pixelsPerBeat();
-}
-
-
-// Horizontal zoom factor.
-void qtractorSession::setHorizontalZoom ( unsigned short iHorizontalZoom )
-{
-	m_props.timeScale.setHorizontalZoom(iHorizontalZoom);
-}
-
-unsigned short qtractorSession::horizontalZoom (void) const
-{
-	return m_props.timeScale.horizontalZoom();
-}
-
-
-// Vertical zoom factor.
-void qtractorSession::setVerticalZoom ( unsigned short iVerticalZoom )
-{
-	m_props.timeScale.setVerticalZoom(iVerticalZoom);
-}
-
-unsigned short qtractorSession::verticalZoom (void) const
-{
-	return m_props.timeScale.verticalZoom();
-}
-
-
-// Beat divisor (snap) accessors.
-void qtractorSession::setSnapPerBeat ( unsigned short iSnapPerBeat )
-{
-	m_props.timeScale.setSnapPerBeat(iSnapPerBeat);
-}
-
-unsigned short qtractorSession::snapPerBeat (void) const
-{
-	return m_props.timeScale.snapPerBeat();
-}
-
 
 // Edit-head frame accessors.
 void qtractorSession::setEditHead ( unsigned long iEditHead )
@@ -632,125 +448,11 @@ void qtractorSession::setEditHead ( unsigned long iEditHead )
 	m_iEditHeadTime = tickFromFrame(iEditHead);
 }
 
-unsigned long qtractorSession::editHead (void) const
-{
-	return m_iEditHead;
-}
-
 
 void qtractorSession::setEditTail ( unsigned long iEditTail )
 {
 	m_iEditTail     = iEditTail;
 	m_iEditTailTime = tickFromFrame(iEditTail);
-}
-
-unsigned long qtractorSession::editTail (void) const
-{
-	return m_iEditTail;
-}
-
-
-// Pixel/Tick number conversion.
-unsigned long qtractorSession::tickFromPixel ( unsigned int x )
-{
-	return m_props.timeScale.tickFromPixel(x);
-}
-
-unsigned int qtractorSession::pixelFromTick ( unsigned long iTick )
-{
-	return m_props.timeScale.pixelFromTick(iTick);
-}
-
-
-// Pixel/Frame number conversion.
-unsigned long qtractorSession::frameFromPixel ( unsigned int x ) const
-{
-	return m_props.timeScale.frameFromPixel(x);
-}
-
-unsigned int qtractorSession::pixelFromFrame ( unsigned long iFrame ) const
-{
-	return m_props.timeScale.pixelFromFrame(iFrame);
-}
-
-
-// Beat/frame conversion.
-unsigned long qtractorSession::frameFromBeat ( unsigned int iBeat )
-{
-	return m_props.timeScale.frameFromBeat(iBeat);
-}
-
-unsigned int qtractorSession::beatFromFrame ( unsigned long iFrame )
-{
-	return m_props.timeScale.beatFromFrame(iFrame);
-}
-
-
-// Tick/Frame number conversion.
-unsigned long qtractorSession::frameFromTick ( unsigned long iTick )
-{
-	return m_props.timeScale.frameFromTick(iTick);
-}
-
-unsigned long qtractorSession::tickFromFrame ( unsigned long iFrame )
-{
-	return m_props.timeScale.tickFromFrame(iFrame);
-}
-
-
-// Tick/Frame range conversion (delta conversion).
-unsigned long qtractorSession::frameFromTickRange (
-	unsigned long iTickStart, unsigned long iTickEnd, bool bOffset )
-{
-	return m_props.timeScale.frameFromTickRange(iTickStart, iTickEnd, bOffset);
-}
-
-unsigned long qtractorSession::tickFromFrameRange (
-	unsigned long iFrameStart, unsigned long iFrameEnd, bool bOffset )
-{
-	return m_props.timeScale.tickFromFrameRange(iFrameStart, iFrameEnd, bOffset);
-}
-
-
-// Beat/frame snap filters.
-unsigned long qtractorSession::tickSnap ( unsigned long iTick )
-{
-	return m_props.timeScale.tickSnap(iTick);
-}
-
-unsigned long qtractorSession::frameSnap ( unsigned long iFrame )
-{
-	return m_props.timeScale.frameSnap(iFrame);
-}
-
-unsigned int qtractorSession::pixelSnap ( unsigned int x )
-{
-	return m_props.timeScale.pixelSnap(x);
-}
-
-
-// Frame/locate (SMPTE) conversion.
-unsigned long qtractorSession::frameFromLocate ( unsigned int iLocate ) const
-{
-	return (iLocate * m_props.timeScale.sampleRate()) / 30;
-}
-
-unsigned int qtractorSession::locateFromFrame ( unsigned long iFrame ) const
-{
-	return (30 * iFrame) / m_props.timeScale.sampleRate();
-}
-
-
-
-// Song position pointer (SPP=MIDI beats) to frame converters.
-unsigned long qtractorSession::frameFromSongPos ( unsigned int iSongPos )
-{
-	return frameFromTick((iSongPos * ticksPerBeat()) >> 2);
-}
-
-unsigned int qtractorSession::songPosFromFrame ( unsigned long iFrame )
-{
-	return ((tickFromFrame(iFrame) << 2) / ticksPerBeat());
 }
 
 
@@ -907,20 +609,7 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 
 
 
-// Alternate properties accessor.
-qtractorSession::Properties& qtractorSession::properties (void)
-{
-	return m_props;
-}
-
-
 // Track list management methods.
-const qtractorList<qtractorTrack>& qtractorSession::tracks (void) const
-{
-	return m_tracks;
-}
-
-
 void qtractorSession::addTrack ( qtractorTrack *pTrack )
 {
 	insertTrack(pTrack, m_tracks.last());
@@ -1041,12 +730,6 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 }
 
 
-qtractorTrack *qtractorSession::trackAt ( int iTrack ) const
-{
-	return m_tracks.at(iTrack);
-}
-
-
 // Current number of record-armed tracks.
 void qtractorSession::setRecordTracks ( bool bRecord )
 {
@@ -1055,11 +738,6 @@ void qtractorSession::setRecordTracks ( bool bRecord )
 	} else if (m_iRecordTracks > 0) {
 		--m_iRecordTracks;
 	}
-}
-
-unsigned int qtractorSession::recordTracks (void) const
-{
-	return m_iRecordTracks;
 }
 
 
@@ -1073,11 +751,6 @@ void qtractorSession::setMuteTracks ( bool bMute )
 	}
 }
 
-unsigned int qtractorSession::muteTracks (void) const
-{
-	return m_iMuteTracks;
-}
-
 
 // Current number of solo tracks.
 void qtractorSession::setSoloTracks ( bool bSolo )
@@ -1087,11 +760,6 @@ void qtractorSession::setSoloTracks ( bool bSolo )
 	} else if (m_iSoloTracks > 0) {
 		--m_iSoloTracks;
 	}
-}
-
-unsigned int qtractorSession::soloTracks (void) const
-{
-	return m_iSoloTracks;
 }
 
 
@@ -1112,11 +780,6 @@ void qtractorSession::setCurrentTrack ( qtractorTrack *pTrack )
 	// Current-track plugin editors (GUI) auto-focus...
 	if (m_pCurrentTrack && m_pCurrentTrack->pluginList())
 		m_pCurrentTrack->pluginList()->setEditorVisibleAll(true);
-}
-
-qtractorTrack *qtractorSession::currentTrack (void) const
-{
-	return m_pCurrentTrack;
 }
 
 
@@ -1242,20 +905,6 @@ void qtractorSession::disconnectAll (void)
 	m_pAudioEngine->disconnectAll();
 
 	unlock();
-}
-
-
-// MIDI engine accessor.
-qtractorMidiEngine *qtractorSession::midiEngine (void) const
-{
-	return m_pMidiEngine;
-}
-
-
-// Audio engine accessor.
-qtractorAudioEngine *qtractorSession::audioEngine (void) const
-{
-	return m_pAudioEngine;
 }
 
 
@@ -1544,32 +1193,6 @@ void qtractorSession::setLoop (
 	unlock();
 }
 
-unsigned long qtractorSession::loopStart (void) const
-{
-	return m_iLoopStart;
-}
-
-unsigned long qtractorSession::loopEnd (void) const
-{
-	return m_iLoopEnd;
-}
-
-bool qtractorSession::isLooping (void) const
-{
-	return (m_iLoopStart < m_iLoopEnd);
-}
-
-
-unsigned long qtractorSession::loopStartTime (void) const
-{
-	return m_iLoopStartTime;
-}
-
-unsigned long qtractorSession::loopEndTime (void) const
-{
-	return m_iLoopEndTime;
-}
-
 
 // Session punch points accessors.
 void qtractorSession::setPunch (
@@ -1590,33 +1213,8 @@ void qtractorSession::setPunch (
 	m_iPunchOutTime = tickFromFrame(iPunchOut);
 }
 
-unsigned long qtractorSession::punchIn (void) const
-{
-	return m_iPunchIn;
-}
 
-unsigned long qtractorSession::punchOut (void) const
-{
-	return m_iPunchOut;
-}
-
-bool qtractorSession::isPunching (void) const
-{
-	return (m_iPunchIn < m_iPunchOut);
-}
-
-
-unsigned long qtractorSession::punchInTime (void) const
-{
-	return m_iPunchInTime;
-}
-
-unsigned long qtractorSession::punchOutTime (void) const
-{
-	return m_iPunchOutTime;
-}
-
-
+// Absolute frame time and offset.
 unsigned long qtractorSession::frameTime (void) const
 {
 	return m_pAudioEngine->sessionCursor()->frameTime();
@@ -1769,23 +1367,6 @@ void qtractorSession::setRecording ( bool bRecording )
 		if (pTrack->isRecord())
 			trackRecord(pTrack, bRecording, iClipStart, iFrameTime);
 	}
-}
-
-bool qtractorSession::isRecording (void) const
-{
-	return m_bRecording;
-}
-
-
-// Loop-recording/take mode.
-void qtractorSession::setLoopRecordingMode ( int iLoopRecordingMode )
-{
-	m_iLoopRecordingMode = iLoopRecordingMode;
-}
-
-int qtractorSession::loopRecordingMode (void) const
-{
-	return m_iLoopRecordingMode;
 }
 
 
@@ -1991,12 +1572,6 @@ void qtractorSession::setAutoDeactivate ( bool bOn )
 }
 
 
-bool qtractorSession::isAutoDeactivate (void) const
-{
-	return m_bAutoDeactivate;
-}
-
-
 bool qtractorSession::canTrackBeAutoDeactivated ( qtractorTrack *pTrack ) const
 {
 	bool bCanBeDeactivated = false;
@@ -2033,31 +1608,8 @@ bool qtractorSession::canTrackBeAutoDeactivated ( qtractorTrack *pTrack ) const
 }
 
 
-// Track recording specifics.
-unsigned short qtractorSession::audioRecord (void) const
-{
-	return m_iAudioRecord;
-}
-
-unsigned short qtractorSession::midiRecord (void) const
-{
-	return m_iMidiRecord;
-}
-
-
-// Audio peak factory accessor.
-qtractorAudioPeakFactory *qtractorSession::audioPeakFactory (void) const
-{
-	return m_pAudioPeakFactory;
-}
-
 
 // MIDI track tagging specifics.
-unsigned short qtractorSession::midiTag (void) const
-{
-	return m_iMidiTag;
-}
-
 void qtractorSession::acquireMidiTag ( qtractorTrack *pTrack )
 {
 	if (pTrack->midiTag() > 0)
@@ -2099,24 +1651,6 @@ void qtractorSession::addMidiManager ( qtractorMidiManager *pMidiManager )
 void qtractorSession::removeMidiManager ( qtractorMidiManager *pMidiManager )
 {
 	m_midiManagers.remove(pMidiManager);
-}
-
-
-const qtractorList<qtractorMidiManager>& qtractorSession::midiManagers (void) const
-{
-	return m_midiManagers;
-}
-
-
-// Auto time-stretching global flag (when tempo changes)
-void qtractorSession::setAutoTimeStretch ( bool bAutoTimeStretch )
-{
-	m_bAutoTimeStretch = bAutoTimeStretch;
-}
-
-bool qtractorSession::isAutoTimeStretch (void) const
-{
-	return m_bAutoTimeStretch;
 }
 
 
@@ -2196,13 +1730,6 @@ qtractorTrack *qtractorSession::findTrackCurveList (
 qtractorTrack *qtractorSession::findTrack ( const QString& sTrackName ) const
 {
 	return m_trackNames.value(sTrackName, nullptr);
-}
-
-
-// Session files registry accessor.
-qtractorFileList *qtractorSession::files (void) const
-{
-	return m_pFiles;
 }
 
 
@@ -2802,20 +2329,6 @@ qtractorSession::Document::Document ( QDomDocument *pDocument,
 // Default destructor.
 qtractorSession::Document::~Document (void)
 {
-}
-
-
-// Session accessor.
-qtractorSession *qtractorSession::Document::session (void) const
-{
-	return m_pSession;
-}
-
-
-// File list accessor.
-qtractorFiles *qtractorSession::Document::files (void) const
-{
-	return m_pFiles;
 }
 
 
