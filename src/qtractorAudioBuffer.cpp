@@ -1049,7 +1049,10 @@ bool qtractorAudioBuffer::inSync (
 // Export-mode sync executive.
 void qtractorAudioBuffer::syncExport (void)
 {
-	if (m_pSyncThread) m_pSyncThread->syncExport();
+	if (m_pSyncThread) {
+		m_pSyncThread->syncExport();
+		m_pSyncThread->sync(this);
+	}
 }
 
 
