@@ -57,10 +57,10 @@ public:
 	void clear();
 
 	// Session helper accessor.
-	qtractorSession *session() const;
+	qtractorSession *session() const { return m_pSession; }
 
 	// Session cursor accessor.
-	qtractorSessionCursor *sessionCursor() const;
+	qtractorSessionCursor *sessionCursor() const { return m_pSessionCursor; }
 
 	// Engine type method.
 	qtractorTrack::TrackType syncType() const;
@@ -69,14 +69,14 @@ public:
 	const QString& clientName() const;
 
 	// Engine status methods.
-	bool isActivated() const;
+	bool isActivated() const { return m_bActivated; }
 
 	// Engine state methods.
 	void setPlaying(bool bPlaying);
-	bool isPlaying() const;
+	bool isPlaying() const { return m_bPlaying; }
 
 	// Buses list management methods.
-	const qtractorList<qtractorBus>& buses() const;
+	const qtractorList<qtractorBus>& buses() const { return m_buses; }
 
 	void addBus(qtractorBus *pBus, qtractorBus *pAfterBus = nullptr);
 	void removeBus(qtractorBus *pBus);
@@ -88,7 +88,7 @@ public:
 	qtractorBus *findOutputBus(const QString& sOutputBusName) const;
 
 	// Exo-buses list management methods.
-	const qtractorList<qtractorBus>& busesEx() const;
+	const qtractorList<qtractorBus>& busesEx() const { return m_busesEx; }
 
 	void addBusEx(qtractorBus *pBus);
 	void removeBusEx(qtractorBus *pBus);
@@ -111,7 +111,7 @@ public:
 
 	// Front-end/UI buses accessors.
 	//
-	const QList<qtractorBus *>& buses2() const;
+	const QList<qtractorBus *>& buses2() const { return m_buses2; }
 
 	void moveBus2(qtractorBus *pBus, int iDelta);
 
@@ -178,18 +178,18 @@ public:
 	virtual ~qtractorBus();
 
 	// Device accessor.
-	qtractorEngine *engine() const;
+	qtractorEngine *engine() const { return m_pEngine; }
 
 	// Bus type method.
 	qtractorTrack::TrackType busType() const;
 
 	// Bus name accessors.
 	void setBusName(const QString& sBusName);
-	const QString& busName() const;
+	const QString& busName() const { return m_sBusName; }
 
 	// Bus mode property accessor.
 	void setBusMode(BusMode busMode);
-	BusMode busMode() const;
+	BusMode busMode() const { return m_busMode; }
 
 	// Pass-thru mode accessor.
 	void setMonitor(bool bMonitor);
@@ -208,8 +208,10 @@ public:
 	virtual qtractorPluginList *pluginList_out() const = 0;
 
 	// State (monitor) button setup.
-	qtractorSubject *monitorSubject() const;
-	qtractorMidiControlObserver *monitorObserver() const;
+	qtractorSubject *monitorSubject() const
+		{ return m_pMonitorSubject; }
+	qtractorMidiControlObserver *monitorObserver() const
+		{ return m_pMonitorObserver; }
 
 	// State (monitor) notifier (proto-slot).
 	void monitorChangeNotify(bool bOn);

@@ -105,20 +105,26 @@ public:
 	qtractorMidiEngineProxy *proxy();
 
 	// ALSA client descriptor accessor.
-	snd_seq_t *alsaSeq() const;
-	int alsaClient() const;
-	int alsaQueue() const;
+	snd_seq_t *alsaSeq() const
+		{ return m_pAlsaSeq; }
+	int alsaClient() const
+		{ return m_iAlsaClient; }
+	int alsaQueue() const
+		{ return m_iAlsaQueue; }
 
 	// ALSA queue time accessor.
 	unsigned long queueTime() const;
 
 	// ALSA subscription port notifier.
-	QSocketNotifier *alsaNotifier() const;
+	QSocketNotifier *alsaNotifier() const
+		{ return m_pAlsaNotifier; }
 	void alsaNotifyAck();
 
 	// Read ahead frames configuration.
-	void setReadAhead(unsigned int iReadAhead);
-	unsigned int readAhead() const;
+	void setReadAhead(unsigned int iReadAhead)
+		{ m_iReadAhead = iReadAhead; }
+	unsigned int readAhead() const
+		{ return m_iReadAhead; }
 
 	// MIDI output process cycle iteration.
 	void process();
@@ -138,7 +144,8 @@ public:
 
 	// Reset all MIDI controllers...
 	void resetAllControllers(bool bForceImmediate);
-	bool isResetAllControllersPending() const;
+	bool isResetAllControllersPending() const
+		{ return (m_iResetAllControllersPending > 0); }
 
 	// Shut-off all MIDI buses (stop)...
 	void shutOffAllBuses(bool bClose = false);
@@ -165,10 +172,12 @@ public:
 	void flush();
 
 	// The delta-time/frame accessors.
-	long timeStart() const;
+	long timeStart() const
+		{ return m_iTimeStart; }
 
 	// The absolute-time/frame accessors.
-	unsigned long timeStartEx() const;
+	unsigned long timeStartEx() const
+		{ return m_iTimeStartEx; }
 
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
@@ -178,71 +187,99 @@ public:
 
 	// Metronome switching.
 	void setMetronome(bool bMetronome);
-	bool isMetronome() const;
+	bool isMetronome() const
+		{ return m_bMetronome; }
 
 	// Metronome enabled accessors.
-	void setMetroEnabled(bool bMetroEnabled);
-	bool isMetroEnabled() const;
+	void setMetroEnabled(bool bMetroEnabled)
+		{ m_bMetroEnabled = bMetroEnabled; }
+	bool isMetroEnabled() const
+		{ return m_bMetroEnabled; }
 
 	// Metronome bus accessors.
 	void setMetroBus(bool bMetroBus);
-	bool isMetroBus() const;
+	bool isMetroBus() const
+		{ return m_bMetroBus; }
+
 	void resetMetroBus();
 
 	// Metronome parameters.
-	void setMetroChannel (unsigned short iChannel);
-	unsigned short metroChannel() const;
+	void setMetroChannel (unsigned short iChannel)
+		{ m_iMetroChannel = iChannel; }
+	unsigned short metroChannel() const
+		{ return m_iMetroChannel; }
 
 	void setMetroBar(int iNote, int iVelocity, unsigned long iDuration);
-	int metroBarNote() const;
-	int metroBarVelocity() const;
-	unsigned long metroBarDuration() const;
+	int metroBarNote() const
+		{ return m_iMetroBarNote; }
+	int metroBarVelocity() const
+		{ return m_iMetroBarVelocity; }
+	unsigned long metroBarDuration() const
+		{ return m_iMetroBarDuration; }
 
 	void setMetroBeat(int iNote, int iVelocity, unsigned long iDuration);
-	int metroBeatNote() const;
-	int metroBeatVelocity() const;
-	unsigned long metroBeatDuration() const;
+	int metroBeatNote() const
+		{ return m_iMetroBeatNote; }
+	int metroBeatVelocity() const
+		{ return m_iMetroBeatVelocity; }
+	unsigned long metroBeatDuration() const
+		{ return m_iMetroBeatDuration; }
 
 	// Metronome latency offset (in ticks).
-	void setMetroOffset(unsigned long iMetroOffset);
-	unsigned long metroOffset() const;
+	void setMetroOffset(unsigned long iMetroOffset)
+		{ m_iMetroOffset = iMetroOffset; }
+	unsigned long metroOffset() const
+		{ return m_iMetroOffset; }
 
 	// Process metronome clicks.
 	void processMetro(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Access to current tempo/time-signature cursor.
-	qtractorTimeScale::Cursor *metroCursor() const;
+	qtractorTimeScale::Cursor *metroCursor() const
+		{ return m_pMetroCursor; }
 
 	// Metronome count-in switching.
-	void setCountIn(bool bCountIn);
-	bool isCountIn() const;
+	void setCountIn(bool bCountIn)
+		{ m_bCountIn = bCountIn; }
+	bool isCountIn() const
+		{ return m_bCountIn; }
 
 	// Metronome count-in mode.
 	enum CountInMode { CountInNone = 0, CountInPlayback, CountInRecording };
 
-	void setCountInMode(CountInMode countInMode);
-	CountInMode countInMode() const;
+	void setCountInMode(CountInMode countInMode)
+		{ m_countInMode = countInMode; }
+	CountInMode countInMode() const
+		{ return m_countInMode; }
 
 	// Metronome count-in number of beats.
-	void setCountInBeats(unsigned short iCountInBeats);
-	unsigned short countInBeats() const;
+	void setCountInBeats(unsigned short iCountInBeats)
+		{ m_iCountInBeats = iCountInBeats; }
+	unsigned short countInBeats() const
+		{ return m_iCountInBeats; }
 
 	// Metronome count-in status.
 	unsigned short countIn(unsigned int nframes);
-	unsigned short countIn() const;
+	unsigned short countIn() const
+		{ return m_iCountIn; }
 
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);
-	bool isControlBus() const;
+	bool isControlBus() const
+		{ return m_bControlBus; }
+
 	void resetControlBus();
 
 	// Control buses accessors.
-	qtractorMidiBus *controlBus_in() const;
-	qtractorMidiBus *controlBus_out() const;
+	qtractorMidiBus *controlBus_in() const
+		{ return m_pIControlBus; }
+	qtractorMidiBus *controlBus_out() const
+		{ return m_pOControlBus; }
 
 	// Audition/pre-listening bus mode accessors.
 	void setPlayerBus(bool bPlayerBus);
-	bool isPlayerBus() const;
+	bool isPlayerBus() const
+		{ return m_bPlayerBus; }
 
 	bool isPlayerOpen() const;
 	bool openPlayer(const QString& sFilename, int iTrackChannel = -1);
@@ -273,36 +310,52 @@ public:
 	int updateConnects();
 
 	// Capture (record) quantization accessors.
-	void setCaptureQuantize(unsigned short iCaptureQuantize);
-	unsigned short captureQuantize() const;
+	void setCaptureQuantize(unsigned short iCaptureQuantize)
+		{ m_iCaptureQuantize = iCaptureQuantize; }
+	unsigned short captureQuantize() const
+		{ return m_iCaptureQuantize; }
 
 	// ALSA device queue timer.
-	void setAlsaTimer(int iAlsaTimer);
-	int alsaTimer() const;
+	void setAlsaTimer(int iAlsaTimer)
+		{ m_iAlsaTimer = iAlsaTimer; }
+	int alsaTimer() const
+		{ return m_iAlsaTimer; }
 
 	// Drift check/correction accessors.
-	void setDriftCorrect(bool bDriftCorrect);
-	bool isDriftCorrect() const;
+	void setDriftCorrect(bool bDriftCorrect)
+		{ m_bDriftCorrect = bDriftCorrect; }
+	bool isDriftCorrect() const
+		{ return m_bDriftCorrect; }
 
 	// MMC device-id accessors.
-	void setMmcDevice(unsigned char mmcDevice);
-	unsigned char mmcDevice() const;
+	void setMmcDevice(unsigned char mmcDevice)
+		{ m_mmcDevice = mmcDevice; }
+	unsigned char mmcDevice() const
+		{ return m_mmcDevice; }
 
 	// MMC mode accessors.
-	void setMmcMode(qtractorBus::BusMode mmcMode);
-	qtractorBus::BusMode mmcMode() const;
+	void setMmcMode(qtractorBus::BusMode mmcMode)
+		{ m_mmcMode = mmcMode; }
+	qtractorBus::BusMode mmcMode() const
+		{ return m_mmcMode; }
 
 	// SPP mode accessors.
-	void setSppMode(qtractorBus::BusMode sppMode);
-	qtractorBus::BusMode sppMode() const;
+	void setSppMode(qtractorBus::BusMode sppMode)
+		{ m_sppMode = sppMode; }
+	qtractorBus::BusMode sppMode() const
+		{ return m_sppMode; }
 
 	// MIDI Clock mode accessors.
-	void setClockMode(qtractorBus::BusMode clockMode);
-	qtractorBus::BusMode clockMode() const;
+	void setClockMode(qtractorBus::BusMode clockMode)
+		{ m_clockMode = clockMode; }
+	qtractorBus::BusMode clockMode() const
+		{ return m_clockMode; }
 
 	// Whether to reset all MIDI controllers (on playback start).
-	void setResetAllControllers(bool bResetAllControllers);
-	bool isResetAllControllers() const;
+	void setResetAllControllers(bool bResetAllControllers)
+		{ m_bResetAllControllers = bResetAllControllers; }
+	bool isResetAllControllers() const
+		{ return m_bResetAllControllers; }
 
 	// Reset ouput queue drift stats (audio vs. MIDI)...
 	void resetDrift();
@@ -482,7 +535,8 @@ public:
 	~qtractorMidiBus();
 
 	// ALSA sequencer port accessor.
-	int alsaPort() const;
+	int alsaPort() const
+		{ return m_iAlsaPort; }
 
 	// Activation methods.
 	bool open();
@@ -492,11 +546,14 @@ public:
 	void shutOff(bool bClose = false);
 
 	// SysEx setup list accessors.
-	qtractorMidiSysexList *sysexList() const;
+	qtractorMidiSysexList *sysexList() const
+		{ return m_pSysexList; }
 
 	// Default instrument name accessors.
-	void setInstrumentName(const QString& sInstrumentName);
-	const QString& instrumentName() const;
+	void setInstrumentName(const QString& sInstrumentName)
+		{ m_sInstrumentName = sInstrumentName; }
+	const QString& instrumentName() const
+		{ return m_sInstrumentName; }
 
 	// Channel map payload.
 	struct Patch
@@ -551,12 +608,16 @@ public:
 	qtractorMonitor *monitor_out() const;
 
 	// MIDI I/O bus-monitor accessors.
-	qtractorMidiMonitor *midiMonitor_in()  const;
-	qtractorMidiMonitor *midiMonitor_out() const;
+	qtractorMidiMonitor *midiMonitor_in() const
+		{ return m_pIMidiMonitor; }
+	qtractorMidiMonitor *midiMonitor_out() const
+		{ return m_pOMidiMonitor; }
 
 	// Plugin-chain accessors.
-	qtractorPluginList *pluginList_in()  const;
-	qtractorPluginList *pluginList_out() const;
+	qtractorPluginList *pluginList_in() const
+		{ return m_pIPluginList; }
+	qtractorPluginList *pluginList_out() const
+		{ return m_pOPluginList; }
 
 	// Retrieve/restore client:port connections.
 	// return the effective number of connection attempts.
