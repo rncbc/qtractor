@@ -641,6 +641,7 @@ void qtractorAudioEngine::notifyPortEvent (void)
 void qtractorAudioEngine::notifyBuffEvent ( unsigned int iBufferSize )
 {
 	if (m_iBufferSizeEx < iBufferSize) {
+		m_iBufferSizeEx = iBufferSize;
 		m_proxy.notifyBuffEvent(iBufferSize);
 	} else {
 		m_iBufferSize = iBufferSize;
@@ -669,58 +670,6 @@ void qtractorAudioEngine::notifyPropEvent (void)
 void qtractorAudioEngine::notifySelfEvent (void)
 {
 	m_proxy.notifySelfEvent();
-}
-
-
-// JACK client descriptor accessor.
-jack_client_t *qtractorAudioEngine::jackClient (void) const
-{
-	return m_pJackClient;
-}
-
-
-// Internal sample-rate accessor.
-unsigned int qtractorAudioEngine::sampleRate (void) const
-{
-	return m_iSampleRate;
-}
-
-
-// Buffer size accessors.
-unsigned int qtractorAudioEngine::bufferSize (void) const
-{
-	return m_iBufferSize;
-}
-
-unsigned int qtractorAudioEngine::bufferSizeEx (void) const
-{
-	return m_iBufferSizeEx;
-}
-
-
-// Buffer offset accessor.
-unsigned int qtractorAudioEngine::bufferOffset (void) const
-{
-	return m_iBufferOffset;
-}
-
-
-// Block-stride size (in frames) accessor.
-unsigned int qtractorAudioEngine::blockSize (void) const
-{
-	return m_iBlockSize;
-}
-
-
-// Audio (Master) bus defaults accessors.
-void qtractorAudioEngine::setMasterAutoConnect ( bool bMasterAutoConnect )
-{
-	m_bMasterAutoConnect = bMasterAutoConnect;
-}
-
-bool qtractorAudioEngine::isMasterAutoConnect (void) const
-{
-	return m_bMasterAutoConnect;
 }
 
 
@@ -1044,7 +993,7 @@ bool qtractorAudioEngine::isProcessing (void)
 int qtractorAudioEngine::process ( unsigned int nframes )
 {
 	// Don't bother with a thing, if not running.
-	if (!isActivated())
+	if (!isActivated() || nframes > m_iBufferSize)
 		return 0;
 
 	// Reset buffer offset.
@@ -1711,58 +1660,11 @@ bool qtractorAudioEngine::saveElement (
 }
 
 
-// JACK Session UUID accessors.
-void qtractorAudioEngine::setSessionId ( const QString& sSessionId )
-{
-	m_sSessionId = sSessionId;
-}
-
-const QString& qtractorAudioEngine::sessionId (void) const
-{
-	return m_sSessionId;
-}
-
-
-// Audio-exporting freewheel (internal) state accessors.
-void qtractorAudioEngine::setFreewheel ( bool bFreewheel )
-{
-	m_bFreewheel = bFreewheel;
-}
-
-bool qtractorAudioEngine::isFreewheel (void) const
-{
-	return m_bFreewheel;
-}
-
-
-// Audio-exporting (freewheeling) state accessors.
-void qtractorAudioEngine::setExporting ( bool bExporting )
-{
-	m_bExporting = bExporting;
-}
-
-bool qtractorAudioEngine::isExporting (void) const
-{
-	return m_bExporting;
-}
-
-
 // Last known export accessors.
-unsigned long qtractorAudioEngine::exportStart (void) const
-{
-	return m_iExportStart;
-}
-
-unsigned long qtractorAudioEngine::exportOffset (void) const
-{
-	return m_iExportOffset;
-}
-
 unsigned long qtractorAudioEngine::exportLength (void) const
 {
 	return (m_iExportEnd > m_iExportStart ? m_iExportEnd - m_iExportStart : 0);
 }
-
 
 
 // Audio-export method.
@@ -1964,21 +1866,11 @@ void qtractorAudioEngine::setMetronome ( bool bMetronome )
 		resetMetro();
 }
 
-bool qtractorAudioEngine::isMetronome (void) const
-{
-	return m_bMetronome;
-}
-
 
 // Metronome enabled accessors.
 void qtractorAudioEngine::setMetroEnabled ( bool bMetroEnabled )
 {
 	m_bMetroEnabled = bMetroEnabled;
-}
-
-bool qtractorAudioEngine::isMetroEnabled (void) const
-{
-	return m_bMetroEnabled;
 }
 
 
@@ -2007,10 +1899,6 @@ void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
 	}
 }
 
-bool qtractorAudioEngine::isMetroBus (void) const
-{
-	return m_bMetroBus;
-}
 
 void qtractorAudioEngine::resetMetroBus (void)
 {
@@ -2024,128 +1912,12 @@ void qtractorAudioEngine::resetMetroBus (void)
 }
 
 
-// Metronome bus defaults accessors.
-void qtractorAudioEngine::setMetroAutoConnect ( bool bMetroAutoConnect )
-{
-	m_bMetroAutoConnect = bMetroAutoConnect;
-}
-
-bool qtractorAudioEngine::isMetroAutoConnect (void) const
-{
-	return m_bMetroAutoConnect;
-}
-
-
-
-// Metronome bar audio sample.
-void qtractorAudioEngine::setMetroBarFilename ( const QString& sFilename )
-{
-	m_sMetroBarFilename = sFilename;
-}
-
-const QString& qtractorAudioEngine::metroBarFilename (void) const
-{
-	return m_sMetroBarFilename;
-}
-
-
-// Metronome bar audio sample gain.
-void qtractorAudioEngine::setMetroBarGain ( float fGain )
-{
-	m_fMetroBarGain = fGain;
-}
-
-float qtractorAudioEngine::metroBarGain (void) const
-{
-	return m_fMetroBarGain;
-}
-
-
-// Metronome beat audio sample.
-void qtractorAudioEngine::setMetroBeatFilename ( const QString& sFilename )
-{
-	m_sMetroBeatFilename = sFilename;
-}
-
-const QString& qtractorAudioEngine::metroBeatFilename() const
-{
-	return m_sMetroBeatFilename;
-}
-
-
-// Metronome beat audio sample gain.
-void qtractorAudioEngine::setMetroBeatGain ( float fGain )
-{
-	m_fMetroBeatGain = fGain;
-}
-
-float qtractorAudioEngine::metroBeatGain (void) const
-{
-	return m_fMetroBeatGain;
-}
-
-
-// Metronome latency offset (in frames).
-void qtractorAudioEngine::setMetroOffset ( unsigned long iMetroOffset )
-{
-	m_iMetroOffset = iMetroOffset;
-}
-
-unsigned long qtractorAudioEngine::metroOffset (void) const
-{
-	return m_iMetroOffset;
-}
-
-
 // Metronome latency offset compensation.
 unsigned long qtractorAudioEngine::metro_offset ( unsigned long iFrame ) const
 {
 	const unsigned long iOffset = m_iMetroOffset;
 	//	+ (m_pMetroBus ? m_pMetroBus->latency_out() : 0);
 	return (iFrame > iOffset ? iFrame - iOffset : iFrame);
-}
-
-
-// Metronome count-in switching.
-void qtractorAudioEngine::setCountIn ( bool bCountIn )
-{
-	m_bCountIn = bCountIn;
-}
-
-bool qtractorAudioEngine::isCountIn (void) const
-{
-	return m_bCountIn;
-}
-
-
-// Metronome count-in mode.
-void qtractorAudioEngine::setCountInMode ( CountInMode countInMode )
-{
-	m_countInMode = countInMode;
-}
-
-qtractorAudioEngine::CountInMode qtractorAudioEngine::countInMode (void) const
-{
-	return m_countInMode;
-}
-
-
-// Metronome count-in number of beats.
-void qtractorAudioEngine::setCountInBeats ( unsigned short iCountInBeats )
-{
-	m_iCountInBeats = iCountInBeats;
-}
-
-unsigned short qtractorAudioEngine::countInBeats (void) const
-{
-	return m_iCountInBeats;
-}
-
-
-// Metronome count-in status.
-unsigned short qtractorAudioEngine::countIn (void) const
-{
-	return m_iCountIn;
 }
 
 
@@ -2361,10 +2133,6 @@ void qtractorAudioEngine::setPlayerBus ( bool bPlayerBus )
 	}
 }
 
-bool qtractorAudioEngine::isPlayerBus (void) const
-{
-	return m_bPlayerBus;
-}
 
 void qtractorAudioEngine::resetPlayerBus (void)
 {
@@ -2375,18 +2143,6 @@ void qtractorAudioEngine::resetPlayerBus (void)
 
 	if (isActivated())
 		openPlayerBus();
-}
-
-
-// Audition/pre-listening bus defaults accessors.
-void qtractorAudioEngine::setPlayerAutoConnect ( bool bPlayerAutoConnect )
-{
-	m_bPlayerAutoConnect = bPlayerAutoConnect;
-}
-
-bool qtractorAudioEngine::isPlayerAutoConnect (void) const
-{
-	return m_bPlayerAutoConnect;
 }
 
 
@@ -2473,13 +2229,6 @@ void qtractorAudioEngine::deletePlayerBus (void)
 }
 
 
-// Tell whether audition/pre-listening is active...
-bool qtractorAudioEngine::isPlayerOpen (void) const
-{
-	return m_bPlayerOpen;
-}
-
-
 // Open and start audition/pre-listening...
 bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 {
@@ -2562,41 +2311,6 @@ void qtractorAudioEngine::setTransportMode (
 	}
 
 }
-
-qtractorBus::BusMode qtractorAudioEngine::transportMode (void) const
-{
-	return m_transportMode;
-}
-
-
-// JACK Transport latency accessors.
-void qtractorAudioEngine::setTransportLatency ( unsigned int iTransportLatency )
-{
-	m_iTransportLatency = iTransportLatency;
-}
-
-unsigned int qtractorAudioEngine::transportLatency (void) const
-{
-	return m_iTransportLatency;
-}
-
-
-// JACK Timebase mode accessors.
-void qtractorAudioEngine::setTimebase ( bool bTimebase )
-{
-	m_bTimebase = bTimebase;
-}
-
-bool qtractorAudioEngine::isTimebase (void) const
-{
-	return m_bTimebase;
-}
-
-bool qtractorAudioEngine::isTimebaseEx (void) const
-{
-	return (!m_bTimebase || m_iTimebase > 0);
-}
-
 
 
 // JACK Timebase reset method.
@@ -2791,28 +2505,6 @@ void qtractorAudioEngine::updateLatency_out (void)
 }
 
 
-// Audio latency compensation stuff.
-void qtractorAudioEngine::setCaptureLatencyMode ( LatencyMode latencyMode )
-{
-	m_captureLatencyMode = latencyMode;
-}
-
-qtractorAudioEngine::LatencyMode qtractorAudioEngine::captureLatencyMode (void) const
-{
-	return m_captureLatencyMode;
-}
-
-void qtractorAudioEngine::setCaptureLatency ( unsigned int iCaptureLatency )
-{
-	m_iCaptureLatency = iCaptureLatency;
-}
-
-unsigned int qtractorAudioEngine::captureLatency (void) const
-{
-	return m_iCaptureLatency;
-}
-
-
 //----------------------------------------------------------------------
 // class qtractorAudioBus -- Managed JACK port set
 //
@@ -2908,23 +2600,6 @@ void qtractorAudioBus::setChannels ( unsigned short iChannels )
 	if (m_pOPluginList)
 		updatePluginList(m_pOPluginList, qtractorPluginList::AudioOutBus);
 #endif
-}
-
-unsigned short qtractorAudioBus::channels (void) const
-{
-	return m_iChannels;
-}
-
-
-// Auto-connection predicate.
-void qtractorAudioBus::setAutoConnect ( bool bAutoConnect )
-{
-	m_bAutoConnect = bAutoConnect;
-}
-
-bool qtractorAudioBus::isAutoConnect (void) const
-{
-	return m_bAutoConnect;
 }
 
 
@@ -3337,7 +3012,7 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 }
 
 
-// Virtual I/O bus-monitor accessors.
+	// Virtual I/O bus-monitor accessors.
 qtractorMonitor *qtractorAudioBus::monitor_in (void) const
 {
 	return audioMonitor_in();
@@ -3346,30 +3021,6 @@ qtractorMonitor *qtractorAudioBus::monitor_in (void) const
 qtractorMonitor *qtractorAudioBus::monitor_out (void) const
 {
 	return audioMonitor_out();
-}
-
-
-// Audio I/O bus-monitor accessors.
-qtractorAudioMonitor *qtractorAudioBus::audioMonitor_in (void) const
-{
-	return m_pIAudioMonitor;
-}
-
-qtractorAudioMonitor *qtractorAudioBus::audioMonitor_out (void) const
-{
-	return m_pOAudioMonitor;
-}
-
-
-// Plugin-chain accessors.
-qtractorPluginList *qtractorAudioBus::pluginList_in (void) const
-{
-	return m_pIPluginList;
-}
-
-qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
-{
-	return m_pOPluginList;
 }
 
 
@@ -3443,18 +3094,6 @@ void qtractorAudioBus::updateLatency_out (void)
 		m_iOLatency += lat_max;
 	#endif
 	}
-}
-
-
-// Audio I/O port latency accessors.
-unsigned int qtractorAudioBus::latency_in (void) const
-{
-	return m_iILatency;
-}
-
-unsigned int qtractorAudioBus::latency_out (void) const
-{
-	return m_iOLatency;
 }
 
 
