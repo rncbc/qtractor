@@ -70,107 +70,154 @@ public:
 
 	// Session directory path accessors.
 	void setSessionDir(const QString& sSessionDir);
-	const QString& sessionDir() const;
+	const QString& sessionDir() const
+		{ return m_props.sessionDir; }
 
 	// Session filename accessors.
-	void setSessionName(const QString& sSessionName);
-	const QString& sessionName() const;
+	void setSessionName(const QString& sSessionName)
+		{ m_props.sessionName = sSessionName; }
+	const QString& sessionName() const
+		{ return m_props.sessionName; }
 
 	// g3n { Session NamePattern accessors for templates.
-	void setSessionNamePattern(const QString& sSessionNamePattern);
-	const QString& sessionNamePattern() const;
+	void setSessionNamePattern(const QString& sSessionNamePattern)
+		{ m_props.sessionNamePattern = sSessionNamePattern; }
+	const QString& sessionNamePattern() const
+		{ return m_props.sessionNamePattern; }
+
 	// }
 	// Session description accessors.
-	void setDescription(const QString& sDescription);
-	const QString& description() const;
+	void setDescription(const QString& sDescription)
+		{ m_props.description = sDescription; }
+	const QString& description() const
+		{ return m_props.description; }
 
 	// Session startlength mod-accessors.
 	void updateSession(
 		unsigned long iSessionStart = 0, unsigned long iSessionEnd = 0);
-	unsigned long sessionStart() const;
-	unsigned long sessionEnd() const;
+	unsigned long sessionStart() const
+		{ return m_iSessionStart; }
+	unsigned long sessionEnd() const
+		{ return m_iSessionEnd; }
 
 	// Time-scale helper accessors.
-	qtractorTimeScale *timeScale();
+	qtractorTimeScale *timeScale()
+		{ return &(m_props.timeScale); }
 
 	// Device engine common client name accessors.
-	void setClientName(const QString& sClientName);
-	const QString& clientName() const;
+	void setClientName(const QString& sClientName)
+		{ m_sClientName = sClientName; }
+	const QString& clientName() const
+		{ return m_sClientName; }
 
 	// Sample rate accessors.
-	void setSampleRate(unsigned int iSampleRate);
-	unsigned int sampleRate() const;
+	void setSampleRate(unsigned int iSampleRate)
+		{ m_props.timeScale.setSampleRate(iSampleRate); }
+	unsigned int sampleRate() const
+		{ return m_props.timeScale.sampleRate(); }
 
 	// Session tempo accessors.
 	void setTempo(float fTempo);
-	float tempo() const;
+	float tempo() const { return m_props.timeScale.tempo(); }
 
 	// Tempo beat type accessors.
-	void setBeatType(unsigned short iBeatType);
-	unsigned short beatType() const;
+	void setBeatType(unsigned short iBeatType)
+		{ m_props.timeScale.setBeatType(iBeatType); }
+	unsigned short beatType() const
+		{ return m_props.timeScale.beatType(); }
 
 	// Resolution accessors.
 	void setTicksPerBeat(unsigned short iTicksPerBeat);
-	unsigned short ticksPerBeat() const;
+	unsigned short ticksPerBeat() const
+		{ return m_props.timeScale.ticksPerBeat(); }
 
 	// Beats/Bar(measure) accessors.
-	void setBeatsPerBar(unsigned short iBeatsPerBar);
-	unsigned short beatsPerBar() const;
+	void setBeatsPerBar(unsigned short iBeatsPerBar)
+		{ m_props.timeScale.setBeatsPerBar(iBeatsPerBar); }
+	unsigned short beatsPerBar() const
+		{ return m_props.timeScale.beatsPerBar(); }
 
 	// Time signature (denominator) accessors.
-	void setBeatDivisor(unsigned short iBeatDivisor);
-	unsigned short beatDivisor() const;
+	void setBeatDivisor(unsigned short iBeatDivisor)
+		{ m_props.timeScale.setBeatDivisor(iBeatDivisor); }
+	unsigned short beatDivisor() const
+		{ return m_props.timeScale.beatDivisor(); }
 
 	// Horizontal zoom factor.
-	void setHorizontalZoom(unsigned short iHorizontalZoom);
-	unsigned short horizontalZoom() const;
+	void setHorizontalZoom(unsigned short iHorizontalZoom)
+		{ m_props.timeScale.setHorizontalZoom(iHorizontalZoom); }
+	unsigned short horizontalZoom() const
+		{ return m_props.timeScale.horizontalZoom(); }
 
 	// Vertical zoom factor.
-	void setVerticalZoom(unsigned short iVerticalZoom);
-	unsigned short verticalZoom() const;
+	void setVerticalZoom(unsigned short iVerticalZoom)
+		{ m_props.timeScale.setVerticalZoom(iVerticalZoom); }
+	unsigned short verticalZoom() const
+		{ return m_props.timeScale.verticalZoom(); }
 
 	// Pixels per beat (width).	
-	void setPixelsPerBeat(unsigned short iPixelsPerBeat);
-	unsigned short pixelsPerBeat() const;
+	void setPixelsPerBeat(unsigned short iPixelsPerBeat)
+		{ m_props.timeScale.setPixelsPerBeat(iPixelsPerBeat); }
+	unsigned short pixelsPerBeat() const
+		{ return m_props.timeScale.pixelsPerBeat(); }
 
 	// Beat divisor (snap) accessors.
-	void setSnapPerBeat(unsigned short iSnapPerBeat);
-	unsigned short snapPerBeat(void) const;
+	void setSnapPerBeat(unsigned short iSnapPerBeat)
+		{ m_props.timeScale.setSnapPerBeat(iSnapPerBeat); }
+	unsigned short snapPerBeat(void) const
+		{ return m_props.timeScale.snapPerBeat(); }
 
 	// Pixel/Tick number conversion.
-	unsigned long tickFromPixel(unsigned int x);
-	unsigned int pixelFromTick(unsigned long iTick);
+	unsigned long tickFromPixel(unsigned int x)
+		{ return m_props.timeScale.tickFromPixel(x); }
+	unsigned int pixelFromTick(unsigned long iTick)
+		{ return m_props.timeScale.pixelFromTick(iTick); }
 
 	// Pixel/Frame number conversion.
-	unsigned long frameFromPixel(unsigned int x) const;
-	unsigned int pixelFromFrame(unsigned long iFrame) const;
+	unsigned long frameFromPixel(unsigned int x) const
+		{ return m_props.timeScale.frameFromPixel(x); }
+	unsigned int pixelFromFrame(unsigned long iFrame) const
+		{ return m_props.timeScale.pixelFromFrame(iFrame); }
 
 	// Beat/frame conversion.
-	unsigned long frameFromBeat(unsigned int iBeat);
-	unsigned int beatFromFrame(unsigned long iFrame);
+	unsigned long frameFromBeat(unsigned int iBeat)
+		{ return m_props.timeScale.frameFromBeat(iBeat); }
+	unsigned int beatFromFrame(unsigned long iFrame)
+		{ return m_props.timeScale.beatFromFrame(iFrame); }
 
 	// Tick/Frame number conversion.
-	unsigned long frameFromTick(unsigned long iTick);
-	unsigned long tickFromFrame(unsigned long iFrame);
+	unsigned long frameFromTick(unsigned long iTick)
+		{ return m_props.timeScale.frameFromTick(iTick); }
+	unsigned long tickFromFrame(unsigned long iFrame)
+		{ return m_props.timeScale.tickFromFrame(iFrame); }
 
 	// Tick/Frame range conversion (delta conversion).
 	unsigned long frameFromTickRange(
-		unsigned long iTickStart, unsigned long iTickEnd, bool bOffset = false);
+		unsigned long iTickStart, unsigned long iTickEnd, bool bOffset = false)
+		{ return m_props.timeScale.frameFromTickRange(iTickStart, iTickEnd, bOffset); }
 	unsigned long tickFromFrameRange(
-		unsigned long iFrameStart, unsigned long iFrameEnd, bool bOffset = false);
+		unsigned long iFrameStart, unsigned long iFrameEnd, bool bOffset = false)
+		{ return m_props.timeScale.tickFromFrameRange(iFrameStart, iFrameEnd, bOffset); }
 
 	// Beat/frame snap filters.
-	unsigned long tickSnap(unsigned long iTick);
-	unsigned long frameSnap(unsigned long iFrame);
-	unsigned int pixelSnap(unsigned int x);
+	unsigned long tickSnap(unsigned long iTick)
+		{ return m_props.timeScale.tickSnap(iTick); }
+	unsigned long frameSnap(unsigned long iFrame)
+		{ return m_props.timeScale.frameSnap(iFrame); }
+	unsigned int pixelSnap(unsigned int x)
+		{ return m_props.timeScale.pixelSnap(x); }
 
 	// Frame/locate (SMPTE) conversion.
-	unsigned long frameFromLocate(unsigned int iLocate) const;
-	unsigned int  locateFromFrame(unsigned long iFrame) const;
+	unsigned long frameFromLocate(unsigned int iLocate) const
+		{ return (iLocate * m_props.timeScale.sampleRate()) / 30; }
+	unsigned int locateFromFrame(unsigned long iFrame) const
+		{ return (30 * iFrame) / m_props.timeScale.sampleRate(); }
 
 	// Song position pointer (SPP=MIDI beats) to frame converters.
-	unsigned long frameFromSongPos(unsigned int iSongPos);
-	unsigned int  songPosFromFrame(unsigned long iFrame);
+	unsigned long frameFromSongPos(unsigned int iSongPos)
+		{ return frameFromTick((iSongPos * ticksPerBeat()) >> 2); }
+	unsigned int  songPosFromFrame(unsigned long iFrame)
+		{ return ((tickFromFrame(iFrame) << 2) / ticksPerBeat()); }
 
 	// Update time scale divisor factors.
 	void updateTimeScale();
@@ -183,7 +230,7 @@ public:
 	void updateSampleRate(unsigned int iSampleRate);
 
 	// Track list management methods.
-	const qtractorList<qtractorTrack>& tracks() const;
+	const qtractorList<qtractorTrack>& tracks() const { return m_tracks; }
 
 	void addTrack(qtractorTrack *pTrack);
 	void insertTrack(qtractorTrack *pTrack, qtractorTrack *pPrevTrack = nullptr);
@@ -191,23 +238,28 @@ public:
 	void updateTrack(qtractorTrack *pTrack);
 	void unlinkTrack(qtractorTrack *pTrack);
 
-	qtractorTrack *trackAt(int iTrack) const;
+	qtractorTrack *trackAt(int iTrack) const
+		{ return m_tracks.at(iTrack); }
 
 	// Current number of record-armed tracks.
 	void setRecordTracks(bool bRecord);
-	unsigned int recordTracks() const;
+	unsigned int recordTracks() const
+		{ return m_iRecordTracks; }
 
 	// Current number of mued tracks.
 	void setMuteTracks(bool bMute);
-	unsigned int muteTracks() const;
+	unsigned int muteTracks() const
+		{ return m_iMuteTracks; }
 
 	// Current number of solo tracks.
 	void setSoloTracks(bool bSolo);
-	unsigned int soloTracks() const;
+	unsigned int soloTracks() const
+		{ return m_iSoloTracks; }
 
 	// Temporary current track accessors.
 	void setCurrentTrack(qtractorTrack *pTrack);
-	qtractorTrack *currentTrack() const;
+	qtractorTrack *currentTrack() const
+		{ return m_pCurrentTrack; }
 
 	// Temporary current track predicates.
 	bool isTrackMonitor(qtractorTrack *pTrack) const;
@@ -229,8 +281,8 @@ public:
 	void disconnectAll();
 
 	// Device engine accessors.
-	qtractorMidiEngine  *midiEngine() const;
-	qtractorAudioEngine *audioEngine() const;
+	qtractorAudioEngine *audioEngine() const { return m_pAudioEngine; }
+	qtractorMidiEngine  *midiEngine()  const { return m_pMidiEngine;  }
 
 	// Wait for application stabilization.
 	static void stabilize(int msecs = 20);
@@ -268,29 +320,39 @@ public:
 
 	// Edit-head positioning.
 	void setEditHead(unsigned long iEditHead);
-	unsigned long editHead() const;
+	unsigned long editHead() const { return m_iEditHead; }
 
 	// Edit-tail positioning.
 	void setEditTail(unsigned long iEditTail);
-	unsigned long editTail() const;
+	unsigned long editTail() const  { return m_iEditTail; }
 
 	// Session loop points accessors.
 	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
-	unsigned long loopStart() const;
-	unsigned long loopEnd() const;
-	bool isLooping() const;
+	unsigned long loopStart() const
+		{ return m_iLoopStart; }
+	unsigned long loopEnd() const
+		{ return m_iLoopEnd; }
+	bool isLooping() const
+		{ return (m_iLoopStart < m_iLoopEnd); }
 
-	unsigned long loopStartTime() const;
-	unsigned long loopEndTime() const;
+	unsigned long loopStartTime() const
+		{ return m_iLoopStartTime; }
+	unsigned long loopEndTime() const
+		{ return m_iLoopEndTime; }
 
 	// Session punch points accessors.
 	void setPunch(unsigned long iPunchIn, unsigned long iPunchOut);
-	unsigned long punchIn() const;
-	unsigned long punchOut() const;
-	bool isPunching() const;
+	unsigned long punchIn() const
+		{ return m_iPunchIn; }
+	unsigned long punchOut() const
+		{ return m_iPunchOut; }
+	bool isPunching() const
+		{ return (m_iPunchIn < m_iPunchOut); }
 
-	unsigned long punchInTime() const;
-	unsigned long punchOutTime() const;
+	unsigned long punchInTime() const
+		{ return m_iPunchInTime; }
+	unsigned long punchOutTime() const
+		{ return m_iPunchOutTime; }
 
 	// Absolute frame time and offset.
 	unsigned long frameTime() const;
@@ -321,15 +383,17 @@ public:
 
 	// Consolidated session record state.
 	void setRecording(bool bRecording);
-	bool isRecording() const;
+	bool isRecording() const { return m_bRecording; }
 
 	// Loop-recording/take mode.
-	void setLoopRecordingMode(int iLoopRecordingMode);
-	int loopRecordingMode() const;
+	void setLoopRecordingMode(int iLoopRecordingMode)
+		{ m_iLoopRecordingMode = iLoopRecordingMode; }
+	int loopRecordingMode() const
+		{ return m_iLoopRecordingMode; }
 
 	// Track recording specifics.
-	unsigned short audioRecord() const;
-	unsigned short midiRecord() const;
+	unsigned short audioRecord() const { return m_iAudioRecord; }
+	unsigned short midiRecord()  const { return m_iMidiRecord;  }
 
 	// Special track-immediate methods.
 	void trackRecord(qtractorTrack *pTrack, bool bRecord,
@@ -340,15 +404,16 @@ public:
 	// Special auto-plugin-deactivation
 	void autoDeactivatePlugins(bool bForce = false);
 	void setAutoDeactivate(bool bOn);
-	bool isAutoDeactivate() const;
+	bool isAutoDeactivate() const { return m_bAutoDeactivate; }
 
 	// Audio peak factory accessor.
-	qtractorAudioPeakFactory *audioPeakFactory() const;
+	qtractorAudioPeakFactory *audioPeakFactory() const
+		{ return m_pAudioPeakFactory; }
 
 	// MIDI track tagging specifics.
-	unsigned short midiTag() const;
 	void acquireMidiTag(qtractorTrack *pTrack);
 	void releaseMidiTag(qtractorTrack *pTrack);
+	unsigned short midiTag() const { return m_iMidiTag; }
 
 	// MIDI session/tracks instrument/controller patching (conditional).
 	void resetAllMidiControllers(bool bForceImmediate);
@@ -357,11 +422,14 @@ public:
 	void addMidiManager(qtractorMidiManager *pMidiManager);
 	void removeMidiManager(qtractorMidiManager *pMidiManager);
 
-	const qtractorList<qtractorMidiManager>& midiManagers() const;
+	const qtractorList<qtractorMidiManager>& midiManagers() const
+		{ return m_midiManagers; }
 
 	// Auto time-stretching global flag (when tempo changes)
-	void setAutoTimeStretch(bool bAutoTimeStretch);
-	bool isAutoTimeStretch() const;
+	void setAutoTimeStretch(bool bAutoTimeStretch)
+		{ m_bAutoTimeStretch = bAutoTimeStretch; }
+	bool isAutoTimeStretch() const
+		{ return m_bAutoTimeStretch; }
 
 	// Session special process cycle executive.
 	void process(qtractorSessionCursor *pSessionCursor,
@@ -407,16 +475,18 @@ public:
 	};
 
 	// Alternate properties accessor.
-	Properties& properties();
+	Properties& properties() { return m_props; }
 
 	// Session command executive (undo/redo)
 	bool execute(qtractorCommand *pCommand);
 
 	// Session command list reference (undo/redo)
-	qtractorCommandList *commands() const;
+	qtractorCommandList *commands() const
+		{ return m_pCommands; }
 
 	// Instrument names mapping.
-	qtractorInstrumentList *instruments() const;
+	qtractorInstrumentList *instruments() const
+		{ return m_pInstruments; }
 
 	// Manage curve-lists to specific tracks.
 	void acquireTrackCurveList(qtractorTrack *pTrack);
@@ -429,7 +499,7 @@ public:
 	qtractorTrack *findTrack(const QString& sTrackName) const;
 
 	// Session files registry accessor.
-	qtractorFileList *files() const;
+	qtractorFileList *files() const { return m_pFiles; }
 
 	// Rename session files...
 	void renameSession(const QString& sOldName, const QString& sNewName);
@@ -566,8 +636,10 @@ public:
 	~Document();
 
 	// Property accessors.
-	qtractorSession *session() const;
-	qtractorFiles   *files() const;
+	qtractorSession *session() const
+		{ return m_pSession; }
+	qtractorFiles *files() const
+		{ return m_pFiles; }
 
 protected:
 

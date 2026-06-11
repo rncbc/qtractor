@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a prolly old bug on Clip/Normalize which was cutting short
+  on the selected clip length, giving erroneous results sometimes.
+
 - Added option to lock toolbars in place on the main and MIDI clip
   editor windows; fixed MIDI clip editor's thumb-view toolbar not
   saving state after close.
