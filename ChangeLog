@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.6.1  2026-06-13  An End-of-Spring'26 Release.
 
 - Fixed a prolly old bug on Clip/Normalize which was cutting short
   on the selected clip length, giving erroneous results sometimes.
