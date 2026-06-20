@@ -578,10 +578,13 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.AudioOutputAutoConnectCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.OpenEditorCheckBox,
+	QObject::connect(m_ui.OpenPluginEditorCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.QueryEditorTypeCheckBox,
+	QObject::connect(m_ui.KeepPluginEditorOnTopCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.QueryPluginEditorTypeCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.PluginBlacklistComboBox,
@@ -950,8 +953,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Plugin instruments options.
 	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
 	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
-	m_ui.OpenEditorCheckBox->setChecked(m_pOptions->bOpenEditor);
-	m_ui.QueryEditorTypeCheckBox->setChecked(m_pOptions->bQueryEditorType);
+	m_ui.OpenPluginEditorCheckBox->setChecked(m_pOptions->bOpenPluginEditor);
+	m_ui.KeepPluginEditorOnTopCheckBox->setChecked(m_pOptions->bKeepPluginEditorOnTop);
+	m_ui.QueryPluginEditorTypeCheckBox->setChecked(m_pOptions->bQueryPluginEditorType);
 
 	int iPluginType = m_pOptions->iPluginType - 1;
 	if (iPluginType < 0)
@@ -1116,8 +1120,9 @@ void qtractorOptionsForm::accept (void)
 		// Plugin instruments options.
 		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
 		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
-		m_pOptions->bOpenEditor          = m_ui.OpenEditorCheckBox->isChecked();
-		m_pOptions->bQueryEditorType     = m_ui.QueryEditorTypeCheckBox->isChecked();
+		m_pOptions->bOpenPluginEditor    = m_ui.OpenPluginEditorCheckBox->isChecked();
+		m_pOptions->bKeepPluginEditorOnTop = m_ui.KeepPluginEditorOnTopCheckBox->isChecked();
+		m_pOptions->bQueryPluginEditorType = m_ui.QueryPluginEditorTypeCheckBox->isChecked();
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
 		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();
