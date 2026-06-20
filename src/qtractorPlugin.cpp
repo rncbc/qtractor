@@ -696,7 +696,8 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 		// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions && pOptions->bKeepToolsOnTop) {
+		if (pOptions && (pOptions->bKeepToolsOnTop
+			|| pOptions->bKeepPluginEditorOnTop)) {
 			wflags |= Qt::Tool;
 		//	wflags |= Qt::WindowStaysOnTopHint;
 		#if 0//QTRACTOR_PLUGIN_FORM_TOOL_PARENT
