@@ -4376,8 +4376,8 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <item row="0" column="0" colspan="3">
-           <widget class="QCheckBox" name="OpenEditorCheckBox">
+          <item row="0" column="0" colspan="1">
+           <widget class="QCheckBox" name="OpenPluginEditorCheckBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -4392,8 +4392,37 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="1">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2">
+           <widget class="QCheckBox" name="KeepPluginEditorOnTopCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to keep all plugin editors (GUI) always on top</string>
+            </property>
+            <property name="text">
+             <string>&amp;Keep plugin editors (GUI) always on top</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="3">
-           <widget class="QCheckBox" name="QueryEditorTypeCheckBox">
+           <widget class="QCheckBox" name="QueryPluginEditorTypeCheckBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -5053,8 +5082,9 @@
   <tabstop>Lv2PresetDirToolButton</tabstop>
   <tabstop>AudioOutputBusCheckBox</tabstop>
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
-  <tabstop>OpenEditorCheckBox</tabstop>
-  <tabstop>QueryEditorTypeCheckBox</tabstop>
+  <tabstop>OpenPluginEditorCheckBox</tabstop>
+  <tabstop>KeepPluginEditorOnTopCheckBox</tabstop>
+  <tabstop>QueryPluginEditorTypeCheckBox</tabstop>
   <tabstop>PluginBlacklistComboBox</tabstop>
   <tabstop>PluginBlacklistToolButton</tabstop>
   <tabstop>PluginBlacklistAddToolButton</tabstop>
