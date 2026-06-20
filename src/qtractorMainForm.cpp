@@ -2494,9 +2494,13 @@ bool qtractorMainForm::closeSession (void)
 				cbox.setChecked(false);
 				cbox.blockSignals(true);
 				mbox.addButton(&cbox, QMessageBox::ActionRole);
+			#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+				mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+			#endif
 				bRemoveArchive = (mbox.exec() == QMessageBox::Ok);
 				if (cbox.isChecked())
 					m_pOptions->bConfirmArchive = false;
+				mbox.removeButton(&cbox);
 			#endif
 			}
 			qtractorDocument::clearExtractedArchives(bRemoveArchive);
@@ -2596,6 +2600,7 @@ bool qtractorMainForm::loadSessionFileEx (
 					bRemoveArchive (QMessageBox::warning(this, sTitle, sText,
 						QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
 				#else
+			qDebug("DEBUG> %s: ---A---", __func__);
 					QMessageBox mbox(this);
 					mbox.setIcon(QMessageBox::Warning);
 					mbox.setWindowTitle(sTitle);
@@ -2605,9 +2610,13 @@ bool qtractorMainForm::loadSessionFileEx (
 					cbox.setChecked(false);
 					cbox.blockSignals(true);
 					mbox.addButton(&cbox, QMessageBox::ActionRole);
+				#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+					mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+				#endif
 					bRemoveArchive = (mbox.exec() == QMessageBox::Ok);
 					if (cbox.isChecked())
 						m_pOptions->bConfirmArchive = false;
+			qDebug("DEBUG> %s: ---B---", __func__);
 				#endif
 					// Restarting?...
 					if (!bRemoveArchive) {
@@ -2773,6 +2782,9 @@ bool qtractorMainForm::saveSessionFileEx (
 				cbox.setChecked(false);
 				cbox.blockSignals(true);
 				mbox.addButton(&cbox, QMessageBox::ActionRole);
+			#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+				mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+			#endif
 				bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
 				if (cbox.isChecked())
 					m_pOptions->bConfirmArchive = false;
@@ -2814,6 +2826,9 @@ bool qtractorMainForm::saveSessionFileEx (
 				cbox.setChecked(false);
 				cbox.blockSignals(true);
 				mbox.addButton(&cbox, QMessageBox::ActionRole);
+			#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+				mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+			#endif
 				bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
 				if (cbox.isChecked())
 					m_pOptions->bConfirmArchive = false;
@@ -8605,6 +8620,9 @@ void qtractorMainForm::slowTimerSlot (void)
 					cbox.setChecked(false);
 					cbox.blockSignals(true);
 					mbox.addButton(&cbox, QMessageBox::ActionRole);
+				#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+					mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+				#endif
 					mbox.exec();// == QMessageBox::Ok
 					if (cbox.isChecked())
 						m_pOptions->bAudioSelfConnected = false;

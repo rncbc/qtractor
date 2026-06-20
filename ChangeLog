@@ -6,6 +6,13 @@ ChangeLog
 
 GIT HEAD
 
+- New user preference option introduced (cf. View/Options.../
+  Plugins/Editor/Keep plugin editors (GUI) always on top).
+  (EXPERIMENTAL)
+
+- Fixed crash when selecting the "Don't ask this again" option
+  on some message-box prompts. (EXPERIMENTAL)
+
 - Updated to CLAP v1.2.9
 
 
