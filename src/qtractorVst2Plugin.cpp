@@ -1212,16 +1212,16 @@ void qtractorVst2Plugin::openEditor ( QWidget *pParent )
 
 	// What style do we create tool childs?
 	Qt::WindowFlags wflags = Qt::Window;
-#if 0//QTRACTOR_VST2_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bKeepToolsOnTop) {
+	if (pOptions && pOptions->bKeepPluginEditorOnTop) {
 		wflags |= Qt::Tool;
 	//	wflags |= Qt::WindowStaysOnTopHint;
+	#if 0//QTRACTOR_VST2_PLUGIN_EDITOR_TOOL_PARENT
 		// Make sure it has a parent...
 		if (pParent == nullptr)
 			pParent = qtractorMainForm::getInstance();
+	#endif
 	}
-#endif
 
 	// Do it...
 	m_pEditorWidget = new EditorWidget(pParent, wflags);
