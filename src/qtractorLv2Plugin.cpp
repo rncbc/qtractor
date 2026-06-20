@@ -3414,7 +3414,7 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 	}
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bQueryEditorType
+	if (pOptions && pOptions->bQueryPluginEditorType
 		&& (ui_map.count() > 1)
 		&& (0 >= iEditorType || ui_iter == ui_end)) {
 		const QString& sTitle
@@ -3550,16 +3550,16 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 
 	// What style do we create tool childs?
 	Qt::WindowFlags wflags = Qt::Window;
-#if 0//QTRACTOR_LV2_EDITOR_TOOL
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bKeepToolsOnTop) {
+//	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bKeepPluginEditorOnTop) {
 		wflags |= Qt::Tool;
 	//	wflags |= Qt::WindowStaysOnTopHint;
+	#if 0//QTRACTOR_LV2_PLUGIN_EDITOR_TOOL_PARENT
 		// Make sure it has a parent...
 		if (pParent == nullptr)
 			pParent = qtractorMainForm::getInstance();
+	#endif
 	}
-#endif
 
 	const char *ui_host_uri = LV2_UI_HOST_URI;
 	const char *plugin_uri

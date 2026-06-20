@@ -565,7 +565,7 @@ void qtractorPluginListView::addPlugin (void)
 	bool bOpenEditor = false;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions)
-		bOpenEditor = pOptions->bOpenEditor;
+		bOpenEditor = pOptions->bOpenPluginEditor;
 
 	// Tell the world we'll take some time...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -1503,7 +1503,7 @@ void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 	bool bOpenEditor = false;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions)
-		bOpenEditor = pOptions->bOpenEditor;
+		bOpenEditor = pOptions->bOpenPluginEditor;
 
 	if (QApplication::keyboardModifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier))
