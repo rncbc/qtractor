@@ -67,9 +67,7 @@
 #include <xcb/xcb.h>
 #endif
 
-#if 0//QTRACTOR_VST3_EDITOR_TOOL
 #include "qtractorOptions.h"
-#endif
 
 #include "qtractorMainForm.h"
 
@@ -3365,16 +3363,16 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 
 	// What style do we create tool childs?
 	Qt::WindowFlags wflags = Qt::Window;
-#if 0//QTRACTOR_VST3_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bKeepToolsOnTop) {
+	if (pOptions && pOptions->bKeepPluginEditorOnTop) {
 		wflags |= Qt::Tool;
 	//	wflags |= Qt::WindowStaysOnTopHint;
+	#if 0//QTRACTOR_VST3_PLUGIN_EDITOR_TOOL_PARENT
 		// Make sure it has a parent...
 		if (pParent == nullptr)
 			pParent = qtractorMainForm::getInstance();
+	#endif
 	}
-#endif
 
 	m_pEditorWidget = new EditorWidget(pParent, wflags);
 	m_pEditorWidget->setAttribute(Qt::WA_QuitOnClose, false);

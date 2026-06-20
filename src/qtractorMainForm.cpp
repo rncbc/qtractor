@@ -2600,7 +2600,6 @@ bool qtractorMainForm::loadSessionFileEx (
 					bRemoveArchive (QMessageBox::warning(this, sTitle, sText,
 						QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
 				#else
-			qDebug("DEBUG> %s: ---A---", __func__);
 					QMessageBox mbox(this);
 					mbox.setIcon(QMessageBox::Warning);
 					mbox.setWindowTitle(sTitle);
@@ -2616,7 +2615,6 @@ bool qtractorMainForm::loadSessionFileEx (
 					bRemoveArchive = (mbox.exec() == QMessageBox::Ok);
 					if (cbox.isChecked())
 						m_pOptions->bConfirmArchive = false;
-			qDebug("DEBUG> %s: ---B---", __func__);
 				#endif
 					// Restarting?...
 					if (!bRemoveArchive) {

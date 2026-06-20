@@ -276,11 +276,12 @@ public:
 	bool bAudioOutputAutoConnect;
 
 	// Plug-in GUI options.
-	bool bOpenEditor;
+	bool bOpenPluginEditor;
+	bool bKeepPluginEditorOnTop;
 
 	// Whether to ask for plug-in editor (GUI)
 	// when more than one is available.
-	bool bQueryEditorType;
+	bool bQueryPluginEditorType;
 
 	// Out-of-process plugin scanning and cache option.
 	int  iDummyLadspaHash;
