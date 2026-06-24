@@ -453,12 +453,12 @@ MIDI:	</translation>
         <translation>Não pergunte novamente</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3854"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3861"/>
         <source>plugin parameters</source>
         <translation>parametros do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4281"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4288"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translatorcomment>parametro_para_requisição_da_interface_lv2</translatorcomment>
