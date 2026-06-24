@@ -3476,6 +3476,13 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		if (ui_iter != ui_end && cbox.isChecked())
 			setEditorType(ui_iter.key().ui_type());
 	}
+	else
+	if (pOptions && !pOptions->bQueryPluginEditorType
+		&& (ui_map.count() > 1) && (iEditorType >= 0)) {
+		setEditorType(-1);
+		ui_iter = ui_begin;
+	}
+
 
 	if (ui_iter == ui_end) {
 		lilv_uis_free(m_lv2_uis);

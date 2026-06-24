@@ -416,12 +416,12 @@ Fin:	%3	Duración:	%4</translation>
         <translation>No preguntar esto de nuevo</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3854"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3861"/>
         <source>plugin parameters</source>
         <translation>parametros del plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4281"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4288"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Abrir Archivo</translation>
