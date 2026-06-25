@@ -448,8 +448,8 @@ End:	%3	Length:	%4</source>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3423"/>
-        <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation>Виберіть редактор додатка (інтерфейс):</translation>
+        <source>Select plug-in&apos;s editor (GUI) type:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3435"/>
@@ -497,12 +497,12 @@ End:	%3	Length:	%4</source>
         <translation>Більше не питати</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3861"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3860"/>
         <source>plugin parameters</source>
         <translation>параметри додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4288"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4287"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Відкрити файл</translation>
@@ -13495,8 +13495,28 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4367"/>
-        <source>Editor</source>
-        <translation>Редактор</translation>
+        <source>Editor (GUI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4391"/>
+        <source>Open plugin&apos;s &amp;editor by default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4420"/>
+        <source>&amp;Keep plugin editors always on top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4433"/>
+        <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4436"/>
+        <source>&amp;Select plugin&apos;s editor type if more than one are available</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4388"/>
@@ -13504,29 +13524,9 @@ Are you sure?</source>
         <translation>Визначає, чи слід типово відкривати редактор додатка (графічний інтерфейс)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="4391"/>
-        <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>Типово від&amp;кривати редактор додатка</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="4417"/>
         <source>Whether to keep all plugin editors (GUI) always on top</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4420"/>
-        <source>&amp;Keep plugin editors (GUI) always on top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4433"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>Визначає, чи слід вибирати редактор додатка, якщо доступними є декілька редакторів</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4436"/>
-        <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>Ви&amp;бирати редактор додатка, якщо доступні декілька</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4465"/>

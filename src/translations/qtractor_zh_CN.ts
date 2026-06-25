@@ -870,8 +870,8 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3423"/>
-        <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation>选择插件编辑器 (GUI)：</translation>
+        <source>Select plug-in&apos;s editor (GUI) type:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3435"/>
@@ -919,12 +919,12 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>不再询问</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3861"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3860"/>
         <source>plugin parameters</source>
         <translation>插件参数</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4288"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4287"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>打开文件</translation>
@@ -13155,19 +13155,34 @@ Are you sure?</source>
         <translation>下移路径</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="4367"/>
+        <source>Editor (GUI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4391"/>
+        <source>Open plugin&apos;s &amp;editor by default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="4417"/>
         <source>Whether to keep all plugin editors (GUI) always on top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4420"/>
-        <source>&amp;Keep plugin editors (GUI) always on top</source>
+        <source>&amp;Keep plugin editors always on top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4433"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>如果有多个可用的插件编辑器 (GUI)，是否选择</translation>
+        <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4436"/>
+        <source>&amp;Select plugin&apos;s editor type if more than one are available</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4465"/>
@@ -13637,24 +13652,9 @@ Are you sure?</source>
         <translation>自动连接(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="4367"/>
-        <source>Editor</source>
-        <translation>编辑器</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="4388"/>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
         <translation>是否默认打开插件编辑器 (GUI)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4391"/>
-        <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>默认打开插件编辑器 (GUI)(&amp;E)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4436"/>
-        <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>如果有多个可用的插件编辑器 (GUI)，是否选择(&amp;S)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="85"/>
