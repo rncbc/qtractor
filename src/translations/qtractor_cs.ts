@@ -870,8 +870,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3423"/>
-        <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation>Vybrat editor (rozhraní) přídavného modulu:</translation>
+        <source>Select plug-in&apos;s editor (GUI) type:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3435"/>
@@ -919,12 +919,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Neptat se znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3861"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3860"/>
         <source>plugin parameters</source>
         <translation>Parametry přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4288"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4287"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Otevřít soubor</translation>
@@ -13624,8 +13624,28 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4367"/>
-        <source>Editor</source>
-        <translation>Editor</translation>
+        <source>Editor (GUI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4391"/>
+        <source>Open plugin&apos;s &amp;editor by default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4420"/>
+        <source>&amp;Keep plugin editors always on top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4433"/>
+        <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4436"/>
+        <source>&amp;Select plugin&apos;s editor type if more than one are available</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4388"/>
@@ -13633,24 +13653,9 @@ Chcete použít tyto změny?</translation>
         <translation>Zda ve výchozím nastavení otevřít editor (rozhraní) přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="4391"/>
-        <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>Otevřít &amp;editor (rozhraní) přídavného modulu</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="4417"/>
         <source>Whether to keep all plugin editors (GUI) always on top</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4420"/>
-        <source>&amp;Keep plugin editors (GUI) always on top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4436"/>
-        <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>&amp;Vybrat editor (rozhraní) přídavného modulu, pokud je dostupný více než jeden</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4465"/>
@@ -13781,11 +13786,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="4924"/>
         <source>Reset OSC actions</source>
         <translation>Obnovit výchozí nastavení činností OSC</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4433"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>Zda vybrat editor (rozhraní) přídavného modulu, pokud je dostupný více než jeden</translation>
     </message>
 </context>
 <context>
