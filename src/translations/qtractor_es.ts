@@ -367,8 +367,8 @@ Fin:	%3	Duración:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3423"/>
-        <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation>Seleccionar editor del plug-in (GUI):</translation>
+        <source>Select plug-in&apos;s editor (GUI) type:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3435"/>
@@ -416,12 +416,12 @@ Fin:	%3	Duración:	%4</translation>
         <translation>No preguntar esto de nuevo</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3861"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3860"/>
         <source>plugin parameters</source>
         <translation>parametros del plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4288"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4287"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Abrir Archivo</translation>
@@ -13121,13 +13121,33 @@ Are you sure?</source>
         <translation>Mover ruta hacia abajo</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="4367"/>
+        <source>Editor (GUI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4391"/>
+        <source>Open plugin&apos;s &amp;editor by default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="4417"/>
         <source>Whether to keep all plugin editors (GUI) always on top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4420"/>
-        <source>&amp;Keep plugin editors (GUI) always on top</source>
+        <source>&amp;Keep plugin editors always on top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4433"/>
+        <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="4436"/>
+        <source>&amp;Select plugin&apos;s editor type if more than one are available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -13613,29 +13633,9 @@ Are you sure?</source>
         <translation>Auto-&amp;conectar</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="4367"/>
-        <source>Editor</source>
-        <translation>Editor</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="4388"/>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
         <translation>Si se debe abrir el editor del plugin (GUI) por defecto</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4391"/>
-        <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>Abrir el &amp;editor del plugin (GUI) por defecto</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4433"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>Si se debe seleccionar el editor del plugin (GUI) si más de uno está disponible</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="4436"/>
-        <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>&amp;Seleccionar el editor del plugin (GUI) si más de uno está disponible</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="85"/>
