@@ -3420,7 +3420,7 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		const QString& sTitle
 			= title();
 		const QString& sText
-			= QObject::tr("Select plug-in's editor (GUI):");
+			= QObject::tr("Select plug-in's editor (GUI) type:");
 		qtractorMessageBox mbox(qtractorMainForm::getInstance());
 		mbox.setIcon(QMessageBox::Question);
 		mbox.setWindowTitle(sTitle);
@@ -3482,7 +3482,6 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		setEditorType(-1);
 		ui_iter = ui_begin;
 	}
-
 
 	if (ui_iter == ui_end) {
 		lilv_uis_free(m_lv2_uis);

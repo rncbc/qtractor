@@ -4364,7 +4364,7 @@
           </font>
          </property>
          <property name="title">
-          <string>Editor</string>
+          <string>Editor (GUI)</string>
          </property>
          <property name="flat">
           <bool>true</bool>
@@ -4376,7 +4376,7 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <item row="0" column="0" colspan="1">
+          <item row="0" column="0">
            <widget class="QCheckBox" name="OpenPluginEditorCheckBox">
             <property name="font">
              <font>
@@ -4388,7 +4388,7 @@
              <string>Whether to open plugin's editor (GUI) by default</string>
             </property>
             <property name="text">
-             <string>Open plugin's &amp;editor (GUI) by default</string>
+             <string>Open plugin's &amp;editor by default</string>
             </property>
            </widget>
           </item>
@@ -4399,7 +4399,7 @@
             </property>
             <property name="sizeHint">
              <size>
-              <width>20</width>
+              <width>8</width>
               <height>20</height>
              </size>
             </property>
@@ -4417,7 +4417,7 @@
              <string>Whether to keep all plugin editors (GUI) always on top</string>
             </property>
             <property name="text">
-             <string>&amp;Keep plugin editors (GUI) always on top</string>
+             <string>&amp;Keep plugin editors always on top</string>
             </property>
            </widget>
           </item>
@@ -4430,10 +4430,10 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to select plugin's editor (GUI) if more than one are available</string>
+             <string>Whether to select plugin's editor (GUI) type if more than one are available</string>
             </property>
             <property name="text">
-             <string>&amp;Select plugin's editor (GUI) if more than one are available</string>
+             <string>&amp;Select plugin's editor type if more than one are available</string>
             </property>
            </widget>
           </item>
