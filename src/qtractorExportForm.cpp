@@ -685,7 +685,7 @@ bool qtractorExportForm::checkExportPath (void)
 	}
 
 	// Check (again) wether the file already exists...
-	if (QFileInfo(sExportPath).exists()) {
+	if (QFileInfo::exists(sExportPath)) {
 		if (QMessageBox::warning(this,
 			tr("Warning"),
 			tr("The file already exists:\n\n"

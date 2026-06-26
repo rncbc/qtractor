@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -337,7 +337,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 	if (QFileInfo(sPath).suffix().isEmpty()) {
 		sPath += '.' + sExt;
 		// Check if already exists...
-		if (QFileInfo(sPath).exists()) {
+		if (QFileInfo::exists(sPath)) {
 			if (QMessageBox::warning(this,
 				tr("Warning"),
 				tr("The SysEx file already exists:\n\n"
@@ -622,7 +622,7 @@ void qtractorMidiSysexForm::deleteSlot (void)
 	settings.beginGroup(sysexGroup());
 #ifdef QTRACTOR_REMOVE_PRESET_FILES
 	const QString& sFilename = settings.value(sName).toString();
-	if (QFileInfo(sFilename).exists())
+	if (QFileInfo::exists(sFilename))
 		QFile(sFilename).remove();
 #endif
 	settings.remove(sName);

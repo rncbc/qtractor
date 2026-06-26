@@ -156,7 +156,6 @@
 
 #include <algorithm>
 
-#include <cmath>
 
 // Timer constants (magic) stuff.
 #define QTRACTOR_TIMER_MSECS    66
@@ -2321,7 +2320,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (!qtractorDocument::isValidExt(QFileInfo(sFilename).suffix())) {
 			sFilename += '.' + sExt;
 			// Check if already exists...
-			if (sFilename != m_sFilename && QFileInfo(sFilename).exists()) {
+			if (sFilename != m_sFilename && QFileInfo::exists(sFilename)) {
 				if (QMessageBox::warning(this,
 					tr("Warning"),
 					tr("The file already exists:\n\n"
@@ -3250,7 +3249,7 @@ void qtractorMainForm::autoSaveSession (void)
 		= m_pOptions->sAutoSavePathname;
 	if (!sOldAutoSavePathname.isEmpty()
 		&& sOldAutoSavePathname != sAutoSavePathname
-		&& QFileInfo(sOldAutoSavePathname).exists())
+		&& QFileInfo::exists((sOldAutoSavePathname)))
 		QFile(sOldAutoSavePathname).remove();
 
 #ifdef CONFIG_DEBUG_0
@@ -3283,7 +3282,7 @@ bool qtractorMainForm::autoSaveOpen (void)
 #endif
 
 	if (!sAutoSavePathname.isEmpty()
-		&& QFileInfo(sAutoSavePathname).exists()) {
+		&& QFileInfo::exists(sAutoSavePathname)) {
 		if (QMessageBox::warning(this,
 			tr("Warning"),
 			tr("Oops!\n\n"
@@ -3316,6 +3315,9 @@ void qtractorMainForm::autoSaveClose (void)
 		return;
 #endif
 
+	if (m_pOptions == nullptr)
+		return;
+
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
 
 #ifdef CONFIG_DEBUG_0
@@ -3324,7 +3326,7 @@ void qtractorMainForm::autoSaveClose (void)
 #endif
 
 	if (!sAutoSavePathname.isEmpty()
-		&& QFileInfo(sAutoSavePathname).exists())
+		&& QFileInfo::exists(sAutoSavePathname))
 		QFile(sAutoSavePathname).remove();
 
 	m_pOptions->sAutoSavePathname.clear();
@@ -7411,7 +7413,7 @@ void qtractorMainForm::updateRecentFilesMenu (void)
 	m_ui.fileOpenRecentMenu->clear();
 	for (int i = 0; i < iRecentFiles; ++i) {
 		const QString& sFilename = m_pOptions->recentFiles.at(i);
-		if (QFileInfo(sFilename).exists()) {
+		if (QFileInfo::exists(sFilename)) {
 			QAction *pAction = m_ui.fileOpenRecentMenu->addAction(
 				QString("&%1 %2").arg(i + 1).arg(sessionName(sFilename)),
 				this, SLOT(fileOpenRecent()));
@@ -8858,7 +8860,7 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 	// Reload the previously auto-saved session...
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
 	if (!sAutoSavePathname.isEmpty()
-		&& QFileInfo(sAutoSavePathname).exists()) {
+		&& QFileInfo::exists(sAutoSavePathname)) {
 		// Reset (soft) subject/observer queue.
 		qtractorSubject::resetQueue();
 		// Reset all dependables to default.
