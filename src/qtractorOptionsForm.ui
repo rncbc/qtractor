@@ -4421,7 +4421,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="3">
+          <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="QueryPluginEditorTypeCheckBox">
             <property name="font">
              <font>
@@ -4434,6 +4434,22 @@
             </property>
             <property name="text">
              <string>&amp;Select plugin's editor type if more than one are available</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QCheckBox" name="ResetPluginEditorTypeCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to reset plugin's editor (GUI) type if previously selected</string>
+            </property>
+            <property name="text">
+             <string>Rese&amp;t plugin's editor type</string>
             </property>
            </widget>
           </item>
@@ -5085,6 +5101,7 @@
   <tabstop>OpenPluginEditorCheckBox</tabstop>
   <tabstop>KeepPluginEditorOnTopCheckBox</tabstop>
   <tabstop>QueryPluginEditorTypeCheckBox</tabstop>
+  <tabstop>ResetPluginEditorTypeCheckBox</tabstop>
   <tabstop>PluginBlacklistComboBox</tabstop>
   <tabstop>PluginBlacklistToolButton</tabstop>
   <tabstop>PluginBlacklistAddToolButton</tabstop>

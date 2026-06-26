@@ -274,6 +274,7 @@ public:
 	// Whether to ask for plug-in editor (GUI)
 	// when more than one is available.
 	bool bQueryPluginEditorType;
+	bool bResetPluginEditorType;
 
 	// Out-of-process plugin scanning and cache option.
 	int  iDummyLadspaHash;
