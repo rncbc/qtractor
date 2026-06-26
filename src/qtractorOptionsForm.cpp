@@ -587,6 +587,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.QueryPluginEditorTypeCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ResetPluginEditorTypeCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.PluginBlacklistComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changePluginBlacklist(const QString&)));
@@ -956,6 +959,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.OpenPluginEditorCheckBox->setChecked(m_pOptions->bOpenPluginEditor);
 	m_ui.KeepPluginEditorOnTopCheckBox->setChecked(m_pOptions->bKeepPluginEditorOnTop);
 	m_ui.QueryPluginEditorTypeCheckBox->setChecked(m_pOptions->bQueryPluginEditorType);
+	m_ui.ResetPluginEditorTypeCheckBox->setChecked(m_pOptions->bResetPluginEditorType);
 
 	int iPluginType = m_pOptions->iPluginType - 1;
 	if (iPluginType < 0)
@@ -1123,6 +1127,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bOpenPluginEditor    = m_ui.OpenPluginEditorCheckBox->isChecked();
 		m_pOptions->bKeepPluginEditorOnTop = m_ui.KeepPluginEditorOnTopCheckBox->isChecked();
 		m_pOptions->bQueryPluginEditorType = m_ui.QueryPluginEditorTypeCheckBox->isChecked();
+		m_pOptions->bResetPluginEditorType = m_ui.ResetPluginEditorTypeCheckBox->isChecked();
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
 		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();
@@ -2645,6 +2650,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 
 	m_ui.AudioOutputAutoConnectCheckBox->setEnabled(
 		m_ui.AudioOutputBusCheckBox->isChecked());
+
+	m_ui.ResetPluginEditorTypeCheckBox->setEnabled(
+		!m_ui.QueryPluginEditorTypeCheckBox->isChecked());
 
 #ifdef CONFIG_OSC
 	const bool bOscServer = m_ui.OscServerCheckBox->isChecked();

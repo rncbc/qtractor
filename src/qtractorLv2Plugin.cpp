@@ -3479,8 +3479,33 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 	else
 	if (pOptions && !pOptions->bQueryPluginEditorType
 		&& (ui_map.count() > 1) && (iEditorType >= 0)) {
-		setEditorType(-1);
-		ui_iter = ui_begin;
+		if (pOptions->bResetPluginEditorType) {
+			setEditorType(-1);
+			ui_iter = ui_begin;
+		} else {
+			const QString& sTitle
+				= title();
+			const QString& sText
+				= QObject::tr("Reset plug-in's editor (GUI) type ?");
+			QMessageBox mbox(qtractorMainForm::getInstance());
+			mbox.setIcon(QMessageBox::Question);
+			mbox.setWindowTitle(sTitle);
+			mbox.setText(sText);
+			mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+			QCheckBox cbox(QObject::tr("Don't ask this again"));
+			cbox.setChecked(false);
+			cbox.blockSignals(true);
+			mbox.addButton(&cbox, QMessageBox::ActionRole);
+		#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+			mbox.setOptions(QMessageBox::Option::DontUseNativeDialog);
+		#endif
+			if (mbox.exec() == QMessageBox::Ok) {
+				setEditorType(-1);
+				ui_iter = ui_begin;
+			}
+			if (cbox.isChecked())
+				pOptions->bResetPluginEditorType = true;
+		}
 	}
 
 	if (ui_iter == ui_end) {
