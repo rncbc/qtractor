@@ -6,12 +6,13 @@ ChangeLog
 
 GIT HEAD
 
-- Reset the previously selected/saved LV2 Plug-in UI type when
-  View/Options.../Plugins/Editor/Select plugin editor (GUI) if
-  more than one are available option is turned off.
+- Optionally reset a previously selected/saved LV2 Plug-in UI type
+  when View/Options.../Plugins/Editor (GUI)/Select plugin's editor
+  type if more than one are available option is turned off.
+  (EXPERIMENTAL)
 
 - New user preference option introduced (cf. View/Options.../
-  Plugins/Editor/Keep plugin editors (GUI) always on top).
+  Plugins/Editor (GUI)/Keep plugin editors always on top).
   (EXPERIMENTAL)
 
 - Fixed crash when selecting the "Don't ask this again" option
