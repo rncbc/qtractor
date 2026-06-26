@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -655,7 +655,7 @@ void qtractorClipForm::stabilizeForm (void)
 
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.ClipNameLineEdit->text().isEmpty();
-	bValid = bValid && !sFilename.isEmpty() && QFileInfo(sFilename).exists();
+	bValid = bValid && !sFilename.isEmpty() && QFileInfo::exists(sFilename);
 	bValid = bValid && (iClipLength > 0);
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }

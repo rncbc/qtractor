@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -742,7 +742,7 @@ const QString& qtractorTrack::trackIcon (void) const
 
 void qtractorTrack::setTrackIcon ( const QString& sTrackIcon )
 {
-	if (!QIcon::fromTheme(sTrackIcon).isNull() || QFileInfo(sTrackIcon).exists())
+	if (!QIcon::fromTheme(sTrackIcon).isNull() || QFileInfo::exists(sTrackIcon))
 		m_props.trackIcon = sTrackIcon;
 	else
 		m_props.trackIcon.clear();

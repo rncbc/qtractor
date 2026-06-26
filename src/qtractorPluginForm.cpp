@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -912,7 +912,7 @@ void qtractorPluginForm::deletePresetSlot (void)
 	#ifdef QTRACTOR_REMOVE_PRESET_FILES
 		if ((m_pPlugin->type())->isConfigure()) {
 			const QString& sFilename = settings.value(sPreset).toString();
-			if (QFileInfo(sFilename).exists())
+			if (QFileInfo::exists(sFilename))
 				QFile(sFilename).remove();
 		}
 	#endif
