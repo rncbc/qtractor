@@ -285,6 +285,7 @@ void qtractorOptions::loadOptions (void)
 	bOpenPluginEditor = m_settings.value("/OpenEditor", true).toBool();
 	bKeepPluginEditorOnTop = m_settings.value("/KeepEditorOnTop", false).toBool();
 	bQueryPluginEditorType = m_settings.value("/QueryEditorType", false).toBool();
+	bResetPluginEditorType = m_settings.value("/ResetEditorType", false).toBool();
 	iDummyLadspaHash = m_settings.value("/DummyLadspaHash", 0).toInt();
 	iDummyDssiHash = m_settings.value("/DummyDssiHash", 0).toInt();
 	iDummyVst2Hash = m_settings.value("/DummyVst2Hash", 0).toInt();
@@ -633,6 +634,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/OpenEditor", bOpenPluginEditor);
 	m_settings.setValue("/KeepEditorOnTop", bKeepPluginEditorOnTop);
 	m_settings.setValue("/QueryEditorType", bQueryPluginEditorType);
+	m_settings.setValue("/ResetEditorType", bResetPluginEditorType);
 	m_settings.setValue("/DummyLadspaHash", iDummyLadspaHash);
 	m_settings.setValue("/DummyDssiHash", iDummyDssiHash);
 	m_settings.setValue("/DummyVst2Hash", iDummyVst2Hash);
