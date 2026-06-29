@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fix MIDI Controller (un)mapping on tool-tips and whether it's
+  currently (un)mapped on the respective (un)checked context-menu
+  entry.
+
 - Optionally reset a previously selected/saved LV2 Plug-in UI type
   when View/Options.../Plugins/Editor (GUI)/Select plugin's editor
   type if more than one are available option is turned off.
