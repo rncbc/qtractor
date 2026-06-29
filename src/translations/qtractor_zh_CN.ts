@@ -7370,7 +7370,7 @@ Do you want to replace the mapping?</source>
 是否替换此映射？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="429"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="431"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -7379,32 +7379,32 @@ Do you want to apply the changes?</source>
 是否应用这些更改？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="572"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="574"/>
         <source>&amp;MIDI Controller...</source>
         <translation>MIDI 控制器(&amp;M)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="680"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="690"/>
         <source>&amp;Automation</source>
         <translation>自动化(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="694"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="704"/>
         <source>&amp;Lock</source>
         <translation>锁定(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="712"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="722"/>
         <source>&amp;Play</source>
         <translation>播放(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="728"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
         <source>&amp;Record</source>
         <translation>录制(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="748"/>
         <source>&amp;Clear</source>
         <translation>清除(&amp;C)</translation>
     </message>
@@ -14260,12 +14260,12 @@ Are you sure?</source>
 是否确认？</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1421"/>
+        <location filename="../qtractorPluginForm.cpp" line="1423"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>延迟：%1 毫秒 (%2 帧)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1425"/>
+        <location filename="../qtractorPluginForm.cpp" line="1427"/>
         <source>(no latency)</source>
         <translation>(无延迟)</translation>
     </message>
@@ -14496,7 +14496,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1884"/>
+        <location filename="../qtractorPluginForm.cpp" line="1886"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>

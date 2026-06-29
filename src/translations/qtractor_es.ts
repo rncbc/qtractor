@@ -7350,7 +7350,7 @@ Do you want to replace the mapping?</source>
 ¿Desea reemplazar el mapeo?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="429"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="431"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -7359,32 +7359,32 @@ Do you want to apply the changes?</source>
 ¿Desea aplicar los cambios?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="572"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="574"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controlador &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="680"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="690"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automatización</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="694"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="704"/>
         <source>&amp;Lock</source>
         <translation>&amp;Bloquear</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="712"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="722"/>
         <source>&amp;Play</source>
         <translation>&amp;Reproducir</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="728"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
         <source>&amp;Record</source>
         <translation>&amp;Grabar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="748"/>
         <source>&amp;Clear</source>
         <translation>&amp;Limpiar</translation>
     </message>
@@ -14242,12 +14242,12 @@ Are you sure?</source>
 ¿Esta seguro?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1421"/>
+        <location filename="../qtractorPluginForm.cpp" line="1423"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>Latencia: %1 ms (%2 cuadros)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1425"/>
+        <location filename="../qtractorPluginForm.cpp" line="1427"/>
         <source>(no latency)</source>
         <translation>(sin latencia)</translation>
     </message>
@@ -14478,7 +14478,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1884"/>
+        <location filename="../qtractorPluginForm.cpp" line="1886"/>
         <source>Open File</source>
         <translation>Abrir Archivo</translation>
     </message>

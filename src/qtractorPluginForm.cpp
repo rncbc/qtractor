@@ -1386,6 +1386,8 @@ void qtractorPluginForm::addMidiControlAction (
 {
 	qtractorMidiControlObserverForm::addMidiControlAction(
 		this, pWidget, pMidiObserver);
+
+
 }
 
 
