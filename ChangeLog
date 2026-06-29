@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Show tool-tip when turning the mouse-wheel over a direct-access
+  plugin parameter value slider.
+  
 - Fix MIDI Controller (un)mapping on tool-tips and whether it's
   currently (un)mapped on the respective (un)checked context-menu
   entry.

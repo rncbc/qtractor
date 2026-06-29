@@ -14345,152 +14345,152 @@ Are you sure?</source>
         <translation>Надсиалання допоміжного: </translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1900"/>
+        <location filename="../qtractorPluginListView.cpp" line="1906"/>
         <source>&amp;Move Here</source>
         <translation>Перес&amp;унути сюди</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1901"/>
+        <location filename="../qtractorPluginListView.cpp" line="1907"/>
         <source>&amp;Copy Here</source>
         <translation>С&amp;копіювати сюди</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1904"/>
+        <location filename="../qtractorPluginListView.cpp" line="1910"/>
         <source>C&amp;ancel</source>
         <translation>&amp;Скасувати</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2007"/>
+        <location filename="../qtractorPluginListView.cpp" line="2013"/>
         <source>&amp;Add Plugin...</source>
         <translation>&amp;Додати додаток…</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2010"/>
+        <location filename="../qtractorPluginListView.cpp" line="2016"/>
         <source>I&amp;nserts</source>
         <translation>&amp;Вставлення</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2013"/>
+        <location filename="../qtractorPluginListView.cpp" line="2019"/>
         <source>&amp;Audio</source>
         <translation>Зв&amp;ук</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2017"/>
-        <location filename="../qtractorPluginListView.cpp" line="2046"/>
+        <location filename="../qtractorPluginListView.cpp" line="2023"/>
+        <location filename="../qtractorPluginListView.cpp" line="2052"/>
         <source>Add &amp;Insert</source>
         <translation>Додати вст&amp;авлення</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2020"/>
-        <location filename="../qtractorPluginListView.cpp" line="2050"/>
+        <location filename="../qtractorPluginListView.cpp" line="2026"/>
+        <location filename="../qtractorPluginListView.cpp" line="2056"/>
         <source>Add &amp;Aux Send</source>
         <translation>Додати &amp;доп. надсилання</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2029"/>
-        <location filename="../qtractorPluginListView.cpp" line="2062"/>
+        <location filename="../qtractorPluginListView.cpp" line="2035"/>
+        <location filename="../qtractorPluginListView.cpp" line="2068"/>
         <source>&amp;Sends</source>
         <translation>&amp;Надсилання</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2033"/>
-        <location filename="../qtractorPluginListView.cpp" line="2066"/>
+        <location filename="../qtractorPluginListView.cpp" line="2039"/>
+        <location filename="../qtractorPluginListView.cpp" line="2072"/>
         <source>&amp;Returns</source>
         <translation>&amp;Повернення</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2042"/>
+        <location filename="../qtractorPluginListView.cpp" line="2048"/>
         <source>&amp;MIDI</source>
         <translation>&amp;MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2055"/>
+        <location filename="../qtractorPluginListView.cpp" line="2061"/>
         <source>Add &amp;Controller</source>
         <translation>Додати &amp;контролер</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2084"/>
+        <location filename="../qtractorPluginListView.cpp" line="2090"/>
         <source>Ac&amp;tivate</source>
         <translation>&amp;Увімкнути</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2091"/>
+        <location filename="../qtractorPluginListView.cpp" line="2097"/>
         <source>Acti&amp;vate All</source>
         <translation>Уві&amp;мкнути усі</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2098"/>
+        <location filename="../qtractorPluginListView.cpp" line="2104"/>
         <source>Deactivate Al&amp;l</source>
         <translation>В&amp;имкнути усі</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2107"/>
+        <location filename="../qtractorPluginListView.cpp" line="2113"/>
         <source>&amp;Remove</source>
         <translation>Ви&amp;лучити</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2111"/>
+        <location filename="../qtractorPluginListView.cpp" line="2117"/>
         <source>Re&amp;move All</source>
         <translation>Вилу&amp;чити всі</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2118"/>
+        <location filename="../qtractorPluginListView.cpp" line="2124"/>
         <source>Move &amp;Up</source>
         <translation>Пересунути &amp;вище</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2123"/>
+        <location filename="../qtractorPluginListView.cpp" line="2129"/>
         <source>Move &amp;Down</source>
         <translation>Пересунути &amp;нижче</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2128"/>
+        <location filename="../qtractorPluginListView.cpp" line="2134"/>
         <source>Pre&amp;set</source>
         <translation>&amp;Набір</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2147"/>
+        <location filename="../qtractorPluginListView.cpp" line="2153"/>
         <source>Dire&amp;ct Access</source>
         <translation>&amp;Безпосередній доступ</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2166"/>
+        <location filename="../qtractorPluginListView.cpp" line="2172"/>
         <source>&amp;None</source>
         <translation>&amp;Немає</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2179"/>
+        <location filename="../qtractorPluginListView.cpp" line="2185"/>
         <source>&amp;Properties...</source>
         <translation>Вл&amp;астивості…</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2186"/>
+        <location filename="../qtractorPluginListView.cpp" line="2192"/>
         <source>&amp;Edit</source>
         <translation>З&amp;міни</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2194"/>
+        <location filename="../qtractorPluginListView.cpp" line="2200"/>
         <source>&amp;Import...</source>
         <translation>&amp;Імпортувати…</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2198"/>
+        <location filename="../qtractorPluginListView.cpp" line="2204"/>
         <source>E&amp;xport...</source>
         <translation>Е&amp;кспортувати…</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2210"/>
+        <location filename="../qtractorPluginListView.cpp" line="2216"/>
         <source>&amp;Outputs</source>
         <translation>В&amp;иходи</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2228"/>
+        <location filename="../qtractorPluginListView.cpp" line="2234"/>
         <source>&amp;Dedicated</source>
         <translation>&amp;Призначений</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="2070"/>
-        <location filename="../qtractorPluginListView.cpp" line="2232"/>
+        <location filename="../qtractorPluginListView.cpp" line="2076"/>
+        <location filename="../qtractorPluginListView.cpp" line="2238"/>
         <source>&amp;Auto-connect</source>
         <translation>&amp;Автоматичне з&apos;єднання</translation>
     </message>
