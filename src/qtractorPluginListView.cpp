@@ -1640,6 +1640,12 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 				fValue = pDirectAccessObserver->valueFromScale(
 					fScale + fDelta, bLogarithmic);
 				pDirectAccessParam->updateValue(fValue, true);
+				QWidget *pViewport = QListWidget::viewport();
+				QToolTip::showText(pViewport->mapToGlobal(pos),
+					QString("%1\n(%2: %3)")
+						.arg(pItem->text())
+						.arg(pDirectAccessParam->name())
+						.arg(pDirectAccessParam->display()), pViewport);
 				return;
 			}
 		}
@@ -2323,7 +2329,7 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 		QWidget *pViewport = QListWidget::viewport();
 		QToolTip::showText(pViewport->mapToGlobal(pos),
 			QString("%1\n(%2: %3)")
-				.arg(pItem->text()) // (pType->name();
+				.arg(pItem->text())
 				.arg(pDirectAccessParam->name())
 				.arg(pDirectAccessParam->display()), pViewport);
 	}
