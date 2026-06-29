@@ -7272,22 +7272,22 @@ Posso continuar?</translation>
         <translation>&amp;Gancho</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="694"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="704"/>
         <source>&amp;Lock</source>
         <translation>&amp;Travar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="712"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="722"/>
         <source>&amp;Play</source>
         <translation>&amp;Tocar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="572"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="574"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controlador &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="748"/>
         <source>&amp;Clear</source>
         <translation>&amp;Limpar</translation>
     </message>
@@ -7308,7 +7308,7 @@ Posso continuar?</translation>
         <translation>Ca&amp;nal:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="429"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="431"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -7322,7 +7322,7 @@ Você deseja aplicar essas mudanças?</translation>
         <translation>Parâmtero MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="680"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="690"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automação</translation>
     </message>
@@ -7352,7 +7352,7 @@ Você deseja aplicar essas mudanças?</translation>
         <translation>&amp;Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="728"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
         <source>&amp;Record</source>
         <translation>Grava&amp;r</translation>
     </message>
@@ -14152,12 +14152,12 @@ Sorry.</source>
 Desculpe.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1421"/>
+        <location filename="../qtractorPluginForm.cpp" line="1423"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>Latência: %1 ms (%2 amostras)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1425"/>
+        <location filename="../qtractorPluginForm.cpp" line="1427"/>
         <source>(no latency)</source>
         <translation>(sem latência)</translation>
     </message>
@@ -14482,7 +14482,7 @@ Posso continuar?</translation>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1884"/>
+        <location filename="../qtractorPluginForm.cpp" line="1886"/>
         <source>Open File</source>
         <translation>Abrir Arquivo</translation>
     </message>
