@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -385,6 +385,8 @@ void qtractorMidiControlObserverForm::accept (void)
 			QMessageBox::Ok |
 			QMessageBox::Cancel) == QMessageBox::Cancel)
 			return;
+		// Unmap the damn control....
+		pMidiControl->unmapMidiObserver(pMidiObserver, true);
 	}
 
 	// Map the damn control....
@@ -571,6 +573,7 @@ QAction *qtractorMidiControlObserverForm::addMidiControlAction (
 		QIcon::fromTheme("itemControllers"),
 		tr("&MIDI Controller..."), pWidget);
 
+	pAction->setCheckable(true);
 	pAction->setData(QVariant::fromValue(pMidiObserver));
 
 	QObject::connect(
@@ -610,6 +613,10 @@ void qtractorMidiControlObserverForm::midiControlMenu (
 	if (pWidget == nullptr)
 		return;
 
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == nullptr)
+		return;
+
 	QAction *pMidiControlAction = nullptr;
 	qtractorMidiControlObserver *pMidiObserver = nullptr;
 	QListIterator<QAction *> iter(pWidget->actions());
@@ -627,6 +634,9 @@ void qtractorMidiControlObserverForm::midiControlMenu (
 		return;
 	if (pMidiObserver == nullptr)
 		return;
+
+	pMidiControlAction->setChecked(
+		pMidiControl->isMidiObserverMapped(pMidiObserver));
 
 	QMenu menu(pWidget);
 	menu.addAction(pMidiControlAction);
