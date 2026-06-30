@@ -1635,7 +1635,19 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 				const float fScale = pDirectAccessObserver->scaleFromValue(
 					fValue, bLogarithmic);
 				float fDelta = (pWheelEvent->angleDelta().y() < 0 ? -0.1f : +0.1f);
-				if (!pDirectAccessParam->isInteger()) {
+				if (pDirectAccessParam->isToggled())
+					fDelta *= 10.0f;
+				else
+				if (pDirectAccessParam->isInteger()) {
+					const float fNumSteps
+						= pDirectAccessObserver->maxValue()
+						- pDirectAccessObserver->minValue();
+					fDelta *= (10.0f + fDelta) / fNumSteps;
+					if ((fNumSteps > 10.0f) &&
+						(pWheelEvent->modifiers() & Qt::ShiftModifier)) {
+						fDelta *= 10.0f;
+					}
+				} else {
 					fDelta *= 0.5f;
 					if (pWheelEvent->modifiers() & Qt::ControlModifier)
 						fDelta *= 0.5f;
