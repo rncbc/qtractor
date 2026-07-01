@@ -7,7 +7,8 @@ ChangeLog
 GIT HEAD
 
 - Show tool-tip when turning the mouse-wheel over a direct-access
-  plugin parameter value slider.
+  plugin parameter value slide. Shift/Ctrl+mouse-wheel modifiers
+  now differing as coarse/fine direct-access adjustments resp.
   
 - Fix MIDI Controller (un)mapping on tool-tips and whether it's
   currently (un)mapped on the respective (un)checked context-menu
@@ -1459,7 +1460,7 @@ GIT HEAD
 - Content files are now saved as symlinks when saving to JACK and/or
   NSM session directories/folders.
 
-- Trying to get CC14 MSB+LSB (course+fine) running status on, no
+- Trying to get CC14 MSB+LSB (coarse+fine) running status on, no
   matter whether each pairing event are under 200ms apart.
 
 - Possible VST plug-in GUI reparenting hack/fix on Qt5/Xcb.
