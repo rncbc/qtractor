@@ -449,7 +449,7 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3423"/>
         <source>Select plug-in&apos;s editor (GUI) type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть тип (інтерфейс) редактора додатка:</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3435"/>
@@ -500,7 +500,7 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3489"/>
         <source>Reset plug-in&apos;s editor (GUI) type ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Скинути тип (інтерфейс) редактора додатка?</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3885"/>
@@ -7664,7 +7664,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="117"/>
         <source>Low Tom</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="118"/>
@@ -13502,27 +13502,27 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4367"/>
         <source>Editor (GUI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор (інтерфейс)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4391"/>
         <source>Open plugin&apos;s &amp;editor by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Типово відкрити &amp;редактор додатка</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4420"/>
         <source>&amp;Keep plugin editors always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Завжди &amp;тримати редактори додатка згори</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4433"/>
         <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід вибирати тип (інтерфейс) редактора додатка, якщо достуними є декілька</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4436"/>
         <source>&amp;Select plugin&apos;s editor type if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вибирати тип редактора додатка, якщо доступні декілька</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4388"/>
@@ -13532,17 +13532,17 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4417"/>
         <source>Whether to keep all plugin editors (GUI) always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід утримувати усі редактори (інтерфейси) додатка згори</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4449"/>
         <source>Whether to reset plugin&apos;s editor (GUI) type if previously selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначає, чи слід скидати тип (інтерфейса) редактора додатка, якщо його було раніше вибрано</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4452"/>
         <source>Rese&amp;t plugin&apos;s editor type</source>
-        <translation type="unfinished"></translation>
+        <translation>С&amp;кидати тип редактора додатка</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4481"/>
