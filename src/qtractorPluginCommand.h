@@ -56,6 +56,12 @@ public:
 	void addPlugin(qtractorPlugin *pPlugin)
 		{ m_plugins.append(pPlugin); }
 
+	// An anchor plugin reference.
+	void setNextPlugin(qtractorPlugin *pNextPlugin)
+		{ m_pNextPlugin = pNextPlugin; }
+	qtractorPlugin *nextPlugin() const
+		{ return m_pNextPlugin; }
+
 protected:
 
 	// Add new plugin(s) command method.
@@ -68,6 +74,7 @@ private:
 
 	// Instance variables.
 	QList<qtractorPlugin *> m_plugins;
+	qtractorPlugin *m_pNextPlugin;
 };
 
 
@@ -217,19 +224,6 @@ public:
 	// Plugin-move command methods.
 	bool redo();
 	bool undo();
-
-protected:
-
-	// The anchor plugin reference.
-	void setNextPlugin(qtractorPlugin *pNextPlugin)
-		{ m_pNextPlugin = pNextPlugin; }
-	qtractorPlugin *nextPlugin() const
-		{ return m_pNextPlugin; }
-
-private:
-
-	// Instance variables.
-	qtractorPlugin *m_pNextPlugin;
 };
 
 
