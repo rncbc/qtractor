@@ -37,16 +37,16 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2863"/>
         <location filename="../qtractorAudioEngine.cpp" line="3118"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4057"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4596"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4064"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4611"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2872"/>
         <location filename="../qtractorAudioEngine.cpp" line="3118"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4066"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4596"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4073"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4611"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
@@ -153,7 +153,7 @@ Konec:	%3	Délka:	%4</translation>
         <translation>%1 Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1601"/>
+        <location filename="../qtractorMidiManager.cpp" line="1604"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banka %2</translation>
     </message>
@@ -745,8 +745,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>nahrávat (v overdub režimu)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4059"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4068"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4066"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4075"/>
         <location filename="../qtractorTrack.cpp" line="718"/>
         <source>%1 Volume</source>
         <translation>%1 Hlasitost</translation>
@@ -761,8 +761,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2867"/>
         <location filename="../qtractorAudioEngine.cpp" line="2876"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4061"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4070"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4068"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4077"/>
         <location filename="../qtractorTrack.cpp" line="724"/>
         <source>%1 Pan</source>
         <translation>%1 Vyvážení (Pan)</translation>

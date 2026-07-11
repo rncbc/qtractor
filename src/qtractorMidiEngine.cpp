@@ -1582,14 +1582,21 @@ void qtractorMidiEngine::shutOffAllTracks (void)
 				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 			if (pMidiBus) {
 				const unsigned short iChannel = pTrack->midiChannel();
+				qtractorMidiManager *pMidiManager
+					= (pTrack->pluginList())->midiManager();
+				if (pMidiManager)
+					pMidiManager->shutOff(iChannel);
 				const unsigned short iChannelMask = (1 << iChannel);
 				const unsigned short iChannelFlags = channels.value(pMidiBus, 0);
 				if ((iChannelFlags & iChannelMask) == 0) {
 					pMidiBus->dequeueNoteOffs(iQueueTime);
-					pMidiBus->setController(pTrack, HOLD_PEDAL);
 					pMidiBus->setController(pTrack, ALL_SOUND_OFF);
 					pMidiBus->setController(pTrack, ALL_NOTES_OFF);
 					pMidiBus->setController(pTrack, ALL_CONTROLLERS_OFF);
+					pMidiBus->setController(pTrack, HOLD_PEDAL);
+					pMidiManager = (pMidiBus->pluginList_out())->midiManager();
+					if (pMidiManager)
+						pMidiManager->shutOff(iChannel);
 					channels.insert(pMidiBus, iChannelFlags | iChannelMask);
 				}
 			}
@@ -4095,6 +4102,11 @@ void qtractorMidiBus::shutOff ( bool bClose )
 
 	dequeueNoteOffs(pMidiEngine->queueTime());
 
+	qtractorMidiManager *pMidiManager = nullptr;
+	qtractorPluginList *pPluginList = pluginList_out();
+	if (pPluginList)
+		pMidiManager = pPluginList->midiManager();
+
 	QHash<unsigned short, Patch>::ConstIterator iter
 		= m_patches.constBegin();
 	const QHash<unsigned short, Patch>::ConstIterator& iter_end
@@ -4105,6 +4117,9 @@ void qtractorMidiBus::shutOff ( bool bClose )
 		setControllerEx(iChannel, ALL_NOTES_OFF);
 		if (bClose)
 			setControllerEx(iChannel, ALL_CONTROLLERS_OFF);
+		setControllerEx(iChannel, HOLD_PEDAL);
+		if (pMidiManager)
+			pMidiManager->shutOff(iChannel);
 	}
 }
 
