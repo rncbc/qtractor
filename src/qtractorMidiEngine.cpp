@@ -71,6 +71,8 @@
 #define CHANNEL_VOLUME		0x07
 #define CHANNEL_PANNING		0x0a
 
+#define HOLD_PEDAL			0x40
+
 
 // Audio vs. MIDI time drift cycle
 #define DRIFT_CHECK         8
@@ -1584,6 +1586,7 @@ void qtractorMidiEngine::shutOffAllTracks (void)
 				const unsigned short iChannelFlags = channels.value(pMidiBus, 0);
 				if ((iChannelFlags & iChannelMask) == 0) {
 					pMidiBus->dequeueNoteOffs(iQueueTime);
+					pMidiBus->setController(pTrack, HOLD_PEDAL);
 					pMidiBus->setController(pTrack, ALL_SOUND_OFF);
 					pMidiBus->setController(pTrack, ALL_NOTES_OFF);
 					pMidiBus->setController(pTrack, ALL_CONTROLLERS_OFF);

@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Also send MIDI Hold pedal off (CC#64) on Transport/Panic.
+
 - Plugins are now added/inserted before the current selected one
   or appended to the list as before if none is actually selected.
   (EXPERIMENTAL)
