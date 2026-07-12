@@ -6,11 +6,13 @@ ChangeLog
 
 GIT HEAD
 
+- Warn about the danger in changing the MIDI clip file in the
+  MIDI Clip Editor's File/Properties... dialog.
+
 - Also send MIDI Hold pedal off (CC#64) on Transport/Panic.
 
 - Plugins are now added/inserted before the current selected one
   or appended to the list as before if none is actually selected.
-  (EXPERIMENTAL)
 
 - Show tool-tip when turning the mouse-wheel over a direct-access
   plugin parameter value slide. Shift/Ctrl+mouse-wheel modifiers

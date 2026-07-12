@@ -368,6 +368,22 @@ void qtractorClipForm::accept (void)
 		qtractorClipCommand *pClipCommand = nullptr;
 		qtractorTrack::TrackType clipType = trackType();
 		const QString& sFilename = m_ui.FilenameComboBox->currentText();
+		// Warn about the dangers in changing the MIDI file...
+		if (clipType == qtractorTrack::Midi) {
+			if (sFilename != m_pClip->filename()) {
+				const QString& sTitle = tr("Warning");
+				const QString& sText = tr(
+					"The selected MIDI file will be overwritten\n"
+					"with the current clip contents when saved:\n\n"
+					"\"%1\"\n\n"
+					"Are you sure?")
+					.arg(sFilename);
+				if (QMessageBox::warning(this, sTitle, sText,
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+					return;
+			}
+		}
+		// Proceed...
 		const unsigned short iTrackChannel = m_ui.TrackChannelSpinBox->value();
 		const QString& sClipName = m_ui.ClipNameLineEdit->text().trimmed();
 		float fClipGain = 1.0f;

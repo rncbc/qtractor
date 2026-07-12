@@ -1640,7 +1640,7 @@ Do you want to discard the changes?</source>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="461"/>
-        <location filename="../qtractorClipForm.cpp" line="685"/>
+        <location filename="../qtractorClipForm.cpp" line="701"/>
         <source>Audio</source>
         <translation>Звук</translation>
     </message>
@@ -1731,22 +1731,33 @@ Do you want to discard the changes?</source>
         <translation>&amp;Гучність:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="420"/>
+        <location filename="../qtractorClipForm.cpp" line="436"/>
         <source>new clip</source>
         <translation>новий кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="470"/>
+        <location filename="../qtractorClipForm.cpp" line="486"/>
         <source>edit clip</source>
         <translation>змінити кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="580"/>
+        <location filename="../qtractorClipForm.cpp" line="374"/>
+        <location filename="../qtractorClipForm.cpp" line="596"/>
         <source>Warning</source>
         <translation>Попередження</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="581"/>
+        <location filename="../qtractorClipForm.cpp" line="375"/>
+        <source>The selected MIDI file will be overwritten
+with the current clip contents when saved:
+
+&quot;%1&quot;
+
+Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.cpp" line="597"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -1755,22 +1766,22 @@ Do you want to apply the changes?</source>
 Хочете застосувати ці зміни?</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="690"/>
+        <location filename="../qtractorClipForm.cpp" line="706"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="692"/>
+        <location filename="../qtractorClipForm.cpp" line="708"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>файли MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="693"/>
+        <location filename="../qtractorClipForm.cpp" line="709"/>
         <source>All files (*.*)</source>
         <translation>усі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="706"/>
+        <location filename="../qtractorClipForm.cpp" line="722"/>
         <source>%1 Clip File</source>
         <translation>Файл кліпу %1</translation>
     </message>
