@@ -17,8 +17,8 @@
 
 Summary:	An Audio/MIDI multi-track sequencer
 Name:		qtractor
-Version:	1.6.1
-Release:	21.1
+Version:	1.6.2
+Release:	22.1
 License:	GPL-2.0-or-later
 Group:		Productivity/Multimedia/Sound/Midi
 Source:		%{name}-%{version}.tar.gz
@@ -171,6 +171,8 @@ cmake --install build
 
 
 %changelog
+* Wed Jul 15 2026 Rui Nuno Capela <rncbc@rncbc.org> 1.6.2
+- A Summer'26 Release.
 * Sat Jun 13 2026 Rui Nuno Capela <rncbc@rncbc.org> 1.6.1
 - An End-of-Spring'26 Release.
 * Fri May  1 2026 Rui Nuno Capela <rncbc@rncbc.org> 1.6.0
