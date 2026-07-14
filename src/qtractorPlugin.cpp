@@ -2112,15 +2112,7 @@ void qtractorPluginList::resetBuffers (void)
 
 
 // Add-guarded plugin method.
-void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
-{
-	// Link the plugin into list...
-	insertPlugin(pPlugin, pPlugin->next());
-}
-
-
-// Insert-guarded plugin method.
-void qtractorPluginList::insertPlugin (
+void qtractorPluginList::addPlugin (
 	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin )
 {
 	// We'll get prepared before plugging it in...

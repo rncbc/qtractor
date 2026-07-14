@@ -47,6 +47,8 @@
 #define ALL_CONTROLLERS_OFF	0x79
 #define ALL_NOTES_OFF		0x7b
 
+#define HOLD_PEDAL			0x40
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiSyncThread -- MIDI sync thread decl.
@@ -775,6 +777,7 @@ void qtractorMidiManager::shutOff ( unsigned short iChannel )
 	setController(iChannel, ALL_SOUND_OFF, 0);
 	setController(iChannel, ALL_NOTES_OFF, 0);
 	setController(iChannel, ALL_CONTROLLERS_OFF, 0);
+	setController(iChannel, HOLD_PEDAL, 0);
 }
 
 

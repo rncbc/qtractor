@@ -994,8 +994,7 @@ public:
 		{ return (m_iActivated > 0);  }
 
 	// Guarded plugin methods.
-	void addPlugin(qtractorPlugin *pPlugin);
-	void insertPlugin(qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
+	void addPlugin(qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
 	void movePlugin(qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
 	void removePlugin(qtractorPlugin *pPlugin);
 
