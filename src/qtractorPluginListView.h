@@ -209,6 +209,7 @@ protected:
 	void mousePressEvent(QMouseEvent *pMouseEvent);
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
+
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
 	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
 	void dragLeaveEvent(QDragLeaveEvent *);
@@ -275,6 +276,9 @@ private:
 
 	// To track the current item...
 	qtractorPluginListItem *m_pCurrentItem;
+
+	// Context-menu anchor item...
+	qtractorPluginListItem *m_pNextItem;
 };
 
 

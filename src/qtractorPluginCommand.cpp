@@ -41,7 +41,7 @@
 
 // Constructor.
 qtractorPluginCommand::qtractorPluginCommand ( const QString& sName,
-	qtractorPlugin *pPlugin ) : qtractorCommand(sName)
+	qtractorPlugin *pPlugin ) : qtractorCommand(sName), m_pNextPlugin(nullptr)
 {
 	if (pPlugin)
 		m_plugins.append(pPlugin);	
@@ -74,7 +74,7 @@ bool qtractorPluginCommand::addPlugins (void)
 		qtractorPlugin *pPlugin = iter.next();
 		qtractorPluginList *pPluginList = pPlugin->list();
 		if (pPluginList)
-			pPluginList->addPlugin(pPlugin);
+			pPluginList->addPlugin(pPlugin, nextPlugin());
 	}
 	// Avoid the disposal of the plugin reference(s).
 	setAutoDelete(false);
@@ -331,7 +331,7 @@ qtractorInsertPluginCommand::qtractorInsertPluginCommand (
 	const QString& sName, qtractorPlugin *pPlugin,
 	qtractorPlugin *pNextPlugin ) : qtractorPluginCommand(sName, pPlugin)
 {
-	m_pNextPlugin = pNextPlugin;
+	setNextPlugin(pNextPlugin);
 }
 
 
@@ -356,10 +356,10 @@ bool qtractorInsertPluginCommand::redo (void)
 	qtractorPlugin *pNextPlugin = pPlugin->next();
 
 	// Insert it...
-	pPluginList->insertPlugin(pPlugin, m_pNextPlugin);
+	pPluginList->addPlugin(pPlugin, nextPlugin());
 
 	// Swap it nice, finally.
-	m_pNextPlugin = pNextPlugin;
+	setNextPlugin(pNextPlugin);
 
 	// Whether to allow the disposal of the plugin reference.
 	setAutoDelete(false);
@@ -392,7 +392,7 @@ bool qtractorInsertPluginCommand::undo (void)
 	pPluginList->removePlugin(pPlugin);
 
 	// Swap it nice, finally.
-	m_pNextPlugin = pNextPlugin;
+	setNextPlugin(pNextPlugin);
 
 	// Whether to allow the disposal of the plugin reference.
 	setAutoDelete(true);
