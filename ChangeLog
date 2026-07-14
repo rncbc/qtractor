@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.6.2  2026-07-15  A Summer'26 Release.
 
 - Warn about the danger in changing the MIDI clip file in the
   MIDI Clip Editor's File/Properties... dialog.
