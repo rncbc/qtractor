@@ -352,11 +352,12 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QListWidget::setAcceptDrops(true);
 	QListWidget::setDropIndicatorShown(true);
 	QListWidget::setAutoScroll(true);
+	QListWidget::setAutoScrollMargin(4);
 
 	QListWidget::setIconSize(QSize(8, 8));
 	QListWidget::setItemDelegate(new qtractorPluginListItemDelegate(this));
 	QListWidget::setSelectionMode(QAbstractItemView::SingleSelection);
-	QListWidget::setMouseTracking(true);
+//	QListWidget::setMouseTracking(true);
 
 	QListWidget::viewport()->setBackgroundRole(QPalette::Window);
 
@@ -1767,6 +1768,10 @@ void qtractorPluginListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			dragDirectAccess(pos);
 			return;
 		}
+		const int h2 // Avoid start dragging if shorter in height...
+			= (QListWidget::visualItemRect(m_pDragItem).height() << 1);
+		if (QListWidget::height() < h2)
+			return;
 		if ((pos - m_posDrag).manhattanLength()
 			>= QApplication::startDragDistance()) {
 			// We'll start dragging something alright...
