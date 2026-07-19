@@ -4,6 +4,17 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Almost complete rewrite to LV2 Plug-in Worker/Schedule extension
+  regarding multi-instance operation. (EXPERIMENTAL)
+
+- Mitigate an annoyance when drag-and-dropping items across plugin
+  list-views/boxes that are shorter enough in height to overlap
+  the default auto-scrolling margins or are showing less than a
+  couple of items.
+
+
 1.6.2  2026-07-15  A Summer'26 Release.
 
 - Warn about the danger in changing the MIDI clip file in the
