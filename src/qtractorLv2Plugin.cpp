@@ -6098,6 +6098,20 @@ qtractorLv2Plugin::Property::Property ( qtractorLv2Plugin *pLv2Plugin,
 	if (prop_max) lilv_node_free(prop_max);
 	if (prop_def) lilv_node_free(prop_def);
 
+	if (m_type == g_lv2_urids.atom_Path) {
+		LilvNode *ftypes_uri = lilv_new_uri(g_lv2_world,
+			"http://moddevices.com/ns/mod#fileTypes");
+		LilvNode *ftypes_prop = lilv_world_get(
+			g_lv2_world, property, ftypes_uri, nullptr);
+		if (ftypes_prop) {
+			const char *ftypes_str = lilv_node_as_string(ftypes_prop);
+			if (ftypes_str)
+				m_fileTypes = QString(ftypes_str).split(',');
+			lilv_node_free(ftypes_prop);
+		}
+		lilv_node_free(ftypes_uri);
+	}
+
 	if (nodes) lilv_nodes_free(nodes);
 
 	lilv_node_free(label_uri);
@@ -6155,6 +6169,14 @@ void qtractorLv2Plugin::Property::update ( float fValue, bool bUpdate )
 		}
 	}
 }
+
+
+// Path property: file types accessor.
+QStringList qtractorLv2Plugin::Property::fileTypes (void) const
+{
+	return m_fileTypes;
+}
+
 
 #endif	// CONFIG_LV2_PATCH
 

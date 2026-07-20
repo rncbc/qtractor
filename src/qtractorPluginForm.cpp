@@ -1866,6 +1866,10 @@ void qtractorPluginParamWidget::curveButtonClicked (void)
 // Property file selector.
 void qtractorPluginParamWidget::toolButtonClicked (void)
 {
+	qtractorPlugin::Property *pProp = property();
+	if (pProp == nullptr)
+		return;
+
 	// Sure we have this...
 	if (m_pComboBox == nullptr)
 		return;
@@ -1885,6 +1889,13 @@ void qtractorPluginParamWidget::toolButtonClicked (void)
 	const QString& sTitle
 		= tr("Open File");
 
+	QStringList filters;
+	const QStringList& ftypes = pProp->fileTypes();
+	if (!ftypes.isEmpty())
+		filters.append(tr("Supported files (*.%1)").arg(ftypes.join(" *.")));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
+
 	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
@@ -1893,10 +1904,10 @@ void qtractorPluginParamWidget::toolButtonClicked (void)
 	}
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, sFilename, QString(), nullptr, options);
+		sTitle, sFilename, sFilter, nullptr, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(pParentWidget, sTitle, sFilename);
+	QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);

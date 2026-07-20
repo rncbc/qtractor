@@ -14493,9 +14493,19 @@ Posso continuar?</translation>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1886"/>
+        <location filename="../qtractorPluginForm.cpp" line="1890"/>
         <source>Open File</source>
         <translation>Abrir Arquivo</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.cpp" line="1895"/>
+        <source>Supported files (*.%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.cpp" line="1896"/>
+        <source>All files (*.*)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -830,6 +830,9 @@ public:
 	bool isString()  const;
 	bool isPath()    const;
 
+	// Path property: file types accessor.
+	QStringList fileTypes() const;
+
 protected:
 
 	// Fake property predicates.
@@ -847,6 +850,9 @@ private:
 
 	// Instance variables.
 	LV2_URID m_type;
+
+	// Path property: file types accessor.
+	QStringList m_fileTypes;
 };
 
 #endif	// CONFIG_LV2_PATCH
