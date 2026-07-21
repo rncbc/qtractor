@@ -555,10 +555,7 @@ private:
 
 #ifdef CONFIG_LV2_WORKER
 	// LV2 Worker/Schedule support.
-	qtractorLv2Worker  **m_lv2_workers;
-	LV2_Worker_Schedule *m_lv2_schedules;
-	LV2_Feature        **m_lv2_worker_features;
-	LV2_Feature         *m_lv2_schedule_features;
+	qtractorLv2Worker *m_lv2_worker;
 #endif
 
 #ifdef CONFIG_LV2_UI
@@ -830,6 +827,9 @@ public:
 	bool isString()  const;
 	bool isPath()    const;
 
+	// Path property: file types accessor.
+	QStringList fileTypes() const;
+
 protected:
 
 	// Fake property predicates.
@@ -847,6 +847,9 @@ private:
 
 	// Instance variables.
 	LV2_URID m_type;
+
+	// Path property: file types accessor.
+	QStringList m_fileTypes;
 };
 
 #endif	// CONFIG_LV2_PATCH

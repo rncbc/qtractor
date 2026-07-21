@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 plug-in Patch parameters/properties of the Path type, may
+  now filter on given supported file-types. (EXPERIMENTAL)
+
 - Almost complete rewrite to LV2 Plug-in Worker/Schedule extension
   regarding multi-instance operation. (EXPERIMENTAL)
 
@@ -33,7 +36,7 @@ GIT HEAD
   currently (un)mapped on the respective (un)checked context-menu
   entry.
 
-- Optionally reset a previously selected/saved LV2 Plug-in UI type
+- Optionally reset a previously selected/saved LV2 plug-in UI type
   when View/Options.../Plugins/Editor (GUI)/Select plugin's editor
   type if more than one are available option is turned off.
 
