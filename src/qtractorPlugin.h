@@ -901,6 +901,10 @@ public:
 	const QVariant& variant() const
 		{ return m_value; }
 
+	// Path property: file types accessor.
+	virtual QStringList fileTypes() const
+		{ return QStringList(); }
+
 protected:
 
 	// Virtual observer updater.
