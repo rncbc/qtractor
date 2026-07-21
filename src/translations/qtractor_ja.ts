@@ -863,80 +863,80 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>コピーライト: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2153"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2196"/>
         <source>Project: </source>
         <translation>プロジェクト: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3430"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
         <source>Select plug-in&apos;s editor (GUI) type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3442"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3445"/>
         <source>External</source>
         <translation>外部</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3445"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3448"/>
         <source>X11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3448"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3451"/>
         <source>X11 (native)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3451"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3454"/>
         <source>Gtk2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3454"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3457"/>
         <source>Gtk2 (native)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3458"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3461"/>
         <source>Qt5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3462"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3465"/>
         <source>Qt6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3467"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3470"/>
         <source>Other</source>
         <translation>その他</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3475"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="3502"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3478"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3505"/>
         <source>Don&apos;t ask this again</source>
         <translation>再確認しない</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3496"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3499"/>
         <source>Reset plug-in&apos;s editor (GUI) type ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3892"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3895"/>
         <source>plugin parameters</source>
         <translation>プラグインのパラメータ</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4319"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4322"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>ファイルを開く</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2161"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2204"/>
         <source>Author: </source>
         <translation>作者: </translation>
     </message>
@@ -14486,9 +14486,19 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1886"/>
+        <location filename="../qtractorPluginForm.cpp" line="1890"/>
         <source>Open File</source>
         <translation>ファイルを開く</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.cpp" line="1895"/>
+        <source>Supported files (*.%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.cpp" line="1896"/>
+        <source>All files (*.*)</source>
+        <translation type="unfinished">全ファイル (*.*)</translation>
     </message>
 </context>
 <context>
