@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed audio clip waveform display sudden cutoff, under certain
+  circumstances, while recording is engaged. (EXPERIMENTAL)
+
 - LV2 plug-in Patch parameters/properties of the Path type, may
   now filter on given supported file-types. (EXPERIMENTAL)
 
