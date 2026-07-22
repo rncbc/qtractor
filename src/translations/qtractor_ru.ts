@@ -15906,12 +15906,12 @@ Length:	%3</source>
         <translation>Исходный масштаб</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="1693"/>
+        <location filename="../qtractorTrackView.cpp" line="1695"/>
         <source>add clip</source>
         <translation type="unfinished">добавление клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3250"/>
+        <location filename="../qtractorTrackView.cpp" line="3252"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -15920,80 +15920,80 @@ Length:	%3</source>
 Длительность:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3541"/>
+        <location filename="../qtractorTrackView.cpp" line="3543"/>
         <source>clip %1</source>
         <translation type="unfinished">клип %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3542"/>
+        <location filename="../qtractorTrackView.cpp" line="3544"/>
         <source>fade-in</source>
         <translation type="unfinished">нарастание</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3542"/>
+        <location filename="../qtractorTrackView.cpp" line="3544"/>
         <source>fade-out</source>
         <translation type="unfinished">угасание</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3672"/>
+        <location filename="../qtractorTrackView.cpp" line="3674"/>
         <source>clip stretch</source>
         <translation>растягивание клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3672"/>
+        <location filename="../qtractorTrackView.cpp" line="3674"/>
         <source>clip resize</source>
         <translation>смена размера клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3757"/>
-        <location filename="../qtractorTrackView.cpp" line="3865"/>
+        <location filename="../qtractorTrackView.cpp" line="3759"/>
+        <location filename="../qtractorTrackView.cpp" line="3867"/>
         <source>clip repeat</source>
         <translation>повтор клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4780"/>
+        <location filename="../qtractorTrackView.cpp" line="4782"/>
         <source>%1 automation</source>
         <translation>автоматизация %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4853"/>
+        <location filename="../qtractorTrackView.cpp" line="4855"/>
         <source>%1 clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5503"/>
+        <location filename="../qtractorTrackView.cpp" line="5505"/>
         <source>move automation</source>
         <translation>смещение автоматизации</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5590"/>
+        <location filename="../qtractorTrackView.cpp" line="5592"/>
         <source>paste automation</source>
         <translation>вставка автоматизации</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4784"/>
-        <location filename="../qtractorTrackView.cpp" line="4857"/>
+        <location filename="../qtractorTrackView.cpp" line="4786"/>
+        <location filename="../qtractorTrackView.cpp" line="4859"/>
         <source>cut</source>
         <translation>вырезание</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4787"/>
-        <location filename="../qtractorTrackView.cpp" line="4860"/>
+        <location filename="../qtractorTrackView.cpp" line="4789"/>
+        <location filename="../qtractorTrackView.cpp" line="4862"/>
         <source>delete</source>
         <translation>удаление</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4863"/>
+        <location filename="../qtractorTrackView.cpp" line="4865"/>
         <source>split</source>
         <translation>разделение</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5225"/>
+        <location filename="../qtractorTrackView.cpp" line="5227"/>
         <source>move clip</source>
         <translation>перемещение клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5360"/>
+        <location filename="../qtractorTrackView.cpp" line="5362"/>
         <source>paste clip</source>
         <translation>вставка клипа</translation>
     </message>
