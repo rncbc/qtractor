@@ -543,11 +543,12 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 				takeInfoClip(pMidiClip, pTakePart->takeInfo());
 				pTakePart->setClip(pMidiClip);
 			}
-			if (pMainForm)
+			if (pMainForm) {
 				pMainForm->addMidiFile(pMidiClip->filename());
 				qtractorTracks *pTracks = pMainForm->tracks();
 				if (pTracks)
 					pTracks->setCurrentClip(pMidiClip);
+			}
 		}
 		break;
 	}

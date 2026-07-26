@@ -606,7 +606,7 @@ void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 				if (m_busMode & qtractorBus::Input)
 					pPluginList = m_pBus->pluginList_in();
 				else
-					pPluginList = m_pBus->pluginList_in();
+					pPluginList = m_pBus->pluginList_out();
 			}
 			else
 			if (m_pTrack)
