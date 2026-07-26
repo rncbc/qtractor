@@ -1818,8 +1818,8 @@ int64_t qtractorClapPlugin::Impl::plugin_state_read (
 int64_t qtractorClapPlugin::Impl::plugin_state_read_buffer (
 	void *buffer, uint64_t size )
 {
-	if (size > m_state_data.size())
-		size = m_state_data.size();
+	if (size > uint64_t(m_state_data.size()))
+		size = uint64_t(m_state_data.size());
 	::memcpy(buffer, m_state_data.constData(), size);
 	m_state_data.remove(0, size);
 	return size;
@@ -2097,10 +2097,10 @@ bool qtractorClapPlugin::Impl::plugin_gui_request_resize (
 	const QSize& max_size = pWidget->maximumSize();
 	const QSize& min_size = pWidget->minimumSize();
 
-	if (min_size.width() == max_size.width() && width != max_size.width())
-		pWidget->setFixedWidth(width);
-	if (min_size.height() == max_size.height() && height != max_size.height())
-		pWidget->setFixedHeight(height);
+	if (min_size.width() == max_size.width() && int(width) != max_size.width())
+		pWidget->setFixedWidth(int(width));
+	if (min_size.height() == max_size.height() && int(height) != max_size.height())
+		pWidget->setFixedHeight(int(height));
 
 	pWidget->resize(width, height);
 	return true;
@@ -2590,7 +2590,7 @@ void qtractorClapPlugin::EditorWidget::resizeEvent (
 			gui->set_size(plugin, width, height);
 	}
 
-	if (width != size.width() || height != size.height()) {
+	if (int(width) != size.width() || int(height) != size.height()) {
 		m_resizing = true;
 		QWidget::resize(width, height);
 		m_resizing = false;
@@ -2871,7 +2871,7 @@ void qtractorClapPlugin::clearParam ( qtractorPlugin::Param *pParam )
 	}
 
 	// Clear direct access, if any...
-	if (directAccessParamIndex() == pParam->index())
+	if (directAccessParamIndex() == long(pParam->index()))
 		setDirectAccessParamIndex(-1);
 }
 
@@ -3206,7 +3206,7 @@ void qtractorClapPlugin::idleEditor (void)
 	Impl::EventList& params_out = m_pImpl->params_out();
 	const clap_event_header *eh = params_out.pop();
 	for ( ; eh; eh = params_out.pop()) {
-		int param_id = CLAP_INVALID_ID;
+		int param_id = -1;
 		double value = 0.0;
 		// Check if we're not middle of a gesture...
 		if (eh->type == CLAP_EVENT_PARAM_GESTURE_BEGIN) {
@@ -3230,16 +3230,16 @@ void qtractorClapPlugin::idleEditor (void)
 			const clap_event_param_value *ev
 				= reinterpret_cast<const clap_event_param_value *> (eh);
 			if (ev && ev->param_id != CLAP_INVALID_ID) {
-				param_id = ev->param_id;
+				param_id = int(ev->param_id);
 				value = ev->value;
 				if (m_paramValues.contains(param_id)) {
 					m_paramValues.insert(param_id, value);
-					param_id = CLAP_INVALID_ID;
+					param_id = -1;
 				}
 			}
 		}
 		// Actual make the change...
-		if (param_id != CLAP_INVALID_ID) {
+		if (param_id >= 0) {
 			qtractorPlugin::Param *pParam = findParamId(param_id);
 			if (pParam) {
 				pParam->setValue(float(value), false);
