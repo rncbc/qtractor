@@ -119,32 +119,32 @@ End:	%3	Length:	%4</source>
         <translation>文件：	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="923"/>
+        <location filename="../qtractorClipCommand.cpp" line="924"/>
         <source>take %1</source>
         <translation>片段 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="925"/>
+        <location filename="../qtractorClipCommand.cpp" line="926"/>
         <source>reset takes</source>
         <translation>重置片段</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1197"/>
+        <location filename="../qtractorClipCommand.cpp" line="1198"/>
         <source>clip save</source>
         <translation>保存剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1220"/>
+        <location filename="../qtractorClipCommand.cpp" line="1221"/>
         <source>clip unlink</source>
         <translation>取消链接剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1248"/>
+        <location filename="../qtractorClipCommand.cpp" line="1249"/>
         <source>clip tool %1</source>
         <translation>剪辑工具 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1392"/>
+        <location filename="../qtractorClipCommand.cpp" line="1393"/>
         <source>clip record</source>
         <translation>录制剪辑</translation>
     </message>

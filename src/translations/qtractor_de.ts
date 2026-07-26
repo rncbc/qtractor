@@ -119,32 +119,32 @@ Ende:	%3	Länge:	%4</translation>
         <translation>Datei:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="923"/>
+        <location filename="../qtractorClipCommand.cpp" line="924"/>
         <source>take %1</source>
         <translation>Aufnahme %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="925"/>
+        <location filename="../qtractorClipCommand.cpp" line="926"/>
         <source>reset takes</source>
         <translation>Aufnahmen zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1197"/>
+        <location filename="../qtractorClipCommand.cpp" line="1198"/>
         <source>clip save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1220"/>
+        <location filename="../qtractorClipCommand.cpp" line="1221"/>
         <source>clip unlink</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1248"/>
+        <location filename="../qtractorClipCommand.cpp" line="1249"/>
         <source>clip tool %1</source>
         <translation>Clip-Werkzeug %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1392"/>
+        <location filename="../qtractorClipCommand.cpp" line="1393"/>
         <source>clip record</source>
         <translation>Clip-Aufnahme</translation>
     </message>
