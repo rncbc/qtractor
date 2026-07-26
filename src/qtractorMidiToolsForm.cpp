@@ -1288,24 +1288,24 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
 				const unsigned short p = qtractorTimeScale::snapFromIndex(
 					m_ui.ResizeSplitLengthComboBox->currentIndex() + 1);
-				const unsigned long q = pNode->ticksPerBeat / p;
-				if (q < iDuration) {
-					unsigned long t0 = iTime;
-					if (m_ui.ResizeSplitOffsetComboBox->currentIndex() > 0)
-						t0 = q * ((t0 + (q >> 1)) / q);
-					if (t0 < iTime)
-						t0 += q;
-					const unsigned long d0 = (t0 > iTime ? t0 - iTime : q);
-					for (unsigned long d = d0; d < iDuration; d += q) {
-						qtractorMidiEvent *pSplitEvent
-							= new qtractorMidiEvent(
-								iTime - iTimeOffset + d,
-								pEvent->type(), iNote, iValue,
-								iDuration < (d + q) ? iDuration - d : q);
-						pMidiEditCommand->insertEvent(pSplitEvent);
+				const long q = long(pNode->ticksPerBeat / p);
+					if (q < iDuration) {
+						long t0 = iTime;
+						if (m_ui.ResizeSplitOffsetComboBox->currentIndex() > 0)
+							t0 = q * ((t0 + (q >> 1)) / q);
+						if (t0 < iTime)
+							t0 += q;
+						const long d0 = (t0 > iTime ? t0 - iTime : q);
+						for (long d = d0; d < iDuration; d += q) {
+							qtractorMidiEvent *pSplitEvent
+								= new qtractorMidiEvent(
+									iTime - iTimeOffset + d,
+									pEvent->type(), iNote, iValue,
+									iDuration < (d + q) ? iDuration - d : q);
+							pMidiEditCommand->insertEvent(pSplitEvent);
+						}
+						iDuration = d0;
 					}
-					iDuration = d0;
-				}
 			}
 		}
 		// Rescale tool...
