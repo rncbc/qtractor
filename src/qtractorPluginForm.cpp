@@ -512,8 +512,8 @@ void qtractorPluginForm::updateMidiControlAutoConnect (void)
 				= m_ui.AutoConnectCheckBox->isChecked();
 			bAutoConnect = pMidiControlPlugin->isControlAutoConnect();
 			if (m_pMidiControlPluginWidget &&
-				( bAutoConnect && !bOldAutoConnect) ||
-				(!bAutoConnect &&  bOldAutoConnect)) {
+				(( bAutoConnect && !bOldAutoConnect) ||
+				 (!bAutoConnect &&  bOldAutoConnect))) {
 				m_pMidiControlPluginWidget->dirtyNotify();
 			}
 		}
