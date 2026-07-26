@@ -764,32 +764,32 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="923"/>
+        <location filename="../qtractorClipCommand.cpp" line="924"/>
         <source>take %1</source>
         <translation>дубль %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="925"/>
+        <location filename="../qtractorClipCommand.cpp" line="926"/>
         <source>reset takes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1197"/>
+        <location filename="../qtractorClipCommand.cpp" line="1198"/>
         <source>clip save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1220"/>
+        <location filename="../qtractorClipCommand.cpp" line="1221"/>
         <source>clip unlink</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1248"/>
+        <location filename="../qtractorClipCommand.cpp" line="1249"/>
         <source>clip tool %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1392"/>
+        <location filename="../qtractorClipCommand.cpp" line="1393"/>
         <source>clip record</source>
         <translation>запись клипа</translation>
     </message>

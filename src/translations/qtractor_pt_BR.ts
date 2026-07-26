@@ -378,22 +378,22 @@ MIDI:	</translation>
         <translation>%1 Volume</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="925"/>
+        <location filename="../qtractorClipCommand.cpp" line="926"/>
         <source>reset takes</source>
         <translation>resetar tentativas</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1197"/>
+        <location filename="../qtractorClipCommand.cpp" line="1198"/>
         <source>clip save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1220"/>
+        <location filename="../qtractorClipCommand.cpp" line="1221"/>
         <source>clip unlink</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1392"/>
+        <location filename="../qtractorClipCommand.cpp" line="1393"/>
         <source>clip record</source>
         <translation>gravador de sequência</translation>
     </message>
@@ -733,7 +733,7 @@ MIDI:	</translation>
         <translation>monitoração da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="923"/>
+        <location filename="../qtractorClipCommand.cpp" line="924"/>
         <source>take %1</source>
         <translation>toma %1</translation>
     </message>
@@ -866,7 +866,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>repassar canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1248"/>
+        <location filename="../qtractorClipCommand.cpp" line="1249"/>
         <source>clip tool %1</source>
         <translation>ferramentas para sequências %1</translation>
     </message>

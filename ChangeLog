@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Updated to CLAP v1.2.10
+
 - Fixed audio clip waveform display sudden cutoff, under certain
   circumstances, while recording is engaged. (EXPERIMENTAL)
 
