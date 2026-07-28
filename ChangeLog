@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed an ugly old bug manifesting in MIDI instrument plug-in's
+  dedicated audio outputs distorted sound (probably since v0.9.30).
+
 - Updated to CLAP v1.2.10
 
 - Fixed audio clip waveform display sudden cutoff, under certain
