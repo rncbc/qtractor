@@ -344,7 +344,7 @@ Fin :	%3	Longueur :	%4</translation>
         <translation>%1 banque %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1604"/>
+        <location filename="../qtractorMidiManager.cpp" line="1595"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - banque %2</translation>
     </message>
