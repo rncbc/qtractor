@@ -153,7 +153,7 @@ Konec:	%3	Délka:	%4</translation>
         <translation>%1 Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1604"/>
+        <location filename="../qtractorMidiManager.cpp" line="1595"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banka %2</translation>
     </message>
