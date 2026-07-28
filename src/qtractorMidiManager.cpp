@@ -654,21 +654,12 @@ void qtractorMidiManager::process (
 	// Now's time to process the plugins as usual...
 	if (m_pAudioOutputBus) {
 		const unsigned int nframes = iTimeEnd - iTimeStart;
-		if (m_bAudioOutputBus) {
-			m_pAudioOutputBus->process_prepare(nframes);
-			m_pPluginList->process(m_pAudioOutputBus->out(), nframes);
-			if (m_bAudioOutputMonitor)
-				m_pAudioOutputMonitor->process_meter(
-					m_pAudioOutputBus->out(), nframes);
-			m_pAudioOutputBus->process_commit(nframes);
-		} else {
-			m_pAudioOutputBus->buffer_prepare(nframes);
-			m_pPluginList->process(m_pAudioOutputBus->buffer(), nframes);
-			if (m_bAudioOutputMonitor)
-				m_pAudioOutputMonitor->process_meter(
-					m_pAudioOutputBus->buffer(), nframes);
-			m_pAudioOutputBus->buffer_commit(nframes);
-		}
+		m_pAudioOutputBus->buffer_prepare(nframes);
+		m_pPluginList->process(m_pAudioOutputBus->buffer(), nframes);
+		if (m_bAudioOutputMonitor)
+			m_pAudioOutputMonitor->process_meter(
+				m_pAudioOutputBus->buffer(), nframes);
+		m_pAudioOutputBus->buffer_commit(nframes);
 	}
 }
 
