@@ -13808,38 +13808,38 @@ Do you want to apply the changes?</source>
         <translation>Подробности</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="346"/>
+        <location filename="../qtractorPaletteForm.cpp" line="348"/>
         <source>Import File - %1</source>
         <translation>Импортировать файл - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="262"/>
-        <location filename="../qtractorPaletteForm.cpp" line="349"/>
-        <location filename="../qtractorPaletteForm.cpp" line="394"/>
+        <location filename="../qtractorPaletteForm.cpp" line="264"/>
+        <location filename="../qtractorPaletteForm.cpp" line="351"/>
+        <location filename="../qtractorPaletteForm.cpp" line="396"/>
         <source>Palette files (*.%1)</source>
         <translation>Файлы палитр (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="260"/>
+        <location filename="../qtractorPaletteForm.cpp" line="262"/>
         <source>Save Palette - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="263"/>
-        <location filename="../qtractorPaletteForm.cpp" line="350"/>
-        <location filename="../qtractorPaletteForm.cpp" line="395"/>
+        <location filename="../qtractorPaletteForm.cpp" line="265"/>
+        <location filename="../qtractorPaletteForm.cpp" line="352"/>
+        <location filename="../qtractorPaletteForm.cpp" line="397"/>
         <source>All files (*.*)</source>
         <translation>Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="381"/>
-        <location filename="../qtractorPaletteForm.cpp" line="757"/>
-        <location filename="../qtractorPaletteForm.cpp" line="765"/>
+        <location filename="../qtractorPaletteForm.cpp" line="383"/>
+        <location filename="../qtractorPaletteForm.cpp" line="759"/>
+        <location filename="../qtractorPaletteForm.cpp" line="767"/>
         <source>Warning - %1</source>
         <translation>Предупреждение - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="382"/>
+        <location filename="../qtractorPaletteForm.cpp" line="384"/>
         <source>Could not import from file:
 
 %1
@@ -13848,12 +13848,12 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="391"/>
+        <location filename="../qtractorPaletteForm.cpp" line="393"/>
         <source>Export File - %1</source>
         <translation>Экспортировать файл - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="758"/>
+        <location filename="../qtractorPaletteForm.cpp" line="760"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -13862,7 +13862,7 @@ Do you want to discard the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="766"/>
+        <location filename="../qtractorPaletteForm.cpp" line="768"/>
         <source>Some settings have been changed:
 
 &quot;%1&quot;.
@@ -13874,22 +13874,22 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorPaletteForm::PaletteModel</name>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1009"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1011"/>
         <source>Color Role</source>
         <translation>Роль цвета</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1012"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1014"/>
         <source>Active</source>
         <translation>Активно</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1015"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1017"/>
         <source>Inactive</source>
         <translation>Неактивно</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1018"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1020"/>
         <source>Disabled</source>
         <translation>Отключено</translation>
     </message>
