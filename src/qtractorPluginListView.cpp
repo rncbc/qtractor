@@ -1141,10 +1141,8 @@ void qtractorPluginListView::addAudioInsertPlugin (void)
 		// Make it a undoable command...
 		qtractorAddInsertPluginCommand *pAddInsertPluginCommand
 			= new qtractorAddInsertPluginCommand(pPlugin);
-		qtractorPluginListItem *pNextItem
-			= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-		if (pNextItem)
-			pAddInsertPluginCommand->setNextPlugin(pNextItem->plugin());
+		if (m_pNextItem)
+			pAddInsertPluginCommand->setNextPlugin(m_pNextItem->plugin());
 		pSession->execute(pAddInsertPluginCommand);
 		QListWidget::setCurrentRow(pluginItem(pPlugin));
 		// Show the plugin form right away...
@@ -1180,10 +1178,8 @@ void qtractorPluginListView::addAudioAuxSendPlugin (void)
 		// Make it a undoable command...
 		qtractorAddAuxSendPluginCommand *pAddAuxSendPluginCommand
 			= new qtractorAddAuxSendPluginCommand(pPlugin);
-		qtractorPluginListItem *pNextItem
-			= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-		if (pNextItem)
-			pAddAuxSendPluginCommand->setNextPlugin(pNextItem->plugin());
+		if (m_pNextItem)
+			pAddAuxSendPluginCommand->setNextPlugin(m_pNextItem->plugin());
 		pSession->execute(pAddAuxSendPluginCommand);
 		QListWidget::setCurrentRow(pluginItem(pPlugin));
 		// Show the plugin form right away...
@@ -1218,10 +1214,8 @@ void qtractorPluginListView::addMidiInsertPlugin (void)
 		// Make it a undoable command...
 		qtractorAddInsertPluginCommand *pAddInsertPluginCommand
 			= new qtractorAddInsertPluginCommand(pPlugin);
-		qtractorPluginListItem *pNextItem
-			= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-		if (pNextItem)
-			pAddInsertPluginCommand->setNextPlugin(pNextItem->plugin());
+		if (m_pNextItem)
+			pAddInsertPluginCommand->setNextPlugin(m_pNextItem->plugin());
 		pSession->execute(pAddInsertPluginCommand);
 		QListWidget::setCurrentRow(pluginItem(pPlugin));
 		// Show the plugin form right away...
@@ -1256,10 +1250,8 @@ void qtractorPluginListView::addMidiAuxSendPlugin (void)
 		// Make it a undoable command...
 		qtractorAddAuxSendPluginCommand *pAddAuxSendPluginCommand
 			= new qtractorAddAuxSendPluginCommand(pPlugin);
-		qtractorPluginListItem *pNextItem
-			= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-		if (pNextItem)
-			pAddAuxSendPluginCommand->setNextPlugin(pNextItem->plugin());
+		if (m_pNextItem)
+			pAddAuxSendPluginCommand->setNextPlugin(m_pNextItem->plugin());
 		pSession->execute(pAddAuxSendPluginCommand);
 		QListWidget::setCurrentRow(pluginItem(pPlugin));
 		// Show the plugin form right away...
@@ -1294,10 +1286,8 @@ void qtractorPluginListView::addMidiControlPlugin (void)
 		// Make it a undoable command...
 		qtractorAddMidiControlPluginCommand *pAddMidiControlPluginCommand
 			= new qtractorAddMidiControlPluginCommand(pPlugin);
-		qtractorPluginListItem *pNextItem
-			= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-		if (pNextItem)
-			pAddMidiControlPluginCommand->setNextPlugin(pNextItem->plugin());
+		if (m_pNextItem)
+			pAddMidiControlPluginCommand->setNextPlugin(m_pNextItem->plugin());
 		pSession->execute(pAddMidiControlPluginCommand);
 		QListWidget::setCurrentRow(pluginItem(pPlugin));
 		// Show the plugin form right away...
