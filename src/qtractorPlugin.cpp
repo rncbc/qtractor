@@ -2112,13 +2112,13 @@ void qtractorPluginList::resetBuffers (void)
 
 // Add-guarded plugin method.
 void qtractorPluginList::addPlugin (
-	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin )
+	qtractorPlugin *pPlugin, qtractorPlugin *pAnchorPlugin )
 {
 	// We'll get prepared before plugging it in...
 	pPlugin->setChannels(m_iChannels);
 
-	if (pNextPlugin)
-		insertBefore(pPlugin, pNextPlugin);
+	if (pAnchorPlugin)
+		insertAfter(pPlugin, pAnchorPlugin);
 	else
 		append(pPlugin);
 
@@ -2126,12 +2126,12 @@ void qtractorPluginList::addPlugin (
 	QListIterator<qtractorPluginListView *> iter(m_views);
 	while (iter.hasNext()) {
 		qtractorPluginListView *pListView = iter.next();
-		int iNextItem = pListView->count();
-		if (pNextPlugin)
-			iNextItem = pListView->pluginItem(pNextPlugin);
-		qtractorPluginListItem *pNextItem = new qtractorPluginListItem(pPlugin);
-		pListView->insertItem(iNextItem, pNextItem);
-		pListView->setCurrentItem(pNextItem);
+		int iAnchorItem = pListView->count();
+		if (pAnchorPlugin)
+			iAnchorItem = pListView->pluginItem(pAnchorPlugin);
+		qtractorPluginListItem *pAnchorItem = new qtractorPluginListItem(pPlugin);
+		pListView->insertItem(iAnchorItem, pAnchorItem);
+		pListView->setCurrentItem(pAnchorItem);
 	}
 
 	// Update plugins for auto-plugin-deactivation...
@@ -2141,7 +2141,7 @@ void qtractorPluginList::addPlugin (
 
 // Move-guarded plugin method.
 void qtractorPluginList::movePlugin (
-	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin )
+	qtractorPlugin *pPlugin, qtractorPlugin *pAnchorPlugin )
 {
 	// Source sanity...
 	if (pPlugin == nullptr)
@@ -2153,8 +2153,8 @@ void qtractorPluginList::movePlugin (
 
 	// Remove and insert back again...
 	pPluginList->unlink(pPlugin);
-	if (pNextPlugin) {
-		insertBefore(pPlugin, pNextPlugin);
+	if (pAnchorPlugin) {
+		insertBefore(pPlugin, pAnchorPlugin);
 	} else {
 		append(pPlugin);
 	}
@@ -2208,13 +2208,13 @@ void qtractorPluginList::movePlugin (
 	QListIterator<qtractorPluginListView *> view(m_views);
 	while (view.hasNext()) {
 		qtractorPluginListView *pListView = view.next();
-		int iNextItem = pListView->count();
-		if (pNextPlugin)
-			iNextItem = pListView->pluginItem(pNextPlugin);
-		qtractorPluginListItem *pNextItem
+		int iAnchorItem = pListView->count();
+		if (pAnchorPlugin)
+			iAnchorItem = pListView->pluginItem(pAnchorPlugin);
+		qtractorPluginListItem *pAnchorItem
 			= new qtractorPluginListItem(pPlugin);
-		pListView->insertItem(iNextItem, pNextItem);
-		pListView->setCurrentItem(pNextItem);
+		pListView->insertItem(iAnchorItem, pAnchorItem);
+		pListView->setCurrentItem(pAnchorItem);
 	}
 
 	// update (both) lists for Auto-plugin-deactivation
