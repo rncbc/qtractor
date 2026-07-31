@@ -40,8 +40,9 @@
 //
 
 // Constructor.
-qtractorPluginCommand::qtractorPluginCommand ( const QString& sName,
-	qtractorPlugin *pPlugin ) : qtractorCommand(sName), m_pNextPlugin(nullptr)
+qtractorPluginCommand::qtractorPluginCommand (
+	const QString& sName, qtractorPlugin *pPlugin )
+	: qtractorCommand(sName), m_pAnchorPlugin(nullptr)
 {
 	if (pPlugin)
 		m_plugins.append(pPlugin);	
@@ -74,7 +75,7 @@ bool qtractorPluginCommand::addPlugins (void)
 		qtractorPlugin *pPlugin = iter.next();
 		qtractorPluginList *pPluginList = pPlugin->list();
 		if (pPluginList)
-			pPluginList->addPlugin(pPlugin, nextPlugin());
+			pPluginList->addPlugin(pPlugin, anchorPlugin());
 	}
 	// Avoid the disposal of the plugin reference(s).
 	setAutoDelete(false);
@@ -329,9 +330,9 @@ bool qtractorRemovePluginCommand::undo (void)
 // Constructor.
 qtractorInsertPluginCommand::qtractorInsertPluginCommand (
 	const QString& sName, qtractorPlugin *pPlugin,
-	qtractorPlugin *pNextPlugin ) : qtractorPluginCommand(sName, pPlugin)
+	qtractorPlugin *pAnchorPlugin ) : qtractorPluginCommand(sName, pPlugin)
 {
-	setNextPlugin(pNextPlugin);
+	setAnchorPlugin(pAnchorPlugin);
 }
 
 
@@ -353,13 +354,13 @@ bool qtractorInsertPluginCommand::redo (void)
 
 //	pSession->lock();
 
-	qtractorPlugin *pNextPlugin = pPlugin->next();
+	qtractorPlugin *pAnchorPlugin = pPlugin->prev();
 
 	// Insert it...
-	pPluginList->addPlugin(pPlugin, nextPlugin());
+	pPluginList->addPlugin(pPlugin, anchorPlugin());
 
 	// Swap it nice, finally.
-	setNextPlugin(pNextPlugin);
+	setAnchorPlugin(pAnchorPlugin);
 
 	// Whether to allow the disposal of the plugin reference.
 	setAutoDelete(false);
@@ -386,13 +387,13 @@ bool qtractorInsertPluginCommand::undo (void)
 
 //	pSession->lock();
 
-	qtractorPlugin *pNextPlugin = pPlugin->next();
+	qtractorPlugin *pAnchorPlugin = pPlugin->prev();
 
 	// Insert it...
 	pPluginList->removePlugin(pPlugin);
 
 	// Swap it nice, finally.
-	setNextPlugin(pNextPlugin);
+	setAnchorPlugin(pAnchorPlugin);
 
 	// Whether to allow the disposal of the plugin reference.
 	setAutoDelete(true);
@@ -409,11 +410,12 @@ bool qtractorInsertPluginCommand::undo (void)
 
 // Constructor.
 qtractorMovePluginCommand::qtractorMovePluginCommand (
-	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin,
+	qtractorPlugin *pPlugin, qtractorPlugin *pAnchorPlugin,
 		qtractorPluginList *pPluginList )
-	: qtractorInsertPluginCommand(QObject::tr("move plugin"),
-		pPlugin, pNextPlugin)
+	: qtractorPluginCommand(QObject::tr("move plugin"), pPlugin)
 {
+	setAnchorPlugin(pAnchorPlugin);
+
 	m_pPluginList = pPluginList;
 
 	// Special case for aux-sends moved into output buses
@@ -474,11 +476,11 @@ bool qtractorMovePluginCommand::redo (void)
 	}
 
 	// Save the previous track alright...
-	qtractorPlugin *pNextPlugin = pPlugin->next();
+	qtractorPlugin *pAnchorPlugin = pPlugin->next();
 	qtractorPluginList *pPluginList = pPlugin->list();
 
 	// Move it...
-	m_pPluginList->movePlugin(pPlugin, nextPlugin());
+	m_pPluginList->movePlugin(pPlugin, anchorPlugin());
 
 	// Special case for audio Aux-sends moved into output buses...
 	if (m_pAuxSendPlugin) {
@@ -507,7 +509,8 @@ bool qtractorMovePluginCommand::redo (void)
 
 	// Swap it nice, finally.
 	m_pPluginList = pPluginList;
-	setNextPlugin(pNextPlugin);
+
+	setAnchorPlugin(pAnchorPlugin);
 
 	if (bReopenForm)
 		pPlugin->openForm();

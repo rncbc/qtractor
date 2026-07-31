@@ -532,82 +532,82 @@ MIDI:	</translation>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="121"/>
+        <location filename="../qtractorPluginCommand.cpp" line="122"/>
         <source>add plugin</source>
         <translation>ajouter un greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="145"/>
+        <location filename="../qtractorPluginCommand.cpp" line="146"/>
         <source>add insert</source>
         <translation>ajouter un insert</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="169"/>
+        <location filename="../qtractorPluginCommand.cpp" line="170"/>
         <source>add aux-send</source>
         <translation>ajouter un aux-send</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="193"/>
+        <location filename="../qtractorPluginCommand.cpp" line="194"/>
         <source>add MIDI controller</source>
         <translation>ajouter un controleur MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="217"/>
+        <location filename="../qtractorPluginCommand.cpp" line="218"/>
         <source>aux-send bus</source>
         <translation>bus aux-send</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="266"/>
+        <location filename="../qtractorPluginCommand.cpp" line="267"/>
         <source>aux-send matrix</source>
         <translation>matrice aux-send</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="308"/>
+        <location filename="../qtractorPluginCommand.cpp" line="309"/>
         <source>remove plugin</source>
         <translation>enlever le greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="414"/>
+        <location filename="../qtractorPluginCommand.cpp" line="415"/>
         <source>move plugin</source>
         <translation>déplacer le greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="544"/>
+        <location filename="../qtractorPluginCommand.cpp" line="547"/>
         <source>activate plugin</source>
         <translation>activer le greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="580"/>
+        <location filename="../qtractorPluginCommand.cpp" line="583"/>
         <source>preset plugin</source>
         <translation>pré-réglage du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="627"/>
+        <location filename="../qtractorPluginCommand.cpp" line="630"/>
         <source>reset plugin</source>
         <translation>réinitialiser le greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="677"/>
+        <location filename="../qtractorPluginCommand.cpp" line="680"/>
         <source>plugin program</source>
         <translation>programme du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="723"/>
+        <location filename="../qtractorPluginCommand.cpp" line="726"/>
         <source>plugin alias</source>
         <translation>alis de greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="956"/>
+        <location filename="../qtractorPluginCommand.cpp" line="959"/>
         <source>dedicated audio outputs</source>
         <translation>sorties audio dédiées</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="1001"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1004"/>
         <source>direct access param</source>
         <translation>paramètre accès direct</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="1033"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1036"/>
         <source>import plugins</source>
         <translation>importer des greffons</translation>
     </message>

@@ -533,82 +533,82 @@ MIDI:	</translation>
         <translation>%1(%2): %3 plugin non trovata.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="121"/>
+        <location filename="../qtractorPluginCommand.cpp" line="122"/>
         <source>add plugin</source>
         <translation>aggiungi plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="145"/>
+        <location filename="../qtractorPluginCommand.cpp" line="146"/>
         <source>add insert</source>
         <translation>aggiungi insert</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="169"/>
+        <location filename="../qtractorPluginCommand.cpp" line="170"/>
         <source>add aux-send</source>
         <translation>aggiungi send-aux</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="193"/>
+        <location filename="../qtractorPluginCommand.cpp" line="194"/>
         <source>add MIDI controller</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="217"/>
+        <location filename="../qtractorPluginCommand.cpp" line="218"/>
         <source>aux-send bus</source>
         <translation>bus send-aux</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="266"/>
+        <location filename="../qtractorPluginCommand.cpp" line="267"/>
         <source>aux-send matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="308"/>
+        <location filename="../qtractorPluginCommand.cpp" line="309"/>
         <source>remove plugin</source>
         <translation>rimuovi plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="414"/>
+        <location filename="../qtractorPluginCommand.cpp" line="415"/>
         <source>move plugin</source>
         <translation>sposta plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="544"/>
+        <location filename="../qtractorPluginCommand.cpp" line="547"/>
         <source>activate plugin</source>
         <translation>attiva plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="580"/>
+        <location filename="../qtractorPluginCommand.cpp" line="583"/>
         <source>preset plugin</source>
         <translation>plugin di preset</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="627"/>
+        <location filename="../qtractorPluginCommand.cpp" line="630"/>
         <source>reset plugin</source>
         <translation>resetta plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="677"/>
+        <location filename="../qtractorPluginCommand.cpp" line="680"/>
         <source>plugin program</source>
         <translation>plugin di programma</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="723"/>
+        <location filename="../qtractorPluginCommand.cpp" line="726"/>
         <source>plugin alias</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="956"/>
+        <location filename="../qtractorPluginCommand.cpp" line="959"/>
         <source>dedicated audio outputs</source>
         <translation>uscite audio dedicate</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="1001"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1004"/>
         <source>direct access param</source>
         <translation>parametro di accesso diretto</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="1033"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1036"/>
         <source>import plugins</source>
         <translation type="unfinished"></translation>
     </message>

@@ -135,12 +135,12 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>remover pista</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="627"/>
+        <location filename="../qtractorPluginCommand.cpp" line="630"/>
         <source>reset plugin</source>
         <translation>resetar plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="580"/>
+        <location filename="../qtractorPluginCommand.cpp" line="583"/>
         <source>preset plugin</source>
         <translation>pré-configurações do plugin</translation>
     </message>
@@ -491,37 +491,37 @@ MIDI:	</translation>
         <translation>adicionar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="145"/>
+        <location filename="../qtractorPluginCommand.cpp" line="146"/>
         <source>add insert</source>
         <translation>adicionar Insertor</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="193"/>
+        <location filename="../qtractorPluginCommand.cpp" line="194"/>
         <source>add MIDI controller</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="266"/>
+        <location filename="../qtractorPluginCommand.cpp" line="267"/>
         <source>aux-send matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="414"/>
+        <location filename="../qtractorPluginCommand.cpp" line="415"/>
         <source>move plugin</source>
         <translation>mover plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="677"/>
+        <location filename="../qtractorPluginCommand.cpp" line="680"/>
         <source>plugin program</source>
         <translation>programação do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="723"/>
+        <location filename="../qtractorPluginCommand.cpp" line="726"/>
         <source>plugin alias</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="1033"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1036"/>
         <source>import plugins</source>
         <translation>importar plugins</translation>
     </message>
@@ -556,7 +556,7 @@ MIDI:	</translation>
         <translation>alterar formula-compasso.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="121"/>
+        <location filename="../qtractorPluginCommand.cpp" line="122"/>
         <source>add plugin</source>
         <translation>adicionar plugin</translation>
     </message>
@@ -575,7 +575,7 @@ MIDI:	</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="956"/>
+        <location filename="../qtractorPluginCommand.cpp" line="959"/>
         <source>dedicated audio outputs</source>
         <translation>saídas de áudio dedicadas</translation>
     </message>
@@ -600,7 +600,7 @@ MIDI:	</translation>
         <translation>resetar controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="1001"/>
+        <location filename="../qtractorPluginCommand.cpp" line="1004"/>
         <source>direct access param</source>
         <translation>acesso direto a parâmetros</translation>
     </message>
@@ -755,7 +755,7 @@ MIDI:	</translation>
 	(%1% distorcer-tempo)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="169"/>
+        <location filename="../qtractorPluginCommand.cpp" line="170"/>
         <source>add aux-send</source>
         <translation>adicionar mandada</translation>
     </message>
@@ -821,7 +821,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>volume do canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="544"/>
+        <location filename="../qtractorPluginCommand.cpp" line="547"/>
         <source>activate plugin</source>
         <translation>ativar plugin</translation>
     </message>
@@ -876,7 +876,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Arquivo de definições de Instrumento Cakewalk</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="217"/>
+        <location filename="../qtractorPluginCommand.cpp" line="218"/>
         <source>aux-send bus</source>
         <translation>mandada de canal principal</translation>
     </message>
@@ -916,7 +916,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>apagar todas as automações</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="308"/>
+        <location filename="../qtractorPluginCommand.cpp" line="309"/>
         <source>remove plugin</source>
         <translation>remover plugin</translation>
     </message>
