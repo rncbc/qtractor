@@ -306,8 +306,8 @@ public slots:
 
 	void stabilizeForm();
 
-	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
-	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);
+	void selectNotifySlot(QObject *pSender);
+	void changeNotifySlot(QObject *pSender);
 	void updateNotifySlot(unsigned int flags);
 	void dirtyNotifySlot();
 
@@ -330,8 +330,8 @@ protected slots:
 	void audioPropNotify();
 	void audioSelfNotify();
 
-	void midiMmcNotify(const qtractorMmcEvent& mmce);
-	void midiCtlNotify(const qtractorCtlEvent& ctle);
+	void midiMmcNotify(qtractorMmcEvent *pMmcEvent);
+	void midiCtlNotify(qtractorCtlEvent *pCtlEvent);
 	void midiSppNotify(int iSppCmd, unsigned short iSongPos);
 	void midiClkNotify(float fTempo);
 	void midiInpNotify(unsigned short flags);
