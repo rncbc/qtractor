@@ -57,10 +57,10 @@ public:
 		{ m_plugins.append(pPlugin); }
 
 	// An anchor plugin reference.
-	void setNextPlugin(qtractorPlugin *pNextPlugin)
-		{ m_pNextPlugin = pNextPlugin; }
-	qtractorPlugin *nextPlugin() const
-		{ return m_pNextPlugin; }
+	void setAnchorPlugin(qtractorPlugin *pAnchorPlugin)
+		{ m_pAnchorPlugin = pAnchorPlugin; }
+	qtractorPlugin *anchorPlugin() const
+		{ return m_pAnchorPlugin; }
 
 protected:
 
@@ -74,7 +74,8 @@ private:
 
 	// Instance variables.
 	QList<qtractorPlugin *> m_plugins;
-	qtractorPlugin *m_pNextPlugin;
+
+	qtractorPlugin *m_pAnchorPlugin;
 };
 
 
@@ -219,7 +220,7 @@ public:
 
 	// Constructor.
 	qtractorInsertPluginCommand(const QString& sName,
-		qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
+		qtractorPlugin *pPlugin, qtractorPlugin *pAnchorPlugin);
 
 	// Plugin-move command methods.
 	bool redo();
@@ -231,13 +232,13 @@ public:
 // class qtractorMovePluginCommand - declaration.
 //
 
-class qtractorMovePluginCommand : public qtractorInsertPluginCommand
+class qtractorMovePluginCommand : public qtractorPluginCommand
 {
 public:
 
 	// Constructor.
 	qtractorMovePluginCommand(qtractorPlugin *pPlugin,
-		qtractorPlugin *pNextPlugin, qtractorPluginList *pPluginList);
+		qtractorPlugin *pAnchorPlugin, qtractorPluginList *pPluginList);
 
 	// Plugin-move command methods.
 	bool redo();

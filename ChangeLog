@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Plugins are now added/inserted *after* the current selected one
+  and appended to the list if none is actually selected as before.
+
 - Fixed an ugly old bug manifesting in MIDI instrument plug-in's
   dedicated audio outputs distorted sound (probably since v0.9.30).
 

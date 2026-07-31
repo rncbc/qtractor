@@ -195,11 +195,11 @@ protected:
 
 	// Move item on list.
 	void moveItem(qtractorPluginListItem *pItem,
-		qtractorPluginListItem *pNextItem);
+		qtractorPluginListItem *pAnchorItem);
 
 	// Copy item on list.
 	void copyItem(qtractorPluginListItem *pItem,
-		qtractorPluginListItem *pNextItem);
+		qtractorPluginListItem *pAnchorItem);
 
 	// Trap for help/tool-tip events.
 	bool eventFilter(QObject *pObject, QEvent *pEvent);
@@ -278,7 +278,7 @@ private:
 	qtractorPluginListItem *m_pCurrentItem;
 
 	// Context-menu anchor item...
-	qtractorPluginListItem *m_pNextItem;
+	qtractorPluginListItem *m_pAnchorItem;
 };
 
 
