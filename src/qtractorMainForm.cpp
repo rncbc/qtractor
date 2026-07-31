@@ -43,6 +43,8 @@
 #include "qtractorAudioBuffer.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorMmcEvent.h"
+#include "qtractorCtlEvent.h"
 
 #include "qtractorTimeStretcher.h"
 
@@ -336,11 +338,11 @@ qtractorMainForm::qtractorMainForm (
 		qRegisterMetaType<qtractorMmcEvent> ("qtractorMmcEvent");
 		qRegisterMetaType<qtractorCtlEvent> ("qtractorCtlEvent");
 		QObject::connect(pMidiEngineProxy,
-			SIGNAL(mmcEvent(const qtractorMmcEvent&)),
-			SLOT(midiMmcNotify(const qtractorMmcEvent&)));
+			SIGNAL(mmcEvent(qtractorMmcEvent *)),
+			SLOT(midiMmcNotify(qtractorMmcEvent *)));
 		QObject::connect(pMidiEngineProxy,
-			SIGNAL(ctlEvent(const qtractorCtlEvent&)),
-			SLOT(midiCtlNotify(const qtractorCtlEvent&)));
+			SIGNAL(ctlEvent(qtractorCtlEvent *)),
+			SLOT(midiCtlNotify(qtractorCtlEvent *)));
 		QObject::connect(pMidiEngineProxy,
 			SIGNAL(sppEvent(int, unsigned short)),
 			SLOT(midiSppNotify(int, unsigned short)));
@@ -5154,7 +5156,7 @@ void qtractorMainForm::clipTakeRange (void)
 			if (m_pSession->execute(pClipCommand)) {
 				m_pSession->setEditHead(iTakeStart);
 				m_pSession->setEditTail(iTakeEnd);
-				selectionNotifySlot(nullptr);
+				selectNotifySlot(nullptr);
 			}
 		}
 	}
@@ -8844,7 +8846,7 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 			++m_iDirtyCount;
 		}
 		// Final view update, just in case...
-		selectionNotifySlot(nullptr);
+		selectNotifySlot(nullptr);
 	}
 	else
 #else
@@ -8999,10 +9001,13 @@ void qtractorMainForm::audioSelfNotify (void)
 
 
 // Custom MMC event handler.
-void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
+void qtractorMainForm::midiMmcNotify ( qtractorMmcEvent *pMmcEvent )
 {
+	if (pMmcEvent == nullptr)
+		return;
+
 	QString sMmcText("MIDI MMC: ");
-	switch (mmce.cmd()) {
+	switch (pMmcEvent->cmd()) {
 	case qtractorMmcEvent::STOP:
 	case qtractorMmcEvent::PAUSE:
 		sMmcText += tr("STOP");
@@ -9041,49 +9046,51 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 		setRolling(0);
 		break;
 	case qtractorMmcEvent::LOCATE:
-		sMmcText += tr("LOCATE %1").arg(mmce.locate());
-		setLocate(mmce.locate());
+		sMmcText += tr("LOCATE %1").arg(pMmcEvent->locate());
+		setLocate(pMmcEvent->locate());
 		break;
 	case qtractorMmcEvent::SHUTTLE:
-		sMmcText += tr("SHUTTLE %1").arg(mmce.shuttle());
-		setShuttle(mmce.shuttle());
+		sMmcText += tr("SHUTTLE %1").arg(pMmcEvent->shuttle());
+		setShuttle(pMmcEvent->shuttle());
 		break;
 	case qtractorMmcEvent::STEP:
-		sMmcText += tr("STEP %1").arg(mmce.step());
-		setStep(mmce.step());
+		sMmcText += tr("STEP %1").arg(pMmcEvent->step());
+		setStep(pMmcEvent->step());
 		break;
 	case qtractorMmcEvent::MASKED_WRITE:
-		switch (mmce.scmd()) {
+		switch (pMmcEvent->scmd()) {
 		case qtractorMmcEvent::TRACK_RECORD:
 			sMmcText += tr("TRACK RECORD %1 %2")
-				.arg(mmce.track())
-				.arg(mmce.isOn());
+				.arg(pMmcEvent->track())
+				.arg(pMmcEvent->isOn());
 			break;
 		case qtractorMmcEvent::TRACK_MUTE:
 			sMmcText += tr("TRACK MUTE %1 %2")
-				.arg(mmce.track())
-				.arg(mmce.isOn());
+				.arg(pMmcEvent->track())
+				.arg(pMmcEvent->isOn());
 			break;
 		case qtractorMmcEvent::TRACK_SOLO:
 			sMmcText += tr("TRACK SOLO %1 %2")
-				.arg(mmce.track())
-				.arg(mmce.isOn());
+				.arg(pMmcEvent->track())
+				.arg(pMmcEvent->isOn());
 			break;
 		case qtractorMmcEvent::TRACK_MONITOR:
 			sMmcText += tr("TRACK MONITOR %1 %2")
-				.arg(mmce.track())
-				.arg(mmce.isOn());
+				.arg(pMmcEvent->track())
+				.arg(pMmcEvent->isOn());
 			break;
 		default:
 			sMmcText += tr("Unknown sub-command");
 			break;
 		}
-		setTrack(mmce.scmd(), mmce.track(), mmce.isOn());
+		setTrack(pMmcEvent->scmd(), pMmcEvent->track(), pMmcEvent->isOn());
 		break;
 	default:
 		sMmcText += tr("Not implemented");
 		break;
 	}
+
+	delete pMmcEvent;
 
 	appendMessages(sMmcText);
 	++m_iStabilizeTimer;
@@ -9091,32 +9098,35 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 
 
 // Custom controller event handler.
-void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
+void qtractorMainForm::midiCtlNotify ( qtractorCtlEvent *pCtlEvent )
 {
+	if (pCtlEvent == nullptr)
+		return;
+
 #ifdef CONFIG_DEBUG
 	QString sCtlText(tr("MIDI CTL: %1, Channel %2, Param %3, Value %4")
-		.arg(qtractorMidiControl::nameFromType(ctle.type()))
-		.arg(ctle.channel() + 1)
-		.arg(ctle.param())
-		.arg(ctle.value()));
+		.arg(qtractorMidiControl::nameFromType(pCtlEvent->type()))
+		.arg(pCtlEvent->channel() + 1)
+		.arg(pCtlEvent->param())
+		.arg(pCtlEvent->value()));
 	qDebug("qtractorMainForm::midiCtlNotify() %s.",
 		sCtlText.toUtf8().constData());
 #endif
 
 	// Check if controller is used as MIDI controller...
-	if (m_pMidiControl->processEvent(ctle)) {
+	if (m_pMidiControl->processEvent(*pCtlEvent)) {
 	#ifdef CONFIG_DEBUG
 		appendMessages(sCtlText);
 	#endif
 		return;
 	}
 
-	if (ctle.type() == qtractorMidiEvent::CONTROLLER) {
+	if (pCtlEvent->type() == qtractorMidiEvent::CONTROLLER) {
 		/* FIXME: JLCooper faders (as from US-224)...
-		if (ctle.channel() == 15) {
+		if (pCtlEvent->channel() == 15) {
 			// Event translation...
-			int   iTrack = int(ctle.controller()) & 0x3f;
-			float fGain  = float(ctle.value()) / 127.0f;
+			int   iTrack = int(pCtlEvent->controller()) & 0x3f;
+			float fGain  = float(pCtlEvent->value()) / 127.0f;
 			// Find the track by number...
 			qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
 			if (pTrack && qAbs(fGain - pTrack->gain()) > 0.001f) {
@@ -9132,13 +9142,13 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 		}
 		else */
 		// Handle volume controls...
-		if (ctle.param() == 7) {
+		if (pCtlEvent->param() == 7) {
 			int iTrack = 0;
-			const float fGain = float(ctle.value()) / 127.0f;
+			const float fGain = float(pCtlEvent->value()) / 127.0f;
 			for (qtractorTrack *pTrack = m_pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (pTrack->trackType() == qtractorTrack::Midi &&
-					pTrack->midiChannel() == ctle.channel() &&
+					pTrack->midiChannel() == pCtlEvent->channel() &&
 					qAbs(fGain - pTrack->gain()) > 0.001f) {
 					m_pSession->execute(
 						new qtractorTrackGainCommand(pTrack, fGain, true));
@@ -9154,13 +9164,13 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 		}
 		else
 		// Handle pan controls...
-		if (ctle.param() == 10) {
+		if (pCtlEvent->param() == 10) {
 			int iTrack = 0;
-			const float fPanning = (float(ctle.value()) - 64.0f) / 63.0f;
+			const float fPanning = (float(pCtlEvent->value()) - 64.0f) / 63.0f;
 			for (qtractorTrack *pTrack = m_pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (pTrack->trackType() == qtractorTrack::Midi &&
-					pTrack->midiChannel() == ctle.channel() &&
+					pTrack->midiChannel() == pCtlEvent->channel() &&
 					qAbs(fPanning - pTrack->panning()) > 0.001f) {
 					m_pSession->execute(
 						new qtractorTrackPanningCommand(pTrack, fPanning, true));
@@ -9175,6 +9185,8 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 			}
 		}
 	}
+
+	delete pCtlEvent;
 }
 
 
@@ -9494,10 +9506,13 @@ void qtractorMainForm::mixerSelectionChanged (void)
 
 
 // Tracks view selection change slot.
-void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
+void qtractorMainForm::selectNotifySlot ( QObject *pSender )
 {
+	qtractorMidiEditor *pMidiEditor
+		= qobject_cast<qtractorMidiEditor *> (pSender);
+
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMainForm::selectionNotifySlot()");
+	qDebug("qtractorMainForm::selectNotifySlot(%p)", pMidiEditor);
 #endif
 
 	// Read session edit-head/tails...
@@ -9530,8 +9545,11 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 
 
 // Clip editors update helper.
-void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
+void qtractorMainForm::changeNotifySlot ( QObject *pSender )
 {
+	qtractorMidiEditor *pMidiEditor
+		= qobject_cast<qtractorMidiEditor *> (pSender);
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::changeNotifySlot(%p)", pMidiEditor);
 #endif
@@ -9639,7 +9657,7 @@ void qtractorMainForm::dirtyNotifySlot (void)
 #endif
 
 	updateDirtyCount(true);
-	selectionNotifySlot(nullptr);
+	selectNotifySlot(nullptr);
 }
 
 
