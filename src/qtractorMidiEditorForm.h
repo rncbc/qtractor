@@ -210,8 +210,8 @@ protected slots:
 	void sendNote(int iNote, int iVelocity, bool bForce);
 	void sendNoteEx(int iNote, int iVelocity, unsigned long iDuration);
 
-	void selectionChanged(qtractorMidiEditor *);
-	void contentsChanged(qtractorMidiEditor *);
+	void selectionChanged(QObject *);
+	void contentsChanged(QObject *);
 
 	// Event type selection slots.
 	void viewTypeChanged(int);

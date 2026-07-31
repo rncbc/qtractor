@@ -1,7 +1,7 @@
 // qtractorMidiEventList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1031,11 +1031,11 @@ void qtractorMidiEventList::setEditor ( qtractorMidiEditor *pEditor )
 
 	// Set MIDI editor change connections.
 	QObject::connect(pEditor,
-		SIGNAL(selectNotifySignal(qtractorMidiEditor *)),
-		SLOT(selectNotifySlot(qtractorMidiEditor *)));
+		SIGNAL(selectNotifySignal(QObject *)),
+		SLOT(selectNotifySlot(QObject *)));
 	QObject::connect(pEditor,
-		SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
-		SLOT(changeNotifySlot(qtractorMidiEditor *)));
+		SIGNAL(changeNotifySignal(QObject *)),
+		SLOT(changeNotifySlot(QObject *)));
 }
 
 
@@ -1136,13 +1136,17 @@ void qtractorMidiEventList::selectionChangedSlot (
 
 
 // MIDI editor selection changed slot.
-void qtractorMidiEventList::selectNotifySlot (
-	qtractorMidiEditor *pEditor )
+void qtractorMidiEventList::selectNotifySlot ( QObject *pSender )
 {
 	if (!isVisible())
 		return;
 
 	if (m_iSelectUpdate > 0)
+		return;
+
+	qtractorMidiEditor *pMidiEditor
+		= qobject_cast<qtractorMidiEditor *> (pSender);
+	if (pMidiEditor == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -1153,7 +1157,7 @@ void qtractorMidiEventList::selectNotifySlot (
 
 	m_pListView->clearSelection();
 
-	const QList<qtractorMidiEvent *>& list = pEditor->selectedEvents();
+	const QList<qtractorMidiEvent *>& list = pMidiEditor->selectedEvents();
 	if (list.count() > 0) {
 		m_pListView->setCurrentIndex(
 			m_pListView->indexOfEvent(list.first()));
@@ -1167,7 +1171,7 @@ void qtractorMidiEventList::selectNotifySlot (
 
 
 // MIDI editor selection changed slot.
-void qtractorMidiEventList::changeNotifySlot ( qtractorMidiEditor * )
+void qtractorMidiEventList::changeNotifySlot ( QObject * )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiEventList[%p]::changeNotifySlot()", this);

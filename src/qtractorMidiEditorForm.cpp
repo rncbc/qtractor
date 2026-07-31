@@ -21,6 +21,9 @@
 
 #include "qtractorAbout.h"
 #include "qtractorMidiEditorForm.h"
+
+#include "qtractorMidiEditor.h"
+
 #include "qtractorMidiEditView.h"
 #include "qtractorMidiEditList.h"
 #include "qtractorMidiEditEvent.h"
@@ -687,11 +690,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SLOT(snapToScaleTypeChanged(int)));
 
 	QObject::connect(m_pMidiEditor,
-		SIGNAL(selectNotifySignal(qtractorMidiEditor *)),
-		SLOT(selectionChanged(qtractorMidiEditor *)));
+		SIGNAL(selectNotifySignal(QObject *)),
+		SLOT(selectionChanged(QObject *)));
 	QObject::connect(m_pMidiEditor,
-		SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
-		SLOT(contentsChanged(qtractorMidiEditor *)));
+		SIGNAL(changeNotifySignal(QObject *)),
+		SLOT(contentsChanged(QObject *)));
 
 	QObject::connect(m_pMidiEventList->toggleViewAction(),
 		SIGNAL(triggered(bool)),
@@ -1125,8 +1128,8 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		m_pMidiEditor->setMidiClip(pMidiClip);
 		// Setup connections to main widget...
 		QObject::connect(m_pMidiEditor,
-			SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
-			pMainForm, SLOT(changeNotifySlot(qtractorMidiEditor *)));
+			SIGNAL(changeNotifySignal(QObject *)),
+			pMainForm, SLOT(changeNotifySlot(QObject *)));
 		// This one's local but helps...
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(sendNoteSignal(int, int, bool)),
@@ -2989,23 +2992,23 @@ void qtractorMidiEditorForm::eventParamChanged ( int iParam )
 }
 
 
-void qtractorMidiEditorForm::selectionChanged ( qtractorMidiEditor *pMidiEditor )
+void qtractorMidiEditorForm::selectionChanged ( QObject *pSender )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
-		pMainForm->selectionNotifySlot(pMidiEditor);
+		pMainForm->selectNotifySlot(qobject_cast<qtractorMidiEditor *> (pSender));
 
 	stabilizeForm();
 }
 
 
-void qtractorMidiEditorForm::contentsChanged ( qtractorMidiEditor *pMidiEditor )
+void qtractorMidiEditorForm::contentsChanged ( QObject *pSender )
 {
 	++m_iDirtyCount;
 
 	m_pTempoCursor->clear();
 
-	selectionChanged(pMidiEditor);
+	selectionChanged(qobject_cast<qtractorMidiEditor *> (pSender));
 }
 
 

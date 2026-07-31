@@ -24,6 +24,8 @@
 #include "qtractorMidiMonitor.h"
 #include "qtractorMidiEvent.h"
 
+#include "qtractorMmcEvent.h"
+
 #include "qtractorSession.h"
 #include "qtractorSessionCursor.h"
 
@@ -1786,7 +1788,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			&& pSysex[1] == 0x7f && pSysex[3] == 0x06 // MMC command mode.
 			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 			// Post the stuffed event...
-			m_proxy.notifyMmcEvent(qtractorMmcEvent(pSysex));
+			m_proxy.notifyMmcEvent(new qtractorMmcEvent(pSysex));
 			// Bail out, right now!
 			return;
 		}
@@ -1996,7 +1998,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 		// Post the stuffed event...
 		m_proxy.notifyCtlEvent(
-			qtractorCtlEvent(type, channel, param, value));
+			new qtractorCtlEvent(type, channel, param, value));
 	}
 
 	// Notify step-input events...
@@ -2998,12 +3000,12 @@ void qtractorMidiEngine::sendMmcLocate ( unsigned long iLocate ) const
 
 
 void qtractorMidiEngine::sendMmcMaskedWrite (
-	qtractorMmcEvent::SubCommand scmd, int iTrack, bool bOn ) const
+	unsigned char mmcSubCmd, int iTrack, bool bOn ) const
 {
 	unsigned char data[4];
 	const int iMask = (1 << (iTrack < 2 ? iTrack + 5 : (iTrack - 2) % 7));
 
-	data[0] = scmd;
+	data[0] = mmcSubCmd;
 	data[1] = (unsigned char) (iTrack < 2 ? 0 : 1 + (iTrack - 2) / 7);
 	data[2] = (unsigned char) iMask;
 	data[3] = (unsigned char) (bOn ? iMask : 0);
@@ -3012,8 +3014,7 @@ void qtractorMidiEngine::sendMmcMaskedWrite (
 }
 
 
-void qtractorMidiEngine::sendMmcCommand (
-	qtractorMmcEvent::Command cmd,
+void qtractorMidiEngine::sendMmcCommand ( unsigned char mmcCmd,
 	unsigned char *pMmcData, unsigned short iMmcData ) const
 {
 	// Do we have MMC output enabled?
@@ -3038,7 +3039,7 @@ void qtractorMidiEngine::sendMmcCommand (
 	pSysex[iSysex++] = 0x7f;				// Realtime sysex.
 	pSysex[iSysex++] = m_mmcDevice;			// MMC device id.
 	pSysex[iSysex++] = 0x06;				// MMC command mode.
-	pSysex[iSysex++] = (unsigned char) cmd;	// MMC command code.
+	pSysex[iSysex++] = mmcCmd;	            // MMC command code.
 	if (pMmcData && iMmcData > 0) {
 		pSysex[iSysex++] = iMmcData;
 		::memcpy(&pSysex[iSysex], pMmcData, iMmcData);

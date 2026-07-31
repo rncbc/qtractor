@@ -578,8 +578,8 @@ protected slots:
 signals:
 
 	// Emitted on selection/changes.
-	void selectNotifySignal(qtractorMidiEditor *);
-	void changeNotifySignal(qtractorMidiEditor *);
+	void selectNotifySignal(QObject *);
+	void changeNotifySignal(QObject *);
 
 	// Send note event signale.
 	void sendNoteSignal(int, int, bool);
