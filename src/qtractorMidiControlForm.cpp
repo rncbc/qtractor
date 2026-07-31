@@ -24,6 +24,8 @@
 
 #include "qtractorMidiControlTypeGroup.h"
 
+#include "qtractorMidiEditor.h"
+
 #include "qtractorOptions.h"
 
 #include <QHeaderView>
@@ -655,7 +657,7 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 		while (iter.hasNext()) {
 			QTreeWidgetItem *pItem = iter.next();
 			if ((iParam & qtractorMidiControl::TrackParam) == 0
-				&& pItem->text(3)[0] == '+')
+				&& pItem->text(3).at(0) == '+')
 				continue;
 			if (pItem->text(1) == sChannel && pItem->text(2) == sParam) {
 				++m_iUpdating;

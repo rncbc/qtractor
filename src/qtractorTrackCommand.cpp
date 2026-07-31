@@ -35,6 +35,8 @@
 #include "qtractorMidiClip.h"
 #include "qtractorMixer.h"
 
+#include "qtractorMmcEvent.h"
+
 #include "qtractorMonitor.h"
 #include "qtractorPlugin.h"
 #include "qtractorCurve.h"

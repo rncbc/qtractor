@@ -24,8 +24,6 @@
 
 #include "qtractorEngine.h"
 #include "qtractorTimeScale.h"
-#include "qtractorMmcEvent.h"
-#include "qtractorCtlEvent.h"
 
 #include <alsa/asoundlib.h>
 
@@ -37,6 +35,8 @@
 class qtractorMidiBus;
 class qtractorMidiClip;
 class qtractorMidiEvent;
+class qtractorMmcEvent;
+class qtractorCtlEvent;
 class qtractorMidiSequence;
 class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
@@ -65,10 +65,10 @@ public:
 		: QObject(pParent) {}
 
 	// Event notifications.
-	void notifyMmcEvent(const qtractorMmcEvent& mmce)
-		{ emit mmcEvent(mmce); }
-	void notifyCtlEvent(const qtractorCtlEvent& ctle)
-		{ emit ctlEvent(ctle); }
+	void notifyMmcEvent(qtractorMmcEvent *pMmcEvent)
+		{ emit mmcEvent(pMmcEvent); }
+	void notifyCtlEvent(qtractorCtlEvent *pCtlEvent)
+		{ emit ctlEvent(pCtlEvent); }
 	void notifySppEvent(int iSppCmd, unsigned short iSongPos)
 		{ emit sppEvent(iSppCmd, iSongPos); }
 	void notifyClkEvent(float fTempo)
@@ -79,8 +79,8 @@ public:
 signals:
 	
 	// Event signals.
-	void mmcEvent(const qtractorMmcEvent& mmce);
-	void ctlEvent(const qtractorCtlEvent& ctle);
+	void mmcEvent(qtractorMmcEvent *pMmcEvent);
+	void ctlEvent(qtractorCtlEvent *pCtlEvent);
 	void sppEvent(int iSppCmd, unsigned short iSongPos);
 	void clkEvent(float fTempo);
 	void inpEvent(unsigned short flags);
@@ -287,9 +287,8 @@ public:
 
 	// MMC dispatch special commands.
 	void sendMmcLocate(unsigned long iLocate) const;
-	void sendMmcMaskedWrite(qtractorMmcEvent::SubCommand scmd,
-		int iTrack, bool bOn) const;
-	void sendMmcCommand(qtractorMmcEvent::Command cmd,
+	void sendMmcMaskedWrite(unsigned char mmcSubCmd, int iTrack, bool bOn) const;
+	void sendMmcCommand(unsigned char mmcCmd,
 		unsigned char *pMmcData = nullptr, unsigned short iMmcData = 0) const;
 
 	// SPP dispatch special command.
