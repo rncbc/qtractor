@@ -3349,7 +3349,7 @@ void qtractorTracks::selectionChangeNotify (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
-		pMainForm->selectionNotifySlot(nullptr);
+		pMainForm->selectNotifySlot(nullptr);
 }
 
 

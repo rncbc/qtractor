@@ -1,7 +1,7 @@
 // qtractorMidiEventList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -125,8 +125,8 @@ protected slots:
 	void selectionChangedSlot(const QItemSelection&, const QItemSelection&);
 
 	// External editor notification slots.
-	void selectNotifySlot(qtractorMidiEditor *);
-	void changeNotifySlot(qtractorMidiEditor *);
+	void selectNotifySlot(QObject *);
+	void changeNotifySlot(QObject *);
 
 private:
 
