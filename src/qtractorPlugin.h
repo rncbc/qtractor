@@ -998,8 +998,8 @@ public:
 		{ return (m_iActivated > 0);  }
 
 	// Guarded plugin methods.
-	void addPlugin(qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
-	void movePlugin(qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
+	void addPlugin(qtractorPlugin *pPlugin, qtractorPlugin *pAnchorPlugin);
+	void movePlugin(qtractorPlugin *pPlugin, qtractorPlugin *pAnchorPlugin);
 	void removePlugin(qtractorPlugin *pPlugin);
 
 	// Clone/copy plugin method.
