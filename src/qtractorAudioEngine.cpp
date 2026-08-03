@@ -1751,17 +1751,24 @@ bool qtractorAudioEngine::fileExport (
 	const unsigned long iLoopStart = pSession->loopStart();
 	const unsigned long iLoopEnd   = pSession->loopEnd();
 
+	// Make sure all track/bus latencies are reset and
+	// maximum track/bus latency is acquainted as offset...
+	m_iExportOffset = 0;
+
 	QHash<qtractorAudioBus *, bool> exportMonitors;
 	QListIterator<qtractorAudioBus *> bus_iter(exportBuses);
 	while (bus_iter.hasNext()) {
 		qtractorAudioBus *pAudioBus = bus_iter.next();
 		exportMonitors.insert(pAudioBus, pAudioBus->isMonitor());
 		pAudioBus->setMonitor(false);
+		qtractorPluginList *pPluginList = pAudioBus->pluginList_out();
+		if (pPluginList) {
+			pPluginList->resetLatency();
+			const unsigned long iLatency = pPluginList->latency();
+			if (m_iExportOffset < iLatency)
+				m_iExportOffset = iLatency;
+		}
 	}
-
-	// Make sure all track latencies are reset and
-	// maximum track latency is acquainted as offset...
-	m_iExportOffset = 0;
 
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -2359,6 +2366,8 @@ void qtractorAudioEngine::resetAllMonitors (void)
 		//		pAudioBus->audioMonitor_in()->reset();
 			if (pAudioBus->audioMonitor_out())
 				pAudioBus->audioMonitor_out()->reset();
+			if (pAudioBus->pluginList_out())
+				pAudioBus->pluginList_out()->resetLatency();
 		}
 	}
 	
@@ -3298,6 +3307,10 @@ bool qtractorAudioBus::loadElement (
 			if (qtractorAudioBus::pluginList_out())
 				qtractorAudioBus::pluginList_out()->loadElement(
 					pDocument, &eProp);
+		} else if (eProp.tagName() == "output-plugin-list-latency") {
+			if (qtractorAudioBus::pluginList_out())
+				qtractorAudioBus::pluginList_out()->setLatency(
+					qtractorDocument::boolFromText(eProp.text()));
 		} else if (eProp.tagName() == "output-connects") {
 			qtractorAudioBus::loadConnects(
 				qtractorAudioBus::outputs(), pDocument, &eProp);
@@ -3382,6 +3395,10 @@ bool qtractorAudioBus::saveElement (
 			qtractorAudioBus::pluginList_out()->saveElement(
 				pDocument, &eOutputPlugins);
 			pElement->appendChild(eOutputPlugins);
+			pDocument->saveTextElement("output-plugin-list-latency",
+				qtractorDocument::textFromBool(
+					qtractorAudioBus::pluginList_out()->isLatency()),
+				pElement);
 		}
 		// Save output bus connections...
 		QDomElement eAudioOutputs

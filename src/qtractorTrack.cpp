@@ -1559,7 +1559,9 @@ void qtractorTrack::process ( qtractorClip *pClip,
 
 	// Playback...
 	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
-		const unsigned long iLatency = m_pPluginList->latency();
+		unsigned long iLatency = m_pPluginList->latency();
+		if (pOutputBus && pOutputBus->pluginList_out())
+			iLatency += pOutputBus->pluginList_out()->latency();
 		const unsigned long iFrameStart2 = iFrameStart + iLatency;
 		const unsigned long iFrameEnd2 = iFrameEnd + iLatency;
 		// Now, for every clip...

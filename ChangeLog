@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Plugin latency/delay compensation now opted in to audio output
+  buses (cf. View/Buses... /Output Plugins/Latency compensation).
+  (HIGHLY EXPERIMENTAL)
+  
 - Plugins are now added/inserted *after* the current selected one
   and appended to the list if none is actually selected as before.
 

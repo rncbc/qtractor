@@ -45,7 +45,9 @@ qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 	qtractorBus *pBus, qtractorBus *pAfterBus, qtractorBus::BusMode busMode )
 	: qtractorCommand(sName), m_pBus(pBus), m_pAfterBus(pAfterBus),
 		m_busMode(busMode), m_busType(qtractorTrack::None),
-		m_bMonitor(false), m_iChannels(0), m_bAutoConnect(false)
+		m_bMonitor(false), m_iChannels(0), m_bAutoConnect(false),
+		m_bOutputPluginListLatency(false)
+
 {
 	setRefresh(false);
 
@@ -63,6 +65,9 @@ qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 			if (pAudioBus) {
 				m_iChannels = pAudioBus->channels();
 				m_bAutoConnect = pAudioBus->isAutoConnect();
+				qtractorPluginList *pPluginList = pAudioBus->pluginList_out();
+				if (pPluginList)
+					m_bOutputPluginListLatency = pPluginList->isLatency();
 			}
 			break;
 		}
@@ -110,6 +115,9 @@ bool qtractorBusCommand::createBus (void)
 			pAudioBus = new qtractorAudioBus(pAudioEngine,
 				m_sBusName, m_busMode, m_bMonitor, m_iChannels);
 			pAudioBus->setAutoConnect(m_bAutoConnect);
+			qtractorPluginList *pPluginList = pAudioBus->pluginList_out();
+			if (pPluginList)
+				pPluginList->setLatency(m_bOutputPluginListLatency);
 			pAudioEngine->addBus(pAudioBus, m_pAfterBus);
 			pAudioEngine->resetPlayerBus();
 			pAudioEngine->resetMetroBus();
@@ -205,6 +213,8 @@ bool qtractorBusCommand::updateBus (void)
 	qtractorMidiBus *pMidiBus = nullptr;
 	unsigned short iChannels = 0;
 	bool bAutoConnect = false;
+	bool bOutputPluginListLatency = false;
+	qtractorPluginList *pPluginList;
 	QString sInstrumentName;
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
@@ -212,6 +222,9 @@ bool qtractorBusCommand::updateBus (void)
 		if (pAudioBus) {
 			iChannels = pAudioBus->channels();
 			bAutoConnect = pAudioBus->isAutoConnect();
+			pPluginList = pAudioBus->pluginList_out();
+			if (pPluginList)
+				bOutputPluginListLatency = pPluginList->isLatency();
 		}
 		break;
 	case qtractorTrack::Midi:
@@ -315,6 +328,9 @@ bool qtractorBusCommand::updateBus (void)
 	if (pAudioBus) {
 		pAudioBus->setChannels(m_iChannels);
 		pAudioBus->setAutoConnect(m_bAutoConnect);
+		pPluginList = pAudioBus->pluginList_out();
+		if (pPluginList)
+			pPluginList->setLatency(m_bOutputPluginListLatency);
 		if (bRenameBus)
 			pAudioBus->updateAudioAuxSends(m_sBusName);
 	}
@@ -388,6 +404,7 @@ bool qtractorBusCommand::updateBus (void)
 	m_bMonitor  = bMonitor;
 	m_iChannels = iChannels;
 	m_bAutoConnect = bAutoConnect;
+	m_bOutputPluginListLatency = bOutputPluginListLatency;
 	m_sInstrumentName = sInstrumentName;
 
 	// Carry on...
