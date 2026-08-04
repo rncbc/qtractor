@@ -327,8 +327,8 @@
           <attribute name="title">
            <string>Input Plugins</string>
           </attribute>
-          <layout class="QHBoxLayout">
-           <item>
+          <layout class="QGridLayout">
+           <item row="0" column="0" colspan="2">
             <widget class="qtractorPluginListView" name="InputPluginListView">
              <property name="focusPolicy">
               <enum>Qt::WheelFocus</enum>
@@ -338,7 +338,7 @@
              </property>
             </widget>
            </item>
-           <item>
+           <item row="0" column="2">
             <layout class="QVBoxLayout">
              <item>
               <widget class="QToolButton" name="AddInputPluginToolButton">
@@ -438,6 +438,55 @@
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QCheckBox" name="InputPluginListLatencyCheckBox">
+             <property name="toolTip">
+              <string>Whether to enable plugin latency/delay compensation</string>
+             </property>
+             <property name="text">
+              <string>&amp;Latency compensation</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <layout class="QHBoxLayout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint">
+                <size>
+                 <width>8</width>
+                 <height>8</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="InputPluginListLatencyPushButton">
+               <property name="toolTip">
+                <string>Current total input latency</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -743,6 +792,8 @@
   <tabstop>RemoveInputPluginToolButton</tabstop>
   <tabstop>MoveUpInputPluginToolButton</tabstop>
   <tabstop>MoveDownInputPluginToolButton</tabstop>
+  <tabstop>InputPluginListLatencyCheckBox</tabstop>
+  <tabstop>InputPluginListLatencyPushButton</tabstop>
   <tabstop>OutputPluginListView</tabstop>
   <tabstop>AddOutputPluginToolButton</tabstop>
   <tabstop>RemoveOutputPluginToolButton</tabstop>

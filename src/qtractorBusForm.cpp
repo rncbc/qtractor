@@ -194,6 +194,12 @@ qtractorBusForm::qtractorBusForm ( QWidget *pParent )
 	QObject::connect(m_ui.MoveDownInputPluginToolButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownInputPlugin()));
+	QObject::connect(m_ui.InputPluginListLatencyCheckBox,
+		SIGNAL(clicked()),
+		SLOT(changed()));
+	QObject::connect(m_ui.InputPluginListLatencyPushButton,
+		SIGNAL(clicked()),
+		SLOT(updateInputPluginListLatency()));
 
 	QObject::connect(m_ui.OutputPluginListView,
 		SIGNAL(currentRowChanged(int)),
@@ -337,6 +343,8 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 				if (pAudioBus->busMode() & qtractorBus::Input) {
 					pPluginList = pAudioBus->pluginList_in();
 					m_ui.InputPluginListView->setPluginList(pPluginList);
+					m_ui.InputPluginListLatencyCheckBox->setChecked(
+						pPluginList && pPluginList->isLatency());
 				}
 				if (pAudioBus->busMode() & qtractorBus::Output) {
 					pPluginList = pAudioBus->pluginList_out();
@@ -363,6 +371,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 				if (pMidiBus->busMode() & qtractorBus::Input) {
 					pPluginList = pMidiBus->pluginList_in();
 					m_ui.InputPluginListView->setPluginList(pPluginList);
+					m_ui.InputPluginListLatencyCheckBox->setChecked(false);
 				}
 				if (pMidiBus->busMode() & qtractorBus::Output) {
 					pPluginList = pMidiBus->pluginList_out();
@@ -384,7 +393,8 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 		m_ui.MonitorCheckBox->setChecked(pBus->isMonitor());
 	}
 
-	// Finally get the plugin-list latency estimate...
+	// Finally get the plugin-lists latency estimate...
+	updateInputPluginListLatency();
 	updateOutputPluginListLatency();
 
 	// Reset dirty flag...
@@ -585,6 +595,10 @@ bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 			m_ui.AudioChannelsSpinBox->value());
 		pUpdateBusCommand->setAutoConnect(
 			m_ui.AudioAutoConnectCheckBox->isChecked());
+		if (busMode & qtractorBus::Input) {
+			pUpdateBusCommand->setInputPluginListLatency(
+				m_ui.InputPluginListLatencyCheckBox->isChecked());
+		}
 		if (busMode & qtractorBus::Output) {
 			pUpdateBusCommand->setOutputPluginListLatency(
 				m_ui.OutputPluginListLatencyCheckBox->isChecked());
@@ -681,6 +695,10 @@ void qtractorBusForm::createBus (void)
 			m_ui.AudioChannelsSpinBox->value());
 		pCreateBusCommand->setAutoConnect(
 			m_ui.AudioAutoConnectCheckBox->isChecked());
+		if (busMode & qtractorBus::Input) {
+			pCreateBusCommand->setInputPluginListLatency(
+				m_ui.InputPluginListLatencyCheckBox->isChecked());
+		}
 		if (busMode & qtractorBus::Output) {
 			pCreateBusCommand->setOutputPluginListLatency(
 				m_ui.OutputPluginListLatencyCheckBox->isChecked());
@@ -894,6 +912,9 @@ void qtractorBusForm::stabilizeForm (void)
 		m_ui.MoveUpInputPluginToolButton->setEnabled(pItem && iItem > 0);
 		m_ui.MoveDownInputPluginToolButton->setEnabled(
 			pItem && iItem < iItemCount - 1);
+		bEnabled = (m_pBus->busType() == qtractorTrack::Audio);
+		m_ui.InputPluginListLatencyCheckBox->setVisible(bEnabled);
+		m_ui.InputPluginListLatencyPushButton->setVisible(bEnabled);
 	}
 
 	// Output plugin list...
@@ -1126,10 +1147,49 @@ void qtractorBusForm::moveDownOutputPlugin (void)
 }
 
 
+// Update current input plugins latency...
+void qtractorBusForm::updateInputPluginListLatency (void)
+{
+	if (m_pBus == nullptr)
+		return;
+	if (m_pBus->busType() != qtractorTrack::Audio)
+		return;
+	if ((m_pBus->busMode() & qtractorBus::Input) == 0)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorPluginList *pPluginList = m_ui.InputPluginListView->pluginList();
+	if (pPluginList == nullptr)
+		return;
+
+	qtractorSubject::flushQueue(true);
+
+	const unsigned int iSampleRate = pSession->sampleRate();
+	const unsigned long iLatency = pPluginList->currentLatency();
+	if (iSampleRate > 0 && iLatency > 0) {
+		const float fLatencyMs
+			= 1000.0f * float(iLatency) / float(iSampleRate);
+		m_ui.InputPluginListLatencyPushButton->setText(
+			tr("%1 ms (%2 frames)")
+				.arg(QString::number(fLatencyMs, 'f', 1))
+				.arg(iLatency));
+	} else {
+		m_ui.InputPluginListLatencyPushButton->setText(tr("(no latency)"));
+	}
+}
+
+
 // Update current output plugins latency...
 void qtractorBusForm::updateOutputPluginListLatency (void)
 {
 	if (m_pBus == nullptr)
+		return;
+	if (m_pBus->busType() != qtractorTrack::Audio)
+		return;
+	if ((m_pBus->busMode() & qtractorBus::Output) == 0)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();

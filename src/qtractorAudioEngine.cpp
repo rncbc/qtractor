@@ -2366,6 +2366,8 @@ void qtractorAudioEngine::resetAllMonitors (void)
 		//		pAudioBus->audioMonitor_in()->reset();
 			if (pAudioBus->audioMonitor_out())
 				pAudioBus->audioMonitor_out()->reset();
+			if (pAudioBus->pluginList_in())
+				pAudioBus->pluginList_in()->resetLatency();
 			if (pAudioBus->pluginList_out())
 				pAudioBus->pluginList_out()->resetLatency();
 		}
@@ -3067,6 +3069,9 @@ void qtractorAudioBus::updateLatency_in (void)
 		m_iILatency += lat_max;
 	#endif
 	}
+
+	if (m_pIPluginList)
+		m_iILatency += m_pIPluginList->latency();
 }
 
 
@@ -3103,6 +3108,9 @@ void qtractorAudioBus::updateLatency_out (void)
 		m_iOLatency += lat_max;
 	#endif
 	}
+
+	if (m_pOPluginList)
+		m_iOLatency += m_pOPluginList->latency();
 }
 
 
@@ -3290,6 +3298,10 @@ bool qtractorAudioBus::loadElement (
 			if (qtractorAudioBus::pluginList_in())
 				qtractorAudioBus::pluginList_in()->loadElement(
 					pDocument, &eProp);
+		} else if (eProp.tagName() == "input-plugin-list-latency") {
+			if (qtractorAudioBus::pluginList_in())
+				qtractorAudioBus::pluginList_in()->setLatency(
+					qtractorDocument::boolFromText(eProp.text()));
 		} else if (eProp.tagName() == "input-connects") {
 			qtractorAudioBus::loadConnects(
 				qtractorAudioBus::inputs(), pDocument, &eProp);
@@ -3363,6 +3375,10 @@ bool qtractorAudioBus::saveElement (
 			qtractorAudioBus::pluginList_in()->saveElement(
 				pDocument, &eInputPlugins);
 			pElement->appendChild(eInputPlugins);
+			pDocument->saveTextElement("input-plugin-list-latency",
+				qtractorDocument::textFromBool(
+					qtractorAudioBus::pluginList_in()->isLatency()),
+				pElement);
 		}
 		// Save input bus connections...
 		QDomElement eAudioInputs

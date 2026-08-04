@@ -78,6 +78,11 @@ public:
 	bool isAutoConnect() const
 		{ return m_bAutoConnect; }
 
+	void setInputPluginListLatency(bool bPluginListLatency)
+		{ m_bInputPluginListLatency = bPluginListLatency; }
+	bool isInputPluginListLatency() const
+		{ return m_bInputPluginListLatency; }
+
 	void setOutputPluginListLatency(bool bPluginListLatency)
 		{ m_bOutputPluginListLatency = bPluginListLatency; }
 	bool isOutputPluginListLatency() const
@@ -110,6 +115,7 @@ private:
 	bool                     m_bMonitor;
 	unsigned short           m_iChannels;
 	bool                     m_bAutoConnect;
+	bool                     m_bInputPluginListLatency;
 	bool                     m_bOutputPluginListLatency;
 	QString                  m_sInstrumentName;
 };

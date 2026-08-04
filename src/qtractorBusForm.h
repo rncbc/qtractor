@@ -75,6 +75,7 @@ protected slots:
 	void moveUpOutputPlugin();
 	void moveDownOutputPlugin();
 
+	void updateInputPluginListLatency();
 	void updateOutputPluginListLatency();
 
 protected:

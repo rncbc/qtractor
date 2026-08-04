@@ -46,6 +46,7 @@ qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 	: qtractorCommand(sName), m_pBus(pBus), m_pAfterBus(pAfterBus),
 		m_busMode(busMode), m_busType(qtractorTrack::None),
 		m_bMonitor(false), m_iChannels(0), m_bAutoConnect(false),
+		m_bInputPluginListLatency(false),
 		m_bOutputPluginListLatency(false)
 
 {
@@ -65,9 +66,14 @@ qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 			if (pAudioBus) {
 				m_iChannels = pAudioBus->channels();
 				m_bAutoConnect = pAudioBus->isAutoConnect();
-				qtractorPluginList *pPluginList = pAudioBus->pluginList_out();
-				if (pPluginList)
-					m_bOutputPluginListLatency = pPluginList->isLatency();
+				if (pAudioBus->pluginList_in()) {
+					m_bInputPluginListLatency
+						= pAudioBus->pluginList_in()->isLatency();
+				}
+				if (pAudioBus->pluginList_out()) {
+					m_bOutputPluginListLatency
+						= pAudioBus->pluginList_out()->isLatency();
+				}
 			}
 			break;
 		}
@@ -115,9 +121,14 @@ bool qtractorBusCommand::createBus (void)
 			pAudioBus = new qtractorAudioBus(pAudioEngine,
 				m_sBusName, m_busMode, m_bMonitor, m_iChannels);
 			pAudioBus->setAutoConnect(m_bAutoConnect);
-			qtractorPluginList *pPluginList = pAudioBus->pluginList_out();
-			if (pPluginList)
-				pPluginList->setLatency(m_bOutputPluginListLatency);
+			if (pAudioBus->pluginList_in()) {
+				pAudioBus->pluginList_in()->setLatency(
+					m_bInputPluginListLatency);
+			}
+			if (pAudioBus->pluginList_out()) {
+				pAudioBus->pluginList_out()->setLatency(
+					m_bOutputPluginListLatency);
+			}
 			pAudioEngine->addBus(pAudioBus, m_pAfterBus);
 			pAudioEngine->resetPlayerBus();
 			pAudioEngine->resetMetroBus();
@@ -213,8 +224,8 @@ bool qtractorBusCommand::updateBus (void)
 	qtractorMidiBus *pMidiBus = nullptr;
 	unsigned short iChannels = 0;
 	bool bAutoConnect = false;
+	bool bInputPluginListLatency = false;
 	bool bOutputPluginListLatency = false;
-	qtractorPluginList *pPluginList;
 	QString sInstrumentName;
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
@@ -222,9 +233,14 @@ bool qtractorBusCommand::updateBus (void)
 		if (pAudioBus) {
 			iChannels = pAudioBus->channels();
 			bAutoConnect = pAudioBus->isAutoConnect();
-			pPluginList = pAudioBus->pluginList_out();
-			if (pPluginList)
-				bOutputPluginListLatency = pPluginList->isLatency();
+			if (pAudioBus->pluginList_in()) {
+				bInputPluginListLatency
+					= pAudioBus->pluginList_in()->isLatency();
+			}
+			if (pAudioBus->pluginList_out()) {
+				bOutputPluginListLatency
+					= pAudioBus->pluginList_out()->isLatency();
+			}
 		}
 		break;
 	case qtractorTrack::Midi:
@@ -328,9 +344,14 @@ bool qtractorBusCommand::updateBus (void)
 	if (pAudioBus) {
 		pAudioBus->setChannels(m_iChannels);
 		pAudioBus->setAutoConnect(m_bAutoConnect);
-		pPluginList = pAudioBus->pluginList_out();
-		if (pPluginList)
-			pPluginList->setLatency(m_bOutputPluginListLatency);
+		if (pAudioBus->pluginList_in()) {
+			pAudioBus->pluginList_in()->setLatency(
+				m_bInputPluginListLatency);
+		}
+		if (pAudioBus->pluginList_out()) {
+			pAudioBus->pluginList_out()->setLatency(
+				m_bOutputPluginListLatency);
+		}
 		if (bRenameBus)
 			pAudioBus->updateAudioAuxSends(m_sBusName);
 	}
@@ -404,6 +425,7 @@ bool qtractorBusCommand::updateBus (void)
 	m_bMonitor  = bMonitor;
 	m_iChannels = iChannels;
 	m_bAutoConnect = bAutoConnect;
+	m_bInputPluginListLatency = bInputPluginListLatency;
 	m_bOutputPluginListLatency = bOutputPluginListLatency;
 	m_sInstrumentName = sInstrumentName;
 
