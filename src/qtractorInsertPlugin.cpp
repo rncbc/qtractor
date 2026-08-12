@@ -575,17 +575,14 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
-	// Latency param is also recreated here, but only for tracks...
-	const unsigned int iFlags = list()->flags();
-	if ((iFlags & qtractorPluginList::Bus) == 0) {
-		m_pLatencyParam = new LatencyParam(this, 3);
-		m_pLatencyParam->setName(QObject::tr("Latency (frames)"));
-		m_pLatencyParam->setMinValue(0.0f);
-		m_pLatencyParam->setMaxValue(float(pAudioEngine->sampleRate() << 1));
-		m_pLatencyParam->setDefaultValue(m_fLatencyValue); // Restore!
-		m_pLatencyParam->setValue(m_fLatencyValue, false); //
-		addParam(m_pLatencyParam);
-	}
+	// Latency param is also recreated here...
+	m_pLatencyParam = new LatencyParam(this, 3);
+	m_pLatencyParam->setName(QObject::tr("Latency (frames)"));
+	m_pLatencyParam->setMinValue(0.0f);
+	m_pLatencyParam->setMaxValue(float(pAudioEngine->sampleRate() << 1));
+	m_pLatencyParam->setDefaultValue(m_fLatencyValue); // Restore!
+	m_pLatencyParam->setValue(m_fLatencyValue, false); //
+	addParam(m_pLatencyParam);
 
 	// Audio bus name -- it must be unique...
 	int iBusName = 1;
