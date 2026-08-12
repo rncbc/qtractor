@@ -829,32 +829,32 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="924"/>
+        <location filename="../qtractorClipCommand.cpp" line="918"/>
         <source>take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="926"/>
+        <location filename="../qtractorClipCommand.cpp" line="920"/>
         <source>reset takes</source>
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1198"/>
+        <location filename="../qtractorClipCommand.cpp" line="1192"/>
         <source>clip save</source>
         <translation>Uložení záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1221"/>
+        <location filename="../qtractorClipCommand.cpp" line="1215"/>
         <source>clip unlink</source>
         <translation>Odpojení záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1249"/>
+        <location filename="../qtractorClipCommand.cpp" line="1243"/>
         <source>clip tool %1</source>
         <translation>Nástroj na záběry %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1393"/>
+        <location filename="../qtractorClipCommand.cpp" line="1387"/>
         <source>clip record</source>
         <translation>Nahrávání záběru</translation>
     </message>

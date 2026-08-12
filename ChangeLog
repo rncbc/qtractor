@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Possible fix to incorrect audio clips offsets when undo/redoing
+  tempo changes (EXPERIMENTAL)
+
 - Plugin latency/delay compensation is now opted in to audio buses
   (cf. View/Buses... /Input, Output Plugins/Latency compensation).
   (HIGHLY EXPERIMENTAL)
