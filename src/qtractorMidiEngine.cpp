@@ -2197,10 +2197,20 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		pMidiBus->midiMonitor_out()->enqueue(
 			pEvent->type(), pEvent->value(), tick);
 
+	// Output latency in frames...
+	qtractorPluginList *pPluginList = pTrack->pluginList();
+	unsigned long iLatency = pPluginList->latency();
+	qtractorMidiManager *pMidiManager = pPluginList->midiManager();
+	if (pMidiManager && !pMidiManager->isAudioOutputBus()) {
+		qtractorAudioBus *pAudioOutputBus = pMidiManager->audioOutputBus();
+		if (pAudioOutputBus && pAudioOutputBus->pluginList_out())
+			iLatency += pAudioOutputBus->pluginList_out()->latency();
+	}
+
 	// Do it for the MIDI track plugins too...
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
-	const long f0 = m_iFrameStart + (pTrack->pluginList())->latency();
+	const long f0 = m_iFrameStart + iLatency;
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
@@ -2212,8 +2222,6 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
 
-	qtractorMidiManager *pMidiManager
-		= (pTrack->pluginList())->midiManager();
 	if (pMidiManager)
 		pMidiManager->queued(&ev, t1, t2);
 
