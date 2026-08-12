@@ -338,7 +338,6 @@ void qtractorClipCommand::takeInfoClip (
 void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 {
 	Item *pItem = new Item(ResetClip, pClip, pClip->track());
-	pItem->clipOffset = pClip->clipOffset();
 	pItem->clipLength = pClip->clipLength();
 	pItem->fadeInLength = pClip->fadeInLength();
 	pItem->fadeOutLength = pClip->fadeOutLength();
@@ -851,9 +850,6 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case ResetClip: {
 			const unsigned long iClipStartTime  = pClip->clipStartTime();
-			const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
-			const unsigned long iClipOffset = pSession->frameFromTickRange(
-				iClipStartTime, iClipStartTime + iClipOffsetTime, true);
 			const unsigned long iClipLengthTime = pClip->clipLengthTime();
 			const unsigned long iClipLength = pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime);
@@ -864,11 +860,9 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			const unsigned long iFadeOutLength = pSession->frameFromTickRange(
 				iClipStartTime + iClipLengthTime - iFadeOutTime,
 				iClipStartTime + iClipLengthTime);
-			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
 			pClip->setFadeInLength(pItem->fadeInLength);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
-			pItem->clipOffset = iClipOffset;
 			pItem->clipLength = iClipLength;
 			pItem->fadeInLength = iFadeInLength;
 			pItem->fadeOutLength = iFadeOutLength;
