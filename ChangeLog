@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Updated to VST3 SDK v3.8.1.build.84
+
 - Possible fix to incorrect audio clips offsets when undo/redoing
   tempo changes (EXPERIMENTAL)
 
