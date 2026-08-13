@@ -863,80 +863,80 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>Copyright :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2196"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2201"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3438"/>
         <source>Select plug-in&apos;s editor (GUI) type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3445"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3450"/>
         <source>External</source>
         <translation>Externe</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3448"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3453"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3451"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3456"/>
         <source>X11 (native)</source>
         <translation>X11 (natif)</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3454"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3459"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3457"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3462"/>
         <source>Gtk2 (native)</source>
         <translation>Gtk2 (natif)</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3461"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3466"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3465"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3470"/>
         <source>Qt6</source>
         <translation>Qt6</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3470"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3475"/>
         <source>Other</source>
         <translation>Autre</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3478"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="3505"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3510"/>
         <source>Don&apos;t ask this again</source>
         <translation>Ne pas redemander</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3499"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3504"/>
         <source>Reset plug-in&apos;s editor (GUI) type ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3895"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3900"/>
         <source>plugin parameters</source>
         <translation>paramètres du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4322"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4327"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Ouvrir un fichier</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2204"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2209"/>
         <source>Author: </source>
         <translation>Auteur : </translation>
     </message>
@@ -14227,41 +14227,41 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Page %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="401"/>
+        <location filename="../qtractorPluginForm.cpp" line="403"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 instance(s), %4 canaux.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="562"/>
-        <location filename="../qtractorPluginForm.cpp" line="608"/>
+        <location filename="../qtractorPluginForm.cpp" line="564"/>
+        <location filename="../qtractorPluginForm.cpp" line="610"/>
         <source>(none)</source>
         <translation>(rien)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="717"/>
+        <location filename="../qtractorPluginForm.cpp" line="719"/>
         <source>Open Preset</source>
         <translation>Ouvrir le préréglage</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="720"/>
-        <location filename="../qtractorPluginForm.cpp" line="819"/>
+        <location filename="../qtractorPluginForm.cpp" line="722"/>
+        <location filename="../qtractorPluginForm.cpp" line="821"/>
         <source>Preset files (*.%1)</source>
         <translation>Fichiers de préréglages (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="721"/>
-        <location filename="../qtractorPluginForm.cpp" line="820"/>
+        <location filename="../qtractorPluginForm.cpp" line="723"/>
+        <location filename="../qtractorPluginForm.cpp" line="822"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="762"/>
-        <location filename="../qtractorPluginForm.cpp" line="864"/>
+        <location filename="../qtractorPluginForm.cpp" line="764"/>
+        <location filename="../qtractorPluginForm.cpp" line="866"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="763"/>
+        <location filename="../qtractorPluginForm.cpp" line="765"/>
         <source>Preset could not be loaded from file:
 
 &quot;%1&quot;.
@@ -14274,12 +14274,12 @@ Sorry.</source>
 Désolé.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="817"/>
+        <location filename="../qtractorPluginForm.cpp" line="819"/>
         <source>Save Preset</source>
         <translation>Sauvegarder le préréglage</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="865"/>
+        <location filename="../qtractorPluginForm.cpp" line="867"/>
         <source>Preset could not be saved to file:
 
 &quot;%1&quot;.
@@ -14292,12 +14292,12 @@ Sorry.</source>
 Désolé.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="897"/>
+        <location filename="../qtractorPluginForm.cpp" line="899"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="898"/>
+        <location filename="../qtractorPluginForm.cpp" line="900"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -14310,17 +14310,17 @@ Are you sure?</source>
 Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1423"/>
+        <location filename="../qtractorPluginForm.cpp" line="1425"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>Latence : %1 ms (%2 trames)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1427"/>
+        <location filename="../qtractorPluginForm.cpp" line="1429"/>
         <source>(no latency)</source>
         <translation>(pas de latence)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1165"/>
+        <location filename="../qtractorPluginForm.cpp" line="1167"/>
         <source>&amp;None</source>
         <translation>&amp;Rien</translation>
     </message>
@@ -14546,17 +14546,17 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1890"/>
+        <location filename="../qtractorPluginForm.cpp" line="1892"/>
         <source>Open File</source>
         <translation>Ouvrir un fichier</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1895"/>
+        <location filename="../qtractorPluginForm.cpp" line="1897"/>
         <source>Supported files (*.%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1896"/>
+        <location filename="../qtractorPluginForm.cpp" line="1898"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Tous les fichiers (*.*)</translation>
     </message>
