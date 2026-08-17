@@ -109,21 +109,21 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="538"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1296"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1344"/>
         <source>Name: </source>
         <translation>Назва: </translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="544"/>
         <location filename="../qtractorVst2Plugin.cpp" line="671"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1302"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1350"/>
         <source>Version: </source>
         <translation>Версія: </translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="560"/>
         <location filename="../qtractorVst2Plugin.cpp" line="663"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1329"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1377"/>
         <source>Vendor: </source>
         <translation>Виробник: </translation>
     </message>
@@ -943,12 +943,12 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Невідомо</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1316"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1364"/>
         <source>Category: </source>
         <translation>Категорія: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1323"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1371"/>
         <source>Categories: </source>
         <translation>Категорії: </translation>
     </message>
