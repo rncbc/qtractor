@@ -782,6 +782,7 @@ public:
 	bool isInteger() const;
 	bool isToggled() const;
 	bool isDisplay() const;
+	bool isNotOnGUI() const;
 
 	// Current display value.
 	QString display() const;
@@ -795,6 +796,7 @@ private:
 		Integer     = 2,
 		SampleRate  = 4,
 		Logarithmic = 8,
+		NotOnGUI    = 16
 	};
 
 	// Instance variables.

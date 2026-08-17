@@ -786,6 +786,9 @@ public:
 	virtual bool isToggled()      const = 0;
 	virtual bool isDisplay()      const = 0;
 
+	// Whether to include it at the plugin's GUI.
+	virtual bool isNotOnGUI() { return false; }
+
 	// Current display value.
 	virtual QString display() const
 		{ return QString::number(value(), 'f', decimals()); }
