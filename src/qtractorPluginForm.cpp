@@ -297,6 +297,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
 		qtractorPlugin::Param *pParam = param.value();
+		if (pParam->isNotOnGUI())
+			continue;
 		qtractorPluginParamWidget *pParamWidget
 			= new qtractorPluginParamWidget(pParam, this);
 		qtractorMidiControlObserver *pMidiObserver = pParam->observer();
