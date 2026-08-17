@@ -116,8 +116,10 @@ public:
 
 	int timerInterval() const;
 
-	// RunLoop adapters...
+	// IRunLoop adapters...
 	//
+	class RunLoop;
+
 	tresult registerEventHandler (IEventHandler *handler, FileDescriptor fd);
 	tresult unregisterEventHandler (IEventHandler *handler);
 
@@ -191,6 +193,10 @@ private:
 	Vst::ProcessContext m_processContext;
 	unsigned int        m_processRefCount;
 };
+
+
+// Host singleton.
+static qtractorVst3PluginHost g_hostContext;
 
 
 //-----------------------------------------------------------------------------
@@ -545,6 +551,47 @@ private:
 
 
 //-----------------------------------------------------------------------------
+// class qtractorVst3PluginHost::RunLoop -- VST3 plugin host run-loop impl.
+//
+
+class qtractorVst3PluginHost::RunLoop : public IRunLoop
+{
+public:
+
+	//--- IRunLoop ---
+	//
+	tresult PLUGIN_API registerEventHandler (IEventHandler *handler, FileDescriptor fd) override
+		{ return g_hostContext.registerEventHandler(handler, fd); }
+
+	tresult PLUGIN_API unregisterEventHandler (IEventHandler *handler) override
+		{ return g_hostContext.unregisterEventHandler(handler); }
+
+	tresult PLUGIN_API registerTimer (ITimerHandler *handler, TimerInterval msecs) override
+		{ return g_hostContext.registerTimer(handler, msecs); }
+
+	tresult PLUGIN_API unregisterTimer (ITimerHandler *handler) override
+		{ return g_hostContext.unregisterTimer(handler); }
+
+	tresult PLUGIN_API queryInterface (const TUID _iid, void **obj) override
+	{
+		if (FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
+			*obj = this;
+			return kResultOk;
+		}
+		*obj = nullptr;
+		return kNoInterface;
+	}
+
+	uint32 PLUGIN_API addRef  () override { return 1001; }
+	uint32 PLUGIN_API release () override { return 1001; }
+};
+
+
+// Host run-loop singleton.
+static qtractorVst3PluginHost::RunLoop g_hostRunLoop;
+
+
+//-----------------------------------------------------------------------------
 // class qtractorVst3PluginHost -- VST3 plugin host context impl.
 //
 
@@ -622,6 +669,11 @@ tresult PLUGIN_API qtractorVst3PluginHost::queryInterface (
 {
 	QUERY_INTERFACE(_iid, obj, FUnknown::iid, IHostApplication)
 	QUERY_INTERFACE(_iid, obj, IHostApplication::iid, IHostApplication)
+
+	if (FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
+		*obj = &(g_hostRunLoop);
+		return kResultOk;
+	}
 
 	if (m_plugInterfaceSupport &&
 		m_plugInterfaceSupport->queryInterface(_iid, obj) == kResultOk)
@@ -758,7 +810,7 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 	timeout.tv_sec  = 0;
 	timeout.tv_usec = 1000 * timerInterval();
 
-	const int result = ::select(nfds, &rfds, &wfds, nullptr, &timeout);
+	const int result = ::select(nfds + 1, &rfds, &wfds, nullptr, &timeout);
 	if (result > 0)	{
 		iter = m_eventHandlers.constBegin();
 		for ( ; iter != m_eventHandlers.constEnd(); ++iter) {
@@ -871,10 +923,6 @@ void qtractorVst3PluginHost::clear (void)
 
 	::memset(&m_processContext, 0, sizeof(Vst::ProcessContext));
 }
-
-
-// Host singleton.
-static qtractorVst3PluginHost g_hostContext;
 
 
 //----------------------------------------------------------------------
@@ -1919,46 +1967,6 @@ uint32 PLUGIN_API qtractorVst3Plugin::Handler::release (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorVst3Plugin::RunLoop -- VST3 plugin editor run-loop impl.
-//
-
-class qtractorVst3Plugin::RunLoop : public IRunLoop
-{
-public:
-
-	//--- IRunLoop ---
-	//
-	tresult PLUGIN_API registerEventHandler (IEventHandler *handler, FileDescriptor fd) override
-		{ return g_hostContext.registerEventHandler(handler, fd); }
-
-	tresult PLUGIN_API unregisterEventHandler (IEventHandler *handler) override
-		{ return g_hostContext.unregisterEventHandler(handler); }
-
-	tresult PLUGIN_API registerTimer (ITimerHandler *handler, TimerInterval msecs) override
-		{ return g_hostContext.registerTimer(handler, msecs); }
-
-	tresult PLUGIN_API unregisterTimer (ITimerHandler *handler) override
-		{ return g_hostContext.unregisterTimer(handler); }
-
-	tresult PLUGIN_API queryInterface (const TUID _iid, void **obj) override
-	{
-		if (FUnknownPrivate::iidEqual(_iid, FUnknown::iid) ||
-			FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
-			addRef();
-			*obj = this;
-			return kResultOk;
-		}
-
-		*obj = nullptr;
-		return kNoInterface;
-	}
-
-	uint32 PLUGIN_API addRef  () override { return 1001; }
-	uint32 PLUGIN_API release () override { return 1001; }
-};
-
-
-//----------------------------------------------------------------------
 // class qtractorVst3Plugin::EditorFrame -- VST3 plugin editor frame interface impl.
 //
 
@@ -1968,10 +1976,8 @@ public:
 
 	// Constructor.
 	EditorFrame (IPlugView *plugView, QWidget *widget)
-		: m_plugView(plugView), m_widget(widget),
-			m_runLoop(nullptr), m_resizing(false)
+		: m_plugView(plugView), m_widget(widget), m_resizing(false)
 	{
-		m_runLoop = owned(NEW RunLoop());
 		m_plugView->setFrame(this);
 
 		ViewRect rect;
@@ -1989,14 +1995,11 @@ public:
 	virtual ~EditorFrame ()
 	{
 		m_plugView->setFrame(nullptr);
-		m_runLoop = nullptr;
 	}
 
 	// Accessors.
 	IPlugView *plugView () const
 		{ return m_plugView; }
-	RunLoop *runLoop () const
-		{ return m_runLoop; }
 
 	//--- IPlugFrame ---
 	//
@@ -2046,7 +2049,13 @@ public:
 			return kResultOk;
 		}
 
-		return m_runLoop->queryInterface(_iid, obj);
+		if (FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
+			*obj = &(g_hostRunLoop);
+			return kResultOk;
+		}
+
+		*obj = nullptr;
+		return kNoInterface;
 	}
 
 	uint32 PLUGIN_API addRef  () override { return 1002; }
@@ -2057,7 +2066,6 @@ private:
 	// Instance members.
 	IPlugView *m_plugView;
 	QWidget *m_widget;
-	IPtr<RunLoop> m_runLoop;
 	bool m_resizing;
 };
 
