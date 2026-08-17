@@ -1051,6 +1051,7 @@ static LilvNode *g_lv2_sample_rate_prop = nullptr;
 #endif
 
 static LilvNode *g_lv2_logarithmic_prop = nullptr;
+static LilvNode *g_lv2_notongui_prop    = nullptr;
 
 
 #ifdef CONFIG_LV2_ATOM
@@ -1857,6 +1858,8 @@ void qtractorLv2PluginType::lv2_open (void)
 		LV2_CORE__sampleRate);
 	g_lv2_logarithmic_prop = lilv_new_uri(g_lv2_world,
 		LV2_PORT_PROPS__logarithmic);
+	g_lv2_notongui_prop = lilv_new_uri(g_lv2_world,
+		LV2_PORT_PROPS__notOnGUI);
 
 #ifdef CONFIG_LV2_ATOM
 
@@ -2013,6 +2016,7 @@ void qtractorLv2PluginType::lv2_close (void)
 	lilv_node_free(g_lv2_integer_prop);
 	lilv_node_free(g_lv2_sample_rate_prop);
 	lilv_node_free(g_lv2_logarithmic_prop);
+	lilv_node_free(g_lv2_notongui_prop);
 
 #ifdef CONFIG_LV2_ATOM
 
@@ -2085,6 +2089,7 @@ void qtractorLv2PluginType::lv2_close (void)
 	g_lv2_integer_prop     = nullptr;
 	g_lv2_sample_rate_prop = nullptr;
 	g_lv2_logarithmic_prop = nullptr;
+	g_lv2_notongui_prop    = nullptr;
 
 #ifdef CONFIG_LV2_ATOM
 
@@ -5925,6 +5930,8 @@ qtractorLv2Plugin::Param::Param (
 		m_iPortHints |= SampleRate;
 	if (lilv_port_has_property(plugin, port, g_lv2_logarithmic_prop))
 		m_iPortHints |= Logarithmic;
+	if (lilv_port_has_property(plugin, port, g_lv2_notongui_prop))
+		m_iPortHints |= NotOnGUI;
 
 	// Initialize range values...
 	LilvNode *vdef;
@@ -6005,6 +6012,11 @@ bool qtractorLv2Plugin::Param::isDisplay (void) const
 	return !m_display.isEmpty();
 }
 
+bool qtractorLv2Plugin::Param::isNotOnGUI (void) const
+{
+	return (m_iPortHints & NotOnGUI);
+}
+
 
 // Current display value.
 QString qtractorLv2Plugin::Param::display (void) const
@@ -6049,7 +6061,8 @@ qtractorLv2Plugin::Property::Property ( qtractorLv2Plugin *pLv2Plugin,
 	LilvNode *label_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
 	LilvNode *range_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "range");
 
-	const char *prop_uri = lilv_node_as_uri(property);
+	const char *prop_uri
+		= lilv_node_as_uri(property);
 	setKey(prop_uri);
 
 	LilvNodes *nodes = lilv_world_find_nodes(
