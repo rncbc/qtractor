@@ -31,6 +31,7 @@
 
 #include "pluginterfaces/vst/ivsthostapplication.h"
 #include "pluginterfaces/vst/ivstpluginterfacesupport.h"
+#include "pluginterfaces/vst/ivstdataexchange.h"
 
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
 #include "pluginterfaces/vst/ivsteditcontroller.h"
@@ -116,6 +117,20 @@ public:
 
 	int timerInterval() const;
 
+	// IDataExchangeHandler adapters...
+	//
+	class DataExchangeHandler;
+
+	tresult openQueue (Vst::IAudioProcessor *processor,
+		uint32 blockSize, uint32 numBlocks, uint32 alignment,
+		Vst::DataExchangeUserContextID userContextID,
+		Vst::DataExchangeQueueID *outID);
+	tresult closeQueue (Vst::DataExchangeQueueID queueID);
+	tresult lockBlock (Vst::DataExchangeQueueID queueID,
+		Vst::DataExchangeBlock *block);
+	tresult freeBlock (Vst::DataExchangeQueueID queueID,
+		Vst::DataExchangeBlockID blockID, TBool sendToController);
+
 	// IRunLoop adapters...
 	//
 	class RunLoop;
@@ -163,6 +178,36 @@ private:
 	// Instance members.
 	IPtr<PlugInterfaceSupport> m_plugInterfaceSupport;
 
+	// IDataExchangeHandler stuff...
+	//
+	struct DataExchangeQueue
+	{
+		DataExchangeQueue()	: processor(nullptr),
+			userContextID(0), blockSize(0), alignment(0) {}
+
+		Vst::IAudioProcessor          *processor;
+		Vst::DataExchangeUserContextID userContextID;
+		uint32                         blockSize;
+		uint32                         alignment;
+
+		struct Block
+		{
+			Block() : data(nullptr), size(0), locked(false) {}
+
+			void  *data;
+			uint32 size;
+			bool   locked;
+		};
+
+		QList<Block>                   blocks;
+	};
+
+	QHash<Vst::DataExchangeQueueID, DataExchangeQueue *> m_dataExchangeQueues;
+
+	Vst::DataExchangeQueueID m_nextQueueID;
+
+	// IRunLoop stuff...
+	//
 	Timer *m_pTimer;
 
 	unsigned int m_timerRefCount;
@@ -218,6 +263,7 @@ public:
 		addPluInterfaceSupported(Vst::IProgramListData::iid);
 		addPluInterfaceSupported(Vst::IMidiMapping::iid);
 	//	addPluInterfaceSupported(Vst::IEditController2::iid);
+		addPluInterfaceSupported(Vst::IDataExchangeHandler::iid);
 	}
 
 	OBJ_METHODS (PlugInterfaceSupport, FObject)
@@ -509,7 +555,94 @@ IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3PluginHost::Message, IMessage, IMessage:
 
 
 //-----------------------------------------------------------------------------
-// class qtractorVst3PluginHost::Timer -- VST3 plugin host timer impl.
+// class qtractorVst3PluginHost::DataExchangeHandler -- VST3 plugin host impl.
+//
+
+class qtractorVst3PluginHost::DataExchangeHandler : public Vst::IDataExchangeHandler
+{
+public:
+
+	//--- IDataExchangeHandler ---
+	//
+	tresult PLUGIN_API openQueue (Vst::IAudioProcessor *processor,
+		uint32 blockSize, uint32 numBlocks, uint32 alignment,
+		Vst::DataExchangeUserContextID userContextID,
+		Vst::DataExchangeQueueID *outID) override
+		{ return g_hostContext.openQueue(
+			processor, blockSize, numBlocks, alignment, userContextID, outID); }
+
+	tresult PLUGIN_API closeQueue (Vst::DataExchangeQueueID queueID) override
+		{ return g_hostContext.closeQueue(queueID); }
+
+	tresult PLUGIN_API lockBlock (Vst::DataExchangeQueueID queueID,
+		Vst::DataExchangeBlock *block) override
+		{ return g_hostContext.lockBlock(queueID, block); }
+
+	tresult PLUGIN_API freeBlock (Vst::DataExchangeQueueID queueID,
+		Vst::DataExchangeBlockID blockID, TBool sendToController) override
+		{ return g_hostContext.freeBlock(queueID, blockID, sendToController); }
+
+	tresult PLUGIN_API queryInterface (const TUID _iid, void **obj) override
+	{
+		if (FUnknownPrivate::iidEqual(_iid, Vst::IDataExchangeHandler::iid)) {
+			*obj = this;
+			return kResultOk;
+		}
+		*obj = nullptr;
+		return kNoInterface;
+	}
+
+	uint32 PLUGIN_API addRef  () override { return 1001; }
+	uint32 PLUGIN_API release () override { return 1001; }
+};
+
+// Host data-exchange handlersingleton.
+static qtractorVst3PluginHost::DataExchangeHandler g_hostDataExchangeHandler;
+
+
+//-----------------------------------------------------------------------------
+// class qtractorVst3PluginHost::RunLoop -- VST3 plugin host impl.
+//
+
+class qtractorVst3PluginHost::RunLoop : public IRunLoop
+{
+public:
+
+	//--- IRunLoop ---
+	//
+	tresult PLUGIN_API registerEventHandler (IEventHandler *handler, FileDescriptor fd) override
+		{ return g_hostContext.registerEventHandler(handler, fd); }
+
+	tresult PLUGIN_API unregisterEventHandler (IEventHandler *handler) override
+		{ return g_hostContext.unregisterEventHandler(handler); }
+
+	tresult PLUGIN_API registerTimer (ITimerHandler *handler, TimerInterval msecs) override
+		{ return g_hostContext.registerTimer(handler, msecs); }
+
+	tresult PLUGIN_API unregisterTimer (ITimerHandler *handler) override
+		{ return g_hostContext.unregisterTimer(handler); }
+
+	tresult PLUGIN_API queryInterface (const TUID _iid, void **obj) override
+	{
+		if (FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
+			*obj = this;
+			return kResultOk;
+		}
+		*obj = nullptr;
+		return kNoInterface;
+	}
+
+	uint32 PLUGIN_API addRef  () override { return 1002; }
+	uint32 PLUGIN_API release () override { return 1002; }
+};
+
+
+// Host run-loop singleton.
+static qtractorVst3PluginHost::RunLoop g_hostRunLoop;
+
+
+//-----------------------------------------------------------------------------
+// class qtractorVst3PluginHost::Timer -- VST3 plugin host impl.
 //
 
 class qtractorVst3PluginHost::Timer : public QTimer
@@ -551,47 +684,6 @@ private:
 
 
 //-----------------------------------------------------------------------------
-// class qtractorVst3PluginHost::RunLoop -- VST3 plugin host run-loop impl.
-//
-
-class qtractorVst3PluginHost::RunLoop : public IRunLoop
-{
-public:
-
-	//--- IRunLoop ---
-	//
-	tresult PLUGIN_API registerEventHandler (IEventHandler *handler, FileDescriptor fd) override
-		{ return g_hostContext.registerEventHandler(handler, fd); }
-
-	tresult PLUGIN_API unregisterEventHandler (IEventHandler *handler) override
-		{ return g_hostContext.unregisterEventHandler(handler); }
-
-	tresult PLUGIN_API registerTimer (ITimerHandler *handler, TimerInterval msecs) override
-		{ return g_hostContext.registerTimer(handler, msecs); }
-
-	tresult PLUGIN_API unregisterTimer (ITimerHandler *handler) override
-		{ return g_hostContext.unregisterTimer(handler); }
-
-	tresult PLUGIN_API queryInterface (const TUID _iid, void **obj) override
-	{
-		if (FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
-			*obj = this;
-			return kResultOk;
-		}
-		*obj = nullptr;
-		return kNoInterface;
-	}
-
-	uint32 PLUGIN_API addRef  () override { return 1001; }
-	uint32 PLUGIN_API release () override { return 1001; }
-};
-
-
-// Host run-loop singleton.
-static qtractorVst3PluginHost::RunLoop g_hostRunLoop;
-
-
-//-----------------------------------------------------------------------------
 // class qtractorVst3PluginHost -- VST3 plugin host context impl.
 //
 
@@ -601,6 +693,8 @@ qtractorVst3PluginHost::qtractorVst3PluginHost (void)
 	FUNKNOWN_CTOR
 
 	m_plugInterfaceSupport = owned(NEW PlugInterfaceSupport());
+
+	m_nextQueueID = 0;
 
 	m_pTimer = new Timer(this);
 
@@ -670,6 +764,11 @@ tresult PLUGIN_API qtractorVst3PluginHost::queryInterface (
 	QUERY_INTERFACE(_iid, obj, FUnknown::iid, IHostApplication)
 	QUERY_INTERFACE(_iid, obj, IHostApplication::iid, IHostApplication)
 
+	if (FUnknownPrivate::iidEqual(_iid, Vst::IDataExchangeHandler::iid)) {
+		*obj = &(g_hostDataExchangeHandler);
+		return kResultOk;
+	}
+
 	if (FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
 		*obj = &(g_hostRunLoop);
 		return kResultOk;
@@ -691,16 +790,102 @@ uint32 PLUGIN_API qtractorVst3PluginHost::release (void)
 	{ return 1; }
 
 
-// QTimer stuff...
+// IDataExchangeHandler stuff...
 //
-void qtractorVst3PluginHost::startTimer ( int msecs )
-	{ if (++m_timerRefCount == 1) m_pTimer->start(msecs); }
+tresult qtractorVst3PluginHost::openQueue (
+	Vst::IAudioProcessor *processor,
+	uint32 blockSize, uint32 numBlocks, uint32 alignment,
+	Vst::DataExchangeUserContextID userContextID,
+	Vst::DataExchangeQueueID *outID )
+{
+	if (!outID)
+		return kInvalidArgument;
 
-void qtractorVst3PluginHost::stopTimer (void)
-	{ if (m_timerRefCount > 0 && --m_timerRefCount == 0) m_pTimer->stop(); }
+	// round blockSize up to a multiple of alignment so that
+	// posix_memalign (and std::aligned_alloc) constraints are met.
+	const uint32 allocSize = (alignment > 0)
+		? uint32((blockSize + alignment - 1) & ~(size_t(alignment) - 1))
+		: blockSize;
 
-int qtractorVst3PluginHost::timerInterval (void) const
-	{ return m_pTimer->interval(); }
+	DataExchangeQueue *queue = new DataExchangeQueue();
+	queue->processor     = processor;
+	queue->userContextID = userContextID;
+	queue->blockSize     = blockSize;
+	queue->alignment     = alignment;
+
+	for (uint32 i = 0; i < numBlocks; ++i) {
+		DataExchangeQueue::Block block;
+		block.size   = allocSize;
+		block.locked = false;
+		if (alignment > 0)
+			::posix_memalign(&block.data, alignment, allocSize);
+		else
+			block.data = ::malloc(allocSize);
+		queue->blocks.append(block);
+	}
+
+	const Vst::DataExchangeQueueID queueID = m_nextQueueID++;
+	m_dataExchangeQueues.insert(queueID, queue);
+	*outID = queueID;
+	return kResultTrue;
+}
+
+
+tresult qtractorVst3PluginHost::closeQueue (
+	Vst::DataExchangeQueueID queueID )
+{
+	DataExchangeQueue *queue = m_dataExchangeQueues.take(queueID);
+	if (!queue)
+		return kResultFalse;
+
+	for (DataExchangeQueue::Block& block : queue->blocks)
+		::free(block.data);
+	delete queue;
+	return kResultTrue;
+}
+
+
+tresult qtractorVst3PluginHost::lockBlock (
+	Vst::DataExchangeQueueID queueID,
+	Vst::DataExchangeBlock *block )
+{
+	if (!block)
+		return kInvalidArgument;
+
+	DataExchangeQueue *queue = m_dataExchangeQueues.value(queueID, nullptr);
+	if (!queue)
+		return kResultFalse;
+
+	for (int i = 0; i < queue->blocks.size(); ++i) {
+		DataExchangeQueue::Block& b = queue->blocks[i];
+		if (!b.locked) {
+			b.locked       = true;
+			block->data    = b.data;
+			block->size    = queue->blockSize;
+			block->blockID = Vst::DataExchangeBlockID(i);
+			return kResultTrue;
+		}
+	}
+
+	return kOutOfMemory;
+}
+
+
+tresult qtractorVst3PluginHost::freeBlock (
+	Vst::DataExchangeQueueID queueID,
+	Vst::DataExchangeBlockID blockID,
+	TBool /*sendToController*/ )
+{
+	DataExchangeQueue *queue = m_dataExchangeQueues.value(queueID, nullptr);
+	if (!queue)
+		return kResultFalse;
+
+	if (int(blockID) >= queue->blocks.size())
+		return kResultFalse;
+
+	queue->blocks[int(blockID)].locked = false;
+	return kResultTrue;
+}
 
 
 // IRunLoop stuff...
@@ -758,6 +943,18 @@ tresult qtractorVst3PluginHost::unregisterTimer ( ITimerHandler *handler )
 		m_pTimer->stop();
 	return kResultOk;
 }
+
+
+// Timer stuff...
+//
+void qtractorVst3PluginHost::startTimer ( int msecs )
+	{ if (++m_timerRefCount == 1) m_pTimer->start(msecs); }
+
+void qtractorVst3PluginHost::stopTimer (void)
+	{ if (m_timerRefCount > 0 && --m_timerRefCount == 0) m_pTimer->stop(); }
+
+int qtractorVst3PluginHost::timerInterval (void) const
+	{ return m_pTimer->interval(); }
 
 
 // Executive methods.
@@ -922,6 +1119,14 @@ void qtractorVst3PluginHost::clear (void)
 	m_eventHandlers.clear();
 
 	::memset(&m_processContext, 0, sizeof(Vst::ProcessContext));
+
+	// Clean up any leaked data-exchange queues.
+	for (DataExchangeQueue *queue : m_dataExchangeQueues) {
+		for (DataExchangeQueue::Block& block : queue->blocks)
+			::free(block.data);
+		delete queue;
+	}
+	m_dataExchangeQueues.clear();
 }
 
 
@@ -2049,6 +2254,11 @@ public:
 			return kResultOk;
 		}
 
+		if (FUnknownPrivate::iidEqual(_iid, Vst::IDataExchangeHandler::iid)) {
+			*obj = &(g_hostDataExchangeHandler);
+			return kResultOk;
+		}
+
 		if (FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
 			*obj = &(g_hostRunLoop);
 			return kResultOk;
@@ -2058,8 +2268,8 @@ public:
 		return kNoInterface;
 	}
 
-	uint32 PLUGIN_API addRef  () override { return 1002; }
-	uint32 PLUGIN_API release () override { return 1002; }
+	uint32 PLUGIN_API addRef  () override { return 1003; }
+	uint32 PLUGIN_API release () override { return 1003; }
 
 private:
 
@@ -2299,10 +2509,10 @@ void qtractorVst3Plugin::Impl::initialize (void)
 		}
 	}
 
-	activate(component, Vst::kEvent, Vst::kOutput, true);
-	activate(component, Vst::kEvent, Vst::kInput,  true);
-	activate(component, Vst::kAudio, Vst::kOutput, true);
 	activate(component, Vst::kAudio, Vst::kInput,  true);
+	activate(component, Vst::kAudio, Vst::kOutput, true);
+	activate(component, Vst::kEvent, Vst::kInput,  true);
+	activate(component, Vst::kEvent, Vst::kOutput, true);
 	component->setActive(true);
 }
 
@@ -2778,23 +2988,25 @@ bool qtractorVst3Plugin::Impl::setState ( const QByteArray& data )
 
 	Stream state(data);
 
-	if (component->setState(&state) != kResultOk) {
+	if (component->setState(&state) == kResultOk) {
+		return true;
+	} else {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3Plugin::Impl[%p]::setState()"
 			" IComponent::setState() FAILED!", this);
 	#endif
-		return false;
 	}
 
-	if (controller->setComponentState(&state) != kResultOk) {
+	if (controller->setComponentState(&state) == kResultOk) {
+		return true;
+	} else {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3Plugin::Impl[%p]::setState()"
 			" IEditController::setComponentState() FAILED!", this);
 	#endif
-		return false;
 	}
 
-	return true;
+	return false;
 }
 
 
