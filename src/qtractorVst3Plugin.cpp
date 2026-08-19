@@ -2238,15 +2238,17 @@ public:
 			m_widget->setFixedSize(size);
 		m_resizing = false;
 
+		// Per VST3 spec: call onSize() with the *requested* rect when the view's
+		// current reported size differs from it. getSize() still reflects the
+		// pre-resize state here because QWidget::resize() is asynchronous.
 		ViewRect rect0;
-		if (m_plugView->getSize(&rect0) != kResultOk)
-			return kInternalError;
-
-		const QSize size0(
-			rect0.right  - rect0.left,
-			rect0.bottom - rect0.top);
-		if (size != size0)
-			m_plugView->onSize(&rect0);
+		if (m_plugView->getSize(&rect0) == kResultOk) {
+			const QSize size0(
+				rect0.right  - rect0.left,
+				rect0.bottom - rect0.top);
+			if (size != size0)
+				m_plugView->onSize(rect);
+		}
 
 		return kResultOk;
 	}
@@ -3148,12 +3150,15 @@ void qtractorVst3Plugin::EditorWidget::resizeEvent ( QResizeEvent *pResizeEvent 
 		const QSize size2(
 			rect.right - rect.left,
 			rect.bottom - rect.top);
+		// If the constraint adjusted the size, snap the Qt window to match.
+		// Guard against re-entrancy so the resulting resizeEvent is a no-op.
 		if (size2 != size) {
 			m_resizing = true;
 			QWidget::resize(size2);
 			m_resizing = false;
-			plugView->onSize(&rect);
 		}
+		// Always notify the plug-in of the final size so it can repaint.
+		plugView->onSize(&rect);
 	}
 }
 
