@@ -8,7 +8,8 @@ GIT HEAD
 
 - VST3 Plug-ins: make sure initialization and setup are done in
   correct order; add IDataExchangeHandler and refactor IRunLoop
-  interfaces as singleton instances. (EXPERIMENTAL)
+  interfaces as singleton instances; connect processor/controller
+  via ConnectionProxy wrappers. (EXPERIMENTAL)
 
 - Updated to VST3 SDK v3.8.1.build.84
 

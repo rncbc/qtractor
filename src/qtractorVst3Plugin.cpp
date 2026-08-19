@@ -42,6 +42,8 @@
 #include "pluginterfaces/vst/ivstevents.h"
 #include "pluginterfaces/vst/ivstunits.h"
 
+#include "public.sdk/source/vst/hosting/connectionproxy.h"
+
 #include "pluginterfaces/gui/iplugview.h"
 
 #include "pluginterfaces/base/ibstream.h"
@@ -1189,6 +1191,9 @@ private:
 	IPtr<Vst::IComponent> m_component;
 	IPtr<Vst::IEditController> m_controller;
 
+	IPtr<Vst::ConnectionProxy> m_component_cp;
+	IPtr<Vst::ConnectionProxy> m_controller_cp;
+
 	IPtr<Vst::IUnitInfo> m_unitInfos;
 
 	QString m_sName;
@@ -1379,13 +1384,15 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 
 			if (unitInfos) m_unitInfos = owned(unitInfos);
 
-			// Connect components...
+			// Connect components via proxies...
 			if (m_component && m_controller) {
 				FUnknownPtr<Vst::IConnectionPoint> component_cp(m_component);
 				FUnknownPtr<Vst::IConnectionPoint> controller_cp(m_controller);
 				if (component_cp && controller_cp) {
-					component_cp->connect(controller_cp);
-					controller_cp->connect(component_cp);
+					m_component_cp = owned(new Vst::ConnectionProxy(component_cp));
+					m_controller_cp = owned(new Vst::ConnectionProxy(controller_cp));
+					m_component_cp->connect(controller_cp);
+					m_controller_cp->connect(component_cp);
 				}
 			}
 
@@ -1401,16 +1408,15 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 
 void qtractorVst3PluginType::Impl::close (void)
 {
-	if (m_component && m_controller) {
-		FUnknownPtr<Vst::IConnectionPoint> component_cp(m_component);
-		FUnknownPtr<Vst::IConnectionPoint> controller_cp(m_controller);
-		if (component_cp && controller_cp) {
-			component_cp->disconnect(controller_cp);
-			controller_cp->disconnect(component_cp);
-		}
-	}
-
 	m_unitInfos = nullptr;
+
+	if (m_component_cp && m_controller_cp) {
+		m_component_cp->disconnect();
+		m_controller_cp->disconnect();
+ 	}
+
+	m_component_cp = nullptr;
+	m_controller_cp = nullptr;
 
 	if (m_component && m_controller &&
 		FUnknownPtr<Vst::IEditController> (m_component).getInterface()) {

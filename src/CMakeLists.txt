@@ -365,7 +365,9 @@ if (CONFIG_VST3SDK)
     ${CONFIG_VST3SDK}/base/source/fobject.cpp
     ${CONFIG_VST3SDK}/base/thread/source/flock.cpp
     ${CONFIG_VST3SDK}/public.sdk/source/common/commoniids.cpp
+    ${CONFIG_VST3SDK}/public.sdk/source/common/threadchecker_linux.cpp
     ${CONFIG_VST3SDK}/public.sdk/source/vst/vstinitiids.cpp
+    ${CONFIG_VST3SDK}/public.sdk/source/vst/hosting/connectionproxy.cpp
     ${CONFIG_VST3SDK}/pluginterfaces/base/coreiids.cpp
     ${CONFIG_VST3SDK}/pluginterfaces/base/funknown.cpp
   )
