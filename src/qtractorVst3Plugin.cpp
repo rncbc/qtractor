@@ -2508,12 +2508,6 @@ void qtractorVst3Plugin::Impl::initialize (void)
 			}
 		}
 	}
-
-	activate(component, Vst::kAudio, Vst::kInput,  true);
-	activate(component, Vst::kAudio, Vst::kOutput, true);
-	activate(component, Vst::kEvent, Vst::kInput,  true);
-	activate(component, Vst::kEvent, Vst::kOutput, true);
-	component->setActive(true);
 }
 
 
@@ -2550,18 +2544,18 @@ void qtractorVst3Plugin::Impl::deinitialize (void)
 // Do the actual (de)activation.
 void qtractorVst3Plugin::Impl::activate (void)
 {
-	if (!m_processing && m_processor) {
-		m_processor->setProcessing(true);
-		g_hostContext.processAddRef();
-		m_processing = true;
-	}
-
 	qtractorVst3PluginType *pType
 		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
 	if (pType) {
 		Vst::IComponent *component = pType->impl()->component();
 		if (component)
 			component->setActive(true);
+	}
+
+	if (!m_processing && m_processor) {
+		m_processor->setProcessing(true);
+		g_hostContext.processAddRef();
+		m_processing = true;
 	}
 
 #ifdef CONFIG_DEBUG
@@ -2572,18 +2566,18 @@ void qtractorVst3Plugin::Impl::activate (void)
 
 void qtractorVst3Plugin::Impl::deactivate (void)
 {
+	if (m_processing && m_processor) {
+		g_hostContext.processReleaseRef();
+		m_processor->setProcessing(false);
+		m_processing = false;
+	}
+
 	qtractorVst3PluginType *pType
 		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
 	if (pType) {
 		Vst::IComponent *component = pType->impl()->component();
 		if (component)
 			component->setActive(false);
-	}
-
-	if (m_processing && m_processor) {
-		g_hostContext.processReleaseRef();
-		m_processor->setProcessing(false);
-		m_processing = false;
 	}
 
 #ifdef CONFIG_DEBUG
@@ -2719,6 +2713,14 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	m_process_data.outputEvents           = &m_events_out;
 	m_process_data.inputParameterChanges  = &m_params_in;
 	m_process_data.outputParameterChanges = nullptr; //&m_params_out;
+
+	Vst::IComponent *component = pType->impl()->component();
+	if (component) {
+		activate(component, Vst::kAudio, Vst::kInput,  true);
+		activate(component, Vst::kAudio, Vst::kOutput, true);
+		activate(component, Vst::kEvent, Vst::kInput,  true);
+		activate(component, Vst::kEvent, Vst::kOutput, true);
+	}
 
 //	activate();
 
