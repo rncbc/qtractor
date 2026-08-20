@@ -303,10 +303,16 @@ void qtractorClipCommand::timeStretchClip (
 {
 	Item *pItem = new Item(TimeStretchClip, pClip, pClip->track());
 	pItem->timeStretch = fTimeStretch;
-	m_items.append(pItem);
 
-	if (isAudioClip(pClip))
+	if (isAudioClip(pClip)) {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		const float fRatio = fTimeStretch / pAudioClip->timeStretch();
+		pItem->clipOffset = (unsigned long) (fRatio * float(pClip->clipOffset()));
 		reopenClip(pClip, true);
+	}
+
+	m_items.append(pItem);
 }
 
 
@@ -819,9 +825,12 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip) {
 				const float fOldTimeStretch = pAudioClip->timeStretch();
+				const unsigned long iOldClipOffset = pAudioClip->clipOffset();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
-				pAudioClip->updateClipTime();	// Care of tempo change.
+				pAudioClip->setClipOffset(pItem->clipOffset);
+				pAudioClip->updateClipTime(); // Care of tempo change.
 				pItem->timeStretch = fOldTimeStretch;
+				pItem->clipOffset = iOldClipOffset;
 			}
 			break;
 		}
