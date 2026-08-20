@@ -830,7 +830,7 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="560"/>
         <location filename="../qtractorVst2Plugin.cpp" line="663"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1588"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1594"/>
         <source>Vendor: </source>
         <translation>Anbieter: </translation>
     </message>
@@ -847,7 +847,7 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="544"/>
         <location filename="../qtractorVst2Plugin.cpp" line="671"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1561"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1567"/>
         <source>Version: </source>
         <translation>Version: </translation>
     </message>
@@ -946,17 +946,17 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="538"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1555"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1561"/>
         <source>Name: </source>
         <translation>Name: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1575"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1581"/>
         <source>Category: </source>
         <translation>Kategorie: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1582"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1588"/>
         <source>Categories: </source>
         <translation>Kategorien: </translation>
     </message>
