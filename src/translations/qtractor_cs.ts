@@ -1161,13 +1161,13 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorBusForm.cpp" line="1176"/>
         <location filename="../qtractorBusForm.cpp" line="1211"/>
         <source>%1 ms (%2 frames)</source>
-        <translation type="unfinished">%1 ms (%2 snímků)</translation>
+        <translation>%1 ms (%2 snímků)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="1180"/>
         <location filename="../qtractorBusForm.cpp" line="1215"/>
         <source>(no latency)</source>
-        <translation type="unfinished">(bez prodlevy)</translation>
+        <translation>(bez prodlevy)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="775"/>
@@ -1368,18 +1368,18 @@ Chcete zahodit tyto změny?</translation>
         <location filename="../qtractorBusForm.ui" line="449"/>
         <location filename="../qtractorBusForm.ui" line="620"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation type="unfinished">Zda se má povolit vyrovnání prodlevy/zpoždění přídavného modulu</translation>
+        <translation>Zda se má povolit vyrovnání prodlevy/zpoždění přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="452"/>
         <location filename="../qtractorBusForm.ui" line="623"/>
         <source>&amp;Latency compensation</source>
-        <translation type="unfinished">&amp;Vyrovnání prodlevy/zpoždění</translation>
+        <translation>&amp;Vyrovnání prodlevy/zpoždění</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="483"/>
         <source>Current total input latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Nynější celková vstupní prodleva</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="499"/>
@@ -1414,7 +1414,7 @@ Chcete zahodit tyto změny?</translation>
     <message>
         <location filename="../qtractorBusForm.ui" line="654"/>
         <source>Current total output latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Nynější celková výstupní prodleva</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="685"/>
@@ -1567,7 +1567,12 @@ with the current clip contents when saved:
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybraný soubor MIDI bude při uložení přepsán
+obsahem záběru:
+
+„%1“
+
+Opravdu chcete pokračovat?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="597"/>
@@ -14552,12 +14557,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1897"/>
         <source>Supported files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Podporované soubory (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1898"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
 </context>
 <context>
