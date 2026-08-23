@@ -1275,18 +1275,18 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorBusForm.ui" line="449"/>
         <location filename="../qtractorBusForm.ui" line="620"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation type="unfinished">Визначає, чи слід вмикати компенсацію латентності/затримки додатка</translation>
+        <translation>Визначає, чи слід вмикати компенсацію латентності/затримки додатка</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="452"/>
         <location filename="../qtractorBusForm.ui" line="623"/>
         <source>&amp;Latency compensation</source>
-        <translation type="unfinished">Компенсація &amp;латентності</translation>
+        <translation>Компенсація &amp;латентності</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="483"/>
         <source>Current total input latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточна загальна вхідна латентність</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="499"/>
@@ -1321,7 +1321,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorBusForm.ui" line="654"/>
         <source>Current total output latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточна загальна вихідна латентність</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="685"/>
@@ -1458,13 +1458,13 @@ Do you want to discard the changes?</source>
         <location filename="../qtractorBusForm.cpp" line="1176"/>
         <location filename="../qtractorBusForm.cpp" line="1211"/>
         <source>%1 ms (%2 frames)</source>
-        <translation type="unfinished">%1 мс (%2 кадрів)</translation>
+        <translation>%1 мс (%2 кадрів)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="1180"/>
         <location filename="../qtractorBusForm.cpp" line="1215"/>
         <source>(no latency)</source>
-        <translation type="unfinished">(немає латентності)</translation>
+        <translation>(немає латентності)</translation>
     </message>
 </context>
 <context>
@@ -1788,7 +1788,12 @@ with the current clip contents when saved:
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначений файл MIDI буде перезаписано
+вмістом поточного кліпу при збереженні:
+
+«%1»
+
+Ви справді цього хочете?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="597"/>
@@ -7719,7 +7724,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="119"/>
         <source>Low-Mid Tom</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="120"/>
@@ -14550,12 +14555,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1897"/>
         <source>Supported files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>підтримувані файли (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1898"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">усі файли (*.*)</translation>
+        <translation>усі файли (*.*)</translation>
     </message>
 </context>
 <context>
