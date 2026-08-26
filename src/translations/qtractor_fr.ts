@@ -870,7 +870,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3438"/>
         <source>Select plug-in&apos;s editor (GUI) type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez le type d&apos;éditeur (IGU) du greffon :</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3450"/>
@@ -920,8 +920,8 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3504"/>
-        <source>Reset plug-in&apos;s editor (GUI) type ?</source>
-        <translation type="unfinished"></translation>
+        <source>Réinitialiser le type d&apos;éditeur (IGU) du greffon ?</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3900"/>
@@ -1274,18 +1274,18 @@ Souhaitez-vous appliquer ces modifications ?</translation>
         <location filename="../qtractorBusForm.ui" line="449"/>
         <location filename="../qtractorBusForm.ui" line="620"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation type="unfinished">S&apos;il faut activer la compensation de latence/délai de greffon</translation>
+        <translation>S&apos;il faut activer la compensation de latence/délai de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="452"/>
         <location filename="../qtractorBusForm.ui" line="623"/>
         <source>&amp;Latency compensation</source>
-        <translation type="unfinished">Compensation de &amp;latence</translation>
+        <translation>Compensation de &amp;latence</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="483"/>
         <source>Current total input latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Latence d&apos;entrée totale actuelle</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="499"/>
@@ -1320,7 +1320,7 @@ Souhaitez-vous appliquer ces modifications ?</translation>
     <message>
         <location filename="../qtractorBusForm.ui" line="654"/>
         <source>Current total output latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Latence de sortie totale actuelle</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="685"/>
@@ -1457,13 +1457,13 @@ Voulez-vous abandonner les changements ?</translation>
         <location filename="../qtractorBusForm.cpp" line="1176"/>
         <location filename="../qtractorBusForm.cpp" line="1211"/>
         <source>%1 ms (%2 frames)</source>
-        <translation type="unfinished">%1 ms (%2 trames)</translation>
+        <translation>%1 ms (%2 trames)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="1180"/>
         <location filename="../qtractorBusForm.cpp" line="1215"/>
         <source>(no latency)</source>
-        <translation type="unfinished">(pas de latence)</translation>
+        <translation>(pas de latence)</translation>
     </message>
 </context>
 <context>
@@ -1787,7 +1787,12 @@ with the current clip contents when saved:
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier MIDI sélectionné sera écrasé
+par le contenu actuel du clip lors de la sauvegarde :
+
+&quot;%1&quot;
+
+Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="597"/>
@@ -13213,42 +13218,42 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4367"/>
         <source>Editor (GUI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur (IGU)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4391"/>
         <source>Open plugin&apos;s &amp;editor by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir l&apos;édit&amp;eur du greffon par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4417"/>
         <source>Whether to keep all plugin editors (GUI) always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;il faut que toutes les fenêtres d&apos;édition des greffons (IGU) restent toujours au premier plan ?</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4420"/>
         <source>&amp;Keep plugin editors always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Toujours maintenir les éditeurs de greffons au premier plan</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4433"/>
         <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;il faut choisir le type d&apos;éditeur (IGU) du greffon si plusieurs sont disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4436"/>
         <source>&amp;Select plugin&apos;s editor type if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sélectionnez le type d&apos;éditeur du greffon si plusieurs sont disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4449"/>
         <source>Whether to reset plugin&apos;s editor (GUI) type if previously selected</source>
-        <translation type="unfinished"></translation>
+        <translation>S&apos;il faut réinitialiser le type d&apos;éditeur (IGU) du greffon s&apos;il avait été sélectionné auparavant</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4452"/>
         <source>Rese&amp;t plugin&apos;s editor type</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser le type d&apos;éditeur du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4481"/>
@@ -14553,12 +14558,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1897"/>
         <source>Supported files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers pris en charge (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1898"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Tous les fichiers (*.*)</translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
 </context>
 <context>
