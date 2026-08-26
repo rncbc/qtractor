@@ -262,12 +262,23 @@ protected:
 
 		const unsigned long iRangeStart = m_pForm->rangeStart();
 		const int x0 = pTimeScale->pixelFromFrame(iRangeStart);
-
-		unsigned short iBeat = 0;
 		qreal x = 0;
-		while (x < w) {
-			x = (pTimeScale->pixelFromBeat(++iBeat) - x0) / dw;
-			painter.drawLine(QPointF(x, 0), QPointF(x, h));
+
+		const float fTempo = pTimeScale->tempo();
+		if (fTempo > 0.0f) {
+			const float fBeatLength
+				= 60.0f * float(pTimeScale->sampleRate()) / fTempo;
+			if (fBeatLength > 0.0f) {
+				unsigned short iBeat = 0;
+				while (x < w) {
+					const unsigned long iOffset
+						= ::lrintf(float(++iBeat) * fBeatLength);
+					const int x1
+						= pTimeScale->pixelFromFrame(iRangeStart + iOffset);
+					x = qreal(x1 - x0) / dw;
+					painter.drawLine(QPointF(x, 0), QPointF(x, h));
+				}
+			}
 		}
 
 		if (!m_beats.isEmpty()) {
@@ -276,8 +287,8 @@ protected:
 				painter.setPen(Qt::darkRed);
 				foreach (unsigned long iOffset, m_beats) {
 					const int x1
-						= pTimeScale->pixelFromFrame(iRangeStart + iOffset) - x0;
-					x = x1 / dw;
+						= pTimeScale->pixelFromFrame(iRangeStart + iOffset);
+					x = qreal(x1 - x0) / dw;
 					painter.drawLine(QPointF(x, 0), QPointF(x, h));
 				}
 			}
@@ -447,7 +458,7 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_ui.TempoDetectPushButton->hide();
 	}
 
-	tempoChanged();
+//	tempoChanged();
 }
 
 

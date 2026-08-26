@@ -15176,12 +15176,12 @@ Chcete použít tyto změny?</translation>
         <translation>Snímky</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="874"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="885"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="875"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="886"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
