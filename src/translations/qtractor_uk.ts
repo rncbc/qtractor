@@ -15078,107 +15078,107 @@ Do you want to apply the changes?</source>
         <translation>Скоригувати ритм</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="54"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="62"/>
         <source>Metronome</source>
         <translation>Метроном</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="66"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="74"/>
         <source>&amp;Tempo:</source>
         <translation>&amp;Ритм:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="82"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="93"/>
         <source>Tempo/Time signature</source>
         <translation>Ритм/Часовий підпис</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="128"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="139"/>
         <source>&amp;Detect</source>
         <translation>Ви&amp;явити</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="105"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="116"/>
         <source>T&amp;ap</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="135"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="146"/>
         <source>R&amp;eset</source>
         <translation>С&amp;кинути</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="158"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="169"/>
         <source>Range</source>
         <translation>Діапазон</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="170"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="181"/>
         <source>&amp;Start:</source>
         <translation>&amp;Початок:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="186"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="200"/>
         <source>Range start</source>
         <translation>Початок діапазону</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="199"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
         <source>&amp;Length:</source>
         <translation>&amp;Тривалість:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="215"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="232"/>
         <source>Range length</source>
         <translation>Тривалість діапазону</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="228"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="245"/>
         <source>&amp;Beats:</source>
         <translation>&amp;Біти:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="238"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="258"/>
         <source>Range beats</source>
         <translation>Діапазон бітів</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="251"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="271"/>
         <source>A&amp;djust</source>
         <translation>С&amp;коригувати</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="274"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="294"/>
         <source>Format</source>
         <translation>Формат</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="280"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="300"/>
         <source>Time display format</source>
         <translation>Формат показу часу</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="284"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="304"/>
         <source>Frames</source>
         <translation>Кадри</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="289"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="309"/>
         <source>Time</source>
         <translation>Час</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="294"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="314"/>
         <source>BBT</source>
         <translation>BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="883"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="874"/>
         <source>Warning</source>
         <translation>Попередження</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="884"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="875"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>

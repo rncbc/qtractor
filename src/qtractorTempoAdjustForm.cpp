@@ -256,26 +256,28 @@ protected:
 			rect.width() * dw, rect.height() * dh));
 
 		// Render beat lines...
-		const unsigned short iRangeBeats = m_pForm->rangeBeats();
-		if (iRangeBeats > 0) {
-			const qreal dx = w / qreal(iRangeBeats);
-			for (qreal x = dx; x < w; x += dx) {
-				painter.drawLine(QPointF(x, 0), QPointF(x, h));
-			}
+		qtractorTimeScale *pTimeScale = m_pForm->timeScale();
+		if (pTimeScale == nullptr)
+			return;
+
+		const unsigned long iRangeStart = m_pForm->rangeStart();
+		const int x0 = pTimeScale->pixelFromFrame(iRangeStart);
+
+		unsigned short iBeat = 0;
+		qreal x = 0;
+		while (x < w) {
+			x = (pTimeScale->pixelFromBeat(++iBeat) - x0) / dw;
+			painter.drawLine(QPointF(x, 0), QPointF(x, h));
 		}
 
 		if (!m_beats.isEmpty()) {
 			qtractorClip *pClip = m_pForm->clip();
-			qtractorTimeScale *pTimeScale = m_pForm->timeScale();
-			if (pClip && pTimeScale) {
-				const unsigned long iRangeStart
-					= m_pForm->rangeStart();
+			if (pClip) {
 				painter.setPen(Qt::darkRed);
 				foreach (unsigned long iOffset, m_beats) {
-					const int w1
-						= pTimeScale->pixelFromFrame(iRangeStart + iOffset)
-						- pTimeScale->pixelFromFrame(iRangeStart);
-					const qreal x = w1 / dw;
+					const int x1
+						= pTimeScale->pixelFromFrame(iRangeStart + iOffset) - x0;
+					x = x1 / dw;
 					painter.drawLine(QPointF(x, 0), QPointF(x, h));
 				}
 			}
@@ -433,25 +435,9 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 	if (m_pClip) {
 		m_pClipWidget = new ClipWidget(this);
 		m_pClipWidget->setMinimumHeight(80);
-		m_ui.MainBoxLayout->insertWidget(0, m_pClipWidget);
-	//	const int iTempoGroup
-	//		= m_ui.GroupBoxLayout->indexOf(m_ui.TempoGroupBox);
-		const int iRangeGroup
-			= m_ui.GroupBoxLayout->indexOf(m_ui.RangeGroupBox);
-		const int iFormatGroup
-			= m_ui.GroupBoxLayout->indexOf(m_ui.FormatGroupBox);
-	//	QLayoutItem *pTempoItem = m_ui.GroupBoxLayout->takeAt(iTempoGroup);
-	//	if (pTempoItem)
-	//		delete pTempoItem;
-		QLayoutItem *pRangeItem = m_ui.GroupBoxLayout->takeAt(iRangeGroup);
-		if (pRangeItem)
-			delete pRangeItem;
-		QLayoutItem *pFormatItem = m_ui.GroupBoxLayout->takeAt(iFormatGroup);
-		if (pFormatItem)
-			delete pFormatItem;
-	//	m_ui.GroupBoxLayout->addWidget(m_ui.TempoGroupBox, 0, 1, 1, 3);
-		m_ui.GroupBoxLayout->addWidget(m_ui.RangeGroupBox, 0, 3, 1, 2);
-		m_ui.GroupBoxLayout->addWidget(m_ui.FormatGroupBox, 0, 5, 1, 1);
+		m_ui.MainBoxSplitter->insertWidget(0, m_pClipWidget);
+		m_ui.MainBoxSplitter->setStretchFactor(0, 2);
+		m_pClipWidget->setMinimumHeight(160);
 	}
 
 	if (m_pAudioClip) {
@@ -460,6 +446,8 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_ui.TempoDetectPushButton->setEnabled(false);
 		m_ui.TempoDetectPushButton->hide();
 	}
+
+	tempoChanged();
 }
 
 
@@ -496,6 +484,7 @@ unsigned long qtractorTempoAdjustForm::rangeStart (void) const
 {
 	return m_ui.RangeStartSpinBox->value();
 }
+
 
 void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
 {
@@ -736,7 +725,7 @@ void qtractorTempoAdjustForm::tempoAdjust (void)
 		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
 	m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
 
-	changed();
+//	tempoChanged();
 }
 
 
@@ -776,6 +765,8 @@ void qtractorTempoAdjustForm::tempoTap (void)
 		m_fTempoTap = fTempoTap;
 	}
 #endif
+
+//	tempoChanged();
 }
 
 
@@ -924,8 +915,20 @@ void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 
 
 // Repaint the graphics...
-void qtractorTempoAdjustForm::updateRangeBeats ( unsigned short /*iRangeBeats*/ )
+void qtractorTempoAdjustForm::updateRangeBeats ( unsigned short iRangeBeats )
 {
+	const float fTempo = m_ui.TempoSpinBox->tempo();
+	if (fTempo > 0.0f) {
+		const float fBeatLength
+			= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
+		if (fBeatLength > 0.0f) {
+			const unsigned long iRangeLength
+				= ::lrintf(float(iRangeBeats) * fBeatLength);
+			m_ui.RangeLengthSpinBox->setValue(iRangeLength, false);
+			updateRangeSelect();
+		}
+	}
+
 	if (m_pClipWidget)
 		m_pClipWidget->clearBeats();
 }
