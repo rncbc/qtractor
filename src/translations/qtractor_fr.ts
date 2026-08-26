@@ -921,7 +921,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3504"/>
         <source>Reset plug-in&apos;s editor (GUI) type ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser le type d&apos;éditeur (IGU) du greffon ?</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3900"/>
