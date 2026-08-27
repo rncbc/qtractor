@@ -1043,9 +1043,8 @@ qtractorTempoAdjustCommand::qtractorTempoAdjustCommand (
 	// Save current clip range...
 	m_pClip = pForm->clip();
 
-	const unsigned long iClipStart = m_pClip->clipStart();
-	m_iRangeStart = pForm->rangeStart() - iClipStart;
-	m_iRangeEnd	= pForm->rangeEnd() - iClipStart;
+	m_iRangeStart = pForm->rangeStart();
+	m_iRangeEnd   = pForm->rangeEnd();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -1055,14 +1054,16 @@ qtractorTempoAdjustCommand::qtractorTempoAdjustCommand (
 		pSession->setAutoTimeStretch(false);
 		qtractorTimeScale *pTimeScale = pSession->timeScale();
 		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
-		qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
-		m_pTimeScaleNodeCommand = new qtractorTimeScaleUpdateNodeCommand(
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pClip->clipStart());
+		m_pTimeScaleNodeCommand Restore = new qtractorTimeScaleUpdateNodeCommand(
 			pTimeScale, pNode->frame, pForm->tempo(), 2,
 			pForm->beatsPerBar(), pForm->beatDivisor());
 		pSession->setAutoTimeStretch(bAutoTimeStretch);
 	} else {
 		m_pTimeScaleNodeCommand = nullptr;
 	}
+
+	setFlags(m_pTimeScaleNodeCommand->flags());
 }
 
 
@@ -1080,21 +1081,26 @@ bool qtractorTempoAdjustCommand::redo (void)
 	if (m_pTimeScaleNodeCommand == nullptr)
 		return false;
 
-	const unsigned long iRangeStart = m_iRangeStart;
-	const unsigned long iRangeEnd = m_iRangeEnd;
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return false;
 
+	// Save clip range...
+	unsigned long iClipStartTime = m_pClip->clipStartTime();
+	unsigned long iClipStart = pSession->frameFromTick(iClipStartTime);
+	const unsigned long iRangeStart = m_iRangeStart - iClipStart;
+	const unsigned long iRangeEnd   = m_iRangeEnd - iClipStart;
+
+	// Do it!,,,
 	const bool bRedo = m_pTimeScaleNodeCommand->redo();
 
 	// Restore clip range...
-	const unsigned long iClipStart = m_pClip->clipStart();
+	iClipStart = pSession->frameFromTick(iClipStartTime);
 	m_iRangeStart = iClipStart + iRangeStart;
-	m_iRangeEnd = iClipStart + iRangeEnd;
+	m_iRangeEnd   = iClipStart + iRangeEnd;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) {
-		pSession->setEditHead(m_iRangeStart);
-		pSession->setEditTail(m_iRangeEnd);
-	}
+	pSession->setEditHead(m_iRangeStart);
+	pSession->setEditTail(m_iRangeEnd);
 
 	return bRedo;
 }
