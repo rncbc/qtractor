@@ -1055,7 +1055,7 @@ qtractorTempoAdjustCommand::qtractorTempoAdjustCommand (
 		qtractorTimeScale *pTimeScale = pSession->timeScale();
 		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pClip->clipStart());
-		m_pTimeScaleNodeCommand Restore = new qtractorTimeScaleUpdateNodeCommand(
+		m_pTimeScaleNodeCommand = new qtractorTimeScaleUpdateNodeCommand(
 			pTimeScale, pNode->frame, pForm->tempo(), 2,
 			pForm->beatsPerBar(), pForm->beatDivisor());
 		pSession->setAutoTimeStretch(bAutoTimeStretch);
