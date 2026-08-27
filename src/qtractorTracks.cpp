@@ -1863,25 +1863,13 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	if (pSession == nullptr)
 		return false;
 
-	unsigned long iRangeStart  = pSession->editHead();
-	unsigned long iRangeLength = pSession->editTail() - iRangeStart;
-
 	if (pClip == nullptr)
 		pClip = m_pTrackView->currentClip();
-	if (pClip) {
-		if (pClip->isClipSelected()) {
-			iRangeStart  = pClip->clipSelectStart();
-			iRangeLength = pClip->clipSelectEnd() - iRangeStart;
-		} else {
-			iRangeStart  = pClip->clipStart();
-			iRangeLength = pClip->clipLength();
-		}
-	}
+	if (pClip == nullptr)
+		return false;
 
 	qtractorTempoAdjustForm form(this);
 	form.setClip(pClip);
-	form.setRangeStart(iRangeStart);
-	form.setRangeLength(iRangeLength);
 	if (!form.exec())
 		return false;
 
@@ -1889,13 +1877,10 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	const bool bAutoTimeStretch = pSession->isAutoTimeStretch();
 	pSession->setAutoTimeStretch(false);
 
-	iRangeStart  = form.rangeStart();
-	iRangeLength = form.rangeLength();
-
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
 	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iRangeStart);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(pClip->clipStart());
 
 	// Now, express the change as a undoable command...
 	pSession->execute(
@@ -1905,22 +1890,10 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	// Done.
 	pSession->setAutoTimeStretch(bAutoTimeStretch);
 
-	if (pClip) {
-		if (pClip->isClipSelected()) {
-			iRangeStart  = pClip->clipSelectStart();
-			iRangeLength = pClip->clipSelectEnd() - iRangeStart;
-		} else {
-			iRangeStart  = pClip->clipStart();
-			iRangeLength = pClip->clipLength();
-		}
-	}
-
-	pSession->setEditHead(iRangeStart);
-	pSession->setEditTail(iRangeStart + iRangeLength);
-
 	selectionChangeNotify();
 	return true;
 }
+
 
 // Auto-crossfade a give clip.
 bool qtractorTracks::crossFadeClip ( qtractorClip *pClip )

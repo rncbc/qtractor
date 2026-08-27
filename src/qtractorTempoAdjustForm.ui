@@ -202,7 +202,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="RangeLengthTextLabel">
+           <widget class="QLabel" name="RangeEndTextLabel">
             <property name="minimumSize">
              <size>
               <width>60</width>
@@ -210,18 +210,18 @@
              </size>
             </property>
             <property name="text">
-             <string>&amp;Length:</string>
+             <string>&amp;End:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
-             <cstring>RangeLengthSpinBox</cstring>
+             <cstring>RangeEndSpinBox</cstring>
             </property>
            </widget>
           </item>
           <item row="1" column="1" colspan="2">
-           <widget class="qtractorTimeSpinBox" name="RangeLengthSpinBox">
+           <widget class="qtractorTimeSpinBox" name="RangeEndSpinBox">
             <property name="minimumSize">
              <size>
               <width>120</width>
@@ -229,7 +229,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Range length</string>
+             <string>Range end</string>
             </property>
            </widget>
           </item>
@@ -248,7 +248,7 @@
              <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
-             <cstring>RangeLengthSpinBox</cstring>
+             <cstring>RangeBeatsSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -367,7 +367,7 @@
   <tabstop>TempoDetectPushButton</tabstop>
   <tabstop>TempoResetPushButton</tabstop>
   <tabstop>RangeStartSpinBox</tabstop>
-  <tabstop>RangeLengthSpinBox</tabstop>
+  <tabstop>RangeEndSpinBox</tabstop>
   <tabstop>RangeBeatsSpinBox</tabstop>
   <tabstop>AdjustPushButton</tabstop>
   <tabstop>FormatComboBox</tabstop>

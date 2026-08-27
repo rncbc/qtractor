@@ -15106,6 +15106,16 @@ Do you want to apply the changes?</source>
         <translation>范围起点</translation>
     </message>
     <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
+        <source>&amp;End:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="232"/>
+        <source>Range end</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="245"/>
         <source>&amp;Beats:</source>
         <translation>拍数(&amp;B)：</translation>
@@ -15121,11 +15131,6 @@ Do you want to apply the changes?</source>
         <translation>BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
-        <source>&amp;Length:</source>
-        <translation>长度(&amp;L)：</translation>
-    </message>
-    <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="74"/>
         <source>&amp;Tempo:</source>
         <translation>速度(&amp;T)：</translation>
@@ -15134,11 +15139,6 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorTempoAdjustForm.ui" line="146"/>
         <source>R&amp;eset</source>
         <translation>重置(&amp;E)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="232"/>
-        <source>Range length</source>
-        <translation>范围长度</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="258"/>
@@ -15166,12 +15166,12 @@ Do you want to apply the changes?</source>
         <translation>帧</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="885"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="922"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="886"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="923"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -16225,7 +16225,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1082"/>
-        <location filename="../qtractorTracks.cpp" line="3146"/>
+        <location filename="../qtractorTracks.cpp" line="3119"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>音频文件导入 &quot;%1&quot; 到 %2 %3。
@@ -16233,13 +16233,13 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1087"/>
-        <location filename="../qtractorTracks.cpp" line="3151"/>
+        <location filename="../qtractorTracks.cpp" line="3124"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>音频文件导入：&quot;%1&quot;。</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1117"/>
-        <location filename="../qtractorTracks.cpp" line="3000"/>
+        <location filename="../qtractorTracks.cpp" line="2973"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>MIDI 文件导入 &quot;%1&quot; 轨道-通道 %2 到 %3 %4。
@@ -16247,7 +16247,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1123"/>
-        <location filename="../qtractorTracks.cpp" line="3006"/>
+        <location filename="../qtractorTracks.cpp" line="2979"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>MIDI 文件导入：&quot;%1&quot;，轨道-通道：%2。</translation>
     </message>
@@ -16293,27 +16293,27 @@ Length:	%3</source>
         <translation>MIDI 剪辑合并/导出：&quot;%1&quot; 完成。</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1939"/>
+        <location filename="../qtractorTracks.cpp" line="1912"/>
         <source>clip cross-fade</source>
         <translation>剪辑交叉淡化</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2216"/>
+        <location filename="../qtractorTracks.cpp" line="2189"/>
         <source>Insert Range</source>
         <translation>插入范围</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2237"/>
+        <location filename="../qtractorTracks.cpp" line="2210"/>
         <source>insert track range</source>
         <translation>插入轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2441"/>
+        <location filename="../qtractorTracks.cpp" line="2414"/>
         <source>Remove Range</source>
         <translation>移除范围</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2236"/>
+        <location filename="../qtractorTracks.cpp" line="2209"/>
         <source>insert range</source>
         <translation>插入范围</translation>
     </message>
@@ -16333,22 +16333,22 @@ Length:	%3</source>
         <translation>所有文件 (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2461"/>
+        <location filename="../qtractorTracks.cpp" line="2434"/>
         <source>remove range</source>
         <translation>移除范围</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2462"/>
+        <location filename="../qtractorTracks.cpp" line="2435"/>
         <source>remove track range</source>
         <translation>移除轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2759"/>
+        <location filename="../qtractorTracks.cpp" line="2732"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2760"/>
+        <location filename="../qtractorTracks.cpp" line="2733"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -16361,14 +16361,14 @@ Are you sure?</source>
 是否确认？</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3257"/>
+        <location filename="../qtractorTracks.cpp" line="3230"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>MIDI 文件导入 &quot;%1&quot; 到 %2 %3。
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3262"/>
+        <location filename="../qtractorTracks.cpp" line="3235"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>MIDI 文件导入：&quot;%1&quot;。</translation>
     </message>
