@@ -1859,13 +1859,13 @@ bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 // Adjust current tempo from clip selection or interactive tapping...
 bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return false;
-
 	if (pClip == nullptr)
 		pClip = m_pTrackView->currentClip();
 	if (pClip == nullptr)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
 		return false;
 
 	qtractorTempoAdjustForm form(this);
@@ -1873,25 +1873,8 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	if (!form.exec())
 		return false;
 
-	// Avoid automatic time stretching option for audio clips...
-	const bool bAutoTimeStretch = pSession->isAutoTimeStretch();
-	pSession->setAutoTimeStretch(false);
-
-	// Find appropriate node...
-	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(pClip->clipStart());
-
 	// Now, express the change as a undoable command...
-	pSession->execute(
-		new qtractorTimeScaleUpdateNodeCommand(pTimeScale, pNode->frame,
-			form.tempo(), 2, form.beatsPerBar(), form.beatDivisor()));
-
-	// Done.
-	pSession->setAutoTimeStretch(bAutoTimeStretch);
-
-	selectionChangeNotify();
-	return true;
+	return pSession->execute(new qtractorTempoAdjustCommand(&form));
 }
 
 

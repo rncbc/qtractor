@@ -123,6 +123,37 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorTimeScaleClipTempoAdjustCommand - declaration.
+//
+#include "qtractorTimeScaleCommand.h"
+
+class qtractorTempoAdjustCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorTempoAdjustCommand(qtractorTempoAdjustForm *pForm);
+
+	// Destructor.
+	virtual ~qtractorTempoAdjustCommand();
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorClip *m_pClip;
+
+	unsigned long m_iRangeStart;
+	unsigned long m_iRangeEnd;
+
+	qtractorTimeScaleUpdateNodeCommand *m_pTimeScaleNodeCommand;
+};
+
+
 #endif	// __qtractorTempoAdjustForm_h
 
 
