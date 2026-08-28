@@ -261,7 +261,7 @@ protected:
 		qreal x = 0;
 
 		const float fTempo = pTimeScale->tempo();
-		if (fTempo > 0.0f) {
+		if (fTempo > 0.1f) {
 			const float fBeatLength
 				= 60.0f * float(pTimeScale->sampleRate()) / fTempo;
 			if (fBeatLength > 0.0f) {
@@ -280,7 +280,9 @@ protected:
 		if (!m_beats.isEmpty()) {
 			qtractorClip *pClip = m_pForm->clip();
 			if (pClip) {
-				painter.setPen(Qt::darkRed);
+				QColor color = Qt::red;
+				color.setAlpha(120);
+				painter.setPen(QPen(color, 3));
 				foreach (unsigned long iOffset, m_beats) {
 					const int x1
 						= pTimeScale->pixelFromFrame(iRangeStart + iOffset);
@@ -598,7 +600,7 @@ void qtractorTempoAdjustForm::tempoChanged (void)
 	m_fTempoTap = 0.0f;
 
 	const float fTempo = m_ui.TempoSpinBox->tempo();
-	if (fTempo > 0.0f) {
+	if (fTempo > 0.1f) {
 		const float fBeatLength
 			= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
 		if (fBeatLength > 0.0f) {
@@ -703,15 +705,16 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	}
 
 	const float fTempo = fTempoSum / float(iChannels);
-	m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
-
-	if (m_pClipWidget) {
-		QList<unsigned long> beats;
-		const unsigned long iBeatLength
-			= ::lrintf(60.0f * float(iSampleRate) / fTempo);
-		for (unsigned long n = iBeatLength; n < iLength; n += iBeatLength)
-			beats.append(n);
-		m_pClipWidget->setBeats(beats);
+	if (fTempo > 0.1f) {
+		m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
+		if (m_pClipWidget) {
+			QList<unsigned long> beats;
+			const unsigned long iBeatLength
+				= ::lrintf(60.0f * float(iSampleRate) / fTempo);
+			for (unsigned long n = iBeatLength; n < iLength; n += iBeatLength)
+				beats.append(n);
+			m_pClipWidget->setBeats(beats);
+		}
 	}
 
 #endif	// CONFIG_MINIBPM
@@ -1006,11 +1009,9 @@ void qtractorTempoAdjustForm::updateRangeSelect (void)
 	if (pMainForm) {
 		qtractorTracks *pTracks = pMainForm->tracks();
 		if (pTracks && m_pClip)  {
-			pTracks->clearSelect();
-			m_pClip->setClipSelect(iRangeStart, iRangeEnd);
-			pTracks->updateSelect();
+			pTracks->selectClipRange(m_pClip);
+			pMainForm->selectNotifySlot(nullptr);
 		}
-		pMainForm->selectNotifySlot(nullptr);
 	}
 
 	if (m_pClipWidget)

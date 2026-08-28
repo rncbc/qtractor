@@ -155,6 +155,7 @@ public:
 	void splitSelect();
 
 	// Selection methods.
+	void selectClipRange(qtractorClip *pClip, bool bReset = false);
 	void selectEditRange(bool bReset = false);
 	void selectCurrentTrack(bool bReset = false);
 	void selectCurrentTrackRange(bool bReset = false);

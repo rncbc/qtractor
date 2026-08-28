@@ -2077,7 +2077,15 @@ void qtractorTracks::splitSelect (void)
 }
 
 
-// Select range interval between edit head and tail.
+// Select range interval between edit head and tail. (single clip)
+void qtractorTracks::selectClipRange ( qtractorClip *pClip, bool bReset )
+{
+	if (!m_pTrackView->isCurveEdit())
+		m_pTrackView->selectClipRange(pClip, bReset);
+}
+
+
+// Select range interval between edit head and tail. (all tracks)
 void qtractorTracks::selectEditRange ( bool bReset )
 {
 	if (m_pTrackView->isCurveEdit())
