@@ -1418,12 +1418,18 @@ void qtractorVst3PluginType::Impl::close (void)
 	m_component_cp = nullptr;
 	m_controller_cp = nullptr;
 
-	if (m_component && m_controller &&
-		FUnknownPtr<Vst::IEditController> (m_component).getInterface()) {
-		m_controller->terminate();
-	}
-
-	m_controller = nullptr;
+	// Only terminate the controller separately when it is a distinct object
+	// from the component.  For SingleComponentEffect plug-ins the component
+	// and the controller are the same object; calling terminate() on it here
+	// AND again via m_component->terminate() below would corrupt its state.
+	if (m_component && m_controller) {
+		FUnknownPtr<Vst::IEditController> component_as_controller(m_component);
+		if (!component_as_controller.getInterface()) {
+			// Separate controller object – terminate it independently.
+			m_controller->terminate();
+			m_controller = nullptr;
+		}
+ 	}
 
 	if (m_component) {
 		m_component->terminate();
@@ -3006,6 +3012,10 @@ bool qtractorVst3Plugin::Impl::setState ( const QByteArray& data )
 			" IComponent::setState() FAILED!", this);
 	#endif
 	}
+
+	// Rewind the stream so the controller can also read it.
+	int64 pos = 0;
+	state.seek(0, IBStream::kIBSeekSet, &pos);
 
 	if (controller->setComponentState(&state) == kResultOk) {
 		return true;
