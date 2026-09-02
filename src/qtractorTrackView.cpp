@@ -2702,6 +2702,53 @@ void qtractorTrackView::selectClipRect ( const QRect& rectDrag,
 }
 
 
+// Select one clip on current edit-range.
+void qtractorTrackView::selectClipRange ( qtractorClip *pClip, bool bReset )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	const unsigned long iSelectStart = pSession->editHead();
+	const unsigned long iSelectEnd   = pSession->editTail();
+
+	// Get and select the clip's rectangular area
+	// between the edit head and tail points...
+	QRect rect(0, 0, 0, qtractorScrollView::contentsHeight());
+	rect.setLeft(pSession->pixelFromFrame(iSelectStart));
+	rect.setRight(pSession->pixelFromFrame(iSelectEnd));
+
+	// Reset selection (unconditional)...
+	int iUpdate = 0;
+	QRect rectUpdate = m_pClipSelect->rect();
+	if (bReset && m_pClipSelect->items().count() > 0) {
+		m_pClipSelect->reset();
+		++iUpdate;
+	}
+
+	TrackViewInfo tvi;
+	if (trackInfo(pClip->track(), &tvi)) {
+		QRect rectClip;
+		clipInfo(pClip, &rectClip, &tvi);
+		if (rect.intersects(rectClip)) {
+			rectClip = rect.intersected(rectClip);
+			pClip->setClipSelect(iSelectStart, iSelectEnd);
+			m_pClipSelect->selectItem(pClip, rectClip, true);
+			++iUpdate;
+		}
+	}
+
+	// This is most probably an overall update...
+	if (iUpdate > 0) {
+		updateRect(rectUpdate.united(m_pClipSelect->rect()));
+		m_pTracks->selectionChangeNotify();
+	}
+
+	// Make sure we keep focus...
+	qtractorScrollView::setFocus();
+}
+
+
 // Select every clip of a given track-range.
 void qtractorTrackView::selectClipTrackRange (
 	qtractorTrack *pTrackPtr, bool bReset )

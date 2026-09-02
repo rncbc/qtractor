@@ -205,13 +205,9 @@ protected:
 		if (pTimeScale == nullptr)
 			return;
 
-		const unsigned long iRangeStart
-			= m_pForm->rangeStart();
-		const unsigned long iRangeLength
-			= m_pForm->rangeLength();
 		const int w
-			= pTimeScale->pixelFromFrame(iRangeStart + iRangeLength)
-			- pTimeScale->pixelFromFrame(iRangeStart);
+			= pTimeScale->pixelFromFrame(m_pForm->rangeEnd())
+			- pTimeScale->pixelFromFrame(m_pForm->rangeStart());
 		const int h = QFrame::height();
 
 		m_pixmap = QPixmap(w, h);
@@ -234,7 +230,7 @@ protected:
 		painter.setBrush(brush);
 
 		const unsigned long iClipOffset
-			= iRangeStart - pClip->clipStart();
+			= m_pForm->rangeStart() - pClip->clipStart();
 		const QRect rectClip(0, 0, w, h);
 		painter.drawRect(rectClip);
 		pClip->draw(&painter, rectClip, iClipOffset);
@@ -256,26 +252,41 @@ protected:
 			rect.width() * dw, rect.height() * dh));
 
 		// Render beat lines...
-		const unsigned short iRangeBeats = m_pForm->rangeBeats();
-		if (iRangeBeats > 0) {
-			const qreal dx = w / qreal(iRangeBeats);
-			for (qreal x = dx; x < w; x += dx) {
-				painter.drawLine(QPointF(x, 0), QPointF(x, h));
+		qtractorTimeScale *pTimeScale = m_pForm->timeScale();
+		if (pTimeScale == nullptr)
+			return;
+
+		const unsigned long iRangeStart = m_pForm->rangeStart();
+		const int x0 = pTimeScale->pixelFromFrame(iRangeStart);
+		qreal x = 0;
+
+		const float fTempo = pTimeScale->tempo();
+		if (fTempo > 0.1f) {
+			const float fBeatLength
+				= 60.0f * float(pTimeScale->sampleRate()) / fTempo;
+			if (fBeatLength > 0.0f) {
+				unsigned short iBeat = 0;
+				while (x < w) {
+					const unsigned long iOffset
+						= ::lrintf(float(++iBeat) * fBeatLength);
+					const int x1
+						= pTimeScale->pixelFromFrame(iRangeStart + iOffset);
+					x = qreal(x1 - x0) / dw;
+					painter.drawLine(QPointF(x, 0), QPointF(x, h));
+				}
 			}
 		}
 
 		if (!m_beats.isEmpty()) {
 			qtractorClip *pClip = m_pForm->clip();
-			qtractorTimeScale *pTimeScale = m_pForm->timeScale();
-			if (pClip && pTimeScale) {
-				const unsigned long iRangeStart
-					= m_pForm->rangeStart();
-				painter.setPen(Qt::darkRed);
+			if (pClip) {
+				QColor color = Qt::red;
+				color.setAlpha(120);
+				painter.setPen(QPen(color, 3));
 				foreach (unsigned long iOffset, m_beats) {
-					const int w1
-						= pTimeScale->pixelFromFrame(iRangeStart + iOffset)
-						- pTimeScale->pixelFromFrame(iRangeStart);
-					const qreal x = w1 / dw;
+					const int x1
+						= pTimeScale->pixelFromFrame(iRangeStart + iOffset);
+					x = qreal(x1 - x0) / dw;
 					painter.drawLine(QPointF(x, 0), QPointF(x, h));
 				}
 			}
@@ -318,6 +329,9 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm ( QWidget *pParent )
 	m_pClip = nullptr;
 	m_pAudioClip = nullptr;
 
+	m_iRangeStart = 0;
+	m_iRangeEnd   = 0;
+
 	m_pClipWidget = nullptr;
 
 	m_pTempoTap = new QElapsedTimer();
@@ -325,10 +339,10 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm ( QWidget *pParent )
 	m_fTempoTap = 0.0f;
 
 	m_ui.RangeStartSpinBox->setTimeScale(m_pTimeScale);
-	m_ui.RangeLengthSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.RangeEndSpinBox->setTimeScale(m_pTimeScale);
 
 	// FIXME: Set an absolute max. 30 seconds...
-	m_ui.RangeLengthSpinBox->setMaximum(30 * m_pTimeScale->sampleRate());
+	m_ui.RangeEndSpinBox->setMaximum(30 * m_pTimeScale->sampleRate());
 
 	m_ui.TempoSpinBox->setTempo(m_pTimeScale->tempo(), false);
 	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
@@ -365,10 +379,10 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm ( QWidget *pParent )
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(displayFormatChanged(int)),
 		SLOT(formatChanged(int)));
-	QObject::connect(m_ui.RangeLengthSpinBox,
+	QObject::connect(m_ui.RangeEndSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
-		SLOT(rangeLengthChanged(unsigned long)));
-	QObject::connect(m_ui.RangeLengthSpinBox,
+		SLOT(rangeEndChanged(unsigned long)));
+	QObject::connect(m_ui.RangeEndSpinBox,
 		SIGNAL(displayFormatChanged(int)),
 		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RangeBeatsSpinBox,
@@ -409,14 +423,21 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 	m_pClip = pClip;
 
 	if (m_pClip) {
-		const unsigned long	iClipStart  = m_pClip->clipStart();
-		const unsigned long	iClipLength = m_pClip->clipLength();
-		unsigned long iMaxRangeLength = m_ui.RangeLengthSpinBox->maximum();
-		if (iMaxRangeLength > iClipLength)
-			iMaxRangeLength = iClipLength;
+		const unsigned long	iClipStart = m_pClip->clipStart();
+		const unsigned long	iClipEnd = iClipStart + m_pClip->clipLength();
 		m_ui.RangeStartSpinBox->setMinimum(iClipStart);
-		m_ui.RangeStartSpinBox->setMaximum(iClipStart + iMaxRangeLength);
-		m_ui.RangeLengthSpinBox->setMaximum(iMaxRangeLength);
+		m_ui.RangeStartSpinBox->setMaximum(iClipEnd);
+		m_ui.RangeEndSpinBox->setMinimum(iClipStart);
+		m_ui.RangeEndSpinBox->setMaximum(iClipEnd);
+		if (m_pClip->isClipSelected()) {
+			m_iRangeStart = m_pClip->clipSelectStart();
+			m_iRangeEnd   = m_pClip->clipSelectEnd();
+		} else {
+			m_iRangeStart = iClipStart;
+			m_iRangeEnd   = iClipEnd;
+		}
+		m_ui.RangeStartSpinBox->setValue(m_iRangeStart, false);
+		m_ui.RangeEndSpinBox->setValue(m_iRangeEnd, false);
 	}
 
 	if (m_pClip && m_pClip->track()
@@ -430,29 +451,13 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_pClipWidget = nullptr;
 	}
 
-	if (m_pClip) {
-		m_pClipWidget = new ClipWidget(this);
-		m_pClipWidget->setMinimumHeight(80);
-		m_ui.MainBoxLayout->insertWidget(0, m_pClipWidget);
-	//	const int iTempoGroup
-	//		= m_ui.GroupBoxLayout->indexOf(m_ui.TempoGroupBox);
-		const int iRangeGroup
-			= m_ui.GroupBoxLayout->indexOf(m_ui.RangeGroupBox);
-		const int iFormatGroup
-			= m_ui.GroupBoxLayout->indexOf(m_ui.FormatGroupBox);
-	//	QLayoutItem *pTempoItem = m_ui.GroupBoxLayout->takeAt(iTempoGroup);
-	//	if (pTempoItem)
-	//		delete pTempoItem;
-		QLayoutItem *pRangeItem = m_ui.GroupBoxLayout->takeAt(iRangeGroup);
-		if (pRangeItem)
-			delete pRangeItem;
-		QLayoutItem *pFormatItem = m_ui.GroupBoxLayout->takeAt(iFormatGroup);
-		if (pFormatItem)
-			delete pFormatItem;
-	//	m_ui.GroupBoxLayout->addWidget(m_ui.TempoGroupBox, 0, 1, 1, 3);
-		m_ui.GroupBoxLayout->addWidget(m_ui.RangeGroupBox, 0, 3, 1, 2);
-		m_ui.GroupBoxLayout->addWidget(m_ui.FormatGroupBox, 0, 5, 1, 1);
-	}
+	if (m_pClip == nullptr)
+		return;
+
+	m_pClipWidget = new ClipWidget(this);
+	m_pClipWidget->setMinimumHeight(160);
+	m_ui.MainBoxSplitter->insertWidget(0, m_pClipWidget);
+	m_ui.MainBoxSplitter->setStretchFactor(0, 2);
 
 	if (m_pAudioClip) {
 		m_ui.TempoDetectPushButton->setEnabled(true);
@@ -460,6 +465,12 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_ui.TempoDetectPushButton->setEnabled(false);
 		m_ui.TempoDetectPushButton->hide();
 	}
+
+	updateRangeLength(m_iRangeEnd - m_iRangeStart);
+	updateRangeSelect();
+
+	m_iDirtyCount = 0;
+	stabilizeForm();
 }
 
 
@@ -478,6 +489,7 @@ qtractorAudioClip *qtractorTempoAdjustForm::audioClip (void) const
 void qtractorTempoAdjustForm::setRangeStart ( unsigned long iRangeStart )
 {
 	++m_iDirtySetup;
+
 	const unsigned long iMinRangeStart
 		= m_ui.RangeStartSpinBox->minimum();
 	const unsigned long iMaxRangeStart
@@ -487,8 +499,9 @@ void qtractorTempoAdjustForm::setRangeStart ( unsigned long iRangeStart )
 	else
 	if (iRangeStart > iMaxRangeStart)
 		iRangeStart = iMaxRangeStart;
-	m_ui.RangeStartSpinBox->setValue(iRangeStart, true);
+	m_ui.RangeStartSpinBox->setValue(iRangeStart, false);
 	updateRangeStart(iRangeStart);
+
 	--m_iDirtySetup;
 }
 
@@ -497,27 +510,37 @@ unsigned long qtractorTempoAdjustForm::rangeStart (void) const
 	return m_ui.RangeStartSpinBox->value();
 }
 
-void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
+
+void qtractorTempoAdjustForm::setRangeEnd ( unsigned long iRangeEnd )
 {
 	++m_iDirtySetup;
-	const unsigned long iMaxRangeLength
-		= m_ui.RangeLengthSpinBox->maximum();
-	if (iRangeLength > iMaxRangeLength)
-		iRangeLength = iMaxRangeLength;
-	m_ui.RangeLengthSpinBox->setValue(iRangeLength, true);
-	updateRangeLength(iRangeLength);
+
+	const unsigned long iMinRangeEnd
+		= m_ui.RangeEndSpinBox->minimum();
+	const unsigned long iMaxRangeEnd
+		= m_ui.RangeEndSpinBox->maximum();
+	if (iRangeEnd < iMinRangeEnd)
+		iRangeEnd = iMinRangeEnd;
+	else
+	if (iRangeEnd > iMaxRangeEnd)
+		iRangeEnd = iMaxRangeEnd;
+	m_ui.RangeEndSpinBox->setValue(iRangeEnd, false);
+	updateRangeEnd(iRangeEnd);
+
 	--m_iDirtySetup;
 }
 
-unsigned long qtractorTempoAdjustForm::rangeLength (void) const
+unsigned long qtractorTempoAdjustForm::rangeEnd (void) const
 {
-	return m_ui.RangeLengthSpinBox->value();
+	return m_ui.RangeEndSpinBox->value();
 }
 
 
-void qtractorTempoAdjustForm::setRangeBeats ( unsigned short iRangeBeats )
+void qtractorTempoAdjustForm::setRangeBeats (
+	unsigned short iRangeBeats, bool bRangeLength )
 {
 	++m_iDirtySetup;
+
 	const unsigned short iMinRangeBeats
 		= m_ui.RangeBeatsSpinBox->minimum();
 	const unsigned short iMaxRangeBeats
@@ -528,7 +551,8 @@ void qtractorTempoAdjustForm::setRangeBeats ( unsigned short iRangeBeats )
 	if (iRangeBeats > iMaxRangeBeats)
 		iRangeBeats = iMaxRangeBeats;
 	m_ui.RangeBeatsSpinBox->setValue(iRangeBeats);
-	updateRangeBeats(iRangeBeats);
+	updateRangeBeats(iRangeBeats, bRangeLength);
+
 	--m_iDirtySetup;
 }
 
@@ -576,15 +600,18 @@ void qtractorTempoAdjustForm::tempoChanged (void)
 	m_fTempoTap = 0.0f;
 
 	const float fTempo = m_ui.TempoSpinBox->tempo();
-	if (fTempo > 0.0f) {
+	if (fTempo > 0.1f) {
 		const float fBeatLength
 			= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
 		if (fBeatLength > 0.0f) {
+			const unsigned long iRangeStart
+				= m_ui.RangeStartSpinBox->value();
+			const unsigned long iRangeEnd
+				= m_ui.RangeEndSpinBox->value();
 			const float fRangeLength
-				= float(m_ui.RangeLengthSpinBox->value());
-			setRangeBeats(::lrintf(fRangeLength / fBeatLength));
+				= float(iRangeEnd - iRangeStart);
+			setRangeBeats(::lrintf(fRangeLength / fBeatLength), true);
 		}
-		m_ui.TempoResetPushButton->setEnabled(true);
 	}
 
 	changed();
@@ -616,11 +643,11 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	const unsigned short iChannels = pAudioBus->channels();
 	const unsigned int iSampleRate = m_pTimeScale->sampleRate();
 
-	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
-	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	const unsigned long iRangeStart = m_ui.RangeStartSpinBox->value();
+	const unsigned long iRangeEnd   = m_ui.RangeEndSpinBox->value();
 
 	const unsigned long iOffset = iRangeStart - m_pAudioClip->clipStart();
-	const unsigned long iLength = iRangeLength;
+	const unsigned long iLength = iRangeEnd - iRangeStart;
 
 	QProgressBar *pProgressBar = nullptr;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -678,15 +705,16 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	}
 
 	const float fTempo = fTempoSum / float(iChannels);
-	m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
-
-	if (m_pClipWidget) {
-		QList<unsigned long> beats;
-		const unsigned long iBeatLength
-			= ::lrintf(60.0f * float(iSampleRate) / fTempo);
-		for (unsigned long n = iBeatLength; n < iLength; n += iBeatLength)
-			beats.append(n);
-		m_pClipWidget->setBeats(beats);
+	if (fTempo > 0.1f) {
+		m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
+		if (m_pClipWidget) {
+			QList<unsigned long> beats;
+			const unsigned long iBeatLength
+				= ::lrintf(60.0f * float(iSampleRate) / fTempo);
+			for (unsigned long n = iBeatLength; n < iLength; n += iBeatLength)
+				beats.append(n);
+			m_pClipWidget->setBeats(beats);
+		}
 	}
 
 #endif	// CONFIG_MINIBPM
@@ -711,7 +739,11 @@ void qtractorTempoAdjustForm::tempoReset (void)
 	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), false);
 	m_ui.TempoResetPushButton->setEnabled(false);
 
-	tempoChanged();
+	m_ui.RangeStartSpinBox->setValue(m_iRangeStart, false);
+	m_ui.RangeEndSpinBox->setValue(m_iRangeEnd, false);
+
+	updateRangeLength(m_iRangeEnd - m_iRangeStart);
+	updateRangeSelect();
 
 	m_iDirtyCount = 0;
 	stabilizeForm();
@@ -729,14 +761,19 @@ void qtractorTempoAdjustForm::tempoAdjust (void)
 	if (iRangeBeats < 1)
 		return;
 
-	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
-	const unsigned long iBeatLength = iRangeLength / iRangeBeats;
+	const unsigned long iRangeStart
+		= m_ui.RangeStartSpinBox->value();
+	const unsigned long iRangeEnd
+		= m_ui.RangeEndSpinBox->value();
 
+	const float fBeatLength
+		= float(iRangeEnd - iRangeStart) / float(iRangeBeats);
 	const float fTempo
-		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
+		= 60.0f * float(m_pTimeScale->sampleRate()) / fBeatLength;
+
 	m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
 
-	changed();
+//	tempoChanged();
 }
 
 
@@ -776,6 +813,8 @@ void qtractorTempoAdjustForm::tempoTap (void)
 		m_fTempoTap = fTempoTap;
 	}
 #endif
+
+//	tempoChanged();
 }
 
 
@@ -795,16 +834,16 @@ void qtractorTempoAdjustForm::rangeStartChanged ( unsigned long iRangeStart )
 }
 
 
-void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
+void qtractorTempoAdjustForm::rangeEndChanged ( unsigned long iRangeEnd )
 {
 	if (m_iDirtySetup > 0)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::rangeLengthChanged(%lu)", iRangeLength);
+	qDebug("qtractorTempoAdjustForm::rangeEndChanged(%lu)", iRangeEnd);
 #endif
 
-	updateRangeLength(iRangeLength);
+	updateRangeEnd(iRangeEnd);
 	updateRangeSelect();
 	changed();
 }
@@ -819,7 +858,7 @@ void qtractorTempoAdjustForm::rangeBeatsChanged ( int iRangeBeats )
 	qDebug("qtractorTempoAdjustForm::rangeBeatsChanged(%d)", iRangeBeats);
 #endif
 
-	updateRangeBeats(iRangeBeats);
+	updateRangeBeats(iRangeBeats, true);
 	changed();
 }
 
@@ -838,7 +877,7 @@ void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.RangeStartSpinBox->setDisplayFormat(displayFormat);
-	m_ui.RangeLengthSpinBox->setDisplayFormat(displayFormat);
+	m_ui.RangeEndSpinBox->setDisplayFormat(displayFormat);
 
 	if (m_pTimeScale)
 		m_pTimeScale->setDisplayFormat(displayFormat);
@@ -889,7 +928,7 @@ void qtractorTempoAdjustForm::reject (void)
 			return;
 		case QMessageBox::Discard:
 			break;
-		default:    // Cancel.
+		default: // Cancel.
 			bReject = false;
 		}
 	}
@@ -899,10 +938,15 @@ void qtractorTempoAdjustForm::reject (void)
 }
 
 
-// Adjust current range start...
+// Adjust current range start/end...
 void qtractorTempoAdjustForm::updateRangeStart ( unsigned long iRangeStart )
 {
-	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
+	updateRangeLength(m_ui.RangeEndSpinBox->value() - iRangeStart);
+}
+
+void qtractorTempoAdjustForm::updateRangeEnd ( unsigned long iRangeEnd )
+{
+	updateRangeLength(iRangeEnd - m_ui.RangeStartSpinBox->value());
 }
 
 
@@ -910,7 +954,7 @@ void qtractorTempoAdjustForm::updateRangeStart ( unsigned long iRangeStart )
 void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 {
 	const int iMaxRangeBeats // Follows from max. tempo = 300bpm.
-		= int(5.0f * float(iRangeLength) / float(m_pTimeScale->sampleRate()));
+		= int(60.0f * float(iRangeLength) / float(m_pTimeScale->sampleRate()));
 	m_ui.RangeBeatsSpinBox->setMaximum(iMaxRangeBeats);
 
 	const float fTempo = m_ui.TempoSpinBox->tempo();
@@ -918,14 +962,32 @@ void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 		const float fBeatLength
 			= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
 		if (fBeatLength > 0.0f)
-			setRangeBeats(::lrintf(float(iRangeLength) / fBeatLength));
+			setRangeBeats(::lrintf(float(iRangeLength) / fBeatLength), false);
 	}
 }
 
 
 // Repaint the graphics...
-void qtractorTempoAdjustForm::updateRangeBeats ( unsigned short /*iRangeBeats*/ )
+void qtractorTempoAdjustForm::updateRangeBeats (
+	unsigned short iRangeBeats, bool bRangeLength )
 {
+	if (bRangeLength) {
+		const float fTempo = m_ui.TempoSpinBox->tempo();
+		if (fTempo > 0.0f) {
+			const float fBeatLength
+				= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
+			if (fBeatLength > 0.0f) {
+				const unsigned long iRangeStart
+					= m_ui.RangeStartSpinBox->value();
+				const unsigned long iRangeLength
+					= ::lrintf(float(iRangeBeats) * fBeatLength);
+				setRangeEnd(iRangeStart + iRangeLength);
+				updateRangeSelect();
+			}
+		}
+		m_ui.TempoResetPushButton->setEnabled(true);
+	}
+
 	if (m_pClipWidget)
 		m_pClipWidget->clearBeats();
 }
@@ -934,24 +996,22 @@ void qtractorTempoAdjustForm::updateRangeBeats ( unsigned short /*iRangeBeats*/ 
 // Adjust current selection edit/tail.
 void qtractorTempoAdjustForm::updateRangeSelect (void)
 {
-	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
-	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	const unsigned long iRangeStart = m_ui.RangeStartSpinBox->value();
+	const unsigned long iRangeEnd   = m_ui.RangeEndSpinBox->value();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		pSession->setEditHead(iRangeStart);
-		pSession->setEditTail(iRangeStart + iRangeLength);
+		pSession->setEditTail(iRangeEnd);
 	}
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		qtractorTracks *pTracks = pMainForm->tracks();
 		if (pTracks && m_pClip)  {
-			pTracks->clearSelect();
-			m_pClip->setClipSelect(iRangeStart, iRangeStart + iRangeLength);
-			pTracks->updateSelect();
+			pTracks->selectClipRange(m_pClip);
+			pMainForm->selectNotifySlot(nullptr);
 		}
-		pMainForm->selectNotifySlot(nullptr);
 	}
 
 	if (m_pClipWidget)
@@ -962,13 +1022,91 @@ void qtractorTempoAdjustForm::updateRangeSelect (void)
 // Stabilize current form state.
 void qtractorTempoAdjustForm::stabilizeForm (void)
 {
-	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
+	const unsigned long iRangeEnd    = m_ui.RangeEndSpinBox->value();
 	const unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
-	const bool bValid = (iRangeLength > 0 && iRangeBeats > 0);
+	const bool bValid = (iRangeEnd > iRangeStart && iRangeBeats > 0);
 	m_ui.AdjustPushButton->setEnabled(bValid);
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		bValid && m_iDirtyCount > 0);
 }
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleClipTempoAdjustCommand - implementation.
+//
+
+// Constructor.
+qtractorTempoAdjustCommand::qtractorTempoAdjustCommand (
+	qtractorTempoAdjustForm *pForm )
+	: qtractorCommand(QObject::tr("clip tempo"))
+{
+	// Save current clip range...
+	m_pClip = pForm->clip();
+
+	m_iRangeStart = pForm->rangeStart();
+	m_iRangeEnd   = pForm->rangeEnd();
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		// Avoid automatic time stretching option for audio clips...
+		const bool bAutoTimeStretch
+			= pSession->isAutoTimeStretch();
+		pSession->setAutoTimeStretch(false);
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pClip->clipStart());
+		m_pTimeScaleNodeCommand = new qtractorTimeScaleUpdateNodeCommand(
+			pTimeScale, pNode->frame, pForm->tempo(), 2,
+			pForm->beatsPerBar(), pForm->beatDivisor(), pNode->attached);
+		pSession->setAutoTimeStretch(bAutoTimeStretch);
+	} else {
+		m_pTimeScaleNodeCommand = nullptr;
+	}
+
+	setFlags(m_pTimeScaleNodeCommand->flags());
+}
+
+
+// Destructor.
+qtractorTempoAdjustCommand::~qtractorTempoAdjustCommand (void)
+{
+	if (m_pTimeScaleNodeCommand)
+		delete m_pTimeScaleNodeCommand;
+}
+
+
+// Tempo-adjust command methods.
+bool qtractorTempoAdjustCommand::redo (void)
+{
+	if (m_pTimeScaleNodeCommand == nullptr)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return false;
+
+	// Save clip range...
+	unsigned long iClipStartTime = m_pClip->clipStartTime();
+	unsigned long iClipStart = pSession->frameFromTick(iClipStartTime);
+	const unsigned long iRangeStart = m_iRangeStart - iClipStart;
+	const unsigned long iRangeEnd   = m_iRangeEnd - iClipStart;
+
+	// Do it!,,,
+	const bool bRedo = m_pTimeScaleNodeCommand->redo();
+
+	// Restore clip range...
+	iClipStart = pSession->frameFromTick(iClipStartTime);
+	m_iRangeStart = iClipStart + iRangeStart;
+	m_iRangeEnd   = iClipStart + iRangeEnd;
+
+	pSession->setEditHead(m_iRangeStart);
+	pSession->setEditTail(m_iRangeEnd);
+
+	return bRedo;
+}
+
+bool qtractorTempoAdjustCommand::undo (void) { return redo(); }
 
 
 // end of qtractorTempoAdjustForm.cpp

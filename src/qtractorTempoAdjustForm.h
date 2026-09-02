@@ -55,10 +55,10 @@ public:
 	void setRangeStart(unsigned long iRangeStart);
 	unsigned long rangeStart() const;
 
-	void setRangeLength(unsigned long iRangeLength);
-	unsigned long rangeLength() const;
+	void setRangeEnd(unsigned long iRangeEnd);
+	unsigned long rangeEnd() const;
 
-	void setRangeBeats(unsigned short iRangeBeats);
+	void setRangeBeats(unsigned short iRangeBeats, bool bRangeEnd);
 	unsigned short rangeBeats() const;
 	
 	// Accepted results accessors.
@@ -78,7 +78,7 @@ protected slots:
 	void tempoTap();
 
 	void rangeStartChanged(unsigned long);
-	void rangeLengthChanged(unsigned long);
+	void rangeEndChanged(unsigned long);
 	void rangeBeatsChanged(int);
 	void formatChanged(int);
 	void changed();
@@ -89,8 +89,9 @@ protected slots:
 protected:
 
 	void updateRangeStart(unsigned long iRangeStart);
+	void updateRangeEnd(unsigned long iRangeEnd);
 	void updateRangeLength(unsigned long iRangeLength);
-	void updateRangeBeats(unsigned short iRangeBeats);
+	void updateRangeBeats(unsigned short iRangeBeats, bool bRangeLength);
 	void updateRangeSelect();
 
 	void stabilizeForm();
@@ -106,6 +107,9 @@ private:
 	qtractorClip      *m_pClip;
 	qtractorAudioClip *m_pAudioClip;
 
+	unsigned long m_iRangeStart;
+	unsigned long m_iRangeEnd;
+
 	class ClipWidget;
 
 	ClipWidget *m_pClipWidget;
@@ -116,6 +120,37 @@ private:
 
 	int m_iDirtySetup;
 	int m_iDirtyCount;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleClipTempoAdjustCommand - declaration.
+//
+#include "qtractorTimeScaleCommand.h"
+
+class qtractorTempoAdjustCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorTempoAdjustCommand(qtractorTempoAdjustForm *pForm);
+
+	// Destructor.
+	virtual ~qtractorTempoAdjustCommand();
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorClip *m_pClip;
+
+	unsigned long m_iRangeStart;
+	unsigned long m_iRangeEnd;
+
+	qtractorTimeScaleUpdateNodeCommand *m_pTimeScaleNodeCommand;
 };
 
 
