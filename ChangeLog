@@ -4,24 +4,23 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.6.3  2026-09-02  A Late-Summer'26 Release.
 
 - Fix incorrect audio clip offset after tempo change and Automatic
-  time-stretching is in effect. (EXPERIMENTAL)
+  time-stretching is in effect.
 
 - VST3 Plug-ins: make sure initialization and setup are done in
   correct order; add IDataExchangeHandler and refactor IRunLoop
   interfaces as singleton instances; connect processor/controller
-  via ConnectionProxy wrappers. (EXPERIMENTAL)
+  via ConnectionProxy wrappers.
 
 - Updated to VST3 SDK v3.8.1.build.84
 
 - Possible fix to incorrect audio clips offsets when undo/redoing
-  tempo changes (EXPERIMENTAL)
+  tempo changes.
 
 - Plugin latency/delay compensation is now opted in to audio buses
   (cf. View/Buses... /Input, Output Plugins/Latency compensation).
-  (HIGHLY EXPERIMENTAL)
   
 - Plugins are now added/inserted *after* the current selected one
   and appended to the list if none is actually selected as before.
@@ -32,13 +31,13 @@ GIT HEAD
 - Updated to CLAP v1.2.10
 
 - Fixed audio clip waveform display sudden cutoff, under certain
-  circumstances, while recording is engaged. (EXPERIMENTAL)
+  circumstances, while recording is engaged.
 
 - LV2 plug-in Patch parameters/properties of the Path type, may
-  now filter on given supported file-types. (EXPERIMENTAL)
+  now filter on given supported file-types.
 
 - Almost complete rewrite to LV2 Plug-in Worker/Schedule extension
-  regarding multi-instance operation. (EXPERIMENTAL)
+  regarding multi-instance operation.
 
 - Mitigate an annoyance when drag-and-dropping items across plugin
   list-views/boxes that are shorter enough in height to overlap
