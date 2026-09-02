@@ -109,6 +109,8 @@ public:
 	void selectClipRect(const QRect& rectDrag,
 		SelectMode selectMode, int flags, SelectEdit selectEdit = EditNone);
 
+	// Select one clip on current edit-range.
+	void selectClipRange(qtractorClip *pClip, bool bReset = true);
 	// Select every clip of a given track-range.
 	void selectClipTrackRange(qtractorTrack *pTrackPtr, bool bReset = true);
 	// Select every clip of a given track.

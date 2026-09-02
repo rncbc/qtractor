@@ -1862,68 +1862,24 @@ bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 // Adjust current tempo from clip selection or interactive tapping...
 bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 {
+	if (pClip == nullptr)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == nullptr)
+		return false;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return false;
 
-	unsigned long iRangeStart  = pSession->editHead();
-	unsigned long iRangeLength = pSession->editTail() - iRangeStart;
-
-	if (pClip == nullptr)
-		pClip = m_pTrackView->currentClip();
-	if (pClip) {
-		if (pClip->isClipSelected()) {
-			iRangeStart  = pClip->clipSelectStart();
-			iRangeLength = pClip->clipSelectEnd() - iRangeStart;
-		} else {
-			iRangeStart  = pClip->clipStart();
-			iRangeLength = pClip->clipLength();
-		}
-	}
-
 	qtractorTempoAdjustForm form(this);
 	form.setClip(pClip);
-	form.setRangeStart(iRangeStart);
-	form.setRangeLength(iRangeLength);
 	if (!form.exec())
 		return false;
 
-	// Avoid automatic time stretching option for audio clips...
-	const bool bAutoTimeStretch = pSession->isAutoTimeStretch();
-	pSession->setAutoTimeStretch(false);
-
-	iRangeStart  = form.rangeStart();
-	iRangeLength = form.rangeLength();
-
-	// Find appropriate node...
-	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iRangeStart);
-
 	// Now, express the change as a undoable command...
-	pSession->execute(
-		new qtractorTimeScaleUpdateNodeCommand(pTimeScale, pNode->frame,
-			form.tempo(), 2, form.beatsPerBar(), form.beatDivisor()));
-
-	// Done.
-	pSession->setAutoTimeStretch(bAutoTimeStretch);
-
-	if (pClip) {
-		if (pClip->isClipSelected()) {
-			iRangeStart  = pClip->clipSelectStart();
-			iRangeLength = pClip->clipSelectEnd() - iRangeStart;
-		} else {
-			iRangeStart  = pClip->clipStart();
-			iRangeLength = pClip->clipLength();
-		}
-	}
-
-	pSession->setEditHead(iRangeStart);
-	pSession->setEditTail(iRangeStart + iRangeLength);
-
-	selectionChangeNotify();
-	return true;
+	return pSession->execute(new qtractorTempoAdjustCommand(&form));
 }
+
 
 // Auto-crossfade a give clip.
 bool qtractorTracks::crossFadeClip ( qtractorClip *pClip )
@@ -2124,7 +2080,15 @@ void qtractorTracks::splitSelect (void)
 }
 
 
-// Select range interval between edit head and tail.
+// Select range interval between edit head and tail. (single clip)
+void qtractorTracks::selectClipRange ( qtractorClip *pClip, bool bReset )
+{
+	if (!m_pTrackView->isCurveEdit())
+		m_pTrackView->selectClipRange(pClip, bReset);
+}
+
+
+// Select range interval between edit head and tail. (all tracks)
 void qtractorTracks::selectEditRange ( bool bReset )
 {
 	if (m_pTrackView->isCurveEdit())
