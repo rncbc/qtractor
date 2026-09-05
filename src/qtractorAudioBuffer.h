@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -64,7 +64,7 @@ public:
 	void sync(qtractorAudioBuffer *pAudioBuffer = nullptr);
 
 	// Bypass executive wait condition (non RT-safe).
-	void syncExport();
+	void syncExport(qtractorAudioBuffer *pAudioBuffer = nullptr);
 
 	// Conditional resize check.
 	void checkSyncSize(unsigned int iSyncSize);
@@ -195,8 +195,9 @@ public:
 	// Audio frame process synchronization predicate method.
 	bool inSync(unsigned long iFrameStart, unsigned long iFrameEnd);
 
-	// Export-mode sync executive.
+	// Export-mode sync executives.
 	void syncExport();
+	void syncExportEx();
 
 	// Internal peak descriptor accessors.
 	void setPeakFile(qtractorAudioPeakFile *pPeakFile);

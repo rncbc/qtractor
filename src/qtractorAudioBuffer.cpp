@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -122,11 +122,13 @@ void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 
 
 // Bypass executive wait condition (non RT-safe).
-void qtractorAudioBufferThread::syncExport (void)
+void qtractorAudioBufferThread::syncExport ( qtractorAudioBuffer *pAudioBuffer )
 {
 	QMutexLocker locker(&m_mutex);
 
 	process();
+
+	if (pAudioBuffer) sync(pAudioBuffer);
 }
 
 
@@ -1046,13 +1048,17 @@ bool qtractorAudioBuffer::inSync (
 }
 
 
-// Export-mode sync executive.
+// Export-mode sync executives.
 void qtractorAudioBuffer::syncExport (void)
 {
-	if (m_pSyncThread) {
+	if (m_pSyncThread)
 		m_pSyncThread->syncExport();
-		m_pSyncThread->sync(this);
-	}
+}
+
+void qtractorAudioBuffer::syncExportEx (void)
+{
+	if (m_pSyncThread)
+		m_pSyncThread->syncExport(this);
 }
 
 
