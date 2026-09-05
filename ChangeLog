@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a relatively recent crash-bug introduced to Clip/Merge...
+  as a undesired side-effect from fixing that older bug on Clip/
+  /Normalize (as of late v1.6.1) (EXPERIMENTAL)
+  
+
 1.6.3  2026-09-02  A Late-Summer'26 Release.
 
 - Fix incorrect audio clip offset after tempo change and Automatic
