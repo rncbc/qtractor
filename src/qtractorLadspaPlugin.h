@@ -62,7 +62,7 @@ public:
 	const LADSPA_Descriptor *ladspa_descriptor() const
 		{ return m_pLadspaDescriptor; }
 
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 
 protected:

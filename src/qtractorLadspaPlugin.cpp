@@ -133,13 +133,11 @@ const LADSPA_Descriptor *qtractorLadspaPluginType::ladspa_descriptor (
 }
 
 
-// Instance cached-deferred accesors.
+// Instance cached-deferred accessors.
 const QString& qtractorLadspaPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty() && m_pLadspaDescriptor) {
 		if (m_pLadspaDescriptor->Maker) {
-			if (!m_sAboutText.isEmpty())
-				m_sAboutText += '\n';
 			m_sAboutText += QObject::tr("Author: ");
 			m_sAboutText += m_pLadspaDescriptor->Maker;
 		}

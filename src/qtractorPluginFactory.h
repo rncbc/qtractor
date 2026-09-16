@@ -44,7 +44,7 @@ public:
 	// Destructor.
 	~qtractorPluginFactory();
 
-	// Plugin files/paths resgistry.
+	// Plugin files/paths registry.
 	typedef QHash<qtractorPluginType::Hint, QStringList> Paths;
 
 	// Plugin type hint accessors.

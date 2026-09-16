@@ -33,7 +33,7 @@ class qtractorCtlEvent
 {
 public:
 
-	// Contructor.
+	// Constructor.
 	qtractorCtlEvent(qtractorMidiEvent::EventType ctype
 		= qtractorMidiEvent::CONTROLLER, unsigned short iChannel = 0,
 		unsigned short iParam = 0, unsigned short iValue = 0)

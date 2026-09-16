@@ -70,7 +70,7 @@ public:
 	// Read next event from buffer.
 	snd_seq_event_t *next()
 	{
-		if (!isEmpty())	++m_iReadIndex &= m_iBufferMask;
+		if (!isEmpty())	m_iReadIndex = (m_iReadIndex + 1) & m_iBufferMask;
 		return peek();
 	}
 
@@ -105,7 +105,7 @@ public:
 		unsigned int i = m_iWriteIndex;
 		unsigned int j = i;
 		for (;;) {
-			--i &= m_iBufferMask;
+			i = (i - 1) & m_iBufferMask;
 			if (j == m_iReadIndex
 				|| iTick >= m_pBuffer[i].time.tick) {
 				m_pBuffer[j] = *pEvent;
@@ -145,7 +145,7 @@ public:
 		unsigned int i = m_iReadIndex;
 		while (i != m_iWriteIndex) {
 			m_pBuffer[i].time.tick = iTick;
-			++i &= m_iBufferMask;
+			i = (i + 1) & m_iBufferMask;
 		}
 	}
 

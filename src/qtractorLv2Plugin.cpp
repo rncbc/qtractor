@@ -2190,7 +2190,7 @@ bool qtractorLv2PluginType::lv2_ui_show_interface ( LilvUI *ui ) const
 #endif	// CONFIG_LV2_UI_SHOW
 
 
-// Instance cached-deferred accesors.
+// Instance cached-deferred accessors.
 const QString& qtractorLv2PluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty() && m_lv2_plugin) {

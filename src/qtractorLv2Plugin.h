@@ -228,7 +228,7 @@ public:
 	bool lv2_ui_show_interface(LilvUI *ui) const;
 #endif
 
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 
 protected:

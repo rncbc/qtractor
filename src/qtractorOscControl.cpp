@@ -564,7 +564,7 @@ void qtractorOscClient::sendData ( const QString& path, const QVariant& v )
 qtractorOscControl* qtractorOscControl::g_pOscControl = nullptr;
 
 
-// Contructor.
+// Constructor.
 qtractorOscControl::qtractorOscControl ( unsigned short port )
 {
 	m_pOscServer = new qtractorOscServer(

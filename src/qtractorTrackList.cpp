@@ -1074,7 +1074,7 @@ void qtractorTrackList::resetHeaderSize ( int iCol )
 // Update header extents.
 void qtractorTrackList::updateHeader (void)
 {
-	// Find out wich is the largest header width
+	// Find out which is the largest header width
 	// and enforce to let it know it like so...
 	const int iColCount = m_pHeader->count() - 1;
 	int iContentsWidth = (qtractorScrollView::viewport()->width() >> 1);

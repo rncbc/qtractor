@@ -119,7 +119,7 @@ void *qtractorPluginFile::resolve ( const char *symbol )
 }
 
 
-// Plugin file resgistry methods.
+// Plugin file registry methods.
 qtractorPluginFile::Files qtractorPluginFile::g_files;
 
 qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
