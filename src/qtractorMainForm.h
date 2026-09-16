@@ -36,6 +36,7 @@ class qtractorMessageList;
 class qtractorFileSystem;
 class qtractorFiles;
 class qtractorMessages;
+class qtractorSessionList;
 class qtractorConnections;
 class qtractorMixer;
 class qtractorMmcEvent;
@@ -96,6 +97,7 @@ public:
 	qtractorConnections *connections() const;
 	qtractorMixer *mixer() const;
 	qtractorThumbView *thumbView() const;
+	qtractorSessionList *sessionList() const;
 
 	QString sessionName(const QString& sFilename) const;
 	QString untitledName(void) const;
@@ -254,6 +256,7 @@ public slots:
 	void viewToolbarTime(bool bOn);
 	void viewToolbarThumb(bool bOn);
 	void viewToolbarLocked(bool bOn);
+	void viewSessionList(bool bOn);
 	void viewFileSystem(bool bOn);
 	void viewFiles(bool bOn);
 	void viewMessages(bool bOn);
@@ -480,6 +483,7 @@ private:
 	// Instance variables...
 	qtractorOptions *m_pOptions;
 	qtractorSession *m_pSession;
+	qtractorSessionList *m_pSessionList;
 	qtractorFileSystem *m_pFileSystem;
 	qtractorFiles *m_pFiles;
 	qtractorMessages *m_pMessages;
