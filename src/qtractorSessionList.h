@@ -27,6 +27,11 @@
 #include <QTreeView>
 
 
+// Forward decls.
+class qtractorTrack;
+class qtractorClip;
+
+
 //----------------------------------------------------------------------------
 // qtractorSessionListModel -- Session hierarchy item model.
 
@@ -104,12 +109,10 @@ private:
 
 class qtractorSessionListView : public QTreeView
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
-	explicit qtractorSessionListView(QWidget *pParent = nullptr);
+	qtractorSessionListView(QWidget *pParent = nullptr);
 
 	// Destructor.
 	~qtractorSessionListView();
@@ -119,11 +122,6 @@ public:
 
 	// Clear the underlying model.
 	void clear();
-
-protected slots:
-
-	// Navigate to track on double-click.
-	void activatedSlot(const QModelIndex& index);
 
 private:
 
@@ -152,10 +150,22 @@ public:
 	// Clear all contents.
 	void clear();
 
+	// Track/Clip item selection.
+	void selectTrack(qtractorTrack *pTrack);
+	void selectClip(qtractorClip *pClip);
+
+	// State saver/loader.
+	QByteArray saveState() const;
+	bool restoreState(const QByteArray& state);
+
 public slots:
 
 	// Refresh on demand (e.g. after session load/clear).
 	void refreshSlot();
+
+protected slots:
+
+	void currentRowChangedSlot(const QModelIndex&, const QModelIndex&);
 
 protected:
 

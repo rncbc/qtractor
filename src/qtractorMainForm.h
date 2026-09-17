@@ -33,10 +33,10 @@ class qtractorSyncEvent;
 class qtractorTracks;
 class qtractorThumbView;
 class qtractorMessageList;
+class qtractorSessionList;
 class qtractorFileSystem;
 class qtractorFiles;
 class qtractorMessages;
-class qtractorSessionList;
 class qtractorConnections;
 class qtractorMixer;
 class qtractorMmcEvent;
@@ -45,6 +45,8 @@ class qtractorMidiControl;
 class qtractorTimeSpinBox;
 class qtractorTempoSpinBox;
 class qtractorTempoCursor;
+class qtractorTrack;
+class qtractorClip;
 
 class qtractorInstrumentMenu;
 
@@ -134,6 +136,13 @@ public:
 
 	void addAudioFile(const QString& sFilename);
 	void addMidiFile(const QString& sFilename);
+
+	void selectClipFile(qtractorClip *pClip);
+	void selectClipOnSessionList(qtractorClip *pClip);
+	void selectClipOnTrackView(qtractorClip *pClip);
+
+	void selectTrackOnSessionList(qtractorTrack *pTrack);
+	void selectTrackOnTrackList(qtractorTrack *pTrack);
 
 	static QString styleSheet(const QString& sFilename);
 

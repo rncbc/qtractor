@@ -73,6 +73,8 @@
 
 #include "qtractorTakeRangeForm.h"
 
+#include "qtractorAudioClip.h"
+
 #include "qtractorMidiClip.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
@@ -248,8 +250,8 @@ qtractorMainForm::qtractorMainForm (
 	m_pInstrumentMenu = new qtractorInstrumentMenu(this);
 
 	// All child forms are to be created later, not earlier than setup.
-	m_pSessionList = nullptr;
 	m_pMessages    = nullptr;
+	m_pSessionList = nullptr;
 	m_pFileSystem  = nullptr;
 	m_pFiles       = nullptr;
 	m_pMixer       = nullptr;
@@ -749,6 +751,7 @@ qtractorMainForm::qtractorMainForm (
 	while (iter.hasNext())
 		iter.next()->setShortcutContext(Qt::ApplicationShortcut);
 #else
+	m_ui.viewSessionListAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewFileSystemAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewFilesAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewConnectionsAction->setShortcutContext(Qt::ApplicationShortcut);
@@ -1302,10 +1305,10 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pFiles;
 	if (m_pFileSystem)
 		delete m_pFileSystem;
-	if (m_pMessages)
-		delete m_pMessages;
 	if (m_pSessionList)
 		delete m_pSessionList;
+	if (m_pMessages)
+		delete m_pMessages;
 	if (m_pTracks)
 		delete m_pTracks;
 
@@ -1510,6 +1513,19 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	} else {
 		// Make it as the last time.
 		restoreState(aDockables);
+	}
+
+	// Restore session-list dock-window state.
+	if (m_pSessionList) {
+		const QByteArray aSessionList
+			= m_pOptions->settings().value("/SessionList/State").toByteArray();
+		if (aSessionList.isEmpty()) {
+			// Should be hidden first time...
+			viewSessionList(false);
+		} else {
+			// Make it as the last time visible.
+			m_pSessionList->restoreState(aSessionList);
+		}
 	}
 
 	// Restore file-system dock-window state.
@@ -1875,6 +1891,11 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->iBeatDivisor = m_pTempoSpinBox->beatDivisor();
 			// Save MIDI control non catch-up/hook global option...
 			m_pOptions->bMidiControlSync = qtractorMidiControl::isSync();
+			// Save the session-list dock-window state...
+			if (m_pSessionList && m_pSessionList->isVisible()) {
+				m_pOptions->settings().setValue(
+					"/SessionList/State", m_pSessionList->saveState());
+			}
 			// Save the file-system dock-window state...
 			if (m_pFileSystem && m_pFileSystem->isVisible()) {
 				m_pOptions->settings().setValue(
@@ -9460,6 +9481,75 @@ void qtractorMainForm::activateMidiFile (
 }
 
 
+// Clip selection helper funtions.
+void qtractorMainForm::selectClipFile ( qtractorClip *pClip )
+{
+	if (pClip == nullptr)
+		return;
+
+	// Do the file view selection then...
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == nullptr)
+		return;
+
+	if (m_pFiles == nullptr)
+		return;
+
+	if (!m_pFiles->isVisible())
+		return;
+
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		if (pAudioClip)
+			m_pFiles->selectAudioFile(pAudioClip->filename());
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip) {
+			m_pFiles->selectMidiFile(
+				pMidiClip->filename(), pMidiClip->trackChannel());
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+
+void qtractorMainForm::selectClipOnSessionList ( qtractorClip *pClip )
+{
+	if (m_pSessionList && m_pSessionList->isVisible())
+		m_pSessionList->selectClip(pClip);
+}
+
+
+void qtractorMainForm::selectClipOnTrackView ( qtractorClip *pClip )
+{
+  if (m_pTracks && m_pTracks->isVisible())
+	  m_pTracks->trackView()->selectClip(pClip);
+}
+
+
+// Track selection helper funtion.
+void qtractorMainForm::selectTrackOnTrackList ( qtractorTrack *pTrack )
+{
+	if (m_pTracks && m_pTracks->trackList())
+		m_pTracks->trackList()->setCurrentTrack(pTrack);
+}
+
+
+void qtractorMainForm::selectTrackOnSessionList ( qtractorTrack *pTrack )
+{
+	if (m_pSessionList && m_pSessionList->isVisible())
+		m_pSessionList->selectTrack(pTrack);
+}
+
+
 // Generic file activation slot funtion.
 void qtractorMainForm::activateFile ( const QString& sFilename )
 {
@@ -9509,6 +9599,8 @@ void qtractorMainForm::trackSelectionChanged (void)
 		// HACK: Set current session track for monitoring purposes...
 		if (m_ui.trackAutoMonitorAction->isChecked())
 			m_pSession->setCurrentTrack(pTrack);
+		// New kid in town?...
+		selectTrackOnSessionList(pTrack);
 	}
 
 	++m_iStabilizeTimer;
@@ -9529,6 +9621,8 @@ void qtractorMainForm::mixerSelectionChanged (void)
 		if (pStrip)
 			pTrack = pStrip->track();
 		m_pTracks->trackList()->setCurrentTrack(pTrack);
+		// New kid in town?...
+		selectTrackOnSessionList(pTrack);
 	}
 
 	++m_iStabilizeTimer;
