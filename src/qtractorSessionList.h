@@ -30,6 +30,7 @@
 // Forward decls.
 class qtractorTrack;
 class qtractorClip;
+class qtractorBus;
 
 
 //----------------------------------------------------------------------------
@@ -43,15 +44,12 @@ public:
 
 	// Item type tags (stored via Qt::UserRole on column 0).
 	enum ItemType {
-		ItemTracksGroup = 1,
-		ItemInputBusesGroup,
-		ItemOutputBusesGroup,
+		ItemInputs = 1,
+		ItemOutputs,
+		ItemTracks,
 		ItemTrack,
-		ItemBus,
-		ItemPluginsGroup,
-		ItemPlugin,
-		ItemClipsGroup,
-		ItemClip
+		ItemClip,
+		ItemBus
 	};
 
 	// Constructor.
@@ -84,6 +82,18 @@ public:
 
 	Qt::ItemFlags flags(const QModelIndex& index) const override;
 
+	// Helper locators.
+	QModelIndex indexOfGroup(ItemType itype) const;
+
+	qtractorTrack *trackOfIndex(const QModelIndex& index) const;
+	QModelIndex indexOfTrack(qtractorTrack *pTrack) const;
+
+	qtractorClip *clipOfIndex(const QModelIndex& index) const;
+	QModelIndex indexOfClip(qtractorClip *pClip) const;
+
+	qtractorBus *busOfIndex(const QModelIndex& index) const;
+	QModelIndex indexOfBus(qtractorBus *pBus, int busMode) const;
+
 private:
 
 	// Forward declaration of the internal node type.
@@ -91,8 +101,6 @@ private:
 
 	// Build helpers.
 	void buildTree();
-	Node *buildPluginsNode(Node *pParent,
-		struct qtractorPluginList *pPluginList);
 	Node *buildTrackNode(Node *pParent,
 		struct qtractorTrack *pTrack);
 	Node *buildBusNode(Node *pParent,

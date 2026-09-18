@@ -25,7 +25,6 @@
 #include "qtractorSession.h"
 #include "qtractorTrack.h"
 #include "qtractorClip.h"
-#include "qtractorPlugin.h"
 
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
@@ -122,41 +121,6 @@ void qtractorSessionListModel::refresh (void)
 
 // Build helpers.
 //
-// Append a Plugins group node under pParent for pPluginList.
-qtractorSessionListModel::Node *qtractorSessionListModel::buildPluginsNode (
-	Node *pParent, qtractorPluginList *pPluginList )
-{
-	if (pPluginList == nullptr || pPluginList->count() < 1)
-		return nullptr;
-
-	const int nPlugins = pPluginList->count();
-	Node *pGroup = new Node(pParent, ItemPluginsGroup,
-		tr("Plugins"), QString("[%1]").arg(nPlugins));
-	pParent->children.append(pGroup);
-
-	for (qtractorPlugin *pPlugin = pPluginList->first();
-			pPlugin; pPlugin = pPlugin->next()) {
-		const QString sTitle = pPlugin->title();
-		QString sDetail;
-		const qtractorPluginType *pType = pPlugin->type();
-		if (pType) {
-			const QString& sHint
-				= qtractorPluginType::textFromHint(pType->typeHint());
-			sDetail = sHint.isEmpty()
-				? pType->name()
-				: QString("%1 (%2)").arg(pType->name(), sHint);
-		}
-		Node *pNode = new Node(pGroup, ItemPlugin,
-			sTitle, sDetail,
-			static_cast<void *> (pPlugin),
-			QIcon::fromTheme("pluginEdit"));
-		pGroup->children.append(pNode);
-	}
-
-	return pGroup;
-}
-
-
 // Append a Track node (with Clips + Plugins children) under pParent.
 qtractorSessionListModel::Node *qtractorSessionListModel::buildTrackNode (
 	Node *pParent, qtractorTrack *pTrack )
@@ -198,25 +162,16 @@ qtractorSessionListModel::Node *qtractorSessionListModel::buildTrackNode (
 		static_cast<void *> (pTrack), trackIcon);
 	pParent->children.append(pTrackNode);
 
-	// Clips child group.
-	const int nClips = pTrack->clips().count();
-	if (nClips > 0) {
-		Node *pClipsGroup = new Node(pTrackNode, ItemClipsGroup,
-			tr("Clips"), QString("[%1]").arg(nClips));
-		pTrackNode->children.append(pClipsGroup);
-		for (qtractorClip *pClip = pTrack->clips().first();
-				pClip; pClip = pClip->next()) {
-			const QString sName = pClip->clipName();
-			Node *pClipNode = new Node(pClipsGroup, ItemClip,
-				sName.isEmpty() ? tr("(unnamed)") : sName,
-				QFileInfo(pClip->filename()).fileName(),
-				static_cast<void *> (pClip), clipIcon);
-			pClipsGroup->children.append(pClipNode);
-		}
+	// Clips children group.
+	for (qtractorClip *pClip = pTrack->clips().first();
+			pClip; pClip = pClip->next()) {
+		const QString& sName = pClip->clipName();
+		Node *pClipNode = new Node(pTrackNode, ItemClip,
+			sName.isEmpty() ? tr("(unnamed)") : sName,
+			QFileInfo(pClip->filename()).fileName(),
+			static_cast<void *> (pClip), clipIcon);
+		pTrackNode->children.append(pClipNode);
 	}
-
-	// Plugins child group.
-	buildPluginsNode(pTrackNode, pTrack->pluginList());
 
 	return pTrackNode;
 }
@@ -227,35 +182,53 @@ qtractorSessionListModel::Node *qtractorSessionListModel::buildTrackNode (
 qtractorSessionListModel::Node *qtractorSessionListModel::buildBusNode (
 	Node *pParent, qtractorBus *pBus, int busMode )
 {
+	QIcon busIcon;
 	QString sDetail;
+	unsigned short iChannels = 0;
+	switch (pBus->busType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus) {
+			busIcon = QIcon::fromTheme("trackAudio");
+			sDetail += tr("Audio");
+			iChannels = pAudioBus->channels();
+		}
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus) {
+			busIcon = QIcon::fromTheme("trackMidi");
+			sDetail += tr("MIDI");
+			iChannels = 16;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	sDetail += ' ';
+
 	if (busMode == (int)qtractorBus::Input
 		&& (pBus->busMode() & qtractorBus::Input))
-		sDetail = tr("Input");
+		sDetail += tr("Input");
 	else
 	if (busMode == (int)qtractorBus::Output
 		&& (pBus->busMode() & qtractorBus::Output))
-		sDetail = tr("Output");
+		sDetail += tr("Output");
 	else
-		sDetail = tr("Duplex");
+		sDetail += tr("Duplex");
 	sDetail += ' ';
 	sDetail += tr("bus");
-
-	const QIcon busIcon = QIcon::fromTheme(
-		pBus->busType() == qtractorTrack::Audio
-			? "trackAudio" : "trackMidi");
+	sDetail += ' ';
+	sDetail += tr("(%1 ch)").arg(iChannels);
 
 	Node *pBusNode = new Node(pParent, ItemBus,
 		pBus->busName(), sDetail,
 		static_cast<void *> (pBus), busIcon);
 	pParent->children.append(pBusNode);
-
-	if (busMode == (int)qtractorBus::Input
-		&& (pBus->busMode() & qtractorBus::Input))
-		buildPluginsNode(pBusNode, pBus->pluginList_in());
-	else
-	if (busMode == (int)qtractorBus::Output
-		&& (pBus->busMode() & qtractorBus::Output))
-		buildPluginsNode(pBusNode, pBus->pluginList_out());
 
 	return pBusNode;
 }
@@ -264,11 +237,10 @@ qtractorSessionListModel::Node *qtractorSessionListModel::buildBusNode (
 // Build the complete node tree.
 void qtractorSessionListModel::buildTree (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-
 	// m_pRoot is the invisible sentinel; top-level groups are its children.
 	m_pRoot = new Node(nullptr, 0, QString(), QString());
 
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
 
@@ -276,12 +248,15 @@ void qtractorSessionListModel::buildTree (void)
 	// A duplex bus appears in both Input and Output groups.
 	QList<qtractorBus *> inputBuses, outputBuses;
 	auto collectBuses = [&](qtractorEngine *pEngine) {
-		if (!pEngine) return;
+		if (pEngine == nullptr)
+			return;
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
-			const qtractorBus::BusMode m = pBus->busMode();
-			if (m & qtractorBus::Input)  inputBuses.append(pBus);
-			if (m & qtractorBus::Output) outputBuses.append(pBus);
+			const qtractorBus::BusMode busMode = pBus->busMode();
+			if (busMode & qtractorBus::Input)
+				inputBuses.append(pBus);
+			if (busMode & qtractorBus::Output)
+				outputBuses.append(pBus);
 		}
 	};
 	collectBuses(pSession->audioEngine());
@@ -289,30 +264,29 @@ void qtractorSessionListModel::buildTree (void)
 
 	// 1. Inputs.
 	if (!inputBuses.isEmpty()) {
-		Node *pInputBusesGroup = new Node(m_pRoot, ItemInputBusesGroup,
+		Node *pInputsNode = new Node(m_pRoot, ItemInputs,
 			tr("Inputs"), QString("[%1]").arg(inputBuses.count()));
-		m_pRoot->children.append(pInputBusesGroup);
+		m_pRoot->children.append(pInputsNode);
 		for (qtractorBus *pBus : inputBuses)
-			buildBusNode(pInputBusesGroup, pBus, qtractorBus::Input);
+			buildBusNode(pInputsNode, pBus, qtractorBus::Input);
 	}
 
 	// 2. Tracks.
 	const int nTracks = pSession->tracks().count();
-	Node *pTracksGroup = new Node(m_pRoot, ItemTracksGroup,
+	Node *pTracksNode = new Node(m_pRoot, ItemTracks,
 		tr("Tracks"), QString("[%1]").arg(nTracks));
-	m_pRoot->children.append(pTracksGroup);
-
+	m_pRoot->children.append(pTracksNode);
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next())
-		buildTrackNode(pTracksGroup, pTrack);
+		buildTrackNode(pTracksNode, pTrack);
 
 	// 3. Outputs.
 	if (!outputBuses.isEmpty()) {
-		Node *pOutputBusesGroup = new Node(m_pRoot, ItemOutputBusesGroup,
+		Node *pOutputsNode = new Node(m_pRoot, ItemOutputs,
 			tr("Outputs"), QString("[%1]").arg(outputBuses.count()));
-		m_pRoot->children.append(pOutputBusesGroup);
+		m_pRoot->children.append(pOutputsNode);
 		for (qtractorBus *pBus : outputBuses)
-			buildBusNode(pOutputBusesGroup, pBus, qtractorBus::Output);
+			buildBusNode(pOutputsNode, pBus, qtractorBus::Output);
 	}
 }
 
@@ -442,6 +416,159 @@ Qt::ItemFlags qtractorSessionListModel::flags ( const QModelIndex& index ) const
 	}
 
 	return ret;
+}
+
+
+// Helper locators.
+//
+QModelIndex qtractorSessionListModel::indexOfGroup ( ItemType groupType ) const
+{
+	// Iterate top-level groups to find the ItemTracks...
+	const int iGroupCount = rowCount();
+	for (int iGroup = 0; iGroup < iGroupCount; ++iGroup) {
+		const QModelIndex& groupIdx = index(iGroup, 0);
+		if (data(groupIdx, Qt::UserRole).toInt() == int(groupType))
+			return groupIdx;
+	}
+
+	return QModelIndex();
+}
+
+
+qtractorTrack *qtractorSessionListModel::trackOfIndex (
+	const QModelIndex& index ) const
+{
+	const QModelIndex& col0 = index.sibling(index.row(), 0);
+	if (data(col0, Qt::UserRole).toInt() != ItemTrack)
+		return nullptr;
+
+	const QModelIndex& col1 = index.sibling(index.row(), 1);
+	return static_cast<qtractorTrack *> (
+		data(col1, Qt::UserRole).value<void *> ());
+}
+
+
+QModelIndex qtractorSessionListModel::indexOfTrack (
+	qtractorTrack *pTrack ) const
+{
+	if (pTrack == nullptr)
+		return QModelIndex();
+
+	const QModelIndex& groupIdx = indexOfGroup(ItemTracks);
+	if (groupIdx.isValid()) {
+		// Walk the groups children...
+		const int iTrackCount = rowCount(groupIdx);
+		for (int iTrack = 0; iTrack < iTrackCount; ++iTrack) {
+			const QModelIndex& trackIdx0
+				= index(iTrack, 0, groupIdx);
+			if (data(trackIdx0, Qt::UserRole).toInt()
+				== qtractorSessionListModel::ItemTrack) {
+				const QModelIndex& trackIdx1
+					= index(iTrack, 1, groupIdx);
+				if (data(trackIdx1, Qt::UserRole).value<void *> ()
+					== static_cast<void *> (pTrack))
+					return trackIdx0;
+			}
+		}
+	}
+
+	return QModelIndex();
+}
+
+
+qtractorClip *qtractorSessionListModel::clipOfIndex (
+	const QModelIndex& index ) const
+{
+	const QModelIndex& col0 = index.sibling(index.row(), 0);
+	if (data(col0, Qt::UserRole).toInt() != ItemClip)
+		return nullptr;
+
+	const QModelIndex& col1 = index.sibling(index.row(), 1);
+	return static_cast<qtractorClip *> (
+		data(col1, Qt::UserRole).value<void *> ());
+}
+
+
+QModelIndex qtractorSessionListModel::indexOfClip (
+	qtractorClip *pClip ) const
+{
+	if (pClip == nullptr)
+		return QModelIndex();
+
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == nullptr)
+		return QModelIndex();
+
+	const QModelIndex& trackIdx = indexOfTrack(pTrack);
+	if (trackIdx.isValid()) {
+		// Walk the tracks children...
+		const int iClipCount = rowCount(trackIdx);
+		for (int iClip = 0; iClip < iClipCount; ++iClip) {
+			const QModelIndex& clipIdx0 = index(iClip, 0, trackIdx);
+			if (data(clipIdx0, Qt::UserRole).toInt()
+				== qtractorSessionListModel::ItemClip) {
+				const QModelIndex& clipIdx1 = index(iClip, 1, trackIdx);
+				if (data(clipIdx1, Qt::UserRole).value<void *> ()
+					== static_cast<void *> (pClip))
+					return clipIdx0;
+			}
+		}
+	}
+
+	return QModelIndex();
+}
+
+
+qtractorBus *qtractorSessionListModel::busOfIndex (
+	const QModelIndex& index ) const
+{
+	const QModelIndex& col0 = index.sibling(index.row(), 0);
+	if (data(col0, Qt::UserRole).toInt() != ItemBus)
+		return nullptr;
+
+	const QModelIndex& col1 = index.sibling(index.row(), 1);
+	return static_cast<qtractorBus *> (
+		data(col1, Qt::UserRole).value<void *> ());
+}
+
+
+QModelIndex qtractorSessionListModel::indexOfBus (
+	qtractorBus *pBus, int busMode ) const
+{
+	if (pBus == nullptr)
+		return QModelIndex();
+
+	ItemType groupType;
+	switch (qtractorBus::BusMode(busMode)) {
+	case qtractorBus::Input:
+		groupType = ItemInputs;
+		break;
+	case qtractorBus::Output:
+		groupType = ItemOutputs;
+		break;
+	default:
+		return QModelIndex();
+	}
+
+	const QModelIndex& groupIdx = indexOfGroup(groupType);
+	if (groupIdx.isValid()) {
+		// Walk the groups children...
+		const int iBusCount = rowCount(groupIdx);
+		for (int iBus = 0; iBus < iBusCount; ++iBus) {
+			const QModelIndex& busIdx0
+				= index(iBus, 0, groupIdx);
+			if (data(busIdx0, Qt::UserRole).toInt()
+				== qtractorSessionListModel::ItemBus) {
+				const QModelIndex& busIdx1
+					= index(iBus, 1, groupIdx);
+				if (data(busIdx1, Qt::UserRole).value<void *> ()
+					== static_cast<void *> (pBus))
+					return busIdx0;
+			}
+		}
+	}
+
+	return QModelIndex();
 }
 
 
@@ -603,40 +730,28 @@ void qtractorSessionList::selectTrack ( qtractorTrack *pTrack )
 	if (pTrack == nullptr)
 		return;
 
-	QAbstractItemModel *pModel = m_pTreeView->model();
+	qtractorSessionListModel *pModel
+		= static_cast<qtractorSessionListModel *> (m_pTreeView->model());
 	if (pModel == nullptr)
 		return;
 
-	// Iterate top-level groups to find the ItemTracksGroup.
-	const int nGroups = pModel->rowCount();
-	for (int iGroup = 0; iGroup < nGroups; ++iGroup) {
-		const QModelIndex groupIdx = pModel->index(iGroup, 0);
-		if (pModel->data(groupIdx, Qt::UserRole).toInt()
-				!= qtractorSessionListModel::ItemTracksGroup)
-			continue;
-		// Walk the track children.
-		const int nTracks = pModel->rowCount(groupIdx);
-		for (int iTrack = 0; iTrack < nTracks; ++iTrack) {
-			const QModelIndex trackIdx0 = pModel->index(iTrack, 0, groupIdx);
-			if (pModel->data(trackIdx0, Qt::UserRole).toInt()
-					!= qtractorSessionListModel::ItemTrack)
-				continue;
-			const QModelIndex trackIdx1 = pModel->index(iTrack, 1, groupIdx);
-			void *pData = pModel->data(trackIdx1,
-				Qt::UserRole).value<void *> ();
-			if (pData != static_cast<void *> (pTrack))
-				continue;
-			// Found — select without re-entering currentRowChangedSlot.
-			const QSignalBlocker blocker(m_pTreeView->selectionModel());
-			if (m_pTreeView->isExpanded(groupIdx))
-				m_pTreeView->setExpanded(groupIdx, false);
-			m_pTreeView->setExpanded(groupIdx, true);
-			m_pTreeView->setCurrentIndex(trackIdx0);
-			m_pTreeView->scrollTo(trackIdx0);
-			return;
-		}
-		break; // There is only one ItemTracksGroup.
-	}
+	const QModelIndex& groupIdx
+		= pModel->indexOfGroup(qtractorSessionListModel::ItemTracks);
+	if (!groupIdx.isValid())
+		return;
+
+	const QModelIndex& trackIdx
+		= pModel->indexOfTrack(pTrack);
+	if (!trackIdx.isValid())
+		return;
+
+	// Found — select without re-entering currentRowChangedSlot.
+	const QSignalBlocker blocker(m_pTreeView->selectionModel());
+	if (m_pTreeView->isExpanded(groupIdx))
+		m_pTreeView->setExpanded(groupIdx, false);
+	m_pTreeView->setExpanded(groupIdx, true);
+	m_pTreeView->setCurrentIndex(trackIdx);
+	m_pTreeView->scrollTo(trackIdx);
 }
 
 
@@ -650,69 +765,26 @@ void qtractorSessionList::selectClip ( qtractorClip *pClip )
 	if (pTrack == nullptr)
 		return;
 
-	QAbstractItemModel *pModel = m_pTreeView->model();
+	qtractorSessionListModel *pModel
+		= static_cast<qtractorSessionListModel *> (m_pTreeView->model());
 	if (pModel == nullptr)
 		return;
 
-	// Iterate top-level groups to find the ItemTracksGroup.
-	const int nGroups = pModel->rowCount();
-	for (int iGroup = 0; iGroup < nGroups; ++iGroup) {
-		const QModelIndex groupIdx = pModel->index(iGroup, 0);
-		if (pModel->data(groupIdx, Qt::UserRole).toInt()
-				!= qtractorSessionListModel::ItemTracksGroup)
-			continue;
-		// Walk the track children to find the matching ItemTrack.
-		const int nTracks = pModel->rowCount(groupIdx);
-		for (int iTrack = 0; iTrack < nTracks; ++iTrack) {
-			const QModelIndex trackIdx0 = pModel->index(iTrack, 0, groupIdx);
-			if (pModel->data(trackIdx0, Qt::UserRole).toInt()
-					!= qtractorSessionListModel::ItemTrack)
-				continue;
-			const QModelIndex trackIdx1 = pModel->index(iTrack, 1, groupIdx);
-			void *pTrackData = pModel->data(trackIdx1,
-				Qt::UserRole).value<void *> ();
-			if (pTrackData != static_cast<void *> (pTrack))
-				continue;
-			// Found the track — now search its children for ItemClipsGroup.
-			const int nTrackChildren = pModel->rowCount(trackIdx0);
-			for (int iChild = 0; iChild < nTrackChildren; ++iChild) {
-				const QModelIndex clipsGroupIdx
-					= pModel->index(iChild, 0, trackIdx0);
-				if (pModel->data(clipsGroupIdx, Qt::UserRole).toInt()
-						!= qtractorSessionListModel::ItemClipsGroup)
-					continue;
-				// Walk the clip children.
-				const int nClips = pModel->rowCount(clipsGroupIdx);
-				for (int iClip = 0; iClip < nClips; ++iClip) {
-					const QModelIndex clipIdx0
-						= pModel->index(iClip, 0, clipsGroupIdx);
-					if (pModel->data(clipIdx0, Qt::UserRole).toInt()
-							!= qtractorSessionListModel::ItemClip)
-						continue;
-					const QModelIndex clipIdx1
-						= pModel->index(iClip, 1, clipsGroupIdx);
-					void *pClipData = pModel->data(clipIdx1,
-						Qt::UserRole).value<void *> ();
-					if (pClipData != static_cast<void *> (pClip))
-						continue;
-					// Found — select without re-entering currentRowChangedSlot.
-					const QSignalBlocker blocker(m_pTreeView->selectionModel());
-					if (m_pTreeView->isExpanded(trackIdx0))
-						m_pTreeView->setExpanded(trackIdx0, false);
-					m_pTreeView->setExpanded(trackIdx0, true);
-					if (m_pTreeView->isExpanded(clipsGroupIdx))
-						m_pTreeView->setExpanded(clipsGroupIdx, false);
-					m_pTreeView->setExpanded(clipsGroupIdx, true);
-					m_pTreeView->setCurrentIndex(clipIdx0);
-					m_pTreeView->scrollTo(clipIdx0);
-					return;
-				}
-				break; // Only one ItemClipsGroup per track.
-			}
-			break; // Track found; clip not present in model.
-		}
-		break; // There is only one ItemTracksGroup.
-	}
+	const QModelIndex& trackIdx = pModel->indexOfTrack(pTrack);
+	if (!trackIdx.isValid())
+		return;
+
+	const QModelIndex& clipIdx = pModel->indexOfClip(pClip);
+	if (!clipIdx.isValid())
+		return;
+
+	// Found — select without re-entering currentRowChangedSlot.
+	const QSignalBlocker blocker(m_pTreeView->selectionModel());
+	if (m_pTreeView->isExpanded(trackIdx))
+		m_pTreeView->setExpanded(trackIdx, false);
+	m_pTreeView->setExpanded(trackIdx, true);
+	m_pTreeView->setCurrentIndex(clipIdx);
+	m_pTreeView->scrollTo(clipIdx);
 }
 
 
