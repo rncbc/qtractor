@@ -5462,7 +5462,7 @@ void qtractorMainForm::viewRefresh (void)
 	}
 
 	if (m_pSessionList)
-		m_pSessionList->refreshSlot();
+		m_pSessionList->refresh();
 	if (m_pConnections)
 		m_pConnections->refresh();
 	if (m_pMixer) {
@@ -9768,6 +9768,9 @@ void qtractorMainForm::contentsChanged (void)
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
 	m_pThumbView->updateContents();
+
+	if (m_pSessionList && m_pSessionList->isVisible())
+		m_pSessionList->refresh();
 
 	dirtyNotifySlot();
 }

@@ -25,91 +25,13 @@
 #include <QAbstractItemModel>
 #include <QDockWidget>
 #include <QTreeView>
+#include <QHash>
 
 
 // Forward decls.
 class qtractorTrack;
 class qtractorClip;
 class qtractorBus;
-
-
-//----------------------------------------------------------------------------
-// qtractorSessionListModel -- Session hierarchy item model.
-
-class qtractorSessionListModel : public QAbstractItemModel
-{
-	Q_OBJECT
-
-public:
-
-	// Item type tags (stored via Qt::UserRole on column 0).
-	enum ItemType {
-		ItemInputs = 1,
-		ItemOutputs,
-		ItemTracks,
-		ItemTrack,
-		ItemClip,
-		ItemBus
-	};
-
-	// Constructor.
-	explicit qtractorSessionListModel(QObject *pParent = nullptr);
-
-	// Destructor.
-	~qtractorSessionListModel();
-
-	// Rebuild the node tree from the current session state.
-	void refresh();
-
-	// Clear the node tree.
-	void clear();
-
-	// QAbstractItemModel interface.
-	QModelIndex index(int row, int column,
-		const QModelIndex& parent = QModelIndex()) const override;
-
-	QModelIndex parent(const QModelIndex& child) const override;
-
-	int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-
-	int columnCount(const QModelIndex& parent = QModelIndex()) const override;
-
-	QVariant data(const QModelIndex& index,
-		int role = Qt::DisplayRole) const override;
-
-	QVariant headerData(int section, Qt::Orientation orientation,
-		int role = Qt::DisplayRole) const override;
-
-	Qt::ItemFlags flags(const QModelIndex& index) const override;
-
-	// Helper locators.
-	QModelIndex indexOfGroup(ItemType itype) const;
-
-	qtractorTrack *trackOfIndex(const QModelIndex& index) const;
-	QModelIndex indexOfTrack(qtractorTrack *pTrack) const;
-
-	qtractorClip *clipOfIndex(const QModelIndex& index) const;
-	QModelIndex indexOfClip(qtractorClip *pClip) const;
-
-	qtractorBus *busOfIndex(const QModelIndex& index) const;
-	QModelIndex indexOfBus(qtractorBus *pBus, int busMode) const;
-
-private:
-
-	// Forward declaration of the internal node type.
-	struct Node;
-
-	// Build helpers.
-	void buildTree();
-	Node *buildTrackNode(Node *pParent,
-		struct qtractorTrack *pTrack);
-	Node *buildBusNode(Node *pParent,
-		struct qtractorBus *pBus,
-		int busMode = 0);
-
-	// Root node of the tree.
-	Node *m_pRoot;
-};
 
 
 //----------------------------------------------------------------------------
@@ -131,9 +53,12 @@ public:
 	// Clear the underlying model.
 	void clear();
 
+	// Forward decls.
+	class ItemModel;
+
 private:
 
-	qtractorSessionListModel *m_pModel;
+	ItemModel *m_pItemModel;
 };
 
 
@@ -147,7 +72,7 @@ class qtractorSessionList : public QDockWidget
 public:
 
 	// Constructor.
-	explicit qtractorSessionList(QWidget *pParent = nullptr);
+	qtractorSessionList(QWidget *pParent = nullptr);
 
 	// Destructor.
 	~qtractorSessionList();
@@ -166,27 +91,37 @@ public:
 	QByteArray saveState() const;
 	bool restoreState(const QByteArray& state);
 
-public slots:
-
-	// Refresh on demand (e.g. after session load/clear).
-	void refreshSlot();
-
 protected slots:
 
+	// Selection change slot.
 	void currentRowChangedSlot(const QModelIndex&, const QModelIndex&);
+
+	// Bus-menu action slots.
+	void busConnectionsSlot();
+	void busPropertiesSlot();
 
 protected:
 
 	// Reveal full refresh on show.
-	void showEvent(QShowEvent *pShowEvent);
+	void showEvent(QShowEvent *);
 
 	// Notify main-window on close.
-	void closeEvent(QCloseEvent *pCloseEvent);
+	void closeEvent(QCloseEvent *);
+
+	// Context menu request event handler.
+	void contextMenuEvent(QContextMenuEvent *);
+
+	// Buses context menu builder and executive.
+	void busMenu(const QPoint& pos);
 
 private:
 
 	// The contained tree view.
-	qtractorSessionListView *m_pTreeView;
+	qtractorSessionListView *m_pListView;
+
+	// Bus-menu interim parameters.
+	qtractorBus *m_pBus;
+	int m_busMode;
 };
 
 
