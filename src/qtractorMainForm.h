@@ -120,6 +120,8 @@ public:
 		{ return m_ui.editMenu; }
 	QMenu *trackMenu() const
 		{ return m_ui.trackMenu; }
+	QMenu *clipMenu() const
+		{ return m_ui.clipMenu; }
 	QMenu *trackCurveMenu() const
 		{ return m_ui.trackCurveMenu; }
 	QMenu *trackCurveModeMenu() const
