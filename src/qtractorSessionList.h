@@ -48,7 +48,7 @@ public:
 	~qtractorSessionListView();
 
 	// Rebuild the underlying model.
-	void refresh();
+	void refresh(bool bReset);
 
 	// Clear the underlying model.
 	void clear();
@@ -78,7 +78,7 @@ public:
 	~qtractorSessionList();
 
 	// Full refresh delegate.
-	void refresh();
+	void refresh(bool bReset);
 
 	// Clear all contents.
 	void clear();

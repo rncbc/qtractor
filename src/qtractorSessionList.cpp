@@ -35,6 +35,8 @@
 
 #include <QHeaderView>
 
+#include <QSet>
+
 #include <QFileInfo>
 
 #include <QContextMenuEvent>
@@ -134,6 +136,7 @@ private:
 		qtractorBus *pBus, int busMode, int& iRow) const;
 
 	// Per-engine bus helpers (call once per engine, audio then MIDI).
+	void addBusKeys(qtractorEngine *pEngine, QSet<void *>& keys) const;
 	int countBusesByMode(qtractorEngine *pEngine, int busMode) const;
 	QModelIndex indexOfBusRow(qtractorEngine *pEngine,
 		Node *pGroupNode, int busMode, int row, int& iRow, int column) const;
@@ -261,8 +264,6 @@ void qtractorSessionListView::ItemModel::clear (void)
 // are read live from the current session state.
 void qtractorSessionListView::ItemModel::refresh (void)
 {
-	beginResetModel();
-
 	// root is the invisible sentinel; top-level groups are its children.
 	if (m_pRoot == nullptr)
 		m_pRoot = new Node(nullptr, 0, QString(), QString());
@@ -270,6 +271,69 @@ void qtractorSessionListView::ItemModel::refresh (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
+
+	// ----------------------------------------------------------------
+	// Phase 1: build a set of all currently-live keys so we can detect
+	// stale pool entries.  We collect three categories in one pass each.
+	// ----------------------------------------------------------------
+	QSet<void *> keys;
+
+	// Tracks and their clips.
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		keys.insert(static_cast<void *> (pTrack));
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			keys.insert(static_cast<void *> (pClip));
+		}
+	}
+
+	// Buses (composite key = pointer | busMode, same encoding as nodeForBus).
+	addBusKeys(pSession->audioEngine(), keys);
+	addBusKeys(pSession->midiEngine(), keys);
+
+	// ----------------------------------------------------------------
+	// Phase 2: signal that the layout is about to change.
+	//
+	// Qt's layoutAboutToBeChanged() implementation internally walks
+	// every QPersistentModelIndex held by the view and snapshots each
+	// one's parent() by dereferencing its internalPointer() (a Node*).
+	// All nodes must therefore still be alive at this point.
+	// ----------------------------------------------------------------
+	emit layoutAboutToBeChanged();
+
+	// ----------------------------------------------------------------
+	// Phase 3: evict stale pool entries (objects no longer in session).
+	// Now that Qt has already snapshotted the persistent indexes above,
+	// it is safe to free the nodes for removed objects.  We also null
+	// out the corresponding persistent indexes so Qt knows to invalidate
+	// them rather than trying to remap them in layoutChanged().
+	// ----------------------------------------------------------------
+	QModelIndexList staleFrom, staleTo;
+	QHash<void *, Node *>::Iterator iter = m_nodePool.begin();
+	while (iter != m_nodePool.end()) {
+		if (!keys.contains(iter.key())) {
+			// Collect every column index for this stale node so
+			// that changePersistentIndexList() can null them out.
+			Node *pNode = iter.value();
+			const int iRow = pNode->cachedRow;
+			staleFrom.append(createIndex(iRow, 0, pNode));
+			staleFrom.append(createIndex(iRow, 1, pNode));
+			staleTo.append(QModelIndex());
+			staleTo.append(QModelIndex());
+			delete pNode;
+			iter = m_nodePool.erase(iter);
+		} else {
+			++iter;
+		}
+	}
+	if (!staleFrom.isEmpty())
+		changePersistentIndexList(staleFrom, staleTo);
+
+	// ----------------------------------------------------------------
+	// Phase 4: update group-node detail strings (counts may have
+	// changed) and close the layout-change bracket.
+	// ----------------------------------------------------------------
 
 	// 1. Inputs group.
 	const int iInputsCount
@@ -315,11 +379,7 @@ void qtractorSessionListView::ItemModel::refresh (void)
 		m_pOutputs->detail = sOutputsDetail;
 	}
 
-	// Cleanup the node table...
-	qDeleteAll(m_nodePool);
-	m_nodePool.clear();
-
-	endResetModel();
+	emit layoutChanged();
 }
 
 
@@ -334,7 +394,7 @@ qtractorSessionListView::ItemModel::Node *
 qtractorSessionListView::ItemModel::nodeForTrack (
 	Node *pGroupNode, qtractorTrack *pTrack ) const
 {
-	void *key = static_cast<void *>(pTrack);
+	void *key = static_cast<void *> (pTrack);
 	Node *pNode = m_nodePool.value(key, nullptr);
 	if (pNode)
 		return pNode;
@@ -386,7 +446,7 @@ qtractorSessionListView::ItemModel::Node *
 qtractorSessionListView::ItemModel::nodeForClip (
 	Node *pTrackNode, qtractorClip *pClip ) const
 {
-	void *key = static_cast<void *>(pClip);
+	void *key = static_cast<void *> (pClip);
 	Node *pNode = m_nodePool.value(key, nullptr);
 	if (pNode)
 		return pNode;
@@ -446,7 +506,8 @@ qtractorSessionListView::ItemModel::nodeForBus (
 	// qtractorBus objects are heap-allocated and thus at least 4-byte aligned,
 	// so the low 2 bits are always 0 in the raw pointer value.
 	void *key = reinterpret_cast<void *>(
-		reinterpret_cast<quintptr>(pBus) | quintptr(busMode & 0x3));
+		reinterpret_cast<quintptr>(pBus)
+		| quintptr(busMode & 0x3));
 	Node *pNode = m_nodePool.value(key, nullptr);
 	if (pNode)
 		return pNode;
@@ -569,6 +630,28 @@ bool qtractorSessionListView::ItemModel::rowOfBusPtr (
 // Per-engine bus helpers -- each operates on a single engine; callers
 // invoke them twice (audio engine first, then MIDI engine).
 //
+// Insert composite bus keys (pointer | busMode) for one engine into keys.
+void qtractorSessionListView::ItemModel::addBusKeys (
+	qtractorEngine *pEngine , QSet<void *>& keys ) const
+{
+	if (pEngine == nullptr)
+		return;
+
+	for (qtractorBus *pBus = pEngine->buses().first();
+			pBus; pBus = pBus->next()) {
+		const qtractorBus::BusMode busMode = pBus->busMode();
+		if (busMode & qtractorBus::Input)
+			keys.insert(reinterpret_cast<void *> (
+				reinterpret_cast<quintptr> (pBus)
+				| quintptr(qtractorBus::Input  & 0x3)));
+		if (busMode & qtractorBus::Output)
+			keys.insert(reinterpret_cast<void *> (
+				reinterpret_cast<quintptr> (pBus)
+				| quintptr(qtractorBus::Output & 0x3)));
+	}
+}
+
+
 // Count buses of the given mode in one engine.
 int qtractorSessionListView::ItemModel::countBusesByMode (
 	qtractorEngine *pEngine, int busMode ) const
@@ -1059,15 +1142,17 @@ qtractorSessionListView::~qtractorSessionListView (void)
 }
 
 
-void qtractorSessionListView::refresh (void)
+void qtractorSessionListView::refresh ( bool bReset )
 {
 	QModelIndex index = currentIndex();
 	qtractorClip *pClip = m_pItemModel->clipOfIndex(index);
 
 	m_pItemModel->refresh();
 
-	QTreeView::expandToDepth(0);
-//	QTreeView::resizeColumnToContents(0);
+	if (bReset) {
+		QTreeView::expandToDepth(0);
+	//	QTreeView::resizeColumnToContents(0);
+	}
 
 	if (pClip) {
 		index = m_pItemModel->indexOfClip(pClip);
@@ -1113,9 +1198,9 @@ qtractorSessionList::~qtractorSessionList (void)
 }
 
 
-void qtractorSessionList::refresh (void)
+void qtractorSessionList::refresh ( bool bReset )
 {
-	m_pListView->refresh();
+	m_pListView->refresh(bReset);
 }
 
 
@@ -1127,7 +1212,7 @@ void qtractorSessionList::clear (void)
 
 void qtractorSessionList::showEvent ( QShowEvent *pShowEvent )
 {
-	m_pListView->refresh();
+	m_pListView->refresh(false);
 
 	QDockWidget::showEvent(pShowEvent);
 }
@@ -1136,6 +1221,8 @@ void qtractorSessionList::showEvent ( QShowEvent *pShowEvent )
 void qtractorSessionList::closeEvent ( QCloseEvent *pCloseEvent )
 {
 	QDockWidget::closeEvent(pCloseEvent);
+
+	m_pListView->clear();
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
