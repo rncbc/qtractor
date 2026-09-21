@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- VST3 Plug-ins: make sure process context is actually updated
+  with transport info requirements. (EXPERIMENTAL)
+
 - Update any existing LV2 Time designated ports/parameters, when
   inserting a LV2 Plug-in. (EXPERIMENTAL)
 
