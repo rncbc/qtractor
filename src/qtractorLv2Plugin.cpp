@@ -2857,6 +2857,9 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	const unsigned short iOldInstances = instances();
 	unsigned short iInstances = 0;
 	if (iChannels > 0) {
+	#ifdef CONFIG_LV2_TIME
+		lv2_time_ports_changed();
+	#endif
 		iInstances = pLv2Type->instances(iChannels, list()->isMidi());
 		// Now see if instance and channel count changed anyhow...
 		if (iInstances == iOldInstances && iChannels == channels())
@@ -5663,6 +5666,26 @@ void qtractorLv2Plugin::updateTimePost (void)
 				iter.next()->setValue(member.value, true);
 			member.changed = 0;
 		}
+	}
+}
+
+
+// Make ready LV2 Time ports.
+void qtractorLv2Plugin::lv2_time_ports_changed (void)
+{
+	if (g_lv2_time_refcount < 1)
+		return;
+
+	// Unsubscribe mapped params...
+	QHash<unsigned long, int>::ConstIterator iter
+		= m_lv2_time_ports.constBegin();
+	const QHash<unsigned long, int>::ConstIterator& iter_end
+		= m_lv2_time_ports.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		Param *pParam = static_cast<Param *> (
+			qtractorPlugin::findParam(iter.key()));
+		if (pParam)
+			++(g_lv2_time[iter.value()].changed);
 	}
 }
 

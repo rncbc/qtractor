@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Update any existing LV2 Time designated ports/parameters, when
+  inserting a LV2 Plug-in. (EXPERIMENTAL)
+
+
 1.6.4  2026-09-06  A Late-Summer'26 Hotfix Release.
 
 - Fixed a relatively recent crash-bug introduced to Clip/Merge...
