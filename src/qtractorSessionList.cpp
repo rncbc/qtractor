@@ -54,7 +54,8 @@ public:
 
 	// Item type tags (stored via Qt::UserRole on column 0).
 	enum ItemType {
-		ItemInputs = 1,
+		ItemRoot = 0,
+		ItemInputs,
 		ItemOutputs,
 		ItemTracks,
 		ItemTrack,
@@ -176,10 +177,10 @@ private:
 struct qtractorSessionListView::ItemModel::Node
 {
 	// Constructor.
-	Node(Node *pParent, int iType,
+	Node(Node *pParent, ItemType itemType,
 		const QString& sName, const QString& sDetail,
 		void *pData = nullptr, const QIcon& icon0 = QIcon())
-		: parent(pParent), type(iType),
+		: parent(pParent), type(itemType),
 		  name(sName), detail(sDetail),
 		  data(pData), icon(icon0), busMode(0), cachedRow(0) {}
 
@@ -202,7 +203,7 @@ struct qtractorSessionListView::ItemModel::Node
 	}
 
 	Node        *parent;
-	int          type;
+	ItemType     type;
 	QString      name;
 	QString      detail;
 	void        *data;       // raw pointer to session object (may be nullptr)
@@ -266,7 +267,7 @@ void qtractorSessionListView::ItemModel::refresh (void)
 {
 	// root is the invisible sentinel; top-level groups are its children.
 	if (m_pRoot == nullptr)
-		m_pRoot = new Node(nullptr, 0, QString(), QString());
+		m_pRoot = new Node(nullptr, ItemRoot, QString(), QString());
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -421,18 +422,6 @@ qtractorSessionListView::ItemModel::nodeForTrack (
 	sDetail += ' ';
 	sDetail += tr("track");
 
-	QString sFlags;
-	if (pTrack->isRecord())
-		sFlags += 'R';
-	if (pTrack->isMute())
-		sFlags += 'M';
-	if (pTrack->isSolo())
-		sFlags += 'S';
-	if (!sFlags.isEmpty()) {
-		sDetail += ' ';
-		sDetail += QString(" [%1]").arg(sFlags);
-	}
-
 	pNode = new Node(pGroupNode, ItemTrack,
 		pTrack->shortTrackName(), sDetail, key, trackIcon);
 	pNode->cachedRow = rowOfTrack(pTrack);
@@ -476,16 +465,6 @@ qtractorSessionListView::ItemModel::nodeForClip (
 	}
 	sDetail += ' ';
 	sDetail += tr("clip");
-
-	QString sFlags;
-	if (pTrack && pTrack->isClipRecordEx() && pTrack->clipRecord() == pClip)
-		sFlags += 'R';
-	if (pClip->isClipMute())
-		sFlags += 'M';
-	if (!sFlags.isEmpty()) {
-		sDetail += ' ';
-		sDetail += QString("[%1]").arg(sFlags);
-	}
 
 	pNode = new Node(pTrackNode, ItemClip,
 		pClip->clipName(), sDetail,	key, clipIcon);
@@ -542,7 +521,7 @@ qtractorSessionListView::ItemModel::nodeForBus (
 	sDetail += ' ';
 	sDetail += tr("bus");
 	sDetail += ' ';
-	sDetail += tr("(%1 ch)").arg(iChannels);
+	sDetail += QString("(%1)").arg(iChannels);
 
 	pNode = new Node(pGroupNode, ItemBus,
 		pBus->busName(), sDetail, key, busIcon);
@@ -882,7 +861,7 @@ qtractorSessionListView::ItemModel::data (
 	if (!index.isValid() || m_pRoot == nullptr)
 		return QVariant();
 
-	Node *pNode = static_cast<Node *>(index.internalPointer());
+	Node *pNode = static_cast<Node *> (index.internalPointer());
 
 	switch (role) {
 	case Qt::DisplayRole:
@@ -911,6 +890,37 @@ qtractorSessionListView::ItemModel::data (
 		}
 		break;
 
+	case Qt::ForegroundRole: {
+		bool bGrayed = false;
+		qtractorTrack *pTrack = nullptr;
+		switch (pNode->type) {
+		case ItemInputs:
+		case ItemTracks:
+		case ItemOutputs:
+			bGrayed = true;
+			break;
+		case ItemTrack:
+			pTrack = static_cast<qtractorTrack *>(pNode->data);
+			break;
+		case ItemClip: {
+			qtractorClip *pClip = static_cast<qtractorClip *>(pNode->data);
+			if (pClip) {
+				pTrack = pClip->track();
+				bGrayed = pClip->isClipMute();
+			}
+			break;
+		}
+		case ItemBus:
+		default:
+			break;
+		}
+		if (pTrack && (pTrack->isMute()
+			|| (!pTrack->isSolo() && (pTrack->session())->soloTracks())))
+			bGrayed = true;
+		if (bGrayed)
+			return QPalette().color(QPalette::Disabled, QPalette::Text);
+		// Fall-thru...
+	}
 	default:
 		break;
 	}
@@ -1173,7 +1183,7 @@ void qtractorSessionListView::clear (void)
 
 qtractorSessionList::qtractorSessionList ( QWidget *pParent )
 	: QDockWidget(pParent), m_pListView(nullptr),
-		m_iSelectTrack(0), m_pBus(nullptr), m_busMode(0)
+		m_iSelectTrack(0), m_pBus(nullptr)
 {
 	QDockWidget::setObjectName("qtractorSessionList");
 	QDockWidget::setWindowTitle(tr("Session"));
@@ -1252,17 +1262,14 @@ void qtractorSessionList::contextMenuEvent (
 	switch (pItemModel->itemType(index)) {
 	case qtractorSessionListView::ItemModel::ItemInputs:
 		m_pBus = nullptr;
-		m_busMode = qtractorBus::Input;
 		busMenu(pContextMenuEvent->globalPos());
 		break;
 	case qtractorSessionListView::ItemModel::ItemOutputs:
 		m_pBus = nullptr;
-		m_busMode = qtractorBus::Output;
 		busMenu(pContextMenuEvent->globalPos());
 		break;
 	case qtractorSessionListView::ItemModel::ItemBus: {
 		m_pBus = pItemModel->busOfIndex(index);
-		m_busMode = pItemModel->busModeOfIndex(index);
 		busMenu(pContextMenuEvent->globalPos());
 		break;
 	}
@@ -1284,15 +1291,29 @@ void qtractorSessionList::busMenu ( const QPoint& pos )
 	QMenu menu(this);
 
 	if (m_pBus) {
-		const qtractorBus::BusMode bm
-			= qtractorBus::BusMode(m_busMode);
-		if (bm & qtractorBus::Input) {
-			menu.addAction(tr("&Inputs"),
-				this, SLOT(busConnectionsSlot()));
+		const qtractorTrack::TrackType busType
+			= m_pBus->busType();
+		const qtractorBus::BusMode busMode
+			= m_pBus->busMode();
+		if (busMode & qtractorBus::Input) {
+			QIcon iconInputs;
+			if (busType == qtractorTrack::Audio)
+				iconInputs = QIcon::fromTheme("itemAudioPortIn");
+			else
+			if (busType == qtractorTrack::Midi)
+				iconInputs = QIcon::fromTheme("itemMidiPortIn");
+			menu.addAction(iconInputs, tr("&Inputs"),
+				this, SLOT(busInputsSlot()));
 		}
-		if (bm & qtractorBus::Output) {
-			menu.addAction(tr("&Outputs"),
-				this, SLOT(busConnectionsSlot()));
+		if (busMode & qtractorBus::Output) {
+			QIcon iconOutputs;
+			if (busType == qtractorTrack::Audio)
+				iconOutputs = QIcon::fromTheme("itemAudioPortOut");
+			else
+			if (busType == qtractorTrack::Midi)
+				iconOutputs = QIcon::fromTheme("itemMidiPortOut");
+			menu.addAction(iconOutputs, tr("&Outputs"),
+				this, SLOT(busOutputsSlot()));
 		}
 		menu.addSeparator();
 	}
@@ -1303,19 +1324,23 @@ void qtractorSessionList::busMenu ( const QPoint& pos )
 
 	// We're done; reset interim variables.
 	m_pBus = nullptr;
-	m_busMode = 0;
 }
 
 
 // Bus-menu action slots.
-void qtractorSessionList::busConnectionsSlot (void)
+void qtractorSessionList::busInputsSlot (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == nullptr)
-		return;
+	if (pMainForm)
+		pMainForm->connections()->showBus(m_pBus, qtractorBus::Input);
+}
 
-	// Here we go...
-	pMainForm->connections()->showBus(m_pBus, qtractorBus::BusMode(m_busMode));
+
+void qtractorSessionList::busOutputsSlot (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->connections()->showBus(m_pBus, qtractorBus::Output);
 }
 
 

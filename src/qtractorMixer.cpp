@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1127,41 +1127,46 @@ void qtractorMixerRackWidget::contextMenuEvent (
 	// Build the device context menu...
 	QMenu menu(this);
 	QAction *pAction;
-	bool bEnabled;
+	QIcon icon;
 
-	pAction = menu.addAction(tr("&Inputs"));
-	bEnabled = (pStrip && pBus && (pBus->busMode() & qtractorBus::Input));
-	if (bEnabled) {
+	if (pStrip && pBus && (pBus->busMode() & qtractorBus::Input)) {
+	//	icon = QIcon();
+		if (pBus->busType() == qtractorTrack::Audio)
+			icon = QIcon::fromTheme("itemAudioPortIn");
+		else
+		if (pBus->busType() == qtractorTrack::Midi)
+			icon = QIcon::fromTheme("itemMidiPortIn");
+		pAction = menu.addAction(icon, tr("&Inputs"));
 		QObject::connect(
 			pAction, SIGNAL(triggered(bool)),
 			pStrip, SLOT(busInputsSlot()));
+		menu.addSeparator();
 	}
-	pAction->setEnabled(bEnabled);
 
-	pAction = menu.addAction(tr("&Outputs"));
-	bEnabled = (pStrip && pBus && (pBus->busMode() & qtractorBus::Output));
-	if (bEnabled) {
+	if (pStrip && pBus && (pBus->busMode() & qtractorBus::Output)) {
+		icon = QIcon();
+		if (pBus->busType() == qtractorTrack::Audio)
+			icon = QIcon::fromTheme("itemAudioPortOut");
+		else
+		if (pBus->busType() == qtractorTrack::Midi)
+			icon = QIcon::fromTheme("itemMidiPortOut");
+		pAction = menu.addAction(icon, tr("&Outputs"));
 		QObject::connect(
 			pAction, SIGNAL(triggered(bool)),
 			pStrip, SLOT(busOutputsSlot()));
+		menu.addSeparator();
 	}
-	pAction->setEnabled(bEnabled);
 
-	menu.addSeparator();
-
-	pAction = menu.addAction(tr("&Monitor"));
-	pAction->setCheckable(true);
-	bEnabled = (pStrip && pBus && (
-		(pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex));
-	if (bEnabled) {
+	if (pStrip && pBus && (
+		(pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex)) {
+		pAction = menu.addAction(tr("&Monitor"));
+		pAction->setCheckable(true);
+		pAction->setChecked(pBus->isMonitor());
 		QObject::connect(
 			pAction, SIGNAL(triggered(bool)),
 			pStrip, SLOT(busMonitorSlot()));
-		pAction->setChecked(pBus->isMonitor());
+		menu.addSeparator();
 	}
-	pAction->setEnabled(bEnabled);
-
-	menu.addSeparator();
 
 	pAction = menu.addAction(tr("&Buses..."));
 	if (pStrip && pBus) {

@@ -180,6 +180,13 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #endif
 
 
+// Local static consts.
+static const char *LayoutDockWindowsKey = "/Layout/DockWindows";
+
+static const char *FileSystemStateKey   = "/FileSystem/State";
+static const char *SessionListStateKey  = "/SessionList/State";
+
+
 //-------------------------------------------------------------------------
 // LADISH Level 1 support stuff.
 
@@ -1506,7 +1513,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Restore whole dock windows state.
 	const QByteArray aDockables
-		= m_pOptions->settings().value("/Layout/DockWindows").toByteArray();
+		= m_pOptions->settings().value(LayoutDockWindowsKey).toByteArray();
 	if (aDockables.isEmpty()) {
 		// Some windows are forced initially as is...
 		insertToolBarBreak(m_ui.transportToolbar);
@@ -1518,7 +1525,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Restore session-list dock-window state.
 	if (m_pSessionList) {
 		const QByteArray aSessionList
-			= m_pOptions->settings().value("/SessionList/State").toByteArray();
+			= m_pOptions->settings().value(SessionListStateKey).toByteArray();
 		if (aSessionList.isEmpty()) {
 			// Should be hidden first time...
 			viewSessionList(false);
@@ -1531,7 +1538,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Restore file-system dock-window state.
 	if (m_pFileSystem) {
 		const QByteArray aFileSystem
-			= m_pOptions->settings().value("/FileSystem/State").toByteArray();
+			= m_pOptions->settings().value(FileSystemStateKey).toByteArray();
 		if (aFileSystem.isEmpty()) {
 			// Should be hidden first time...
 			viewFileSystem(false);
@@ -1894,15 +1901,15 @@ bool qtractorMainForm::queryClose (void)
 			// Save the session-list dock-window state...
 			if (m_pSessionList && m_pSessionList->isVisible()) {
 				m_pOptions->settings().setValue(
-					"/SessionList/State", m_pSessionList->saveState());
+					SessionListStateKey, m_pSessionList->saveState());
 			}
 			// Save the file-system dock-window state...
 			if (m_pFileSystem && m_pFileSystem->isVisible()) {
 				m_pOptions->settings().setValue(
-					"/FileSystem/State", m_pFileSystem->saveState());
+					FileSystemStateKey, m_pFileSystem->saveState());
 			}
 			// Save the dock windows state...
-			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
+			m_pOptions->settings().setValue(LayoutDockWindowsKey, saveState());
 			// Audio master bus auto-connection option...
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 			if (pAudioEngine)

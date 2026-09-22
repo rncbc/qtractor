@@ -97,7 +97,8 @@ protected slots:
 	void currentRowChangedSlot(const QModelIndex&, const QModelIndex&);
 
 	// Bus-menu action slots.
-	void busConnectionsSlot();
+	void busInputsSlot();
+	void busOutputsSlot();
 	void busPropertiesSlot();
 
 protected:
@@ -124,7 +125,6 @@ private:
 
 	// Bus-menu interim parameters.
 	qtractorBus *m_pBus;
-	int m_busMode;
 };
 
 
