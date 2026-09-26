@@ -33,6 +33,8 @@ class qtractorTrack;
 class qtractorClip;
 class qtractorBus;
 
+class QRubberBand;
+
 
 //----------------------------------------------------------------------------
 // qtractorSessionListView -- Session hierarchy tree view.
@@ -55,10 +57,45 @@ public:
 
 	// Forward decls.
 	class ItemModel;
+	class ItemDelegate;
+
+protected:
+
+	// Draw the colour ribbon on track/clip rows before normal cell painting.
+	void drawRow(QPainter *pPainter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const override;
+
+	// Drag-n-drop stuff.
+	//
+	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseMoveEvent(QMouseEvent *pMouseEvent);
+	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
+
+	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
+	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
+	void dragLeaveEvent(QDragLeaveEvent *pDragLeaveEvent);
+	void dropEvent(QDropEvent *pDropEvent);
+
+	bool canDropEvent(QDropEvent *pDropEvent);
+
+	QModelIndex dragDropItem(const QPoint& pos);
+
+	void dropItem(const QModelIndex& index);
+
+	void moveRubberBand(const QModelIndex& index);
+	void ensureVisibleItem(const QModelIndex& index);
 
 private:
 
 	ItemModel *m_pItemModel;
+
+	// Drag-n-drop stuff.
+	//
+	QPoint       m_posDrag;
+	QModelIndex  m_dragItem;
+	QModelIndex  m_dropItem;
+	QRubberBand *m_pRubberBand;
 };
 
 

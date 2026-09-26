@@ -29,12 +29,19 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorAudioMeter.h"
+#include "qtractorMidiMeter.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorConnections.h"
 #include "qtractorBusForm.h"
 #include "qtractorTracks.h"
 
+#include "qtractorTrackCommand.h"
+
 #include <QHeaderView>
+#include <QPainter>
+#include <QStyledItemDelegate>
 
 #include <QSet>
 
@@ -44,6 +51,17 @@
 
 #include <QShowEvent>
 #include <QCloseEvent>
+
+// Drag-n-drop stuff.
+//
+#include <QApplication>
+#include <QMouseEvent>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDragLeaveEvent>
+#include <QMimeData>
+#include <QDrag>
+#include <QRubberBand>
 
 
 //----------------------------------------------------------------------------
@@ -104,7 +122,7 @@ public:
 	void *itemPointer ( const QModelIndex& index ) const
 	{
 		const QModelIndex& col1 = index.sibling(index.row(), 1);
-		return data(col1, Qt::UserRole).value<void *>();
+		return data(col1, Qt::UserRole).value<void *> ();
 	}
 
 	// Helper locators.
@@ -149,7 +167,7 @@ private:
 	// Root node of the tree (holds exactly the group nodes as its children).
 	Node *m_pRoot;
 
-	// Top-level nodes (root's children).
+	// Top-level group nodes (root's children).
 	Node *m_pInputs;
 	Node *m_pTracks;
 	Node *m_pOutputs;
@@ -197,7 +215,7 @@ struct qtractorSessionListView::ItemModel::Node
 		if (parent && parent->parent == nullptr) {
 			// This is a group node: find position among siblings.
 			// Group nodes are stored in m_pRoot->children.
-			return parent->children.indexOf(const_cast<Node *>(this));
+			return parent->children.indexOf(const_cast<Node *> (this));
 		}
 		// For live-data nodes the caller stores the row in cachedRow.
 		return cachedRow;
@@ -209,7 +227,7 @@ struct qtractorSessionListView::ItemModel::Node
 	QString      detail;
 	void        *data;       // raw pointer to session object (may be nullptr)
 	QIcon        icon;
-	int          busMode;    // qtractorBus::Input / ::Output (bus nodes only)
+	int          busMode;    // qtractorBus::Input|Output (bus nodes only)
 	int          cachedRow;  // position within parent's live list
 
 	// Group nodes use this to hold the 3 child Node pointers
@@ -275,12 +293,27 @@ void qtractorSessionListView::ItemModel::refresh (void)
 		return;
 
 	// ----------------------------------------------------------------
-	// Phase 1: build a set of all currently-live keys so we can detect
-	// stale pool entries.  We collect three categories in one pass each.
+	// Use beginResetModel()/endResetModel() rather than the
+	// layoutAboutToBeChanged()/layoutChanged() pair.
+	//
+	// The layout-change pair causes QAbstractItemView to snapshot every
+	// current QPersistentModelIndex (which hold raw Node* pointers) into
+	// the view's private state between the two signals.  On layoutChanged()
+	// the view iterates those snapshots and calls parent() on each one,
+	// dereferencing the Node* internalPointer().  If any of those nodes
+	// were freed in between (stale clip/track nodes), that is a
+	// heap-use-after-free.  changePersistentIndexList() cannot help here
+	// because it only patches the model's own persistent-index table, not
+	// the view's snapshot list.
+	//
+	// beginResetModel()/endResetModel() unconditionally discards all
+	// persistent indexes and view state without ever calling parent(),
+	// which is exactly correct for a wholesale refresh of pool contents.
 	// ----------------------------------------------------------------
-	QSet<void *> keys;
+	beginResetModel();
 
-	// Tracks and their clips.
+	// Build the set of all currently-live keys.
+	QSet<void *> keys;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		keys.insert(static_cast<void *> (pTrack));
@@ -289,53 +322,23 @@ void qtractorSessionListView::ItemModel::refresh (void)
 			keys.insert(static_cast<void *> (pClip));
 		}
 	}
-
-	// Buses (composite key = pointer | busMode, same encoding as nodeForBus).
 	addBusKeys(pSession->audioEngine(), keys);
 	addBusKeys(pSession->midiEngine(), keys);
 
-	// ----------------------------------------------------------------
-	// Phase 2: signal that the layout is about to change.
-	//
-	// Qt's layoutAboutToBeChanged() implementation internally walks
-	// every QPersistentModelIndex held by the view and snapshots each
-	// one's parent() by dereferencing its internalPointer() (a Node*).
-	// All nodes must therefore still be alive at this point.
-	// ----------------------------------------------------------------
-	emit layoutAboutToBeChanged();
-
-	// ----------------------------------------------------------------
-	// Phase 3: evict stale pool entries (objects no longer in session).
-	// Now that Qt has already snapshotted the persistent indexes above,
-	// it is safe to free the nodes for removed objects.  We also null
-	// out the corresponding persistent indexes so Qt knows to invalidate
-	// them rather than trying to remap them in layoutChanged().
-	// ----------------------------------------------------------------
-	QModelIndexList staleFrom, staleTo;
+	// Evict stale pool entries (session objects no longer present).
+	// Safe to free immediately: beginResetModel() has already invalidated
+	// all persistent indexes, so no live Node* references remain.
 	QHash<void *, Node *>::Iterator iter = m_nodePool.begin();
 	while (iter != m_nodePool.end()) {
 		if (!keys.contains(iter.key())) {
-			// Collect every column index for this stale node so
-			// that changePersistentIndexList() can null them out.
-			Node *pNode = iter.value();
-			const int iRow = pNode->cachedRow;
-			staleFrom.append(createIndex(iRow, 0, pNode));
-			staleFrom.append(createIndex(iRow, 1, pNode));
-			staleTo.append(QModelIndex());
-			staleTo.append(QModelIndex());
-			delete pNode;
+			delete iter.value();
 			iter = m_nodePool.erase(iter);
 		} else {
 			++iter;
 		}
 	}
-	if (!staleFrom.isEmpty())
-		changePersistentIndexList(staleFrom, staleTo);
 
-	// ----------------------------------------------------------------
-	// Phase 4: update group-node detail strings (counts may have
-	// changed) and close the layout-change bracket.
-	// ----------------------------------------------------------------
+	// Update group-node detail strings (counts may have changed).
 
 	// 1. Inputs group.
 	const int iInputsCount
@@ -381,7 +384,7 @@ void qtractorSessionListView::ItemModel::refresh (void)
 		m_pOutputs->detail = sOutputsDetail;
 	}
 
-	emit layoutChanged();
+	endResetModel();
 }
 
 
@@ -444,21 +447,14 @@ qtractorSessionListView::ItemModel::nodeForClip (
 	qtractorTrack *pTrack = pClip->track();
 
 	QString sDetail;
-	QIcon clipIcon;
 	if (pTrack) {
 		const QString& sTrackIcon = pTrack->trackIcon();
-		if (!sTrackIcon.isEmpty())
-			clipIcon = QIcon::fromTheme(sTrackIcon);
 		switch (pTrack->trackType()) {
 		case qtractorTrack::Audio:
 			sDetail = tr("Audio");
-			if (clipIcon.isNull())
-				clipIcon = QIcon::fromTheme("trackAudio");
 			break;
 		case qtractorTrack::Midi:
 			sDetail = tr("MIDI");
-			if (clipIcon.isNull())
-				clipIcon = QIcon::fromTheme("trackMidi");
 			break;
 		default:
 			break;
@@ -468,7 +464,7 @@ qtractorSessionListView::ItemModel::nodeForClip (
 	sDetail += tr("clip");
 
 	pNode = new Node(pTrackNode, ItemClip,
-		pClip->clipName(), sDetail,	key, clipIcon);
+		pClip->clipName(), sDetail,	key);
 	pNode->cachedRow = (pTrack ? rowOfClip(pTrack, pClip) : 0);
 	m_nodePool.insert(key, pNode);
 	return pNode;
@@ -485,8 +481,8 @@ qtractorSessionListView::ItemModel::nodeForBus (
 	// Composite key: encode busMode into the low bits of the pointer.
 	// qtractorBus objects are heap-allocated and thus at least 4-byte aligned,
 	// so the low 2 bits are always 0 in the raw pointer value.
-	void *key = reinterpret_cast<void *>(
-		reinterpret_cast<quintptr>(pBus)
+	void *key = reinterpret_cast<void *> (
+		reinterpret_cast<quintptr> (pBus)
 		| quintptr(busMode & 0x3));
 	Node *pNode = m_nodePool.value(key, nullptr);
 	if (pNode)
@@ -498,7 +494,7 @@ qtractorSessionListView::ItemModel::nodeForBus (
 	switch (pBus->busType()) {
 	case qtractorTrack::Audio: {
 		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *>(pBus);
+			= static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus) {
 			busIcon  = QIcon::fromTheme("trackAudio");
 			sDetail += tr("Audio");
@@ -508,7 +504,7 @@ qtractorSessionListView::ItemModel::nodeForBus (
 	}
 	case qtractorTrack::Midi: {
 		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *>(pBus);
+			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus) {
 			busIcon  = QIcon::fromTheme("trackMidi");
 			sDetail += tr("MIDI");
@@ -765,7 +761,7 @@ qtractorSessionListView::ItemModel::index (
 	// Track node -> children are clips read from the live track clip list.
 	if (pParentNode->type == ItemTrack) {
 		qtractorTrack *pTrack
-			= static_cast<qtractorTrack *>(pParentNode->data);
+			= static_cast<qtractorTrack *> (pParentNode->data);
 		if (pTrack == nullptr)
 			return QModelIndex();
 		int iRow = 0;
@@ -791,10 +787,12 @@ qtractorSessionListView::ItemModel::parent (
 	if (!child.isValid() || m_pRoot == nullptr)
 		return QModelIndex();
 
-	Node *pChildNode   = static_cast<Node *> (child.internalPointer());
-	Node *pParentNode = pChildNode->parent;
-
 	// Children of the root (group nodes) have no visible parent.
+	Node *pChildNode = static_cast<Node *> (child.internalPointer());
+	if (pChildNode == nullptr)
+		return QModelIndex();
+
+	Node *pParentNode = pChildNode->parent;
 	if (pParentNode == nullptr || pParentNode == m_pRoot)
 		return QModelIndex();
 
@@ -839,7 +837,7 @@ int qtractorSessionListView::ItemModel::rowCount (
 
 	// Track nodes: count clips from the live track.
 	if (pNode->type == ItemTrack) {
-		qtractorTrack *pTrack = static_cast<qtractorTrack *>(pNode->data);
+		qtractorTrack *pTrack = static_cast<qtractorTrack *> (pNode->data);
 		return (pTrack ? pTrack->clips().count() : 0);
 	}
 
@@ -884,7 +882,7 @@ qtractorSessionListView::ItemModel::data (
 		break;
 
 	case Qt::FontRole:
-		if (index.column() == 0 && pNode->parent == m_pRoot) {
+		if (index.column() == 0 && pNode->type == ItemTrack) {
 			QFont font;
 			font.setBold(true);
 			return font;
@@ -901,10 +899,10 @@ qtractorSessionListView::ItemModel::data (
 			bGrayed = true;
 			break;
 		case ItemTrack:
-			pTrack = static_cast<qtractorTrack *>(pNode->data);
+			pTrack = static_cast<qtractorTrack *> (pNode->data);
 			break;
 		case ItemClip: {
-			qtractorClip *pClip = static_cast<qtractorClip *>(pNode->data);
+			qtractorClip *pClip = static_cast<qtractorClip *> (pNode->data);
 			if (pClip) {
 				pTrack = pClip->track();
 				bGrayed = pClip->isClipMute();
@@ -1065,7 +1063,7 @@ qtractorSessionListView::ItemModel::busOfIndex (
 		// by masking off the low 2 bits.
 		void *key = itemPointer(index);
 		return reinterpret_cast<qtractorBus *> (
-			reinterpret_cast<quintptr>(key) & ~quintptr(0x3));
+			reinterpret_cast<quintptr> (key) & ~quintptr(0x3));
 	} else {
 		return nullptr;
 	}
@@ -1119,11 +1117,45 @@ int qtractorSessionListView::ItemModel::busModeOfIndex (
 		// key (pointer|busMode); recover the real pointer
 		// by masking off the low 2 bits.
 		void *key = itemPointer(index);
-		return reinterpret_cast<quintptr>(key) & quintptr(0x3);
+		return reinterpret_cast<quintptr> (key) & quintptr(0x3);
 	} else {
 		return 0;
 	}
 }
+
+
+//----------------------------------------------------------------------------
+// qtractorSessionListView::ItemDelegate -- shifts Detail-column text right
+// by the meter ribbon width for ItemTrack and ItemClip rows.
+
+class qtractorSessionListView::ItemDelegate : public QStyledItemDelegate
+{
+public:
+
+	ItemDelegate(QObject *pParent = nullptr)
+		: QStyledItemDelegate(pParent) {}
+
+	void paint(QPainter *pPainter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const override
+	{
+		if (index.column() == 1) {
+			const QModelIndex& col0
+				= index.sibling(index.row(), 0);
+			const int iType
+				= col0.data(Qt::UserRole).toInt();
+			if (iType == ItemModel::ItemTrack ||
+				iType == ItemModel::ItemClip  ||
+				iType == ItemModel::ItemBus) {
+				QStyleOptionViewItem opt(option);
+				opt.rect.adjust(6, 0, 0, 0);
+				QStyledItemDelegate::paint(pPainter, opt, index);
+				return;
+			}
+		}
+		QStyledItemDelegate::paint(pPainter, option, index);
+	}
+};
 
 
 //----------------------------------------------------------------------------
@@ -1142,9 +1174,18 @@ qtractorSessionListView::qtractorSessionListView ( QWidget *pParent )
 	QTreeView::setEditTriggers(QAbstractItemView::NoEditTriggers);
 	QTreeView::setAlternatingRowColors(true);
 
+	QTreeView::setItemDelegateForColumn(1, new ItemDelegate(this));
+
 	QHeaderView *pHeaderView = QTreeView::header();
 	pHeaderView->setStretchLastSection(true);
 //	pHeaderView->hide();
+
+	// Drag-n-drop stuff.
+	//
+	m_pRubberBand = nullptr;
+
+	QTreeView::setAcceptDrops(true);
+	QTreeView::setAutoScroll(true);
 }
 
 
@@ -1153,16 +1194,151 @@ qtractorSessionListView::~qtractorSessionListView (void)
 }
 
 
+// Draw a vertical colour ribbon on the leftmost edge of each
+// ItemTrack and ItemClip row, then let the base class paint the cells.
+void qtractorSessionListView::drawRow (
+	QPainter *pPainter,
+	const QStyleOptionViewItem& option,
+	const QModelIndex& index ) const
+{
+	QTreeView::drawRow(pPainter, option, index);
+
+	// Resolve item type, track pointer, and bus type.
+	const int iType = index.data(Qt::UserRole).toInt();
+
+	qtractorTrack *pTrack = nullptr;
+	qtractorTrack::TrackType busTrackType = qtractorTrack::None;
+	if (iType == ItemModel::ItemTrack) {
+		const QModelIndex& col1 = index.sibling(index.row(), 1);
+		pTrack = static_cast<qtractorTrack *> (
+			col1.data(Qt::UserRole).value<void *> ());
+	} else if (iType == ItemModel::ItemClip) {
+		const QModelIndex& col1 = index.sibling(index.row(), 1);
+		qtractorClip *pClip = static_cast<qtractorClip *> (
+			col1.data(Qt::UserRole).value<void *> ());
+		if (pClip)
+			pTrack = pClip->track();
+	} else if (iType == ItemModel::ItemBus) {
+		const QModelIndex& col1 = index.sibling(index.row(), 1);
+		void *key = col1.data(Qt::UserRole).value<void *> ();
+		qtractorBus *pBus = reinterpret_cast<qtractorBus *> (
+			reinterpret_cast<quintptr> (key) & ~quintptr(0x3));
+		if (pBus)
+			busTrackType = pBus->busType();
+	}
+
+	if (pTrack == nullptr && busTrackType == qtractorTrack::None)
+		return;
+
+	pPainter->save();
+	pPainter->setClipping(false);
+
+	// option.rect spans the full row width; its left() is the
+	// true leftmost pixel of the row in viewport coordinates.
+	// Use the tree's indentation step as the ribbon width — it
+	// matches the root-decoration (branch indicator) column width.
+	if (pTrack) {
+		const QRect ribbonRect(
+			option.rect.left(),
+			option.rect.top() + (iType == ItemModel::ItemTrack ? 1 : 0),
+			QTreeView::indentation(),
+			option.rect.height());
+		QColor fg = pTrack->foreground().lighter();
+		pPainter->fillRect(ribbonRect, fg);
+		// For ItemTrack rows, overlay the 1-based track number centred
+		// in the ribbon, using the track's background() as text colour.
+		if (iType == ItemModel::ItemTrack) {
+			QFont font = pPainter->font();
+			font.setPointSize(font.pointSize() - 3);
+			pPainter->setFont(font);
+			const QColor bg = pTrack->background().lighter();
+			if (qAbs(bg.value() - fg.value()) < 0x33)
+				fg.setHsv(fg.hue(), fg.saturation(), (255 - fg.value()), 200);
+			pPainter->setPen(bg);
+			pPainter->drawText(ribbonRect, Qt::AlignCenter,
+				QString::number(index.row() + 1));
+		}
+	}
+
+	// Draw a meter-colour ribbon on the left edge of the second column
+	// (Detail) for ItemTrack, ItemClip, and ItemBus rows.
+	const QModelIndex& col1 = index.sibling(index.row(), 1);
+	const QRect& rect = QTreeView::visualRect(col1);
+	if (rect.isValid()) {
+		const qtractorTrack::TrackType trackType
+			= pTrack ? pTrack->trackType() : busTrackType;
+		QColor ribbonColor;
+		switch (trackType) {
+		case qtractorTrack::Audio:
+			ribbonColor = qtractorAudioMeter::color(qtractorAudioMeter::Color10dB);
+			break;
+		case qtractorTrack::Midi:
+			ribbonColor = qtractorMidiMeter::color(qtractorMidiMeter::ColorOver);
+			break;
+		default:
+			break;
+		}
+		if (ribbonColor.isValid()) {
+			const QRect ribbonRect(
+				rect.left() + 1, rect.top(), 4, rect.height() - 1);
+			pPainter->fillRect(ribbonRect, ribbonColor);
+		}
+	}
+
+	pPainter->restore();
+}
+
+
 void qtractorSessionListView::refresh ( bool bReset )
 {
 	QModelIndex index = currentIndex();
 	qtractorClip *pClip = m_pItemModel->clipOfIndex(index);
+
+	// Save expand state for every currently-expanded index before the
+	// model reset, keyed by Node* so we can restore by the same pointer
+	// after the reset (permanent group nodes and surviving pool nodes
+	// keep their Node* across refresh()).
+	QSet<void *> expandedNodes;
+	if (!bReset) {
+		// Walk all visible indexes and record those that are expanded.
+		const int iGroupCount = m_pItemModel->rowCount();
+		for (int iGroup = 0; iGroup < iGroupCount; ++iGroup) {
+			const QModelIndex& groupIdx = m_pItemModel->index(iGroup, 0);
+			if (QTreeView::isExpanded(groupIdx))
+				expandedNodes.insert(groupIdx.internalPointer());
+			const int iChildCount = m_pItemModel->rowCount(groupIdx);
+			for (int iChild = 0; iChild < iChildCount; ++iChild) {
+				const QModelIndex& childIdx
+					= m_pItemModel->index(iChild, 0, groupIdx);
+				if (QTreeView::isExpanded(childIdx))
+					expandedNodes.insert(childIdx.internalPointer());
+			}
+		}
+	}
 
 	m_pItemModel->refresh();
 
 	if (bReset) {
 		QTreeView::expandToDepth(0);
 	//	QTreeView::resizeColumnToContents(0);
+	}
+	else
+	if (!expandedNodes.isEmpty()) {
+		// Restore expand state: re-expand any node whose Node* was
+		// saved above and is still valid after the refresh.
+		const int iGroupCount = m_pItemModel->rowCount();
+		for (int iGroup = 0; iGroup < iGroupCount; ++iGroup) {
+			const QModelIndex& groupIdx = m_pItemModel->index(iGroup, 0);
+			if (expandedNodes.contains(groupIdx.internalPointer()))
+				QTreeView::setExpanded(groupIdx, true);
+			const int iChildCount = m_pItemModel->rowCount(groupIdx);
+			for (int iChild = 0; iChild < iChildCount; ++iChild) {
+				const QModelIndex& childIdx
+					= m_pItemModel->index(iChild, 0, groupIdx);
+				if (expandedNodes.contains(childIdx.internalPointer()))
+					QTreeView::setExpanded(childIdx, true);
+			}
+		}
 	}
 
 	if (pClip) {
@@ -1176,6 +1352,268 @@ void qtractorSessionListView::refresh ( bool bReset )
 void qtractorSessionListView::clear (void)
 {
 	m_pItemModel->clear();
+}
+
+
+// Drag-n-drop stuff.
+//
+void qtractorSessionListView::mousePressEvent ( QMouseEvent *pMouseEvent )
+{
+	dragLeaveEvent(nullptr);
+
+	if (pMouseEvent->button() == Qt::LeftButton) {
+		m_posDrag = pMouseEvent->pos();
+		const QModelIndex& index
+			= QTreeView::indexAt(m_posDrag);
+		m_dragItem = index.sibling(index.row(), 0);
+	}
+
+	QTreeView::mousePressEvent(pMouseEvent);
+}
+
+
+void qtractorSessionListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
+{
+	QTreeView::mouseMoveEvent(pMouseEvent);
+
+	if (m_dragItem.isValid()
+		&& (pMouseEvent->buttons() & Qt::LeftButton)
+		&& ((pMouseEvent->pos() - m_posDrag).manhattanLength()
+			>= QApplication::startDragDistance())) {
+		// Start dragging if it's the right type...
+		if (m_pItemModel->itemType(m_dragItem) == ItemModel::ItemTrack) {
+			// We'll start dragging something alright...
+			QMimeData *pMimeData = new QMimeData();
+			pMimeData->setText(
+				m_dragItem.data(Qt::DisplayRole).toString());
+			QDrag *pDrag = new QDrag(this);
+			pDrag->setMimeData(pMimeData);
+			pDrag->setPixmap(
+				m_dragItem.data(Qt::DecorationRole).value<QIcon>().pixmap(16));
+			pDrag->setHotSpot(QPoint(-4, -4));
+			pDrag->exec(Qt::MoveAction);
+		}
+		// We've dragged and maybe dropped it by now...
+		dragLeaveEvent(nullptr);
+		m_dragItem = QModelIndex();
+	}
+}
+
+
+void qtractorSessionListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
+{
+	QTreeView::mouseReleaseEvent(pMouseEvent);
+
+	dragLeaveEvent(nullptr);
+	m_dragItem = QModelIndex();
+}
+
+
+void qtractorSessionListView::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
+{
+	// Always accept the drag-enter event,
+	// so let we deal with it during move later...
+	pDragEnterEvent->accept();
+}
+
+
+void qtractorSessionListView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
+{
+	if (!canDropEvent(pDragMoveEvent)) {
+		pDragMoveEvent->ignore();
+		return;
+	}
+
+	const QModelIndex& index = dragDropItem(
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		pDragMoveEvent->position().toPoint());
+	#else
+		pDragMoveEvent->pos());
+	#endif
+	if (index.isValid()) {
+		if (!pDragMoveEvent->isAccepted()) {
+			pDragMoveEvent->setDropAction(Qt::MoveAction);
+			pDragMoveEvent->accept();
+		}
+	} else {
+		pDragMoveEvent->ignore();
+	}
+}
+
+
+void qtractorSessionListView::dragLeaveEvent ( QDragLeaveEvent */*pDragLeaveEvent*/ )
+{
+	if (m_pRubberBand)
+		delete m_pRubberBand;
+	m_pRubberBand = nullptr;
+
+	m_dropItem = QModelIndex();
+}
+
+
+void qtractorSessionListView::dropEvent ( QDropEvent *pDropEvent )
+{
+	const QPoint& pos
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		= pDropEvent->position().toPoint();
+	#else
+		= pDropEvent->pos();
+	#endif
+	dropItem(dragDropItem(pos));
+
+	dragLeaveEvent(nullptr);
+	m_dragItem = QModelIndex();
+}
+
+
+bool qtractorSessionListView::canDropEvent ( QDropEvent *pDropEvent )
+{
+	if (!m_dragItem.isValid())
+		return false;
+
+	if (m_pItemModel->itemType(m_dragItem) != ItemModel::ItemTrack)
+		return false;
+
+	if (pDropEvent->source() != this)
+		return false;
+
+	return (pDropEvent->mimeData())->hasText();
+}
+
+
+QModelIndex qtractorSessionListView::dragDropItem ( const QPoint& pos )
+{
+	if (!m_dragItem.isValid())
+		return QModelIndex();
+
+	QModelIndex index = QTreeView::indexAt(pos);
+	index = index.sibling(index.row(), 0);
+	if (!index.isValid() || index == m_dragItem)
+		return m_dropItem;
+
+	const ItemModel::ItemType itemType
+		= m_pItemModel->itemType(index);
+	if (itemType != ItemModel::ItemClip  &&
+		itemType != ItemModel::ItemTrack &&
+		itemType != ItemModel::ItemTracks)
+		index = QModelIndex();
+
+	moveRubberBand(index);
+
+	m_dropItem = index;
+
+	return index;
+}
+
+
+void qtractorSessionListView::dropItem ( const QModelIndex& index )
+{
+	if (!m_dragItem.isValid())
+		return;
+
+	if (!index.isValid() || index == m_dragItem)
+		return;
+
+	qtractorTrack *pTrack = m_pItemModel->trackOfIndex(m_dragItem);
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTrack *pTrackNext = m_pItemModel->trackOfIndex(index);
+	if (pTrackNext)
+		pTrackNext = pTrackNext->next();
+	else
+		pTrackNext = pSession->tracks().first();
+
+	if (pTrack == pTrackNext)
+		return;
+
+	const bool bExpanded
+		= QTreeView::isExpanded(m_dragItem);
+
+	pSession->execute(new qtractorMoveTrackCommand(pTrack, pTrackNext));
+
+	const QModelIndex& trackIdx = m_pItemModel->indexOfTrack(pTrack);
+	if (trackIdx.isValid()) {
+		if (bExpanded)
+			QTreeView::setExpanded(trackIdx, true);
+		QTreeView::setCurrentIndex(trackIdx);
+	}
+}
+
+
+// Draw a dragging separator line.
+void qtractorSessionListView::moveRubberBand ( const QModelIndex& index )
+{
+	if (!m_dragItem.isValid())
+		return;
+
+	// Is there any item upon we might drop anything?
+	if (!index.isValid()) {
+		if (m_pRubberBand)
+			m_pRubberBand->hide();
+		return;
+	}
+
+	// Find the drop point below this item...
+	const ItemModel::ItemType itemType
+		= m_pItemModel->itemType(index);
+	QModelIndex belowItem = index;
+	switch (itemType) {
+	case ItemModel::ItemClip:
+		belowItem = index.parent();
+		// Fall thru...
+	case ItemModel::ItemTrack:
+		if (QTreeView::isExpanded(belowItem)) {
+			const int iClipCount = m_pItemModel->rowCount(belowItem);
+			if (iClipCount > 0)
+				belowItem = m_pItemModel->index(iClipCount - 1, 0, belowItem);
+		}
+		// Fall thru...
+	default:
+		break;
+	}
+
+	ensureVisibleItem(belowItem);
+
+	// Create the rubber-band if there's none...
+	if (m_pRubberBand == nullptr)
+		m_pRubberBand = new QRubberBand(QRubberBand::Line, QTreeView::viewport());
+
+	// Just move it...
+	QRect rect = QTreeView::visualRect(belowItem);
+	switch (m_pItemModel->itemType(belowItem)) {
+	case ItemModel::ItemClip:
+		rect.setX(rect.x() - QTreeView::indentation());
+		// Fall thru...
+	case ItemModel::ItemTrack:
+		rect.setX(rect.x() - QTreeView::indentation());
+		// Fall-thu...
+	default:
+		break;
+	}
+	rect.setTop(rect.bottom() + 1);
+	rect.setHeight(3);
+	m_pRubberBand->setGeometry(rect);
+
+	// Ah, and make it visible, of course...
+	if (!m_pRubberBand->isVisible())
+		m_pRubberBand->show();
+}
+
+
+// Ensure given item is brought to viewport visibility...
+void qtractorSessionListView::ensureVisibleItem ( const QModelIndex& index )
+{
+	const QModelIndex& indexAbove
+		= QTreeView::indexAbove(index);
+	if (indexAbove.isValid())
+		QTreeView::scrollTo(indexAbove);
+
+	QTreeView::scrollTo(index);
 }
 
 
