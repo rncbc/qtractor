@@ -29,12 +29,17 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorAudioMeter.h"
+#include "qtractorMidiMeter.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorConnections.h"
 #include "qtractorBusForm.h"
 #include "qtractorTracks.h"
 
 #include <QHeaderView>
+#include <QPainter>
+#include <QStyledItemDelegate>
 
 #include <QSet>
 
@@ -444,21 +449,14 @@ qtractorSessionListView::ItemModel::nodeForClip (
 	qtractorTrack *pTrack = pClip->track();
 
 	QString sDetail;
-	QIcon clipIcon;
 	if (pTrack) {
 		const QString& sTrackIcon = pTrack->trackIcon();
-		if (!sTrackIcon.isEmpty())
-			clipIcon = QIcon::fromTheme(sTrackIcon);
 		switch (pTrack->trackType()) {
 		case qtractorTrack::Audio:
 			sDetail = tr("Audio");
-			if (clipIcon.isNull())
-				clipIcon = QIcon::fromTheme("trackAudio");
 			break;
 		case qtractorTrack::Midi:
 			sDetail = tr("MIDI");
-			if (clipIcon.isNull())
-				clipIcon = QIcon::fromTheme("trackMidi");
 			break;
 		default:
 			break;
@@ -468,7 +466,7 @@ qtractorSessionListView::ItemModel::nodeForClip (
 	sDetail += tr("clip");
 
 	pNode = new Node(pTrackNode, ItemClip,
-		pClip->clipName(), sDetail,	key, clipIcon);
+		pClip->clipName(), sDetail,	key);
 	pNode->cachedRow = (pTrack ? rowOfClip(pTrack, pClip) : 0);
 	m_nodePool.insert(key, pNode);
 	return pNode;
@@ -791,10 +789,12 @@ qtractorSessionListView::ItemModel::parent (
 	if (!child.isValid() || m_pRoot == nullptr)
 		return QModelIndex();
 
-	Node *pChildNode   = static_cast<Node *> (child.internalPointer());
-	Node *pParentNode = pChildNode->parent;
-
 	// Children of the root (group nodes) have no visible parent.
+	Node *pChildNode = static_cast<Node *> (child.internalPointer());
+	if (pChildNode == nullptr)
+		return QModelIndex();
+
+	Node *pParentNode = pChildNode->parent;
 	if (pParentNode == nullptr || pParentNode == m_pRoot)
 		return QModelIndex();
 
@@ -1127,6 +1127,40 @@ int qtractorSessionListView::ItemModel::busModeOfIndex (
 
 
 //----------------------------------------------------------------------------
+// qtractorSessionListView::ItemDelegate -- shifts Detail-column text right
+// by the meter ribbon width for ItemTrack and ItemClip rows.
+
+class qtractorSessionListView::ItemDelegate : public QStyledItemDelegate
+{
+public:
+
+	ItemDelegate(QObject *pParent = nullptr)
+		: QStyledItemDelegate(pParent) {}
+
+	void paint(QPainter *pPainter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const override
+	{
+		if (index.column() == 1) {
+			const QModelIndex& col0
+				= index.sibling(index.row(), 0);
+			const int iType
+				= col0.data(Qt::UserRole).toInt();
+			if (iType == ItemModel::ItemTrack
+					|| iType == ItemModel::ItemClip
+					|| iType == ItemModel::ItemBus) {
+				QStyleOptionViewItem opt(option);
+				opt.rect.adjust(4, 0, 0, 0);
+				QStyledItemDelegate::paint(pPainter, opt, index);
+				return;
+			}
+		}
+		QStyledItemDelegate::paint(pPainter, option, index);
+	}
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorSessionListView -- QTreeView wired to qtractorSessionListModel.
 
 qtractorSessionListView::qtractorSessionListView ( QWidget *pParent )
@@ -1142,6 +1176,8 @@ qtractorSessionListView::qtractorSessionListView ( QWidget *pParent )
 	QTreeView::setEditTriggers(QAbstractItemView::NoEditTriggers);
 	QTreeView::setAlternatingRowColors(true);
 
+	QTreeView::setItemDelegateForColumn(1, new ItemDelegate(this));
+
 	QHeaderView *pHeaderView = QTreeView::header();
 	pHeaderView->setStretchLastSection(true);
 //	pHeaderView->hide();
@@ -1150,6 +1186,102 @@ qtractorSessionListView::qtractorSessionListView ( QWidget *pParent )
 
 qtractorSessionListView::~qtractorSessionListView (void)
 {
+}
+
+
+// Draw a vertical colour ribbon on the leftmost edge of each
+// ItemTrack and ItemClip row, then let the base class paint the cells.
+void qtractorSessionListView::drawRow (
+	QPainter *pPainter,
+	const QStyleOptionViewItem& option,
+	const QModelIndex& index ) const
+{
+	QTreeView::drawRow(pPainter, option, index);
+
+	// Resolve item type, track pointer, and bus type.
+	const int iType = index.data(Qt::UserRole).toInt();
+
+	qtractorTrack *pTrack = nullptr;
+	qtractorTrack::TrackType busTrackType = qtractorTrack::None;
+	if (iType == ItemModel::ItemTrack) {
+		const QModelIndex& col1 = index.sibling(index.row(), 1);
+		pTrack = static_cast<qtractorTrack *> (
+			col1.data(Qt::UserRole).value<void *>());
+	} else if (iType == ItemModel::ItemClip) {
+		const QModelIndex& col1 = index.sibling(index.row(), 1);
+		qtractorClip *pClip = static_cast<qtractorClip *> (
+			col1.data(Qt::UserRole).value<void *>());
+		if (pClip)
+			pTrack = pClip->track();
+	} else if (iType == ItemModel::ItemBus) {
+		const QModelIndex& col1 = index.sibling(index.row(), 1);
+		void *key = col1.data(Qt::UserRole).value<void *>();
+		qtractorBus *pBus = reinterpret_cast<qtractorBus *> (
+			reinterpret_cast<quintptr>(key) & ~quintptr(0x3));
+		if (pBus)
+			busTrackType = pBus->busType();
+	}
+
+	if (pTrack == nullptr && busTrackType == qtractorTrack::None)
+		return;
+
+	pPainter->save();
+	pPainter->setClipping(false);
+
+	// option.rect spans the full row width; its left() is the
+	// true leftmost pixel of the row in viewport coordinates.
+	// Use the tree's indentation step as the ribbon width — it
+	// matches the root-decoration (branch indicator) column width.
+	if (pTrack) {
+		const QRect ribbonRect(
+			option.rect.left(),
+			option.rect.top() + (iType == ItemModel::ItemTrack ? 1 : 0),
+			QTreeView::indentation(),
+			option.rect.height());
+		QColor fg = pTrack->foreground().lighter();
+		pPainter->fillRect(ribbonRect, fg);
+		// For ItemTrack rows, overlay the 1-based track number centred
+		// in the ribbon, using the track's background() as text colour.
+		if (iType == ItemModel::ItemTrack) {
+			QFont font = pPainter->font();
+			font.setPointSize(font.pointSize() - 2);
+			pPainter->setFont(font);
+			const QColor bg
+				= pTrack->background().lighter();
+			if (qAbs(bg.value() - fg.value()) < 0x33)
+				fg.setHsv(fg.hue(), fg.saturation(), (255 - fg.value()), 200);
+			pPainter->setPen(bg);
+			pPainter->drawText(ribbonRect, Qt::AlignCenter,
+				QString::number(index.row() + 1));
+		}
+	}
+
+	// Draw a meter-colour ribbon on the left edge of the second column
+	// (Detail) for ItemTrack, ItemClip, and ItemBus rows.
+	const QModelIndex& col1 = index.sibling(index.row(), 1);
+	const QRect& rect = QTreeView::visualRect(col1);
+	if (rect.isValid()) {
+		const qtractorTrack::TrackType trackType
+			= pTrack ? pTrack->trackType() : busTrackType;
+		QColor ribbonColor;
+		switch (trackType) {
+		case qtractorTrack::Audio:
+			ribbonColor = qtractorAudioMeter::color(qtractorAudioMeter::Color10dB);
+			break;
+		case qtractorTrack::Midi:
+			ribbonColor = qtractorMidiMeter::color(qtractorMidiMeter::ColorOver);
+			break;
+		default:
+			break;
+		}
+		if (ribbonColor.isValid()) {
+			const QRect ribbonRect(
+				rect.left() + 1, rect.top(), 4, rect.height() - 1);
+			pPainter->fillRect(ribbonRect, ribbonColor);
+		}
+	}
+
+	pPainter->restore();
 }
 
 

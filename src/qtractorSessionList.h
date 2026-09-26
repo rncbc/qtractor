@@ -55,6 +55,14 @@ public:
 
 	// Forward decls.
 	class ItemModel;
+	class ItemDelegate;
+
+protected:
+
+	// Draw the colour ribbon on track/clip rows before normal cell painting.
+	void drawRow(QPainter *pPainter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const override;
 
 private:
 
