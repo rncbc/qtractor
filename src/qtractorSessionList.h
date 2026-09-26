@@ -96,6 +96,9 @@ protected slots:
 	// Selection change slot.
 	void currentRowChangedSlot(const QModelIndex&, const QModelIndex&);
 
+	// Double-click slot.
+	void doubleClickedSlot(const QModelIndex&);
+
 	// Bus-menu action slots.
 	void busInputsSlot();
 	void busOutputsSlot();
@@ -114,6 +117,9 @@ protected:
 
 	// Buses context menu builder and executive.
 	void busMenu(const QPoint& pos);
+
+	// Bus properties dialog summoner.
+	void busProperties(qtractorBus *pBus);
 
 private:
 

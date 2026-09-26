@@ -32,6 +32,7 @@
 #include "qtractorMainForm.h"
 #include "qtractorConnections.h"
 #include "qtractorBusForm.h"
+#include "qtractorTracks.h"
 
 #include <QHeaderView>
 
@@ -1200,6 +1201,9 @@ qtractorSessionList::qtractorSessionList ( QWidget *pParent )
 	QObject::connect(m_pListView->selectionModel(),
 		SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)),
 		SLOT(currentRowChangedSlot(const QModelIndex&, const QModelIndex&)));
+	QObject::connect(m_pListView,
+		SIGNAL(doubleClicked(const QModelIndex&)),
+		SLOT(doubleClickedSlot(const QModelIndex&)));
 }
 
 
@@ -1327,6 +1331,15 @@ void qtractorSessionList::busMenu ( const QPoint& pos )
 }
 
 
+// Bus properties dialog summoner.
+void qtractorSessionList::busProperties ( qtractorBus *pBus )
+{
+	qtractorBusForm busForm(this);
+	busForm.setBus(pBus);
+	busForm.exec();
+}
+
+
 // Bus-menu action slots.
 void qtractorSessionList::busInputsSlot (void)
 {
@@ -1346,14 +1359,13 @@ void qtractorSessionList::busOutputsSlot (void)
 
 void qtractorSessionList::busPropertiesSlot (void)
 {
-	qtractorBusForm busForm(this);
-	busForm.setBus(m_pBus);
-	busForm.exec();
+	busProperties(m_pBus);
 }
 
 
+// Selection change slot.
 void qtractorSessionList::currentRowChangedSlot (
-	const QModelIndex&, const QModelIndex& )
+	const QModelIndex& index, const QModelIndex& )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == nullptr)
@@ -1363,11 +1375,6 @@ void qtractorSessionList::currentRowChangedSlot (
 		= static_cast<qtractorSessionListView::ItemModel *> (
 			m_pListView->model());
 	if (pItemModel == nullptr)
-		return;
-
-	const QModelIndex& index
-		= m_pListView->currentIndex();
-	if (!index.isValid())
 		return;
 
 	qtractorClip *pClip = nullptr;
@@ -1387,6 +1394,40 @@ void qtractorSessionList::currentRowChangedSlot (
 	if (pClip) {
 		pMainForm->selectClipOnTrackView(pClip);
 		pMainForm->selectClipFile(pClip);
+	}
+}
+
+
+// Double-click slot.
+void qtractorSessionList::doubleClickedSlot (
+	const QModelIndex& index )
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == nullptr)
+		return;
+
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks == nullptr)
+		return;
+
+	qtractorSessionListView::ItemModel *pItemModel
+		= static_cast<qtractorSessionListView::ItemModel *> (
+			m_pListView->model());
+	if (pItemModel == nullptr)
+		return;
+
+	switch (pItemModel->itemType(index)) {
+	case qtractorSessionListView::ItemModel::ItemTrack:
+		pTracks->editTrack(pItemModel->trackOfIndex(index));
+		break;
+	case qtractorSessionListView::ItemModel::ItemClip:
+		pTracks->editClip(pItemModel->clipOfIndex(index));
+		break;
+	case qtractorSessionListView::ItemModel::ItemBus:
+		busProperties(pItemModel->busOfIndex(index));
+		break;
+	default:
+		break;
 	}
 }
 
