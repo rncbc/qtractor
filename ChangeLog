@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- A Session overview is now integrated as a dockable-widget on
+  the main application window (cf. main menu View / Window /
+  Session List).
+
 - VST3 Plug-ins: make sure process context is actually updated
   with transport info requirements. (EXPERIMENTAL)
 

@@ -2835,3175 +2835,3195 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMainForm</name>
     <message>
-        <location filename="../qtractorMainForm.ui" line="191"/>
-        <location filename="../qtractorMainForm.ui" line="2192"/>
+        <location filename="../qtractorMainForm.ui" line="192"/>
+        <location filename="../qtractorMainForm.ui" line="2194"/>
         <source>&amp;File</source>
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="195"/>
+        <location filename="../qtractorMainForm.ui" line="196"/>
         <source>Open &amp;Recent</source>
         <translation>打开最近(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="392"/>
-        <location filename="../qtractorMainForm.ui" line="2209"/>
+        <location filename="../qtractorMainForm.ui" line="393"/>
+        <location filename="../qtractorMainForm.ui" line="2211"/>
         <source>&amp;Edit</source>
         <translation>编辑(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="396"/>
+        <location filename="../qtractorMainForm.ui" line="397"/>
         <source>Select &amp;Mode</source>
         <translation>选择模式(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="280"/>
-        <location filename="../qtractorMainForm.ui" line="352"/>
-        <location filename="../qtractorMainForm.ui" line="406"/>
+        <location filename="../qtractorMainForm.ui" line="281"/>
+        <location filename="../qtractorMainForm.ui" line="353"/>
+        <location filename="../qtractorMainForm.ui" line="407"/>
         <source>&amp;Select</source>
         <translation>选择(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="418"/>
+        <location filename="../qtractorMainForm.ui" line="419"/>
         <source>I&amp;nsert</source>
         <translation>插入(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="425"/>
+        <location filename="../qtractorMainForm.ui" line="426"/>
         <source>Remo&amp;ve</source>
         <translation>移除(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="212"/>
-        <location filename="../qtractorMainForm.ui" line="961"/>
-        <location filename="../qtractorMainForm.ui" line="2226"/>
+        <location filename="../qtractorMainForm.ui" line="213"/>
+        <location filename="../qtractorMainForm.ui" line="963"/>
+        <location filename="../qtractorMainForm.ui" line="2228"/>
         <source>&amp;Track</source>
         <translation>轨道(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="216"/>
+        <location filename="../qtractorMainForm.ui" line="217"/>
         <source>&amp;State</source>
         <translation>状态(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="226"/>
+        <location filename="../qtractorMainForm.ui" line="227"/>
         <source>&amp;Navigate</source>
         <translation>导航(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="237"/>
+        <location filename="../qtractorMainForm.ui" line="238"/>
         <source>Mo&amp;ve</source>
         <translation>移动(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="246"/>
+        <location filename="../qtractorMainForm.ui" line="247"/>
         <source>&amp;Height</source>
         <translation>高度(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="257"/>
+        <location filename="../qtractorMainForm.ui" line="258"/>
         <source>Impor&amp;t Tracks</source>
         <translation>导入轨道(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="264"/>
+        <location filename="../qtractorMainForm.ui" line="265"/>
         <source>E&amp;xport Tracks</source>
         <translation>导出轨道(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="285"/>
+        <location filename="../qtractorMainForm.ui" line="286"/>
         <source>M&amp;ode</source>
         <translation>模式(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="276"/>
+        <location filename="../qtractorMainForm.ui" line="277"/>
         <source>A&amp;utomation</source>
         <translation>自动化(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="271"/>
+        <location filename="../qtractorMainForm.ui" line="272"/>
         <source>Instrum&amp;ent</source>
         <translation>乐器(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="335"/>
+        <location filename="../qtractorMainForm.ui" line="336"/>
         <source>T&amp;ools</source>
         <translation>工具(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="348"/>
+        <location filename="../qtractorMainForm.ui" line="349"/>
         <source>Ta&amp;ke</source>
         <translation>录音(&amp;K)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="453"/>
-        <location filename="../qtractorMainForm.ui" line="2243"/>
+        <location filename="../qtractorMainForm.ui" line="454"/>
+        <location filename="../qtractorMainForm.ui" line="2245"/>
         <source>&amp;View</source>
         <translation>视图(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="457"/>
+        <location filename="../qtractorMainForm.ui" line="458"/>
         <source>&amp;Toolbars</source>
         <translation>工具栏(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="472"/>
+        <location filename="../qtractorMainForm.ui" line="473"/>
         <source>&amp;Windows</source>
         <translation>窗口(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="482"/>
+        <location filename="../qtractorMainForm.ui" line="484"/>
         <source>&amp;Zoom</source>
         <translation>缩放(&amp;Z)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="498"/>
+        <location filename="../qtractorMainForm.ui" line="500"/>
         <source>S&amp;nap</source>
         <translation>吸附(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="522"/>
-        <location filename="../qtractorMainForm.ui" line="2277"/>
+        <location filename="../qtractorMainForm.ui" line="524"/>
+        <location filename="../qtractorMainForm.ui" line="2279"/>
         <source>T&amp;ransport</source>
         <translation>走带(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="526"/>
+        <location filename="../qtractorMainForm.ui" line="528"/>
         <source>Mo&amp;de</source>
         <translation>模式(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="535"/>
+        <location filename="../qtractorMainForm.ui" line="537"/>
         <source>St&amp;ep</source>
         <translation>步进(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="570"/>
+        <location filename="../qtractorMainForm.ui" line="572"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="591"/>
+        <location filename="../qtractorMainForm.ui" line="593"/>
         <source>&amp;New</source>
         <translation>新建(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="594"/>
+        <location filename="../qtractorMainForm.ui" line="596"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="597"/>
+        <location filename="../qtractorMainForm.ui" line="599"/>
         <source>New session</source>
         <translation>新建工程</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="600"/>
+        <location filename="../qtractorMainForm.ui" line="602"/>
         <source>New session file</source>
         <translation>新建工程文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="603"/>
+        <location filename="../qtractorMainForm.ui" line="605"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="611"/>
+        <location filename="../qtractorMainForm.ui" line="613"/>
         <source>&amp;Open...</source>
         <translation>打开(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="614"/>
+        <location filename="../qtractorMainForm.ui" line="616"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="617"/>
+        <location filename="../qtractorMainForm.ui" line="619"/>
         <source>Open session</source>
         <translation>打开工程</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="620"/>
+        <location filename="../qtractorMainForm.ui" line="622"/>
         <source>Open session from file</source>
         <translation>从文件打开工程</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="623"/>
+        <location filename="../qtractorMainForm.ui" line="625"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="631"/>
+        <location filename="../qtractorMainForm.ui" line="633"/>
         <source>&amp;Save</source>
         <translation>保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="634"/>
+        <location filename="../qtractorMainForm.ui" line="636"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="637"/>
+        <location filename="../qtractorMainForm.ui" line="639"/>
         <source>Save session</source>
         <translation>保存工程</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="640"/>
+        <location filename="../qtractorMainForm.ui" line="642"/>
         <source>Save session to file</source>
         <translation>保存工程到文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="643"/>
+        <location filename="../qtractorMainForm.ui" line="645"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="648"/>
+        <location filename="../qtractorMainForm.ui" line="650"/>
         <source>Save &amp;As...</source>
         <translation>另存为(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="651"/>
+        <location filename="../qtractorMainForm.ui" line="653"/>
         <source>Save As</source>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="654"/>
+        <location filename="../qtractorMainForm.ui" line="656"/>
         <source>Save as</source>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="657"/>
+        <location filename="../qtractorMainForm.ui" line="659"/>
         <source>Save current session with another file name</source>
         <translation>用另一个文件名保存当前工程</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="662"/>
+        <location filename="../qtractorMainForm.ui" line="664"/>
         <source>&amp;Properties...</source>
         <translation>属性(&amp;P)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="665"/>
+        <location filename="../qtractorMainForm.ui" line="667"/>
         <source>Session Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="668"/>
+        <location filename="../qtractorMainForm.ui" line="670"/>
         <source>Session properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="671"/>
+        <location filename="../qtractorMainForm.ui" line="673"/>
         <source>Edit current session properties</source>
         <translation>编辑当前工程属性</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="674"/>
+        <location filename="../qtractorMainForm.ui" line="676"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="679"/>
+        <location filename="../qtractorMainForm.ui" line="681"/>
         <source>E&amp;xit</source>
         <translation>退出(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="682"/>
-        <location filename="../qtractorMainForm.ui" line="685"/>
+        <location filename="../qtractorMainForm.ui" line="684"/>
+        <location filename="../qtractorMainForm.ui" line="687"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="688"/>
+        <location filename="../qtractorMainForm.ui" line="690"/>
         <source>Exit this application program</source>
         <translation>退出此应用程序</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="696"/>
+        <location filename="../qtractorMainForm.ui" line="698"/>
         <source>&amp;Undo</source>
         <translation>撤销(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="699"/>
-        <location filename="../qtractorMainForm.ui" line="702"/>
+        <location filename="../qtractorMainForm.ui" line="701"/>
+        <location filename="../qtractorMainForm.ui" line="704"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="705"/>
+        <location filename="../qtractorMainForm.ui" line="707"/>
         <source>Undo last action</source>
         <translation>撤销上次操作</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="708"/>
+        <location filename="../qtractorMainForm.ui" line="710"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="716"/>
+        <location filename="../qtractorMainForm.ui" line="718"/>
         <source>&amp;Redo</source>
         <translation>重做(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="719"/>
-        <location filename="../qtractorMainForm.ui" line="722"/>
+        <location filename="../qtractorMainForm.ui" line="721"/>
+        <location filename="../qtractorMainForm.ui" line="724"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="725"/>
+        <location filename="../qtractorMainForm.ui" line="727"/>
         <source>Redo last action</source>
         <translation>重做上次操作</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="728"/>
+        <location filename="../qtractorMainForm.ui" line="730"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="736"/>
+        <location filename="../qtractorMainForm.ui" line="738"/>
         <source>Cu&amp;t</source>
         <translation>剪切(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="739"/>
-        <location filename="../qtractorMainForm.ui" line="742"/>
+        <location filename="../qtractorMainForm.ui" line="741"/>
+        <location filename="../qtractorMainForm.ui" line="744"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="745"/>
+        <location filename="../qtractorMainForm.ui" line="747"/>
         <source>Cut selection to clipboard</source>
         <translation>剪切选中内容到剪贴板</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="748"/>
+        <location filename="../qtractorMainForm.ui" line="750"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="756"/>
+        <location filename="../qtractorMainForm.ui" line="758"/>
         <source>&amp;Copy</source>
         <translation>复制(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="759"/>
-        <location filename="../qtractorMainForm.ui" line="762"/>
+        <location filename="../qtractorMainForm.ui" line="761"/>
+        <location filename="../qtractorMainForm.ui" line="764"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="765"/>
+        <location filename="../qtractorMainForm.ui" line="767"/>
         <source>Copy selection to clipboard</source>
         <translation>复制选中内容到剪贴板</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="768"/>
+        <location filename="../qtractorMainForm.ui" line="770"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="776"/>
+        <location filename="../qtractorMainForm.ui" line="778"/>
         <source>&amp;Paste</source>
         <translation>粘贴(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="779"/>
-        <location filename="../qtractorMainForm.ui" line="782"/>
+        <location filename="../qtractorMainForm.ui" line="781"/>
+        <location filename="../qtractorMainForm.ui" line="784"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="785"/>
+        <location filename="../qtractorMainForm.ui" line="787"/>
         <source>Paste clipboard contents</source>
         <translation>粘贴剪贴板内容</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="788"/>
+        <location filename="../qtractorMainForm.ui" line="790"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="793"/>
+        <location filename="../qtractorMainForm.ui" line="795"/>
         <source>Past&amp;e Repeat...</source>
         <translation>重复粘贴(&amp;E)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="796"/>
+        <location filename="../qtractorMainForm.ui" line="798"/>
         <source>Paste Repeat</source>
         <translation>重复粘贴</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="799"/>
+        <location filename="../qtractorMainForm.ui" line="801"/>
         <source>Paste repeat</source>
         <translation>重复粘贴</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="802"/>
+        <location filename="../qtractorMainForm.ui" line="804"/>
         <source>Paste/repeat clipboard contents</source>
         <translation>粘贴/重复剪贴板内容</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="805"/>
+        <location filename="../qtractorMainForm.ui" line="807"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="813"/>
+        <location filename="../qtractorMainForm.ui" line="815"/>
         <source>&amp;Delete</source>
         <translation>删除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="816"/>
-        <location filename="../qtractorMainForm.ui" line="819"/>
+        <location filename="../qtractorMainForm.ui" line="818"/>
+        <location filename="../qtractorMainForm.ui" line="821"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="822"/>
+        <location filename="../qtractorMainForm.ui" line="824"/>
         <source>Delete selection</source>
         <translation>删除选中内容</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="825"/>
+        <location filename="../qtractorMainForm.ui" line="827"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="331"/>
-        <location filename="../qtractorMainForm.ui" line="836"/>
+        <location filename="../qtractorMainForm.ui" line="332"/>
+        <location filename="../qtractorMainForm.ui" line="838"/>
         <source>&amp;Clip</source>
         <translation>剪辑(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="839"/>
+        <location filename="../qtractorMainForm.ui" line="841"/>
         <source>Clip</source>
         <translation>剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="842"/>
+        <location filename="../qtractorMainForm.ui" line="844"/>
         <source>Select clip</source>
         <translation>选择剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="845"/>
+        <location filename="../qtractorMainForm.ui" line="847"/>
         <source>Clip selection mode</source>
         <translation>剪辑选择模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="856"/>
-        <location filename="../qtractorMainForm.ui" line="995"/>
+        <location filename="../qtractorMainForm.ui" line="858"/>
+        <location filename="../qtractorMainForm.ui" line="997"/>
         <source>&amp;Range</source>
         <translation>范围(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="859"/>
+        <location filename="../qtractorMainForm.ui" line="861"/>
         <source>Range</source>
         <translation>范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="862"/>
-        <location filename="../qtractorMainForm.ui" line="1001"/>
+        <location filename="../qtractorMainForm.ui" line="864"/>
+        <location filename="../qtractorMainForm.ui" line="1003"/>
         <source>Select range</source>
         <translation>选择范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="865"/>
+        <location filename="../qtractorMainForm.ui" line="867"/>
         <source>Range selection mode</source>
         <translation>范围选择模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="876"/>
+        <location filename="../qtractorMainForm.ui" line="878"/>
         <source>R&amp;ectangle</source>
         <translation>矩形(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="879"/>
+        <location filename="../qtractorMainForm.ui" line="881"/>
         <source>Rect</source>
         <translation>矩形</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="882"/>
+        <location filename="../qtractorMainForm.ui" line="884"/>
         <source>Select rectangle</source>
         <translation>选择矩形</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="885"/>
+        <location filename="../qtractorMainForm.ui" line="887"/>
         <source>Rectangular selection mode</source>
         <translation>矩形选择模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="896"/>
+        <location filename="../qtractorMainForm.ui" line="898"/>
         <source>&amp;Automation</source>
         <translation>自动化(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="899"/>
-        <location filename="../qtractorMainForm.ui" line="902"/>
+        <location filename="../qtractorMainForm.ui" line="901"/>
+        <location filename="../qtractorMainForm.ui" line="904"/>
         <source>Automation</source>
         <translation>自动化</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="905"/>
+        <location filename="../qtractorMainForm.ui" line="907"/>
         <source>Automation edit mode</source>
         <translation>自动化编辑模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="910"/>
-        <location filename="../qtractorMainForm.ui" line="2545"/>
+        <location filename="../qtractorMainForm.ui" line="912"/>
+        <location filename="../qtractorMainForm.ui" line="2567"/>
         <source>&amp;All</source>
         <translation>全部(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="913"/>
+        <location filename="../qtractorMainForm.ui" line="915"/>
         <source>Select All</source>
         <translation>全选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="916"/>
+        <location filename="../qtractorMainForm.ui" line="918"/>
         <source>Select all</source>
         <translation>全选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="919"/>
+        <location filename="../qtractorMainForm.ui" line="921"/>
         <source>Mark all as selected</source>
         <translation>标记全部为已选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="922"/>
+        <location filename="../qtractorMainForm.ui" line="924"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="927"/>
-        <location filename="../qtractorMainForm.ui" line="3060"/>
-        <location filename="../qtractorMainForm.cpp" line="7811"/>
+        <location filename="../qtractorMainForm.ui" line="929"/>
+        <location filename="../qtractorMainForm.ui" line="3082"/>
+        <location filename="../qtractorMainForm.cpp" line="7869"/>
         <source>&amp;None</source>
         <translation>无(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="930"/>
+        <location filename="../qtractorMainForm.ui" line="932"/>
         <source>Select None</source>
         <translation>取消全选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="933"/>
+        <location filename="../qtractorMainForm.ui" line="935"/>
         <source>Select none</source>
         <translation>取消全选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="936"/>
+        <location filename="../qtractorMainForm.ui" line="938"/>
         <source>Mark all as unselected</source>
         <translation>标记全部为未选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="939"/>
+        <location filename="../qtractorMainForm.ui" line="941"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="944"/>
+        <location filename="../qtractorMainForm.ui" line="946"/>
         <source>&amp;Invert</source>
         <translation>反选(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="947"/>
+        <location filename="../qtractorMainForm.ui" line="949"/>
         <source>Select Invert</source>
         <translation>反选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="950"/>
+        <location filename="../qtractorMainForm.ui" line="952"/>
         <source>Select invert</source>
         <translation>反选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="953"/>
+        <location filename="../qtractorMainForm.ui" line="955"/>
         <source>Invert selection</source>
         <translation>反向选择</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="956"/>
+        <location filename="../qtractorMainForm.ui" line="958"/>
         <source>Ctrl+I</source>
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="964"/>
+        <location filename="../qtractorMainForm.ui" line="966"/>
         <source>Select Track</source>
         <translation>选择轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="967"/>
+        <location filename="../qtractorMainForm.ui" line="969"/>
         <source>Select track</source>
         <translation>选择轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="970"/>
+        <location filename="../qtractorMainForm.ui" line="972"/>
         <source>Mark track as selected</source>
         <translation>标记轨道为已选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="973"/>
+        <location filename="../qtractorMainForm.ui" line="975"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="978"/>
-        <location filename="../qtractorMainForm.ui" line="1029"/>
-        <location filename="../qtractorMainForm.ui" line="1063"/>
+        <location filename="../qtractorMainForm.ui" line="980"/>
+        <location filename="../qtractorMainForm.ui" line="1031"/>
+        <location filename="../qtractorMainForm.ui" line="1065"/>
         <source>Trac&amp;k Range</source>
         <translation>轨道范围(&amp;K)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="981"/>
+        <location filename="../qtractorMainForm.ui" line="983"/>
         <source>Select Track Range</source>
         <translation>选择轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="984"/>
+        <location filename="../qtractorMainForm.ui" line="986"/>
         <source>Select track range</source>
         <translation>选择轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="987"/>
+        <location filename="../qtractorMainForm.ui" line="989"/>
         <source>Mark track range as selected</source>
         <translation>标记轨道范围为已选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="990"/>
+        <location filename="../qtractorMainForm.ui" line="992"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="998"/>
+        <location filename="../qtractorMainForm.ui" line="1000"/>
         <source>Select Range</source>
         <translation>选择范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1004"/>
+        <location filename="../qtractorMainForm.ui" line="1006"/>
         <source>Mark range as selected</source>
         <translation>标记范围为已选</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1007"/>
+        <location filename="../qtractorMainForm.ui" line="1009"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1012"/>
-        <location filename="../qtractorMainForm.ui" line="1046"/>
+        <location filename="../qtractorMainForm.ui" line="1014"/>
+        <location filename="../qtractorMainForm.ui" line="1048"/>
         <source>&amp;Range...</source>
         <translation>范围(&amp;R)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1015"/>
+        <location filename="../qtractorMainForm.ui" line="1017"/>
         <source>Remove Range</source>
         <translation>移除范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1018"/>
+        <location filename="../qtractorMainForm.ui" line="1020"/>
         <source>Remove range</source>
         <translation>移除范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1021"/>
+        <location filename="../qtractorMainForm.ui" line="1023"/>
         <source>Remove range as selected</source>
         <translation>移除选中范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1024"/>
+        <location filename="../qtractorMainForm.ui" line="1026"/>
         <source>Ctrl+Del</source>
         <translation>Ctrl+Del</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1032"/>
+        <location filename="../qtractorMainForm.ui" line="1034"/>
         <source>Remove Track Range</source>
         <translation>移除轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1035"/>
+        <location filename="../qtractorMainForm.ui" line="1037"/>
         <source>Remove track range</source>
         <translation>移除轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1038"/>
+        <location filename="../qtractorMainForm.ui" line="1040"/>
         <source>Remove track range as selected</source>
         <translation>移除选中轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1041"/>
+        <location filename="../qtractorMainForm.ui" line="1043"/>
         <source>Ctrl+Shift+Del</source>
         <translation>Ctrl+Shift+Del</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1049"/>
+        <location filename="../qtractorMainForm.ui" line="1051"/>
         <source>Insert Range</source>
         <translation>插入范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1052"/>
+        <location filename="../qtractorMainForm.ui" line="1054"/>
         <source>Insert range</source>
         <translation>插入范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1055"/>
+        <location filename="../qtractorMainForm.ui" line="1057"/>
         <source>Insert range as selected</source>
         <translation>插入选中范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1058"/>
+        <location filename="../qtractorMainForm.ui" line="1060"/>
         <source>Ctrl+Ins</source>
         <translation>Ctrl+Ins</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1066"/>
+        <location filename="../qtractorMainForm.ui" line="1068"/>
         <source>Insert Track Range</source>
         <translation>插入轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1069"/>
+        <location filename="../qtractorMainForm.ui" line="1071"/>
         <source>Insert track range</source>
         <translation>插入轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1072"/>
+        <location filename="../qtractorMainForm.ui" line="1074"/>
         <source>Insert track range as selected</source>
         <translation>插入选中轨道范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1075"/>
+        <location filename="../qtractorMainForm.ui" line="1077"/>
         <source>Ctrl+Shift+Ins</source>
         <translation>Ctrl+Shift+Ins</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1080"/>
+        <location filename="../qtractorMainForm.ui" line="1082"/>
         <source>Sp&amp;lit</source>
         <translation>分割(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1083"/>
+        <location filename="../qtractorMainForm.ui" line="1085"/>
         <source>Split Selection</source>
         <translation>分割选中</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1086"/>
+        <location filename="../qtractorMainForm.ui" line="1088"/>
         <source>Split selection</source>
         <translation>分割选中</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1089"/>
+        <location filename="../qtractorMainForm.ui" line="1091"/>
         <source>Split current selection</source>
         <translation>分割当前选中</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1092"/>
+        <location filename="../qtractorMainForm.ui" line="1094"/>
         <source>Ctrl+Y</source>
         <translation>Ctrl+Y</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1100"/>
+        <location filename="../qtractorMainForm.ui" line="1102"/>
         <source>&amp;Add Track...</source>
         <translation>添加轨道(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1103"/>
+        <location filename="../qtractorMainForm.ui" line="1105"/>
         <source>Add Track</source>
         <translation>添加轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1106"/>
+        <location filename="../qtractorMainForm.ui" line="1108"/>
         <source>Add track</source>
         <translation>添加轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1109"/>
+        <location filename="../qtractorMainForm.ui" line="1111"/>
         <source>Add a new track to session</source>
         <translation>向工程添加新轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1112"/>
+        <location filename="../qtractorMainForm.ui" line="1114"/>
         <source>Shift+Ins</source>
         <translation>Shift+Ins</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1120"/>
+        <location filename="../qtractorMainForm.ui" line="1122"/>
         <source>&amp;Remove Track</source>
         <translation>移除轨道(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1123"/>
+        <location filename="../qtractorMainForm.ui" line="1125"/>
         <source>Remove Track</source>
         <translation>移除轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1126"/>
+        <location filename="../qtractorMainForm.ui" line="1128"/>
         <source>Remove track</source>
         <translation>移除轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1129"/>
+        <location filename="../qtractorMainForm.ui" line="1131"/>
         <source>Remove current track from session</source>
         <translation>从工程移除当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1132"/>
+        <location filename="../qtractorMainForm.ui" line="1134"/>
         <source>Shift+Del</source>
         <translation>Shift+Del</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1137"/>
+        <location filename="../qtractorMainForm.ui" line="1139"/>
         <source>&amp;Duplicate Track</source>
         <translation>复制轨道(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1140"/>
+        <location filename="../qtractorMainForm.ui" line="1142"/>
         <source>Duplicate Track</source>
         <translation>复制轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1143"/>
+        <location filename="../qtractorMainForm.ui" line="1145"/>
         <source>Duplicate track</source>
         <translation>复制轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1146"/>
+        <location filename="../qtractorMainForm.ui" line="1148"/>
         <source>Duplicate current track</source>
         <translation>复制当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1154"/>
+        <location filename="../qtractorMainForm.ui" line="1156"/>
         <source>Track &amp;Properties...</source>
         <translation>轨道属性(&amp;P)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1157"/>
+        <location filename="../qtractorMainForm.ui" line="1159"/>
         <source>Track Properties</source>
         <translation>轨道属性</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1160"/>
+        <location filename="../qtractorMainForm.ui" line="1162"/>
         <source>Track properties</source>
         <translation>轨道属性</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1163"/>
+        <location filename="../qtractorMainForm.ui" line="1165"/>
         <source>Edit current track properties</source>
         <translation>编辑当前轨道属性</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1166"/>
+        <location filename="../qtractorMainForm.ui" line="1168"/>
         <source>Shift+F2</source>
         <translation>Shift+F2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1171"/>
+        <location filename="../qtractorMainForm.ui" line="1173"/>
         <source>&amp;Inputs</source>
         <translation>输入(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1174"/>
+        <location filename="../qtractorMainForm.ui" line="1176"/>
         <source>Track Inputs</source>
         <translation>轨道输入</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1177"/>
+        <location filename="../qtractorMainForm.ui" line="1179"/>
         <source>Track inputs</source>
         <translation>轨道输入</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1180"/>
+        <location filename="../qtractorMainForm.ui" line="1182"/>
         <source>Show current track input bus connections</source>
         <translation>显示当前轨道输入总线连接</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1185"/>
+        <location filename="../qtractorMainForm.ui" line="1187"/>
         <source>&amp;Outputs</source>
         <translation>输出(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1188"/>
+        <location filename="../qtractorMainForm.ui" line="1190"/>
         <source>Track Outputs</source>
         <translation>轨道输出</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1191"/>
+        <location filename="../qtractorMainForm.ui" line="1193"/>
         <source>Track outputs</source>
         <translation>轨道输出</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1194"/>
+        <location filename="../qtractorMainForm.ui" line="1196"/>
         <source>Show current track output bus connections</source>
         <translation>显示当前轨道输出总线连接</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1202"/>
-        <location filename="../qtractorMainForm.ui" line="1637"/>
-        <location filename="../qtractorMainForm.ui" line="2900"/>
+        <location filename="../qtractorMainForm.ui" line="1204"/>
+        <location filename="../qtractorMainForm.ui" line="1639"/>
+        <location filename="../qtractorMainForm.ui" line="2922"/>
         <source>&amp;Record</source>
         <translation>录音(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1205"/>
+        <location filename="../qtractorMainForm.ui" line="1207"/>
         <source>Record Track</source>
         <translation>录音轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1208"/>
+        <location filename="../qtractorMainForm.ui" line="1210"/>
         <source>Record track</source>
         <translation>录音轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1211"/>
+        <location filename="../qtractorMainForm.ui" line="1213"/>
         <source>Arm current track for recording</source>
         <translation>将当前轨道设为录音准备</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1219"/>
-        <location filename="../qtractorMainForm.ui" line="1770"/>
+        <location filename="../qtractorMainForm.ui" line="1221"/>
+        <location filename="../qtractorMainForm.ui" line="1772"/>
         <source>&amp;Mute</source>
         <translation>静音(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1222"/>
+        <location filename="../qtractorMainForm.ui" line="1224"/>
         <source>Mute Track</source>
         <translation>静音轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1225"/>
+        <location filename="../qtractorMainForm.ui" line="1227"/>
         <source>Mute track</source>
         <translation>静音轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1228"/>
+        <location filename="../qtractorMainForm.ui" line="1230"/>
         <source>Mute current track</source>
         <translation>将当前轨道静音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1236"/>
+        <location filename="../qtractorMainForm.ui" line="1238"/>
         <source>&amp;Solo</source>
         <translation>独奏(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1239"/>
+        <location filename="../qtractorMainForm.ui" line="1241"/>
         <source>Solo Track</source>
         <translation>独奏轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1242"/>
+        <location filename="../qtractorMainForm.ui" line="1244"/>
         <source>Solo track</source>
         <translation>独奏轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1245"/>
+        <location filename="../qtractorMainForm.ui" line="1247"/>
         <source>Solo current track</source>
         <translation>将当前轨道独奏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1253"/>
+        <location filename="../qtractorMainForm.ui" line="1255"/>
         <source>M&amp;onitor</source>
         <translation>监听(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1256"/>
+        <location filename="../qtractorMainForm.ui" line="1258"/>
         <source>Monitor Track</source>
         <translation>监听轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1259"/>
+        <location filename="../qtractorMainForm.ui" line="1261"/>
         <source>Monitor track</source>
         <translation>监听轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1262"/>
+        <location filename="../qtractorMainForm.ui" line="1264"/>
         <source>Monitor current track</source>
         <translation>监听当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1267"/>
-        <location filename="../qtractorMainForm.ui" line="2065"/>
+        <location filename="../qtractorMainForm.ui" line="1269"/>
+        <location filename="../qtractorMainForm.ui" line="2067"/>
         <source>&amp;First</source>
         <translation>第一个(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1270"/>
+        <location filename="../qtractorMainForm.ui" line="1272"/>
         <source>First Track</source>
         <translation>第一个轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1273"/>
+        <location filename="../qtractorMainForm.ui" line="1275"/>
         <source>First track</source>
         <translation>第一个轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1276"/>
+        <location filename="../qtractorMainForm.ui" line="1278"/>
         <source>Make current the first track</source>
         <translation>将第一个轨道设为当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1281"/>
-        <location filename="../qtractorMainForm.ui" line="2079"/>
+        <location filename="../qtractorMainForm.ui" line="1283"/>
+        <location filename="../qtractorMainForm.ui" line="2081"/>
         <source>&amp;Previous</source>
         <translation>上一个(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1284"/>
+        <location filename="../qtractorMainForm.ui" line="1286"/>
         <source>Previous Track</source>
         <translation>上一个轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1287"/>
+        <location filename="../qtractorMainForm.ui" line="1289"/>
         <source>Previous track</source>
         <translation>上一个轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1290"/>
+        <location filename="../qtractorMainForm.ui" line="1292"/>
         <source>Make current the previous track</source>
         <translation>将上一个轨道设为当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1295"/>
-        <location filename="../qtractorMainForm.ui" line="2093"/>
+        <location filename="../qtractorMainForm.ui" line="1297"/>
+        <location filename="../qtractorMainForm.ui" line="2095"/>
         <source>&amp;Next</source>
         <translation>下一个(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1298"/>
+        <location filename="../qtractorMainForm.ui" line="1300"/>
         <source>Next Track</source>
         <translation>下一个轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1301"/>
+        <location filename="../qtractorMainForm.ui" line="1303"/>
         <source>Next track</source>
         <translation>下一个轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1304"/>
+        <location filename="../qtractorMainForm.ui" line="1306"/>
         <source>Make current the next track</source>
         <translation>将下一个轨道设为当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1309"/>
-        <location filename="../qtractorMainForm.ui" line="2110"/>
+        <location filename="../qtractorMainForm.ui" line="1311"/>
+        <location filename="../qtractorMainForm.ui" line="2112"/>
         <source>&amp;Last</source>
         <translation>最后一个(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1312"/>
+        <location filename="../qtractorMainForm.ui" line="1314"/>
         <source>Last Track</source>
         <translation>最后一个轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1315"/>
+        <location filename="../qtractorMainForm.ui" line="1317"/>
         <source>Last track</source>
         <translation>最后一个轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1318"/>
+        <location filename="../qtractorMainForm.ui" line="1320"/>
         <source>Make current the last track</source>
         <translation>将最后一个轨道设为当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1323"/>
+        <location filename="../qtractorMainForm.ui" line="1325"/>
         <source>N&amp;one</source>
         <translation>无(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1326"/>
+        <location filename="../qtractorMainForm.ui" line="1328"/>
         <source>None Track</source>
         <translation>无轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1329"/>
+        <location filename="../qtractorMainForm.ui" line="1331"/>
         <source>None track</source>
         <translation>无轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1332"/>
+        <location filename="../qtractorMainForm.ui" line="1334"/>
         <source>None current track</source>
         <translation>取消当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1337"/>
+        <location filename="../qtractorMainForm.ui" line="1339"/>
         <source>&amp;Top</source>
         <translation>置顶(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1340"/>
+        <location filename="../qtractorMainForm.ui" line="1342"/>
         <source>Move Top</source>
         <translation>移到顶部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1343"/>
+        <location filename="../qtractorMainForm.ui" line="1345"/>
         <source>Move top</source>
         <translation>移到顶部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1346"/>
+        <location filename="../qtractorMainForm.ui" line="1348"/>
         <source>Move current track to top</source>
         <translation>将当前轨道移到顶部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1351"/>
+        <location filename="../qtractorMainForm.ui" line="1353"/>
         <source>&amp;Up</source>
         <translation>上移(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1354"/>
+        <location filename="../qtractorMainForm.ui" line="1356"/>
         <source>Move Up</source>
         <translation>上移</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1357"/>
+        <location filename="../qtractorMainForm.ui" line="1359"/>
         <source>Move up</source>
         <translation>上移</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1360"/>
+        <location filename="../qtractorMainForm.ui" line="1362"/>
         <source>Move current track up</source>
         <translation>将当前轨道上移</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1365"/>
+        <location filename="../qtractorMainForm.ui" line="1367"/>
         <source>&amp;Down</source>
         <translation>下移(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1368"/>
+        <location filename="../qtractorMainForm.ui" line="1370"/>
         <source>Move Down</source>
         <translation>下移</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1371"/>
+        <location filename="../qtractorMainForm.ui" line="1373"/>
         <source>Move down</source>
         <translation>下移</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1374"/>
+        <location filename="../qtractorMainForm.ui" line="1376"/>
         <source>Move current track down</source>
         <translation>将当前轨道下移</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1379"/>
+        <location filename="../qtractorMainForm.ui" line="1381"/>
         <source>&amp;Bottom</source>
         <translation>置底(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1382"/>
+        <location filename="../qtractorMainForm.ui" line="1384"/>
         <source>Move Bottom</source>
         <translation>移到底部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1385"/>
+        <location filename="../qtractorMainForm.ui" line="1387"/>
         <source>Move bottom</source>
         <translation>移到底部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1388"/>
+        <location filename="../qtractorMainForm.ui" line="1390"/>
         <source>Move current track to bottom</source>
         <translation>将当前轨道移到底部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1393"/>
+        <location filename="../qtractorMainForm.ui" line="1395"/>
         <source>&amp;Increase</source>
         <translation>增加(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1396"/>
+        <location filename="../qtractorMainForm.ui" line="1398"/>
         <source>Increase Height</source>
         <translation>增加高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1399"/>
+        <location filename="../qtractorMainForm.ui" line="1401"/>
         <source>Increase height</source>
         <translation>增加高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1402"/>
+        <location filename="../qtractorMainForm.ui" line="1404"/>
         <source>Increase track height</source>
         <translation>增加轨道高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1405"/>
+        <location filename="../qtractorMainForm.ui" line="1407"/>
         <source>Ctrl+Shift++</source>
         <translation>Ctrl+Shift++</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1410"/>
+        <location filename="../qtractorMainForm.ui" line="1412"/>
         <source>&amp;Decrease</source>
         <translation>减少(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1413"/>
+        <location filename="../qtractorMainForm.ui" line="1415"/>
         <source>Decrease Height</source>
         <translation>减少高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1416"/>
+        <location filename="../qtractorMainForm.ui" line="1418"/>
         <source>Decrease height</source>
         <translation>减少高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1419"/>
+        <location filename="../qtractorMainForm.ui" line="1421"/>
         <source>Decrease track height</source>
         <translation>减少轨道高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1422"/>
+        <location filename="../qtractorMainForm.ui" line="1424"/>
         <source>Ctrl+Shift+-</source>
         <translation>Ctrl+Shift+-</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1427"/>
+        <location filename="../qtractorMainForm.ui" line="1429"/>
         <source>&amp;Minimize</source>
         <translation>最小化(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1430"/>
+        <location filename="../qtractorMainForm.ui" line="1432"/>
         <source>Minimize Height</source>
         <translation>最小化高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1433"/>
+        <location filename="../qtractorMainForm.ui" line="1435"/>
         <source>Minimize height</source>
         <translation>最小化高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1436"/>
+        <location filename="../qtractorMainForm.ui" line="1438"/>
         <source>Minimize track height</source>
         <translation>最小化轨道高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1441"/>
-        <location filename="../qtractorMainForm.ui" line="2124"/>
-        <location filename="../qtractorMainForm.ui" line="2491"/>
+        <location filename="../qtractorMainForm.ui" line="1443"/>
+        <location filename="../qtractorMainForm.ui" line="2126"/>
+        <location filename="../qtractorMainForm.ui" line="2513"/>
         <source>&amp;Reset</source>
         <translation>重置(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1444"/>
+        <location filename="../qtractorMainForm.ui" line="1446"/>
         <source>Height Reset</source>
         <translation>重置高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1447"/>
+        <location filename="../qtractorMainForm.ui" line="1449"/>
         <source>Height reset</source>
         <translation>重置高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1450"/>
+        <location filename="../qtractorMainForm.ui" line="1452"/>
         <source>Reset track height</source>
         <translation>重置轨道高度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1453"/>
+        <location filename="../qtractorMainForm.ui" line="1455"/>
         <source>Ctrl+Shift+1</source>
         <translation>Ctrl+Shift+1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1461"/>
+        <location filename="../qtractorMainForm.ui" line="1463"/>
         <source>Auto &amp;Monitor</source>
         <translation>自动监听(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1464"/>
+        <location filename="../qtractorMainForm.ui" line="1466"/>
         <source>Auto Monitor</source>
         <translation>自动监听</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1467"/>
+        <location filename="../qtractorMainForm.ui" line="1469"/>
         <source>Auto monitor</source>
         <translation>自动监听</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1470"/>
+        <location filename="../qtractorMainForm.ui" line="1472"/>
         <source>Auto-monitor current track</source>
         <translation>自动监听当前轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1473"/>
+        <location filename="../qtractorMainForm.ui" line="1475"/>
         <source>F6</source>
         <translation>F6</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1481"/>
+        <location filename="../qtractorMainForm.ui" line="1483"/>
         <source>Auto Dea&amp;ctivate</source>
         <translation>自动停用(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1484"/>
+        <location filename="../qtractorMainForm.ui" line="1486"/>
         <source>Auto Deactivate</source>
         <translation>自动停用</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1487"/>
+        <location filename="../qtractorMainForm.ui" line="1489"/>
         <source>Auto-deactivate plugins</source>
         <translation>自动停用插件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1490"/>
+        <location filename="../qtractorMainForm.ui" line="1492"/>
         <source>Auto-deactivate plugins not producing sound</source>
         <translation>自动停用不发声的插件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1493"/>
+        <location filename="../qtractorMainForm.ui" line="1495"/>
         <source>Shift+F6</source>
         <translation>Shift+F6</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1501"/>
-        <location filename="../qtractorMainForm.ui" line="1535"/>
+        <location filename="../qtractorMainForm.ui" line="1503"/>
+        <location filename="../qtractorMainForm.ui" line="1537"/>
         <source>&amp;Audio...</source>
         <translation>音频(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1504"/>
+        <location filename="../qtractorMainForm.ui" line="1506"/>
         <source>Inport Audio File</source>
         <translation>导入音频文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1507"/>
+        <location filename="../qtractorMainForm.ui" line="1509"/>
         <source>Import Audio file</source>
         <translation>导入音频文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1510"/>
+        <location filename="../qtractorMainForm.ui" line="1512"/>
         <source>Import tracks from Audio file</source>
         <translation>从音频文件导入轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1518"/>
-        <location filename="../qtractorMainForm.ui" line="1552"/>
+        <location filename="../qtractorMainForm.ui" line="1520"/>
+        <location filename="../qtractorMainForm.ui" line="1554"/>
         <source>&amp;MIDI...</source>
         <translation>MIDI(&amp;M)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1521"/>
+        <location filename="../qtractorMainForm.ui" line="1523"/>
         <source>Import MIDI File</source>
         <translation>导入 MIDI 文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1524"/>
+        <location filename="../qtractorMainForm.ui" line="1526"/>
         <source>Import MIDI file</source>
         <translation>导入 MIDI 文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1527"/>
+        <location filename="../qtractorMainForm.ui" line="1529"/>
         <source>Import tracks from MIDI file</source>
         <translation>从 MIDI 文件导入轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1538"/>
+        <location filename="../qtractorMainForm.ui" line="1540"/>
         <source>Export Audio File</source>
         <translation>导出音频文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1541"/>
+        <location filename="../qtractorMainForm.ui" line="1543"/>
         <source>Export Audio file</source>
         <translation>导出音频文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1544"/>
+        <location filename="../qtractorMainForm.ui" line="1546"/>
         <source>Export tracks to Audio file</source>
         <translation>将轨道导出为音频文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1555"/>
+        <location filename="../qtractorMainForm.ui" line="1557"/>
         <source>Export MIDI File</source>
         <translation>导出 MIDI 文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1558"/>
+        <location filename="../qtractorMainForm.ui" line="1560"/>
         <source>Export MIDI file</source>
         <translation>导出 MIDI 文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1561"/>
+        <location filename="../qtractorMainForm.ui" line="1563"/>
         <source>Export tracks to MIDI file</source>
         <translation>将轨道导出为 MIDI 文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1569"/>
+        <location filename="../qtractorMainForm.ui" line="1571"/>
         <source>Log&amp;arithmic</source>
         <translation>对数(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1572"/>
-        <location filename="../qtractorMainForm.ui" line="1575"/>
+        <location filename="../qtractorMainForm.ui" line="1574"/>
+        <location filename="../qtractorMainForm.ui" line="1577"/>
         <source>Automation logarithmic</source>
         <translation>自动化对数</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1578"/>
+        <location filename="../qtractorMainForm.ui" line="1580"/>
         <source>Automation curve logarithmic scale</source>
         <translation>自动化曲线对数刻度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1586"/>
+        <location filename="../qtractorMainForm.ui" line="1588"/>
         <source>C&amp;olor...</source>
         <translation>颜色(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1589"/>
-        <location filename="../qtractorMainForm.ui" line="1592"/>
+        <location filename="../qtractorMainForm.ui" line="1591"/>
+        <location filename="../qtractorMainForm.ui" line="1594"/>
         <source>Automation color</source>
         <translation>自动化颜色</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1595"/>
+        <location filename="../qtractorMainForm.ui" line="1597"/>
         <source>Automation curve color</source>
         <translation>自动化曲线颜色</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1603"/>
+        <location filename="../qtractorMainForm.ui" line="1605"/>
         <source>&amp;Lock</source>
         <translation>锁定(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1606"/>
-        <location filename="../qtractorMainForm.ui" line="1609"/>
+        <location filename="../qtractorMainForm.ui" line="1608"/>
+        <location filename="../qtractorMainForm.ui" line="1611"/>
         <source>Automation lock</source>
         <translation>自动化锁定</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1612"/>
+        <location filename="../qtractorMainForm.ui" line="1614"/>
         <source>Lock automation curve</source>
         <translation>锁定自动化曲线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1620"/>
-        <location filename="../qtractorMainForm.ui" line="2877"/>
+        <location filename="../qtractorMainForm.ui" line="1622"/>
+        <location filename="../qtractorMainForm.ui" line="2899"/>
         <source>&amp;Play</source>
         <translation>播放(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1623"/>
-        <location filename="../qtractorMainForm.ui" line="1626"/>
+        <location filename="../qtractorMainForm.ui" line="1625"/>
+        <location filename="../qtractorMainForm.ui" line="1628"/>
         <source>Automation playback</source>
         <translation>自动化播放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1629"/>
+        <location filename="../qtractorMainForm.ui" line="1631"/>
         <source>Playback automation curve</source>
         <translation>播放自动化曲线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1640"/>
-        <location filename="../qtractorMainForm.ui" line="1643"/>
+        <location filename="../qtractorMainForm.ui" line="1642"/>
+        <location filename="../qtractorMainForm.ui" line="1645"/>
         <source>Automation record</source>
         <translation>自动化录制</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1646"/>
+        <location filename="../qtractorMainForm.ui" line="1648"/>
         <source>Record automation curve</source>
         <translation>录制自动化曲线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1651"/>
+        <location filename="../qtractorMainForm.ui" line="1653"/>
         <source>&amp;Clear</source>
         <translation>清除(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1654"/>
-        <location filename="../qtractorMainForm.ui" line="1657"/>
+        <location filename="../qtractorMainForm.ui" line="1656"/>
+        <location filename="../qtractorMainForm.ui" line="1659"/>
         <source>Automation clear</source>
         <translation>自动化清除</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1660"/>
+        <location filename="../qtractorMainForm.ui" line="1662"/>
         <source>Clear automation curve</source>
         <translation>清除自动化曲线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1668"/>
+        <location filename="../qtractorMainForm.ui" line="1670"/>
         <source>Loc&amp;k All</source>
         <translation>全部锁定(&amp;K)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1671"/>
-        <location filename="../qtractorMainForm.ui" line="1674"/>
+        <location filename="../qtractorMainForm.ui" line="1673"/>
+        <location filename="../qtractorMainForm.ui" line="1676"/>
         <source>Automation lock all</source>
         <translation>自动化全部锁定</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1677"/>
+        <location filename="../qtractorMainForm.ui" line="1679"/>
         <source>Lock all automation curves</source>
         <translation>锁定所有自动化曲线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1685"/>
+        <location filename="../qtractorMainForm.ui" line="1687"/>
         <source>Play &amp;All</source>
         <translation>全部播放(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1688"/>
-        <location filename="../qtractorMainForm.ui" line="1691"/>
+        <location filename="../qtractorMainForm.ui" line="1690"/>
+        <location filename="../qtractorMainForm.ui" line="1693"/>
         <source>Automation playback all</source>
         <translation>自动化全部播放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1694"/>
+        <location filename="../qtractorMainForm.ui" line="1696"/>
         <source>Playback all automation curves</source>
         <translation>播放所有自动化曲线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1702"/>
+        <location filename="../qtractorMainForm.ui" line="1704"/>
         <source>Rec&amp;ord All</source>
         <translation>全部录制(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1705"/>
-        <location filename="../qtractorMainForm.ui" line="1708"/>
+        <location filename="../qtractorMainForm.ui" line="1707"/>
+        <location filename="../qtractorMainForm.ui" line="1710"/>
         <source>Automation record all</source>
         <translation>自动化全部录制</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1711"/>
+        <location filename="../qtractorMainForm.ui" line="1713"/>
         <source>Record all automation curves</source>
         <translation>录制所有自动化曲线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1716"/>
+        <location filename="../qtractorMainForm.ui" line="1718"/>
         <source>C&amp;lear All</source>
         <translation>全部清除(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1719"/>
-        <location filename="../qtractorMainForm.ui" line="1722"/>
+        <location filename="../qtractorMainForm.ui" line="1721"/>
+        <location filename="../qtractorMainForm.ui" line="1724"/>
         <source>Automation clear all</source>
         <translation>自动化全部清除</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1725"/>
+        <location filename="../qtractorMainForm.ui" line="1727"/>
         <source>Clear all automation curves</source>
         <translation>清除所有自动化曲线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1733"/>
+        <location filename="../qtractorMainForm.ui" line="1735"/>
         <source>&amp;New...</source>
         <translation>新建(&amp;N)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1736"/>
+        <location filename="../qtractorMainForm.ui" line="1738"/>
         <source>New Clip</source>
         <translation>新建剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1739"/>
+        <location filename="../qtractorMainForm.ui" line="1741"/>
         <source>New clip</source>
         <translation>新建剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1742"/>
+        <location filename="../qtractorMainForm.ui" line="1744"/>
         <source>Create new clip</source>
         <translation>创建新剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1750"/>
+        <location filename="../qtractorMainForm.ui" line="1752"/>
         <source>&amp;Edit...</source>
         <translation>编辑(&amp;E)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1753"/>
+        <location filename="../qtractorMainForm.ui" line="1755"/>
         <source>Edit Clip</source>
         <translation>编辑剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1756"/>
+        <location filename="../qtractorMainForm.ui" line="1758"/>
         <source>Edit clip</source>
         <translation>编辑剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1759"/>
+        <location filename="../qtractorMainForm.ui" line="1761"/>
         <source>Edit current clip</source>
         <translation>编辑当前剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1762"/>
+        <location filename="../qtractorMainForm.ui" line="1764"/>
         <source>F4</source>
         <translation>F4</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1773"/>
+        <location filename="../qtractorMainForm.ui" line="1775"/>
         <source>Mute Clip</source>
         <translation>静音剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1776"/>
+        <location filename="../qtractorMainForm.ui" line="1778"/>
         <source>Mute clip</source>
         <translation>静音剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1779"/>
+        <location filename="../qtractorMainForm.ui" line="1781"/>
         <source>Mute current clip</source>
         <translation>将当前剪辑静音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1787"/>
+        <location filename="../qtractorMainForm.ui" line="1789"/>
         <source>&amp;Unlink</source>
         <translation>取消链接(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1790"/>
+        <location filename="../qtractorMainForm.ui" line="1792"/>
         <source>Unlink Clip</source>
         <translation>取消链接剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1793"/>
+        <location filename="../qtractorMainForm.ui" line="1795"/>
         <source>Unlink clip</source>
         <translation>取消链接剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1796"/>
+        <location filename="../qtractorMainForm.ui" line="1798"/>
         <source>Unlink current clip</source>
         <translation>取消链接当前剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1807"/>
+        <location filename="../qtractorMainForm.ui" line="1809"/>
         <source>Recor&amp;d</source>
         <translation>录制(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1810"/>
+        <location filename="../qtractorMainForm.ui" line="1812"/>
         <source>Record Clip</source>
         <translation>录制剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1813"/>
+        <location filename="../qtractorMainForm.ui" line="1815"/>
         <source>Record clip</source>
         <translation>录制剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1816"/>
+        <location filename="../qtractorMainForm.ui" line="1818"/>
         <source>Record current clip (overdub)</source>
         <translation>录制当前剪辑 (叠加)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1821"/>
+        <location filename="../qtractorMainForm.ui" line="1823"/>
         <source>&amp;Split</source>
         <translation>分割(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1824"/>
+        <location filename="../qtractorMainForm.ui" line="1826"/>
         <source>Split Clip</source>
         <translation>分割剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1827"/>
+        <location filename="../qtractorMainForm.ui" line="1829"/>
         <source>Split clip</source>
         <translation>分割剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1830"/>
+        <location filename="../qtractorMainForm.ui" line="1832"/>
         <source>Split current clip at playhead</source>
         <translation>在播放头处分割当前剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1835"/>
+        <location filename="../qtractorMainForm.ui" line="1837"/>
         <source>&amp;Merge...</source>
         <translation>合并(&amp;M)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1838"/>
+        <location filename="../qtractorMainForm.ui" line="1840"/>
         <source>Merge Clips</source>
         <translation>合并剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1841"/>
+        <location filename="../qtractorMainForm.ui" line="1843"/>
         <source>Merge clips</source>
         <translation>合并剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1844"/>
+        <location filename="../qtractorMainForm.ui" line="1846"/>
         <source>Merge selected clips</source>
         <translation>合并选中的剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1849"/>
+        <location filename="../qtractorMainForm.ui" line="1851"/>
         <source>Normali&amp;ze</source>
         <translation>标准化(&amp;Z)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1852"/>
-        <location filename="../qtractorMainForm.ui" line="1894"/>
+        <location filename="../qtractorMainForm.ui" line="1854"/>
+        <location filename="../qtractorMainForm.ui" line="1896"/>
         <source>Normalize Clip</source>
         <translation>标准化剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1855"/>
+        <location filename="../qtractorMainForm.ui" line="1857"/>
         <source>Normalize clip</source>
         <translation>标准化剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1858"/>
+        <location filename="../qtractorMainForm.ui" line="1860"/>
         <source>Normalize current clip (gain/volume)</source>
         <translation>标准化当前剪辑 (增益/音量)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1863"/>
+        <location filename="../qtractorMainForm.ui" line="1865"/>
         <source>&amp;Quantize...</source>
         <translation>量化(&amp;Q)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1866"/>
+        <location filename="../qtractorMainForm.ui" line="1868"/>
         <source>Quantize Clip</source>
         <translation>量化剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1869"/>
+        <location filename="../qtractorMainForm.ui" line="1871"/>
         <source>Quantize clip events</source>
         <translation>量化剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1872"/>
+        <location filename="../qtractorMainForm.ui" line="1874"/>
         <source>Quantize current MIDI clip events</source>
         <translation>量化当前 MIDI 剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1877"/>
+        <location filename="../qtractorMainForm.ui" line="1879"/>
         <source>&amp;Transpose...</source>
         <translation>移调(&amp;T)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1880"/>
+        <location filename="../qtractorMainForm.ui" line="1882"/>
         <source>Transpose Clip</source>
         <translation>移调剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1883"/>
+        <location filename="../qtractorMainForm.ui" line="1885"/>
         <source>Transpose clip events</source>
         <translation>移调剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1886"/>
+        <location filename="../qtractorMainForm.ui" line="1888"/>
         <source>Transpose current MIDI clip events</source>
         <translation>移调当前 MIDI 剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1891"/>
+        <location filename="../qtractorMainForm.ui" line="1893"/>
         <source>&amp;Normalize...</source>
         <translation>标准化(&amp;N)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1897"/>
+        <location filename="../qtractorMainForm.ui" line="1899"/>
         <source>Normalize clip events</source>
         <translation>标准化剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1900"/>
+        <location filename="../qtractorMainForm.ui" line="1902"/>
         <source>Normalize current MIDI clip events</source>
         <translation>标准化当前 MIDI 剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1905"/>
+        <location filename="../qtractorMainForm.ui" line="1907"/>
         <source>&amp;Randomize...</source>
         <translation>随机化(&amp;R)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1908"/>
+        <location filename="../qtractorMainForm.ui" line="1910"/>
         <source>Randomize Clip</source>
         <translation>随机化剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1911"/>
+        <location filename="../qtractorMainForm.ui" line="1913"/>
         <source>Randomize clip events</source>
         <translation>随机化剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1914"/>
+        <location filename="../qtractorMainForm.ui" line="1916"/>
         <source>Randomize current MIDI clip events</source>
         <translation>随机化当前 MIDI 剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1919"/>
+        <location filename="../qtractorMainForm.ui" line="1921"/>
         <source>Resi&amp;ze...</source>
         <translation>调整(&amp;Z)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1922"/>
+        <location filename="../qtractorMainForm.ui" line="1924"/>
         <source>Resize Clip</source>
         <translation>调整剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1925"/>
+        <location filename="../qtractorMainForm.ui" line="1927"/>
         <source>Resize clip events</source>
         <translation>调整剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1928"/>
+        <location filename="../qtractorMainForm.ui" line="1930"/>
         <source>Resize current MIDI clip events</source>
         <translation>调整当前 MIDI 剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1933"/>
+        <location filename="../qtractorMainForm.ui" line="1935"/>
         <source>Re&amp;scale...</source>
         <translation>缩放(&amp;S)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1936"/>
+        <location filename="../qtractorMainForm.ui" line="1938"/>
         <source>Rescale Clip</source>
         <translation>缩放剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1939"/>
+        <location filename="../qtractorMainForm.ui" line="1941"/>
         <source>Rescale clip events</source>
         <translation>缩放剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1942"/>
+        <location filename="../qtractorMainForm.ui" line="1944"/>
         <source>Rescale current MIDI clip events</source>
         <translation>缩放当前 MIDI 剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1947"/>
+        <location filename="../qtractorMainForm.ui" line="1949"/>
         <source>T&amp;imeshift...</source>
         <translation>时间偏移(&amp;I)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1950"/>
+        <location filename="../qtractorMainForm.ui" line="1952"/>
         <source>Timeshift Clip</source>
         <translation>时间偏移剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1953"/>
+        <location filename="../qtractorMainForm.ui" line="1955"/>
         <source>Timeshift clip events</source>
         <translation>时间偏移剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1956"/>
+        <location filename="../qtractorMainForm.ui" line="1958"/>
         <source>Timeshift current MIDI clip events</source>
         <translation>时间偏移当前 MIDI 剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1961"/>
+        <location filename="../qtractorMainForm.ui" line="1963"/>
         <source>T&amp;empo ramp...</source>
         <translation>速度渐变(&amp;E)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1964"/>
+        <location filename="../qtractorMainForm.ui" line="1966"/>
         <source>Tempo ramp Clip</source>
         <translation>速度渐变剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1967"/>
+        <location filename="../qtractorMainForm.ui" line="1969"/>
         <source>Tempo ramp clip events</source>
         <translation>速度渐变剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1970"/>
+        <location filename="../qtractorMainForm.ui" line="1972"/>
         <source>Tempo ramp current MIDI clip events</source>
         <translation>速度渐变当前 MIDI 剪辑事件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1975"/>
+        <location filename="../qtractorMainForm.ui" line="1977"/>
         <source>&amp;Tempo Adjust...</source>
         <translation>速度调整(&amp;T)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1978"/>
-        <location filename="../qtractorMainForm.ui" line="1981"/>
+        <location filename="../qtractorMainForm.ui" line="1980"/>
+        <location filename="../qtractorMainForm.ui" line="1983"/>
         <source>Tempo Adjust</source>
         <translation>速度调整</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1984"/>
+        <location filename="../qtractorMainForm.ui" line="1986"/>
         <source>Adjust session tempo from current clip selection</source>
         <translation>从当前剪辑选择调整工程速度</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1987"/>
+        <location filename="../qtractorMainForm.ui" line="1989"/>
         <source>F7</source>
         <translation>F7</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1992"/>
+        <location filename="../qtractorMainForm.ui" line="1994"/>
         <source>&amp;Cross Fade</source>
         <translation>交叉淡化(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1995"/>
+        <location filename="../qtractorMainForm.ui" line="1997"/>
         <source>Clip Cross-fade</source>
         <translation>剪辑交叉淡化</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="1998"/>
+        <location filename="../qtractorMainForm.ui" line="2000"/>
         <source>Clip cross-fade</source>
         <translation>剪辑交叉淡化</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2001"/>
+        <location filename="../qtractorMainForm.ui" line="2003"/>
         <source>Cross-fade current overlapped clips</source>
         <translation>交叉淡化当前重叠的剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2006"/>
+        <location filename="../qtractorMainForm.ui" line="2008"/>
         <source>&amp;Range Set</source>
         <translation>设置范围(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2009"/>
+        <location filename="../qtractorMainForm.ui" line="2011"/>
         <source>Clip Range</source>
         <translation>剪辑范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2012"/>
+        <location filename="../qtractorMainForm.ui" line="2014"/>
         <source>Clip range</source>
         <translation>剪辑范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2015"/>
+        <location filename="../qtractorMainForm.ui" line="2017"/>
         <source>Set edit-range from current clip extents</source>
         <translation>从当前剪辑边界设置编辑范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2023"/>
+        <location filename="../qtractorMainForm.ui" line="2025"/>
         <source>&amp;Loop Set</source>
         <translation>设置循环(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2026"/>
+        <location filename="../qtractorMainForm.ui" line="2028"/>
         <source>Clip Loop</source>
         <translation>剪辑循环</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2029"/>
+        <location filename="../qtractorMainForm.ui" line="2031"/>
         <source>Clip loop</source>
         <translation>剪辑循环</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2032"/>
+        <location filename="../qtractorMainForm.ui" line="2034"/>
         <source>Set loop-range from current clip extents</source>
         <translation>从当前剪辑边界设置循环范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2037"/>
+        <location filename="../qtractorMainForm.ui" line="2039"/>
         <source>&amp;Import...</source>
         <translation>导入(&amp;I)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2040"/>
+        <location filename="../qtractorMainForm.ui" line="2042"/>
         <source>Import Clip</source>
         <translation>导入剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2043"/>
+        <location filename="../qtractorMainForm.ui" line="2045"/>
         <source>Import clip</source>
         <translation>导入剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2046"/>
+        <location filename="../qtractorMainForm.ui" line="2048"/>
         <source>Import clip from file(s)</source>
         <translation>从文件导入剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2051"/>
+        <location filename="../qtractorMainForm.ui" line="2053"/>
         <source>E&amp;xport...</source>
         <translation>导出(&amp;X)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2054"/>
+        <location filename="../qtractorMainForm.ui" line="2056"/>
         <source>Export Clip</source>
         <translation>导出剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2057"/>
+        <location filename="../qtractorMainForm.ui" line="2059"/>
         <source>Export clip</source>
         <translation>导出剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2060"/>
+        <location filename="../qtractorMainForm.ui" line="2062"/>
         <source>Export current clip to file</source>
         <translation>将当前剪辑导出到文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2068"/>
+        <location filename="../qtractorMainForm.ui" line="2070"/>
         <source>First Take</source>
         <translation>第一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2071"/>
+        <location filename="../qtractorMainForm.ui" line="2073"/>
         <source>First take</source>
         <translation>第一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2074"/>
+        <location filename="../qtractorMainForm.ui" line="2076"/>
         <source>Select current clip first take</source>
         <translation>选择当前剪辑的第一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2082"/>
+        <location filename="../qtractorMainForm.ui" line="2084"/>
         <source>Previous Take</source>
         <translation>上一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2085"/>
+        <location filename="../qtractorMainForm.ui" line="2087"/>
         <source>Previous take</source>
         <translation>上一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2088"/>
+        <location filename="../qtractorMainForm.ui" line="2090"/>
         <source>Select current clip previous take</source>
         <translation>选择当前剪辑的上一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2096"/>
+        <location filename="../qtractorMainForm.ui" line="2098"/>
         <source>Next Take</source>
         <translation>下一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2099"/>
+        <location filename="../qtractorMainForm.ui" line="2101"/>
         <source>Next take</source>
         <translation>下一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2102"/>
+        <location filename="../qtractorMainForm.ui" line="2104"/>
         <source>Select current clip next take</source>
         <translation>选择当前剪辑的下一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2105"/>
+        <location filename="../qtractorMainForm.ui" line="2107"/>
         <source>Shift+T</source>
         <translation>Shift+T</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2113"/>
+        <location filename="../qtractorMainForm.ui" line="2115"/>
         <source>Last Take</source>
         <translation>最后一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2116"/>
+        <location filename="../qtractorMainForm.ui" line="2118"/>
         <source>Last take</source>
         <translation>最后一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2119"/>
+        <location filename="../qtractorMainForm.ui" line="2121"/>
         <source>Select current clip last take</source>
         <translation>选择当前剪辑的最后一个片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2127"/>
+        <location filename="../qtractorMainForm.ui" line="2129"/>
         <source>Reset Takes</source>
         <translation>重置片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2130"/>
+        <location filename="../qtractorMainForm.ui" line="2132"/>
         <source>Reset takes</source>
         <translation>重置片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2133"/>
+        <location filename="../qtractorMainForm.ui" line="2135"/>
         <source>Reset (unfold) current clip takes</source>
         <translation>重置(展开)当前剪辑的片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2138"/>
+        <location filename="../qtractorMainForm.ui" line="2140"/>
         <source>R&amp;ange...</source>
         <translation>范围(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2141"/>
+        <location filename="../qtractorMainForm.ui" line="2143"/>
         <source>Take Range</source>
         <translation>片段范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2144"/>
+        <location filename="../qtractorMainForm.ui" line="2146"/>
         <source>Take range</source>
         <translation>片段范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2147"/>
+        <location filename="../qtractorMainForm.ui" line="2149"/>
         <source>Range (fold) current clip into takes</source>
         <translation>将当前剪辑折叠为片段</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2155"/>
+        <location filename="../qtractorMainForm.ui" line="2157"/>
         <source>&amp;Menubar</source>
         <translation>菜单栏(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2158"/>
-        <location filename="../qtractorMainForm.ui" line="2161"/>
+        <location filename="../qtractorMainForm.ui" line="2160"/>
+        <location filename="../qtractorMainForm.ui" line="2163"/>
         <source>Menubar</source>
         <translation>菜单栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2164"/>
+        <location filename="../qtractorMainForm.ui" line="2166"/>
         <source>Show/hide the main program window menubar</source>
         <translation>显示/隐藏主窗口菜单栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2167"/>
+        <location filename="../qtractorMainForm.ui" line="2169"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2175"/>
+        <location filename="../qtractorMainForm.ui" line="2177"/>
         <source>&amp;Statusbar</source>
         <translation>状态栏(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2178"/>
-        <location filename="../qtractorMainForm.ui" line="2181"/>
+        <location filename="../qtractorMainForm.ui" line="2180"/>
+        <location filename="../qtractorMainForm.ui" line="2183"/>
         <source>Statusbar</source>
         <translation>状态栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2184"/>
+        <location filename="../qtractorMainForm.ui" line="2186"/>
         <source>Show/hide the main program window statusbar</source>
         <translation>显示/隐藏主窗口状态栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2195"/>
+        <location filename="../qtractorMainForm.ui" line="2197"/>
         <source>File Toolbar</source>
         <translation>文件工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2198"/>
+        <location filename="../qtractorMainForm.ui" line="2200"/>
         <source>File toolbar</source>
         <translation>文件工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2201"/>
+        <location filename="../qtractorMainForm.ui" line="2203"/>
         <source>Show/hide main program window file toolbar</source>
         <translation>显示/隐藏主窗口文件工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2212"/>
+        <location filename="../qtractorMainForm.ui" line="2214"/>
         <source>Edit Toolbar</source>
         <translation>编辑工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2215"/>
+        <location filename="../qtractorMainForm.ui" line="2217"/>
         <source>Edit toolbar</source>
         <translation>编辑工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2218"/>
+        <location filename="../qtractorMainForm.ui" line="2220"/>
         <source>Show/hide main program window edit toolbar</source>
         <translation>显示/隐藏主窗口编辑工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2229"/>
+        <location filename="../qtractorMainForm.ui" line="2231"/>
         <source>Track Toolbar</source>
         <translation>轨道工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2232"/>
+        <location filename="../qtractorMainForm.ui" line="2234"/>
         <source>Track toolbar</source>
         <translation>轨道工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2235"/>
+        <location filename="../qtractorMainForm.ui" line="2237"/>
         <source>Show/hide main program window track toolbar</source>
         <translation>显示/隐藏主窗口轨道工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2246"/>
+        <location filename="../qtractorMainForm.ui" line="2248"/>
         <source>View Toolbar</source>
         <translation>视图工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2249"/>
+        <location filename="../qtractorMainForm.ui" line="2251"/>
         <source>View toolbar</source>
         <translation>视图工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2252"/>
+        <location filename="../qtractorMainForm.ui" line="2254"/>
         <source>Show/hide main program window view toolbar</source>
         <translation>显示/隐藏主窗口视图工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2260"/>
+        <location filename="../qtractorMainForm.ui" line="2262"/>
         <source>&amp;Options</source>
         <translation>选项(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2263"/>
+        <location filename="../qtractorMainForm.ui" line="2265"/>
         <source>Options Toolbar</source>
         <translation>选项工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2266"/>
+        <location filename="../qtractorMainForm.ui" line="2268"/>
         <source>Options toolbar</source>
         <translation>选项工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2269"/>
+        <location filename="../qtractorMainForm.ui" line="2271"/>
         <source>Show/hide main program window options toolbar</source>
         <translation>显示/隐藏主窗口选项工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2280"/>
+        <location filename="../qtractorMainForm.ui" line="2282"/>
         <source>Transport Toolbar</source>
         <translation>走带工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2283"/>
+        <location filename="../qtractorMainForm.ui" line="2285"/>
         <source>Transport toolbar</source>
         <translation>走带工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2286"/>
+        <location filename="../qtractorMainForm.ui" line="2288"/>
         <source>Show/hide main program window transport toolbar</source>
         <translation>显示/隐藏主窗口走带工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2294"/>
+        <location filename="../qtractorMainForm.ui" line="2296"/>
         <source>T&amp;ime</source>
         <translation>时间(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2297"/>
+        <location filename="../qtractorMainForm.ui" line="2299"/>
         <source>Time Toolbar</source>
         <translation>时间工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2300"/>
+        <location filename="../qtractorMainForm.ui" line="2302"/>
         <source>Time toolbar</source>
         <translation>时间工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2303"/>
+        <location filename="../qtractorMainForm.ui" line="2305"/>
         <source>Show/hide main program window time toolbar</source>
         <translation>显示/隐藏主窗口时间工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2311"/>
+        <location filename="../qtractorMainForm.ui" line="2313"/>
         <source>Thum&amp;b</source>
         <translation>缩略图(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2314"/>
+        <location filename="../qtractorMainForm.ui" line="2316"/>
         <source>Thumb Toolbar</source>
         <translation>缩略图工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2317"/>
+        <location filename="../qtractorMainForm.ui" line="2319"/>
         <source>Thumb toolbar</source>
         <translation>缩略图工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2320"/>
+        <location filename="../qtractorMainForm.ui" line="2322"/>
         <source>Show/hide main program window thumb toolbar</source>
         <translation>显示/隐藏主窗口缩略图工具栏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2328"/>
+        <location filename="../qtractorMainForm.ui" line="2330"/>
         <source>Loc&amp;k Toolbars</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2331"/>
-        <location filename="../qtractorMainForm.ui" line="2334"/>
+        <location filename="../qtractorMainForm.ui" line="2333"/>
+        <location filename="../qtractorMainForm.ui" line="2336"/>
         <source>Lock Toolbar Positions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2337"/>
+        <location filename="../qtractorMainForm.ui" line="2339"/>
         <source>Lock/unlock main program window toolbar positions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2348"/>
+        <location filename="../qtractorMainForm.ui" line="2350"/>
+        <source>Session &amp;List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.ui" line="2353"/>
+        <source>Session List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.ui" line="2356"/>
+        <source>Session list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.ui" line="2359"/>
+        <source>Show/hide the session list window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.ui" line="2370"/>
         <source>File &amp;System</source>
         <translation>文件系统(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2351"/>
+        <location filename="../qtractorMainForm.ui" line="2373"/>
         <source>File System</source>
         <translation>文件系统</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2354"/>
+        <location filename="../qtractorMainForm.ui" line="2376"/>
         <source>File system</source>
         <translation>文件系统</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2357"/>
+        <location filename="../qtractorMainForm.ui" line="2379"/>
         <source>Show/hide the file system window</source>
         <translation>显示/隐藏文件系统窗口</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2368"/>
+        <location filename="../qtractorMainForm.ui" line="2390"/>
         <source>&amp;Files</source>
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2371"/>
-        <location filename="../qtractorMainForm.ui" line="2374"/>
+        <location filename="../qtractorMainForm.ui" line="2393"/>
+        <location filename="../qtractorMainForm.ui" line="2396"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2377"/>
+        <location filename="../qtractorMainForm.ui" line="2399"/>
         <source>Show/hide the files window</source>
         <translation>显示/隐藏文件窗口</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2388"/>
+        <location filename="../qtractorMainForm.ui" line="2410"/>
         <source>M&amp;essages</source>
         <translation>消息(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2391"/>
-        <location filename="../qtractorMainForm.ui" line="2394"/>
+        <location filename="../qtractorMainForm.ui" line="2413"/>
+        <location filename="../qtractorMainForm.ui" line="2416"/>
         <source>Messages</source>
         <translation>消息</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2397"/>
+        <location filename="../qtractorMainForm.ui" line="2419"/>
         <source>Show/hide the messages window</source>
         <translation>显示/隐藏消息窗口</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2408"/>
+        <location filename="../qtractorMainForm.ui" line="2430"/>
         <source>&amp;Connections</source>
         <translation>连接(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2411"/>
-        <location filename="../qtractorMainForm.ui" line="2414"/>
+        <location filename="../qtractorMainForm.ui" line="2433"/>
+        <location filename="../qtractorMainForm.ui" line="2436"/>
         <source>Connections</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2417"/>
+        <location filename="../qtractorMainForm.ui" line="2439"/>
         <source>Show/hide the connections window</source>
         <translation>显示/隐藏连接窗口</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2420"/>
+        <location filename="../qtractorMainForm.ui" line="2442"/>
         <source>F8</source>
         <translation>F8</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2431"/>
+        <location filename="../qtractorMainForm.ui" line="2453"/>
         <source>Mi&amp;xer</source>
         <translation>混音器(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2434"/>
-        <location filename="../qtractorMainForm.ui" line="2437"/>
+        <location filename="../qtractorMainForm.ui" line="2456"/>
+        <location filename="../qtractorMainForm.ui" line="2459"/>
         <source>Mixer</source>
         <translation>混音器</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2440"/>
+        <location filename="../qtractorMainForm.ui" line="2462"/>
         <source>Show/hide the mixer window</source>
         <translation>显示/隐藏混音器窗口</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2443"/>
+        <location filename="../qtractorMainForm.ui" line="2465"/>
         <source>F9</source>
         <translation>F9</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2451"/>
+        <location filename="../qtractorMainForm.ui" line="2473"/>
         <source>&amp;In</source>
         <translation>放大(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2454"/>
+        <location filename="../qtractorMainForm.ui" line="2476"/>
         <source>Zoom In</source>
         <translation>放大</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2457"/>
-        <location filename="../qtractorMainForm.ui" line="2460"/>
+        <location filename="../qtractorMainForm.ui" line="2479"/>
+        <location filename="../qtractorMainForm.ui" line="2482"/>
         <source>Zoom in</source>
         <translation>放大</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2463"/>
+        <location filename="../qtractorMainForm.ui" line="2485"/>
         <source>Ctrl++</source>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2471"/>
+        <location filename="../qtractorMainForm.ui" line="2493"/>
         <source>&amp;Out</source>
         <translation>缩小(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2474"/>
+        <location filename="../qtractorMainForm.ui" line="2496"/>
         <source>Zoom Out</source>
         <translation>缩小</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2477"/>
-        <location filename="../qtractorMainForm.ui" line="2480"/>
+        <location filename="../qtractorMainForm.ui" line="2499"/>
+        <location filename="../qtractorMainForm.ui" line="2502"/>
         <source>Zoom out</source>
         <translation>缩小</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2483"/>
+        <location filename="../qtractorMainForm.ui" line="2505"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2494"/>
+        <location filename="../qtractorMainForm.ui" line="2516"/>
         <source>Zoom Reset</source>
         <translation>重置缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2497"/>
-        <location filename="../qtractorMainForm.ui" line="2500"/>
+        <location filename="../qtractorMainForm.ui" line="2519"/>
+        <location filename="../qtractorMainForm.ui" line="2522"/>
         <source>Zoom reset</source>
         <translation>重置缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2503"/>
+        <location filename="../qtractorMainForm.ui" line="2525"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2511"/>
+        <location filename="../qtractorMainForm.ui" line="2533"/>
         <source>&amp;Horizontal</source>
         <translation>水平(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2514"/>
+        <location filename="../qtractorMainForm.ui" line="2536"/>
         <source>Horizontal Zoom</source>
         <translation>水平缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2517"/>
+        <location filename="../qtractorMainForm.ui" line="2539"/>
         <source>Horizontal zoom</source>
         <translation>水平缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2520"/>
+        <location filename="../qtractorMainForm.ui" line="2542"/>
         <source>Horizontal zoom mode</source>
         <translation>水平缩放模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2528"/>
+        <location filename="../qtractorMainForm.ui" line="2550"/>
         <source>&amp;Vertical</source>
         <translation>垂直(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2531"/>
+        <location filename="../qtractorMainForm.ui" line="2553"/>
         <source>Vertical Zoom</source>
         <translation>垂直缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2534"/>
+        <location filename="../qtractorMainForm.ui" line="2556"/>
         <source>Vertical zoom</source>
         <translation>垂直缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2537"/>
+        <location filename="../qtractorMainForm.ui" line="2559"/>
         <source>Vertical zoom mode</source>
         <translation>垂直缩放模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2548"/>
+        <location filename="../qtractorMainForm.ui" line="2570"/>
         <source>All Zoom</source>
         <translation>全部缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2551"/>
+        <location filename="../qtractorMainForm.ui" line="2573"/>
         <source>All zoom</source>
         <translation>全部缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2554"/>
+        <location filename="../qtractorMainForm.ui" line="2576"/>
         <source>All zoom mode</source>
         <translation>全部缩放模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2562"/>
+        <location filename="../qtractorMainForm.ui" line="2584"/>
         <source>&amp;Grid</source>
         <translation>网格(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2565"/>
-        <location filename="../qtractorMainForm.ui" line="2568"/>
+        <location filename="../qtractorMainForm.ui" line="2587"/>
+        <location filename="../qtractorMainForm.ui" line="2590"/>
         <source>Grid</source>
         <translation>网格</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2571"/>
+        <location filename="../qtractorMainForm.ui" line="2593"/>
         <source>Snap grid view mode</source>
         <translation>网格吸附视图模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2579"/>
+        <location filename="../qtractorMainForm.ui" line="2601"/>
         <source>&amp;Zebra</source>
         <translation>斑马线(&amp;Z)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2582"/>
-        <location filename="../qtractorMainForm.ui" line="2585"/>
+        <location filename="../qtractorMainForm.ui" line="2604"/>
+        <location filename="../qtractorMainForm.ui" line="2607"/>
         <source>Zebra</source>
         <translation>斑马线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2588"/>
+        <location filename="../qtractorMainForm.ui" line="2610"/>
         <source>Bar zebra view mode</source>
         <translation>小节斑马线视图模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2596"/>
+        <location filename="../qtractorMainForm.ui" line="2618"/>
         <source>Too&amp;l Tips</source>
         <translation>工具提示(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2599"/>
-        <location filename="../qtractorMainForm.ui" line="2602"/>
+        <location filename="../qtractorMainForm.ui" line="2621"/>
+        <location filename="../qtractorMainForm.ui" line="2624"/>
         <source>Tool tips</source>
         <translation>工具提示</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2605"/>
+        <location filename="../qtractorMainForm.ui" line="2627"/>
         <source>Floating tool tips view mode</source>
         <translation>浮动工具提示视图模式</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2610"/>
+        <location filename="../qtractorMainForm.ui" line="2632"/>
         <source>&amp;Refresh</source>
         <translation>刷新(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2613"/>
-        <location filename="../qtractorMainForm.ui" line="2616"/>
+        <location filename="../qtractorMainForm.ui" line="2635"/>
+        <location filename="../qtractorMainForm.ui" line="2638"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2619"/>
+        <location filename="../qtractorMainForm.ui" line="2641"/>
         <source>Refresh views</source>
         <translation>刷新视图</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2622"/>
+        <location filename="../qtractorMainForm.ui" line="2644"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2630"/>
+        <location filename="../qtractorMainForm.ui" line="2652"/>
         <source>&amp;Instruments...</source>
         <translation>乐器(&amp;I)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2633"/>
-        <location filename="../qtractorMainForm.ui" line="2636"/>
+        <location filename="../qtractorMainForm.ui" line="2655"/>
+        <location filename="../qtractorMainForm.ui" line="2658"/>
         <source>Instruments</source>
         <translation>乐器</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2639"/>
+        <location filename="../qtractorMainForm.ui" line="2661"/>
         <source>Change instrument definitions and files</source>
         <translation>更改乐器定义和文件</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2647"/>
+        <location filename="../qtractorMainForm.ui" line="2669"/>
         <source>&amp;Controllers...</source>
         <translation>控制器(&amp;C)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2650"/>
-        <location filename="../qtractorMainForm.ui" line="2653"/>
+        <location filename="../qtractorMainForm.ui" line="2672"/>
+        <location filename="../qtractorMainForm.ui" line="2675"/>
         <source>Controllers</source>
         <translation>控制器</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2656"/>
+        <location filename="../qtractorMainForm.ui" line="2678"/>
         <source>Change MIDI controllers configuration</source>
         <translation>更改 MIDI 控制器配置</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2664"/>
+        <location filename="../qtractorMainForm.ui" line="2686"/>
         <source>&amp;Buses...</source>
         <translation>总线(&amp;B)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2667"/>
-        <location filename="../qtractorMainForm.ui" line="2670"/>
+        <location filename="../qtractorMainForm.ui" line="2689"/>
+        <location filename="../qtractorMainForm.ui" line="2692"/>
         <source>Buses</source>
         <translation>总线</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2673"/>
+        <location filename="../qtractorMainForm.ui" line="2695"/>
         <source>Change session bus definitions</source>
         <translation>更改工程总线定义</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2678"/>
+        <location filename="../qtractorMainForm.ui" line="2700"/>
         <source>Tempo M&amp;ap / Markers...</source>
         <translation>速度图谱/标记(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2681"/>
+        <location filename="../qtractorMainForm.ui" line="2703"/>
         <source>Tempo Map / Markers</source>
         <translation>速度图谱/标记</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2684"/>
+        <location filename="../qtractorMainForm.ui" line="2706"/>
         <source>Tempo map / markers</source>
         <translation>速度图谱/标记</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2687"/>
+        <location filename="../qtractorMainForm.ui" line="2709"/>
         <source>Change session tempo map / markers</source>
         <translation>更改工程速度图谱/标记</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2692"/>
+        <location filename="../qtractorMainForm.ui" line="2714"/>
         <source>&amp;Options...</source>
         <translation>选项(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2695"/>
-        <location filename="../qtractorMainForm.ui" line="2698"/>
+        <location filename="../qtractorMainForm.ui" line="2717"/>
+        <location filename="../qtractorMainForm.ui" line="2720"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2701"/>
+        <location filename="../qtractorMainForm.ui" line="2723"/>
         <source>Change general application program options</source>
         <translation>更改应用程序常规选项</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2704"/>
+        <location filename="../qtractorMainForm.ui" line="2726"/>
         <source>F12</source>
         <translation>F12</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2712"/>
-        <location filename="../qtractorMainForm.ui" line="2809"/>
+        <location filename="../qtractorMainForm.ui" line="2734"/>
+        <location filename="../qtractorMainForm.ui" line="2831"/>
         <source>&amp;Backward</source>
         <translation>后退(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2715"/>
-        <location filename="../qtractorMainForm.ui" line="2718"/>
+        <location filename="../qtractorMainForm.ui" line="2737"/>
+        <location filename="../qtractorMainForm.ui" line="2740"/>
         <source>Backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2721"/>
+        <location filename="../qtractorMainForm.ui" line="2743"/>
         <source>Transport backward</source>
         <translation>走带后退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2724"/>
+        <location filename="../qtractorMainForm.ui" line="2746"/>
         <source>Backspace</source>
         <translation>Backspace</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2735"/>
+        <location filename="../qtractorMainForm.ui" line="2757"/>
         <source>Re&amp;wind</source>
         <translation>快退(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2738"/>
-        <location filename="../qtractorMainForm.ui" line="2741"/>
+        <location filename="../qtractorMainForm.ui" line="2760"/>
+        <location filename="../qtractorMainForm.ui" line="2763"/>
         <source>Rewind</source>
         <translation>快退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2744"/>
+        <location filename="../qtractorMainForm.ui" line="2766"/>
         <source>Transport rewind</source>
         <translation>走带快退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2755"/>
+        <location filename="../qtractorMainForm.ui" line="2777"/>
         <source>F&amp;ast Forward</source>
         <translation>快进(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2758"/>
+        <location filename="../qtractorMainForm.ui" line="2780"/>
         <source>Fast Forward</source>
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2761"/>
+        <location filename="../qtractorMainForm.ui" line="2783"/>
         <source>Fast forward</source>
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2764"/>
+        <location filename="../qtractorMainForm.ui" line="2786"/>
         <source>Transport fast forward</source>
         <translation>走带快进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2772"/>
-        <location filename="../qtractorMainForm.ui" line="2823"/>
+        <location filename="../qtractorMainForm.ui" line="2794"/>
+        <location filename="../qtractorMainForm.ui" line="2845"/>
         <source>&amp;Forward</source>
         <translation>前进(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2775"/>
-        <location filename="../qtractorMainForm.ui" line="2778"/>
+        <location filename="../qtractorMainForm.ui" line="2797"/>
+        <location filename="../qtractorMainForm.ui" line="2800"/>
         <source>Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2781"/>
+        <location filename="../qtractorMainForm.ui" line="2803"/>
         <source>Transport forward</source>
         <translation>走带前进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2792"/>
+        <location filename="../qtractorMainForm.ui" line="2814"/>
         <source>&amp;Loop</source>
         <translation>循环(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2795"/>
-        <location filename="../qtractorMainForm.ui" line="2798"/>
+        <location filename="../qtractorMainForm.ui" line="2817"/>
+        <location filename="../qtractorMainForm.ui" line="2820"/>
         <source>Loop</source>
         <translation>循环</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2801"/>
+        <location filename="../qtractorMainForm.ui" line="2823"/>
         <source>Transport loop</source>
         <translation>走带循环</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2804"/>
+        <location filename="../qtractorMainForm.ui" line="2826"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2812"/>
+        <location filename="../qtractorMainForm.ui" line="2834"/>
         <source>Step Backward</source>
         <translation>步退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2815"/>
+        <location filename="../qtractorMainForm.ui" line="2837"/>
         <source>Step backward</source>
         <translation>步退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2818"/>
+        <location filename="../qtractorMainForm.ui" line="2840"/>
         <source>Transport step backward</source>
         <translation>走带步退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2826"/>
+        <location filename="../qtractorMainForm.ui" line="2848"/>
         <source>Step Forward</source>
         <translation>步进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2829"/>
+        <location filename="../qtractorMainForm.ui" line="2851"/>
         <source>Step forward</source>
         <translation>步进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2832"/>
+        <location filename="../qtractorMainForm.ui" line="2854"/>
         <source>Transport step forward</source>
         <translation>走带步进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2837"/>
+        <location filename="../qtractorMainForm.ui" line="2859"/>
         <source>Loop &amp;Set</source>
         <translation>设置循环(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2840"/>
+        <location filename="../qtractorMainForm.ui" line="2862"/>
         <source>Loop Set</source>
         <translation>设置循环</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2843"/>
+        <location filename="../qtractorMainForm.ui" line="2865"/>
         <source>Loop set</source>
         <translation>设置循环</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2846"/>
+        <location filename="../qtractorMainForm.ui" line="2868"/>
         <source>Transport loop set</source>
         <translation>走带循环设置</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2849"/>
+        <location filename="../qtractorMainForm.ui" line="2871"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2857"/>
+        <location filename="../qtractorMainForm.ui" line="2879"/>
         <source>&amp;Stop</source>
         <translation>停止(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2860"/>
-        <location filename="../qtractorMainForm.ui" line="2863"/>
+        <location filename="../qtractorMainForm.ui" line="2882"/>
+        <location filename="../qtractorMainForm.ui" line="2885"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2866"/>
+        <location filename="../qtractorMainForm.ui" line="2888"/>
         <source>Transport stop</source>
         <translation>走带停止</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2880"/>
-        <location filename="../qtractorMainForm.ui" line="2883"/>
+        <location filename="../qtractorMainForm.ui" line="2902"/>
+        <location filename="../qtractorMainForm.ui" line="2905"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2886"/>
+        <location filename="../qtractorMainForm.ui" line="2908"/>
         <source>Transport play/pause</source>
         <translation>走带播放/暂停</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2889"/>
+        <location filename="../qtractorMainForm.ui" line="2911"/>
         <source>Space</source>
         <translation>Space</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2903"/>
-        <location filename="../qtractorMainForm.ui" line="2906"/>
+        <location filename="../qtractorMainForm.ui" line="2925"/>
+        <location filename="../qtractorMainForm.ui" line="2928"/>
         <source>Record</source>
         <translation>录制</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2909"/>
+        <location filename="../qtractorMainForm.ui" line="2931"/>
         <source>Transport record</source>
         <translation>走带录制</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2920"/>
+        <location filename="../qtractorMainForm.ui" line="2942"/>
         <source>&amp;Punch</source>
         <translation>插入录音(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2923"/>
+        <location filename="../qtractorMainForm.ui" line="2945"/>
         <source>Punch</source>
         <translation>插入录音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2926"/>
+        <location filename="../qtractorMainForm.ui" line="2948"/>
         <source>Punch in/out</source>
         <translation>插入录音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2929"/>
+        <location filename="../qtractorMainForm.ui" line="2951"/>
         <source>Transport punch in/out</source>
         <translation>走带插入录音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2932"/>
+        <location filename="../qtractorMainForm.ui" line="2954"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2937"/>
+        <location filename="../qtractorMainForm.ui" line="2959"/>
         <source>Punch Se&amp;t</source>
         <translation>设置插入录音(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2940"/>
+        <location filename="../qtractorMainForm.ui" line="2962"/>
         <source>Punch Set</source>
         <translation>设置插入录音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2943"/>
+        <location filename="../qtractorMainForm.ui" line="2965"/>
         <source>Punch in/out set</source>
         <translation>插入录音设置</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2946"/>
+        <location filename="../qtractorMainForm.ui" line="2968"/>
         <source>Transport punch in/out set</source>
         <translation>走带插入录音设置</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2949"/>
+        <location filename="../qtractorMainForm.ui" line="2971"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2960"/>
+        <location filename="../qtractorMainForm.ui" line="2982"/>
         <source>&amp;Count-in</source>
         <translation>预备拍(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2963"/>
-        <location filename="../qtractorMainForm.ui" line="2966"/>
-        <location filename="../qtractorMainForm.ui" line="2969"/>
+        <location filename="../qtractorMainForm.ui" line="2985"/>
+        <location filename="../qtractorMainForm.ui" line="2988"/>
+        <location filename="../qtractorMainForm.ui" line="2991"/>
         <source>Count-in</source>
         <translation>预备拍</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2980"/>
+        <location filename="../qtractorMainForm.ui" line="3002"/>
         <source>&amp;Metronome</source>
         <translation>节拍器(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="2983"/>
-        <location filename="../qtractorMainForm.ui" line="2986"/>
-        <location filename="../qtractorMainForm.ui" line="2989"/>
+        <location filename="../qtractorMainForm.ui" line="3005"/>
+        <location filename="../qtractorMainForm.ui" line="3008"/>
+        <location filename="../qtractorMainForm.ui" line="3011"/>
         <source>Metronome</source>
         <translation>节拍器</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3000"/>
+        <location filename="../qtractorMainForm.ui" line="3022"/>
         <source>F&amp;ollow Playhead</source>
         <translation>跟随播放头(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3003"/>
+        <location filename="../qtractorMainForm.ui" line="3025"/>
         <source>Follow Playhead</source>
         <translation>跟随播放头</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3006"/>
-        <location filename="../qtractorMainForm.ui" line="3009"/>
+        <location filename="../qtractorMainForm.ui" line="3028"/>
+        <location filename="../qtractorMainForm.ui" line="3031"/>
         <source>Follow playhead</source>
         <translation>跟随播放头</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3020"/>
+        <location filename="../qtractorMainForm.ui" line="3042"/>
         <source>A&amp;uto Backward</source>
         <translation>自动后退(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3023"/>
+        <location filename="../qtractorMainForm.ui" line="3045"/>
         <source>Auto Backward</source>
         <translation>自动后退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3026"/>
-        <location filename="../qtractorMainForm.ui" line="3029"/>
+        <location filename="../qtractorMainForm.ui" line="3048"/>
+        <location filename="../qtractorMainForm.ui" line="3051"/>
         <source>Auto backward</source>
         <translation>自动后退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3040"/>
+        <location filename="../qtractorMainForm.ui" line="3062"/>
         <source>&amp;Continue Past End</source>
         <translation>超出末尾继续(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3043"/>
+        <location filename="../qtractorMainForm.ui" line="3065"/>
         <source>Continue Past End</source>
         <translation>超出末尾继续</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3046"/>
-        <location filename="../qtractorMainForm.ui" line="3049"/>
+        <location filename="../qtractorMainForm.ui" line="3068"/>
+        <location filename="../qtractorMainForm.ui" line="3071"/>
         <source>Continue past end</source>
         <translation>超出末尾继续</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3066"/>
+        <location filename="../qtractorMainForm.ui" line="3088"/>
         <source>Transport mode: None</source>
         <translation>走带模式：无</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3069"/>
+        <location filename="../qtractorMainForm.ui" line="3091"/>
         <source>Transport mode set to None</source>
         <translation>走带模式设置为无</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3080"/>
+        <location filename="../qtractorMainForm.ui" line="3102"/>
         <source>&amp;Slave</source>
         <translation>从属(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3083"/>
+        <location filename="../qtractorMainForm.ui" line="3105"/>
         <source>Slave</source>
         <translation>从属</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3086"/>
+        <location filename="../qtractorMainForm.ui" line="3108"/>
         <source>Transport mode: Slave</source>
         <translation>走带模式：从属</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3089"/>
+        <location filename="../qtractorMainForm.ui" line="3111"/>
         <source>Transport mode set to Slave</source>
         <translation>走带模式设置为从属</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3100"/>
+        <location filename="../qtractorMainForm.ui" line="3122"/>
         <source>&amp;Master</source>
         <translation>主控(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3103"/>
+        <location filename="../qtractorMainForm.ui" line="3125"/>
         <source>Master</source>
         <translation>主控</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3106"/>
+        <location filename="../qtractorMainForm.ui" line="3128"/>
         <source>Transport mode: Master</source>
         <translation>走带模式：主控</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3109"/>
+        <location filename="../qtractorMainForm.ui" line="3131"/>
         <source>Transport mode set to Master</source>
         <translation>走带模式设置为主控</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3120"/>
+        <location filename="../qtractorMainForm.ui" line="3142"/>
         <source>&amp;Full</source>
         <translation>全部(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3123"/>
+        <location filename="../qtractorMainForm.ui" line="3145"/>
         <source>Full</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3126"/>
+        <location filename="../qtractorMainForm.ui" line="3148"/>
         <source>Transport mode: Full</source>
         <translation>走带模式：全部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3129"/>
+        <location filename="../qtractorMainForm.ui" line="3151"/>
         <source>Transport mode set to Full</source>
         <translation>走带模式设置为全部</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3137"/>
+        <location filename="../qtractorMainForm.ui" line="3159"/>
         <source>Pa&amp;nic</source>
         <translation>紧急停止(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3140"/>
-        <location filename="../qtractorMainForm.ui" line="3143"/>
+        <location filename="../qtractorMainForm.ui" line="3162"/>
+        <location filename="../qtractorMainForm.ui" line="3165"/>
         <source>Panic</source>
         <translation>紧急停止</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3146"/>
+        <location filename="../qtractorMainForm.ui" line="3168"/>
         <source>All MIDI tracks shut off (panic)</source>
         <translation>关闭所有 MIDI 轨道 (紧急停止)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3154"/>
+        <location filename="../qtractorMainForm.ui" line="3176"/>
         <source>&amp;Shortcuts...</source>
         <translation>快捷键(&amp;S)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3157"/>
-        <location filename="../qtractorMainForm.ui" line="3160"/>
+        <location filename="../qtractorMainForm.ui" line="3179"/>
+        <location filename="../qtractorMainForm.ui" line="3182"/>
         <source>Shortcuts</source>
         <translation>快捷键</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3163"/>
+        <location filename="../qtractorMainForm.ui" line="3185"/>
         <source>Keyboard shortcuts</source>
         <translation>键盘快捷键</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3168"/>
+        <location filename="../qtractorMainForm.ui" line="3190"/>
         <source>&amp;About...</source>
         <translation>关于(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3171"/>
-        <location filename="../qtractorMainForm.ui" line="3174"/>
-        <location filename="../qtractorMainForm.cpp" line="6654"/>
+        <location filename="../qtractorMainForm.ui" line="3193"/>
+        <location filename="../qtractorMainForm.ui" line="3196"/>
+        <location filename="../qtractorMainForm.cpp" line="6710"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3177"/>
+        <location filename="../qtractorMainForm.ui" line="3199"/>
         <source>Show information about this application program</source>
         <translation>显示此应用程序的信息</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3182"/>
+        <location filename="../qtractorMainForm.ui" line="3204"/>
         <source>About &amp;Qt...</source>
         <translation>关于 Qt(&amp;Q)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3185"/>
-        <location filename="../qtractorMainForm.ui" line="3188"/>
+        <location filename="../qtractorMainForm.ui" line="3207"/>
+        <location filename="../qtractorMainForm.ui" line="3210"/>
         <source>About Qt</source>
         <translation>关于 Qt</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3191"/>
+        <location filename="../qtractorMainForm.ui" line="3213"/>
         <source>Show information about the Qt toolkit</source>
         <translation>显示 Qt 工具包的信息</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="562"/>
+        <location filename="../qtractorMainForm.cpp" line="573"/>
         <source>Current tempo (BPM)</source>
         <translation>当前速度 (BPM)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="578"/>
+        <location filename="../qtractorMainForm.cpp" line="589"/>
         <source>Snap/beat</source>
         <translation>吸附/拍</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="638"/>
+        <location filename="../qtractorMainForm.cpp" line="649"/>
         <source>Track</source>
         <translation>轨道</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="641"/>
+        <location filename="../qtractorMainForm.cpp" line="652"/>
         <source>Current track name</source>
         <translation>当前轨道名称</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="654"/>
-        <location filename="../qtractorMainForm.cpp" line="7033"/>
+        <location filename="../qtractorMainForm.cpp" line="665"/>
+        <location filename="../qtractorMainForm.cpp" line="7091"/>
         <source>MOD</source>
         <translation>已修改</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="657"/>
+        <location filename="../qtractorMainForm.cpp" line="668"/>
         <source>Session modification state</source>
         <translation>工程修改状态</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="663"/>
-        <location filename="../qtractorMainForm.cpp" line="7038"/>
+        <location filename="../qtractorMainForm.cpp" line="674"/>
+        <location filename="../qtractorMainForm.cpp" line="7096"/>
         <source>REC</source>
         <translation>录音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="666"/>
+        <location filename="../qtractorMainForm.cpp" line="677"/>
         <source>Session record state</source>
         <translation>工程录音状态</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="672"/>
-        <location filename="../qtractorMainForm.cpp" line="7043"/>
+        <location filename="../qtractorMainForm.cpp" line="683"/>
+        <location filename="../qtractorMainForm.cpp" line="7101"/>
         <source>MUTE</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="675"/>
+        <location filename="../qtractorMainForm.cpp" line="686"/>
         <source>Session muting state</source>
         <translation>工程静音状态</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="681"/>
-        <location filename="../qtractorMainForm.cpp" line="7048"/>
+        <location filename="../qtractorMainForm.cpp" line="692"/>
+        <location filename="../qtractorMainForm.cpp" line="7106"/>
         <source>SOLO</source>
         <translation>独奏</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="684"/>
+        <location filename="../qtractorMainForm.cpp" line="695"/>
         <source>Session soloing state</source>
         <translation>工程独奏状态</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="690"/>
-        <location filename="../qtractorMainForm.cpp" line="7053"/>
+        <location filename="../qtractorMainForm.cpp" line="701"/>
+        <location filename="../qtractorMainForm.cpp" line="7111"/>
         <source>LOOP</source>
         <translation>循环</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="693"/>
+        <location filename="../qtractorMainForm.cpp" line="704"/>
         <source>Session looping state</source>
         <translation>工程循环状态</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="711"/>
+        <location filename="../qtractorMainForm.cpp" line="722"/>
         <source>Session total time</source>
         <translation>工程总时间</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="730"/>
+        <location filename="../qtractorMainForm.cpp" line="741"/>
         <source>Session sample rate</source>
         <translation>工程采样率</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="1745"/>
+        <location filename="../qtractorMainForm.cpp" line="1780"/>
         <source>Could not set default session directory:
 
 %1
@@ -6016,104 +6036,104 @@ Sorry.</source>
 抱歉。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="1704"/>
+        <location filename="../qtractorMainForm.cpp" line="1739"/>
         <source>Ready</source>
         <translation>就绪</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="703"/>
+        <location filename="../qtractorMainForm.cpp" line="714"/>
         <source>Session XRUN state</source>
         <translation>工程 XRUN 状态</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="721"/>
+        <location filename="../qtractorMainForm.cpp" line="732"/>
         <source>Session buffer size</source>
         <translation>工程缓冲区大小</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2049"/>
-        <location filename="../qtractorMainForm.cpp" line="8916"/>
+        <location filename="../qtractorMainForm.cpp" line="2095"/>
+        <location filename="../qtractorMainForm.cpp" line="8974"/>
         <source>Untitled%1</source>
         <translation>未命名%1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2098"/>
-        <location filename="../qtractorMainForm.cpp" line="3079"/>
+        <location filename="../qtractorMainForm.cpp" line="2144"/>
+        <location filename="../qtractorMainForm.cpp" line="3126"/>
         <source>New session: &quot;%1&quot;.</source>
         <translation>新建工程：&quot;%1&quot;。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2119"/>
+        <location filename="../qtractorMainForm.cpp" line="2165"/>
         <source>Session files (*.%1 *.%2 *.%3)</source>
         <translation>工程文件 (*.%1 *.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2123"/>
+        <location filename="../qtractorMainForm.cpp" line="2169"/>
         <source>Session files (*.%1 *.%2)</source>
         <translation>工程文件 (*.%1 *.%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2126"/>
+        <location filename="../qtractorMainForm.cpp" line="2172"/>
         <source>Template files (*.%1)</source>
         <translation>模板文件 (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2129"/>
+        <location filename="../qtractorMainForm.cpp" line="2175"/>
         <source>Archive files (*.%1)</source>
         <translation>归档文件 (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2132"/>
+        <location filename="../qtractorMainForm.cpp" line="2178"/>
         <source>All files (*.*)</source>
         <translation>所有文件 (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2137"/>
+        <location filename="../qtractorMainForm.cpp" line="2183"/>
         <source>Open Session</source>
         <translation>打开工程</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2215"/>
+        <location filename="../qtractorMainForm.cpp" line="2261"/>
         <source>Default session files (*.%1)</source>
         <translation>默认工程文件 (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2232"/>
+        <location filename="../qtractorMainForm.cpp" line="2278"/>
         <source>Regular session files (*.%1)</source>
         <translation>常规工程文件 (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2240"/>
+        <location filename="../qtractorMainForm.cpp" line="2286"/>
         <source>Template session files (*.%1)</source>
         <translation>模板工程文件 (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2249"/>
+        <location filename="../qtractorMainForm.cpp" line="2295"/>
         <source>Archive session files (*.%1)</source>
         <translation>归档工程文件 (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2256"/>
+        <location filename="../qtractorMainForm.cpp" line="2302"/>
         <source>Save Session</source>
         <translation>保存工程</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2323"/>
-        <location filename="../qtractorMainForm.cpp" line="2415"/>
-        <location filename="../qtractorMainForm.cpp" line="2477"/>
-        <location filename="../qtractorMainForm.cpp" line="2592"/>
-        <location filename="../qtractorMainForm.cpp" line="2759"/>
-        <location filename="../qtractorMainForm.cpp" line="2804"/>
-        <location filename="../qtractorMainForm.cpp" line="3283"/>
-        <location filename="../qtractorMainForm.cpp" line="4583"/>
-        <location filename="../qtractorMainForm.cpp" line="4685"/>
-        <location filename="../qtractorMainForm.cpp" line="7290"/>
-        <location filename="../qtractorMainForm.cpp" line="8599"/>
+        <location filename="../qtractorMainForm.cpp" line="2369"/>
+        <location filename="../qtractorMainForm.cpp" line="2461"/>
+        <location filename="../qtractorMainForm.cpp" line="2524"/>
+        <location filename="../qtractorMainForm.cpp" line="2639"/>
+        <location filename="../qtractorMainForm.cpp" line="2806"/>
+        <location filename="../qtractorMainForm.cpp" line="2851"/>
+        <location filename="../qtractorMainForm.cpp" line="3330"/>
+        <location filename="../qtractorMainForm.cpp" line="4630"/>
+        <location filename="../qtractorMainForm.cpp" line="4732"/>
+        <location filename="../qtractorMainForm.cpp" line="7348"/>
+        <location filename="../qtractorMainForm.cpp" line="8657"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2324"/>
+        <location filename="../qtractorMainForm.cpp" line="2370"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -6126,12 +6146,12 @@ Do you want to replace it?</source>
 是否替换？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2355"/>
+        <location filename="../qtractorMainForm.cpp" line="2401"/>
         <source>Backup session: &quot;%1&quot; as &quot;%2&quot;.</source>
         <translation>备份工程：&quot;%1&quot; 为 &quot;%2&quot;。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2359"/>
+        <location filename="../qtractorMainForm.cpp" line="2405"/>
         <source>Could not backup existing session:
 
 %1 as %2
@@ -6144,7 +6164,7 @@ Sorry.</source>
 抱歉。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2416"/>
+        <location filename="../qtractorMainForm.cpp" line="2462"/>
         <source>The current session has been changed:
 
 &quot;%1&quot;
@@ -6157,7 +6177,7 @@ Do you want to save the changes?</source>
 是否保存更改？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2478"/>
+        <location filename="../qtractorMainForm.cpp" line="2525"/>
         <source>About to remove archive directory:
 
 &quot;%1&quot;
@@ -6170,12 +6190,12 @@ Are you sure?</source>
 是否确认？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2521"/>
+        <location filename="../qtractorMainForm.cpp" line="2568"/>
         <source>Session closed.</source>
         <translation>工程已关闭。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2593"/>
+        <location filename="../qtractorMainForm.cpp" line="2640"/>
         <source>The directory already exists:
 
 &quot;%1&quot;
@@ -6188,12 +6208,12 @@ Do you want to replace it?</source>
 是否替换？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2638"/>
+        <location filename="../qtractorMainForm.cpp" line="2685"/>
         <source>Opening &quot;%1&quot;...</source>
         <translation>正在打开 &quot;%1&quot;...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2705"/>
+        <location filename="../qtractorMainForm.cpp" line="2752"/>
         <source>Session could not be loaded
 from &quot;%1&quot;.
 
@@ -6204,12 +6224,12 @@ Sorry.</source>
 抱歉。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2718"/>
+        <location filename="../qtractorMainForm.cpp" line="2765"/>
         <source>Open session: &quot;%1&quot;.</source>
         <translation>打开工程：&quot;%1&quot;。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2760"/>
+        <location filename="../qtractorMainForm.cpp" line="2807"/>
         <source>A directory with same name already exists:
 
 &quot;%1&quot;
@@ -6229,7 +6249,7 @@ Do you want to continue?</source>
 是否继续？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2805"/>
+        <location filename="../qtractorMainForm.cpp" line="2852"/>
         <source>The directory is an extracted archive:
 
 &quot;%1&quot;
@@ -6250,12 +6270,12 @@ Do you want to continue?</source>
 是否继续？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2843"/>
+        <location filename="../qtractorMainForm.cpp" line="2890"/>
         <source>Saving &quot;%1&quot;...</source>
         <translation>正在保存 &quot;%1&quot;...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2931"/>
+        <location filename="../qtractorMainForm.cpp" line="2978"/>
         <source>Session could not be saved
 to &quot;%1&quot;.
 
@@ -6266,12 +6286,12 @@ Sorry.</source>
 抱歉。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2940"/>
+        <location filename="../qtractorMainForm.cpp" line="2987"/>
         <source>Save session: &quot;%1&quot;.</source>
         <translation>保存工程：&quot;%1&quot;。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="3284"/>
+        <location filename="../qtractorMainForm.cpp" line="3331"/>
         <source>Oops!
 
 Looks like it crashed or did not close properly last time it was run... however, an auto-saved session file exists:
@@ -6288,7 +6308,7 @@ Do you want to crash-recover from it?</source>
 是否要从中进行崩溃恢复？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="4584"/>
+        <location filename="../qtractorMainForm.cpp" line="4631"/>
         <source>About to clear automation:
 
 &quot;%1&quot;
@@ -6301,7 +6321,7 @@ Are you sure?</source>
 是否确认？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="4686"/>
+        <location filename="../qtractorMainForm.cpp" line="4733"/>
         <source>About to clear all automation:
 
 &quot;%1&quot;
@@ -6314,164 +6334,164 @@ Are you sure?</source>
 是否确认？</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5150"/>
+        <location filename="../qtractorMainForm.cpp" line="5197"/>
         <source>take range</source>
         <translation>片段范围</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5779"/>
+        <location filename="../qtractorMainForm.cpp" line="5835"/>
         <source>session</source>
         <translation>工程</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5782"/>
+        <location filename="../qtractorMainForm.cpp" line="5838"/>
         <source> or </source>
         <translation> 或 </translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5783"/>
+        <location filename="../qtractorMainForm.cpp" line="5839"/>
         <source>program</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5787"/>
+        <location filename="../qtractorMainForm.cpp" line="5843"/>
         <source>Information</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5788"/>
+        <location filename="../qtractorMainForm.cpp" line="5844"/>
         <source>Some settings may be only effective
 next time you start this %1.</source>
         <translation>某些设置可能仅在
 下次启动此 %1 时生效。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6448"/>
+        <location filename="../qtractorMainForm.cpp" line="6504"/>
         <source>Player panic!</source>
         <translation>播放器紧急停止！</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6492"/>
+        <location filename="../qtractorMainForm.cpp" line="6548"/>
         <source>Debugging option enabled.</source>
         <translation>调试选项已启用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6495"/>
+        <location filename="../qtractorMainForm.cpp" line="6551"/>
         <source>Ogg Vorbis (libvorbis) file support disabled.</source>
         <translation>Ogg Vorbis (libvorbis) 文件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6498"/>
+        <location filename="../qtractorMainForm.cpp" line="6554"/>
         <source>MPEG-1 Audio Layer 3 (libmad) file support disabled.</source>
         <translation>MPEG-1 Audio Layer 3 (libmad) 文件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6501"/>
+        <location filename="../qtractorMainForm.cpp" line="6557"/>
         <source>Sample-rate conversion (libsamplerate) disabled.</source>
         <translation>采样率转换 (libsamplerate) 已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6504"/>
+        <location filename="../qtractorMainForm.cpp" line="6560"/>
         <source>Pitch-shifting support (librubberband) disabled.</source>
         <translation>移调支持 (librubberband) 已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6507"/>
+        <location filename="../qtractorMainForm.cpp" line="6563"/>
         <source>OSC service support (liblo) disabled.</source>
         <translation>OSC 服务支持 (liblo) 已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6510"/>
+        <location filename="../qtractorMainForm.cpp" line="6566"/>
         <source>LADSPA Plug-in support disabled.</source>
         <translation>LADSPA 插件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6513"/>
+        <location filename="../qtractorMainForm.cpp" line="6569"/>
         <source>DSSI Plug-in support disabled.</source>
         <translation>DSSI 插件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6522"/>
+        <location filename="../qtractorMainForm.cpp" line="6578"/>
         <source>CLAP Plug-in support disabled.</source>
         <translation>CLAP 插件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6525"/>
+        <location filename="../qtractorMainForm.cpp" line="6581"/>
         <source>LV2 Plug-in support disabled.</source>
         <translation>LV2 插件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6531"/>
+        <location filename="../qtractorMainForm.cpp" line="6587"/>
         <source>LV2 Plug-in UI support disabled.</source>
         <translation>LV2 插件 UI 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6535"/>
+        <location filename="../qtractorMainForm.cpp" line="6591"/>
         <source>LV2 Plug-in UI support (libsuil) disabled.</source>
         <translation>LV2 插件 UI 支持 (libsuil) 已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6543"/>
+        <location filename="../qtractorMainForm.cpp" line="6599"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
         <translation>LV2 插件 MIDI/事件支持 (已弃用) 已启用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6546"/>
+        <location filename="../qtractorMainForm.cpp" line="6602"/>
         <source>LV2 Plug-in MIDI/Atom support disabled.</source>
         <translation>LV2 插件 MIDI/Atom 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6559"/>
+        <location filename="../qtractorMainForm.cpp" line="6615"/>
         <source>LV2 Plug-in State Files support disabled.</source>
         <translation>LV2 插件 State 文件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6565"/>
+        <location filename="../qtractorMainForm.cpp" line="6621"/>
         <source>LV2 Plug-in MIDNAM support disabled.</source>
         <translation>LV2 插件 MIDNAM 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6571"/>
+        <location filename="../qtractorMainForm.cpp" line="6627"/>
         <source>LV2 Plug-in Patch support disabled.</source>
         <translation>LV2 插件 Patch 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6584"/>
+        <location filename="../qtractorMainForm.cpp" line="6640"/>
         <source>LV2 Plug-in UI Touch interface support disabled.</source>
         <translation>LV2 插件 UI Touch 接口支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6590"/>
+        <location filename="../qtractorMainForm.cpp" line="6646"/>
         <source>LV2 Plug-in UI Idle interface support disabled.</source>
         <translation>LV2 插件 UI Idle 接口支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6593"/>
+        <location filename="../qtractorMainForm.cpp" line="6649"/>
         <source>LV2 Plug-in UI Show interface support disabled.</source>
         <translation>LV2 插件 UI Show 接口支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6599"/>
+        <location filename="../qtractorMainForm.cpp" line="6655"/>
         <source>LV2 Plug-in UI GTKMM2 native support disabled.</source>
         <translation>LV2 插件 UI GTKMM2 原生支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6613"/>
+        <location filename="../qtractorMainForm.cpp" line="6669"/>
         <source>JACK Metadata support disabled.</source>
         <translation>JACK 元数据支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6631"/>
+        <location filename="../qtractorMainForm.cpp" line="6687"/>
         <source>Using: Qt %1</source>
         <translation>使用：Qt %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7058"/>
+        <location filename="../qtractorMainForm.cpp" line="7116"/>
         <source>XRUN</source>
         <translation>XRUN</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7291"/>
+        <location filename="../qtractorMainForm.cpp" line="7349"/>
         <source>The following issues were detected:
 
 %1
@@ -6484,12 +6504,12 @@ Saving into another session file is highly recommended.</source>
 强烈建议保存到另一个工程文件。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8614"/>
+        <location filename="../qtractorMainForm.cpp" line="8672"/>
         <source>Don&apos;t show this again</source>
         <translation>不再显示</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8812"/>
+        <location filename="../qtractorMainForm.cpp" line="8870"/>
         <source>The audio engine buffer size has changed,
 increased from %1 to %2 frames/period.
 
@@ -6501,127 +6521,127 @@ is highly recommended.</source>
 强烈建议重新加载当前工程文件。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9078"/>
+        <location filename="../qtractorMainForm.cpp" line="9136"/>
         <source>TRACK MONITOR %1 %2</source>
         <translation>轨道监听 %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="472"/>
+        <location filename="../qtractorMainForm.cpp" line="483"/>
         <source>Set current snap to %1</source>
         <translation>设置当前吸附为 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="549"/>
+        <location filename="../qtractorMainForm.cpp" line="560"/>
         <source>Current time (play-head)</source>
         <translation>当前时间 (播放头)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6516"/>
+        <location filename="../qtractorMainForm.cpp" line="6572"/>
         <source>VST2 Plug-in support disabled.</source>
         <translation>VST2 插件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6519"/>
+        <location filename="../qtractorMainForm.cpp" line="6575"/>
         <source>VST3 Plug-in support disabled.</source>
         <translation>VST3 插件支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6528"/>
+        <location filename="../qtractorMainForm.cpp" line="6584"/>
         <source>LV2 Plug-in support (liblilv) disabled.</source>
         <translation>LV2 插件支持 (liblilv) 已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6539"/>
+        <location filename="../qtractorMainForm.cpp" line="6595"/>
         <source>LV2 Plug-in External UI support disabled.</source>
         <translation>LV2 插件外部 UI 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6549"/>
+        <location filename="../qtractorMainForm.cpp" line="6605"/>
         <source>LV2 Plug-in Worker/Schedule support disabled.</source>
         <translation>LV2 插件 Worker/Schedule 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6552"/>
+        <location filename="../qtractorMainForm.cpp" line="6608"/>
         <source>LV2 Plug-in State support disabled.</source>
         <translation>LV2 插件 State 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6562"/>
+        <location filename="../qtractorMainForm.cpp" line="6618"/>
         <source>LV2 Plug-in Programs support disabled.</source>
         <translation>LV2 插件 Programs 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6568"/>
+        <location filename="../qtractorMainForm.cpp" line="6624"/>
         <source>LV2 Plug-in Presets support disabled.</source>
         <translation>LV2 插件 Presets 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6574"/>
+        <location filename="../qtractorMainForm.cpp" line="6630"/>
         <source>LV2 Plug-in Time/position support disabled.</source>
         <translation>LV2 插件 Time/position 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6577"/>
+        <location filename="../qtractorMainForm.cpp" line="6633"/>
         <source>LV2 Plug-in Options support disabled.</source>
         <translation>LV2 插件 Options 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6580"/>
+        <location filename="../qtractorMainForm.cpp" line="6636"/>
         <source>LV2 Plug-in Buf-size support disabled.</source>
         <translation>LV2 插件 Buf-size 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6587"/>
+        <location filename="../qtractorMainForm.cpp" line="6643"/>
         <source>LV2 Plug-in UI Request-value support disabled.</source>
         <translation>LV2 插件 UI Request-value 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6607"/>
+        <location filename="../qtractorMainForm.cpp" line="6663"/>
         <source>JACK Session support disabled.</source>
         <translation>JACK Session 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6610"/>
+        <location filename="../qtractorMainForm.cpp" line="6666"/>
         <source>JACK Latency support disabled.</source>
         <translation>JACK 延迟支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6623"/>
+        <location filename="../qtractorMainForm.cpp" line="6679"/>
         <source>Version</source>
         <translation>版本</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6643"/>
+        <location filename="../qtractorMainForm.cpp" line="6699"/>
         <source>Website</source>
         <translation>网站</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6648"/>
+        <location filename="../qtractorMainForm.cpp" line="6704"/>
         <source>This program is free software; you can redistribute it and/or modify it</source>
         <translation>本程序是自由软件；您可以基于 GNU 通用公共许可证</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6649"/>
+        <location filename="../qtractorMainForm.cpp" line="6705"/>
         <source>under the terms of the GNU General Public License version 2 or later.</source>
         <translation>第 2 版或更高版本的条款重新分发和/或修改它。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6772"/>
+        <location filename="../qtractorMainForm.cpp" line="6828"/>
         <source>record clip</source>
         <translation>录制剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6934"/>
+        <location filename="../qtractorMainForm.cpp" line="6990"/>
         <source>[modified]</source>
         <translation>[已修改]</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7172"/>
+        <location filename="../qtractorMainForm.cpp" line="7230"/>
         <source>Session started.</source>
         <translation>工程已启动。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7176"/>
+        <location filename="../qtractorMainForm.cpp" line="7234"/>
         <source>The audio/MIDI engine could not be started.
 
 Make sure the JACK/Pipewire audio service and
@@ -6634,7 +6654,7 @@ ALSA Sequencer 内核模块 (snd-seq-midi)
 正在运行，然后重新启动工程。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7262"/>
+        <location filename="../qtractorMainForm.cpp" line="7320"/>
         <source>The original session sample rate (%1 Hz)
 is not the same as the current audio engine (%2 Hz).
 
@@ -6646,81 +6666,81 @@ is highly recommended.</source>
 强烈建议保存并从新的工程文件重新加载。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="2492"/>
-        <location filename="../qtractorMainForm.cpp" line="2607"/>
-        <location filename="../qtractorMainForm.cpp" line="2778"/>
-        <location filename="../qtractorMainForm.cpp" line="2822"/>
+        <location filename="../qtractorMainForm.cpp" line="2539"/>
+        <location filename="../qtractorMainForm.cpp" line="2654"/>
+        <location filename="../qtractorMainForm.cpp" line="2825"/>
+        <location filename="../qtractorMainForm.cpp" line="2869"/>
         <source>Don&apos;t ask this again</source>
         <translation>不再询问</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6556"/>
+        <location filename="../qtractorMainForm.cpp" line="6612"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
         <translation>LV2 插件 State Make Path 支持 (危险)	已启用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6596"/>
+        <location filename="../qtractorMainForm.cpp" line="6652"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
         <translation>LV2 插件 UI GTK2 原生支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6602"/>
+        <location filename="../qtractorMainForm.cpp" line="6658"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
         <translation>LV2 插件 UI X11 原生支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6616"/>
+        <location filename="../qtractorMainForm.cpp" line="6672"/>
         <source>NSM support disabled.</source>
         <translation>NSM 支持已禁用。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7943"/>
+        <location filename="../qtractorMainForm.cpp" line="8001"/>
         <source>&amp;Hold</source>
         <translation>保持(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7948"/>
+        <location filename="../qtractorMainForm.cpp" line="8006"/>
         <source>&amp;Linear</source>
         <translation>线性(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7954"/>
+        <location filename="../qtractorMainForm.cpp" line="8012"/>
         <source>&amp;Spline</source>
         <translation>样条(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8082"/>
+        <location filename="../qtractorMainForm.cpp" line="8140"/>
         <source>Take %1</source>
         <translation>片段 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.ui" line="3063"/>
-        <location filename="../qtractorMainForm.cpp" line="8089"/>
+        <location filename="../qtractorMainForm.ui" line="3085"/>
+        <location filename="../qtractorMainForm.cpp" line="8147"/>
         <source>None</source>
         <translation>无</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8179"/>
+        <location filename="../qtractorMainForm.cpp" line="8237"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8568"/>
+        <location filename="../qtractorMainForm.cpp" line="8626"/>
         <source>XRUN(%1 skipped)</source>
         <translation>XRUN(已跳过 %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8573"/>
+        <location filename="../qtractorMainForm.cpp" line="8631"/>
         <source>XRUN(%1): some frames might have been lost.</source>
         <translation>XRUN(%1)：可能丢失了一些帧。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8590"/>
+        <location filename="../qtractorMainForm.cpp" line="8648"/>
         <source>Audio connections change.</source>
         <translation>音频连接更改。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8601"/>
+        <location filename="../qtractorMainForm.cpp" line="8659"/>
         <source>Audio self-connection detected!
 
 In general, connecting an output bus (or insert send),
@@ -6735,17 +6755,17 @@ is not advisable. It often doesn&apos;t work, if at all.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8635"/>
+        <location filename="../qtractorMainForm.cpp" line="8693"/>
         <source>MIDI connections change.</source>
         <translation>MIDI 连接更改。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8656"/>
+        <location filename="../qtractorMainForm.cpp" line="8714"/>
         <source>Playing ended.</source>
         <translation>播放结束。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8737"/>
+        <location filename="../qtractorMainForm.cpp" line="8795"/>
         <source>The audio engine has been shutdown.
 
 Make sure the JACK audio server (jackd)
@@ -6756,120 +6776,120 @@ is up and running and then restart session.</source>
 正在运行，然后重新启动工程。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9013"/>
-        <location filename="../qtractorMainForm.cpp" line="9209"/>
+        <location filename="../qtractorMainForm.cpp" line="9071"/>
+        <location filename="../qtractorMainForm.cpp" line="9267"/>
         <source>STOP</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9020"/>
+        <location filename="../qtractorMainForm.cpp" line="9078"/>
         <source>PLAY</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9024"/>
+        <location filename="../qtractorMainForm.cpp" line="9082"/>
         <source>FFWD</source>
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9028"/>
+        <location filename="../qtractorMainForm.cpp" line="9086"/>
         <source>REW</source>
         <translation>快退</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9033"/>
+        <location filename="../qtractorMainForm.cpp" line="9091"/>
         <source>REC ON</source>
         <translation>录音开启</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9041"/>
+        <location filename="../qtractorMainForm.cpp" line="9099"/>
         <source>REC OFF</source>
         <translation>录音关闭</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9045"/>
+        <location filename="../qtractorMainForm.cpp" line="9103"/>
         <source>RESET</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9049"/>
+        <location filename="../qtractorMainForm.cpp" line="9107"/>
         <source>LOCATE %1</source>
         <translation>定位 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9053"/>
+        <location filename="../qtractorMainForm.cpp" line="9111"/>
         <source>SHUTTLE %1</source>
         <translation>穿梭 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9057"/>
+        <location filename="../qtractorMainForm.cpp" line="9115"/>
         <source>STEP %1</source>
         <translation>步进 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9063"/>
+        <location filename="../qtractorMainForm.cpp" line="9121"/>
         <source>TRACK RECORD %1 %2</source>
         <translation>轨道录音 %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9068"/>
+        <location filename="../qtractorMainForm.cpp" line="9126"/>
         <source>TRACK MUTE %1 %2</source>
         <translation>轨道静音 %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9073"/>
+        <location filename="../qtractorMainForm.cpp" line="9131"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>轨道独奏 %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9083"/>
+        <location filename="../qtractorMainForm.cpp" line="9141"/>
         <source>Unknown sub-command</source>
         <translation>未知子命令</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9089"/>
-        <location filename="../qtractorMainForm.cpp" line="9229"/>
+        <location filename="../qtractorMainForm.cpp" line="9147"/>
+        <location filename="../qtractorMainForm.cpp" line="9287"/>
         <source>Not implemented</source>
         <translation>未实现</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9107"/>
+        <location filename="../qtractorMainForm.cpp" line="9165"/>
         <source>MIDI CTL: %1, Channel %2, Param %3, Value %4</source>
         <translation>MIDI 控制：%1，通道 %2，参数 %3，值 %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9157"/>
+        <location filename="../qtractorMainForm.cpp" line="9215"/>
         <source>(track %1, gain %2)</source>
         <translation> (轨道 %1，增益 %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9179"/>
+        <location filename="../qtractorMainForm.cpp" line="9237"/>
         <source>(track %1, panning %2)</source>
         <translation> (轨道 %1，声像 %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9202"/>
+        <location filename="../qtractorMainForm.cpp" line="9260"/>
         <source>START</source>
         <translation>开始</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9217"/>
+        <location filename="../qtractorMainForm.cpp" line="9275"/>
         <source>CONTINUE</source>
         <translation>继续</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9223"/>
+        <location filename="../qtractorMainForm.cpp" line="9281"/>
         <source>SONGPOS %1</source>
         <translation>歌曲位置 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9247"/>
+        <location filename="../qtractorMainForm.cpp" line="9305"/>
         <source>%1 BPM</source>
         <translation>%1 BPM</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="9365"/>
-        <location filename="../qtractorMainForm.cpp" line="9425"/>
+        <location filename="../qtractorMainForm.cpp" line="9423"/>
+        <location filename="../qtractorMainForm.cpp" line="9483"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>正在播放 &quot;%1&quot;...</translation>
     </message>
@@ -14873,6 +14893,86 @@ Do you want to apply the changes?</source>
     </message>
 </context>
 <context>
+    <name>qtractorSessionList</name>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1628"/>
+        <source>Session</source>
+        <translation type="unfinished">工程</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1747"/>
+        <source>&amp;Inputs</source>
+        <translation type="unfinished">输入(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1757"/>
+        <source>&amp;Outputs</source>
+        <translation type="unfinished">输出(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1763"/>
+        <source>&amp;Buses...</source>
+        <translation type="unfinished">总线(&amp;B)...</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorSessionListView::ItemModel</name>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="351"/>
+        <source>Inputs</source>
+        <translation type="unfinished">输入</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="365"/>
+        <source>Tracks</source>
+        <translation type="unfinished">轨道</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="380"/>
+        <source>Outputs</source>
+        <translation type="unfinished">输出</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="414"/>
+        <location filename="../qtractorSessionList.cpp" line="454"/>
+        <location filename="../qtractorSessionList.cpp" line="500"/>
+        <source>Audio</source>
+        <translation type="unfinished">音频</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="419"/>
+        <location filename="../qtractorSessionList.cpp" line="457"/>
+        <location filename="../qtractorSessionList.cpp" line="510"/>
+        <source>MIDI</source>
+        <translation type="unfinished">MIDI</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="427"/>
+        <source>track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="464"/>
+        <source>clip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="519"/>
+        <source>bus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="937"/>
+        <source>Name</source>
+        <translation type="unfinished">名称</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="938"/>
+        <source>Detail</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>qtractorShortcutForm</name>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
@@ -16044,37 +16144,37 @@ Length:	%3</source>
 <context>
     <name>qtractorTrackView</name>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="150"/>
+        <location filename="../qtractorTrackView.cpp" line="149"/>
         <source>Zoom in (horizontal)</source>
         <translation>放大 (水平)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="151"/>
+        <location filename="../qtractorTrackView.cpp" line="150"/>
         <source>Zoom out (horizontal)</source>
         <translation>缩小 (水平)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="152"/>
+        <location filename="../qtractorTrackView.cpp" line="151"/>
         <source>Zoom in (vertical)</source>
         <translation>放大 (垂直)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="153"/>
+        <location filename="../qtractorTrackView.cpp" line="152"/>
         <source>Zoom out (vertical)</source>
         <translation>缩小 (垂直)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="154"/>
+        <location filename="../qtractorTrackView.cpp" line="153"/>
         <source>Zoom reset</source>
         <translation>重置缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="1695"/>
+        <location filename="../qtractorTrackView.cpp" line="1694"/>
         <source>add clip</source>
         <translation>添加剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3299"/>
+        <location filename="../qtractorTrackView.cpp" line="3307"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -16083,80 +16183,80 @@ Length:	%3</source>
 长度：	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3590"/>
+        <location filename="../qtractorTrackView.cpp" line="3598"/>
         <source>clip %1</source>
         <translation>剪辑 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3591"/>
+        <location filename="../qtractorTrackView.cpp" line="3599"/>
         <source>fade-in</source>
         <translation>淡入</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3591"/>
+        <location filename="../qtractorTrackView.cpp" line="3599"/>
         <source>fade-out</source>
         <translation>淡出</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3721"/>
+        <location filename="../qtractorTrackView.cpp" line="3729"/>
         <source>clip stretch</source>
         <translation>剪辑拉伸</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3721"/>
+        <location filename="../qtractorTrackView.cpp" line="3729"/>
         <source>clip resize</source>
         <translation>剪辑调整</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3806"/>
-        <location filename="../qtractorTrackView.cpp" line="3914"/>
+        <location filename="../qtractorTrackView.cpp" line="3814"/>
+        <location filename="../qtractorTrackView.cpp" line="3922"/>
         <source>clip repeat</source>
         <translation>剪辑重复</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4829"/>
+        <location filename="../qtractorTrackView.cpp" line="4837"/>
         <source>%1 automation</source>
         <translation>%1 自动化</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4902"/>
+        <location filename="../qtractorTrackView.cpp" line="4910"/>
         <source>%1 clip</source>
         <translation>%1 剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5552"/>
+        <location filename="../qtractorTrackView.cpp" line="5560"/>
         <source>move automation</source>
         <translation>移动自动化</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5639"/>
+        <location filename="../qtractorTrackView.cpp" line="5647"/>
         <source>paste automation</source>
         <translation>粘贴自动化</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4833"/>
-        <location filename="../qtractorTrackView.cpp" line="4906"/>
+        <location filename="../qtractorTrackView.cpp" line="4841"/>
+        <location filename="../qtractorTrackView.cpp" line="4914"/>
         <source>cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4836"/>
-        <location filename="../qtractorTrackView.cpp" line="4909"/>
+        <location filename="../qtractorTrackView.cpp" line="4844"/>
+        <location filename="../qtractorTrackView.cpp" line="4917"/>
         <source>delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4912"/>
+        <location filename="../qtractorTrackView.cpp" line="4920"/>
         <source>split</source>
         <translation>分割</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5274"/>
+        <location filename="../qtractorTrackView.cpp" line="5282"/>
         <source>move clip</source>
         <translation>移动剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5409"/>
+        <location filename="../qtractorTrackView.cpp" line="5417"/>
         <source>paste clip</source>
         <translation>粘贴剪辑</translation>
     </message>
