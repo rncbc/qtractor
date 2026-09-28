@@ -81,7 +81,7 @@
 // Constructor.
 qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QWidget *pParent, Qt::WindowFlags wflags )
-	: QMainWindow(pParent, wflags)
+	: qtractorEditorForm(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -1029,18 +1029,13 @@ QMenu *qtractorMidiEditorForm::editMenu (void) const
 // qtractorMidiEditorForm -- Central widget redirect methods.
 
 // MIDI editor widget accessor.
-qtractorMidiEditor *qtractorMidiEditorForm::editor (void) const
+qtractorEditor *qtractorMidiEditorForm::editor (void) const
 {
 	return m_pMidiEditor;
 }
 
 
 // Local time-scale accessor.
-qtractorTimeScale *qtractorMidiEditorForm::timeScale (void) const
-{
-	return m_pMidiEditor->timeScale();
-}
-
 unsigned long qtractorMidiEditorForm::timeOffset (void) const
 {
 	return m_pMidiEditor->timeOffset();
@@ -2903,9 +2898,13 @@ void qtractorMidiEditorForm::timeSig2ResetClicked (void)
 void qtractorMidiEditorForm::resetTimeSig2 (
 	unsigned short iBeatsPerBar2, unsigned short iBeatDivisor2 )
 {
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
 	m_pMidiEditor->execute(
 		new qtractorTimeScaleTimeSig2Command(
-			timeScale(), midiClip(), iBeatsPerBar2, iBeatDivisor2));
+			pTimeScale, midiClip(), iBeatsPerBar2, iBeatDivisor2));
 }
 
 

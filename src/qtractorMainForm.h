@@ -50,9 +50,8 @@ class qtractorClip;
 
 class qtractorInstrumentMenu;
 
-class qtractorMidiEditorForm;
-class qtractorMidiEditor;
-class qtractorMidiManager;
+class qtractorEditor;
+class qtractorEditorForm;
 
 class qtractorAudioFileFactory;
 class qtractorPluginFactory;
@@ -113,8 +112,8 @@ public:
 	void appendMessagesText(const QString& s);
 	void appendMessagesError(const QString& s);
 
-	void addEditorForm(qtractorMidiEditorForm *pEditorForm);
-	void removeEditorForm(qtractorMidiEditorForm *pEditorForm);
+	void addEditorForm(qtractorEditorForm *pEditorForm);
+	void removeEditorForm(qtractorEditorForm *pEditorForm);
 
 	QMenu *editMenu() const
 		{ return m_ui.editMenu; }
@@ -466,7 +465,7 @@ protected:
 
 	void updateEditorForms();
 
-	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
+	void updateContents(qtractorEditor *pEditor, bool bRefresh);
 	void updateDirtyCount(bool bDirtyCount);
 
 	void trackCurveSelectMenuAction(QMenu *pMenu,
@@ -581,7 +580,7 @@ private:
 	QList<QAction *> m_snapPerBeatActions;
 
 	// Name says it all...
-	QList<qtractorMidiEditorForm *> m_editors;
+	QList<qtractorEditorForm *> m_editors;
 
 	// Kind-of singleton reference.
 	static qtractorMainForm *g_pMainForm;

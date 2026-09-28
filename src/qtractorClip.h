@@ -29,6 +29,7 @@
 
 // Forward declarations.
 class qtractorClipCommand;
+class qtractorCommandList;
 
 class QWidget;
 
@@ -385,6 +386,31 @@ public:
 		virtual float operator() (float t) const = 0;
 	};
 
+	// Clip editor position/size accessors.
+	void setEditorPos(const QPoint& pos)
+		{ m_posEditor = pos; }
+	const QPoint& editorPos() const
+		{ return m_posEditor; }
+
+	void setEditorSize(const QSize& size)
+		{ m_sizeEditor = size; }
+	const QSize& editorSize() const
+		{ return m_sizeEditor; }
+
+	// Clip editor zoom ratio accessors.
+	void setEditorHorizontalZoom(unsigned short iHorizontalZoom)
+		{ m_iEditorHorizontalZoom = iHorizontalZoom; }
+	unsigned short editorHorizontalZoom() const
+		{ return m_iEditorHorizontalZoom; }
+
+	void setEditorVerticalZoom(unsigned short iVerticalZoom)
+		{ m_iEditorVerticalZoom = iVerticalZoom; }
+	unsigned short editorVerticalZoom() const
+		{ return m_iEditorVerticalZoom; }
+
+	// Local command-list (undo/redo) accessor.
+	virtual qtractorCommandList *commands() const = 0;
+
 protected:
 
 	// Fade functor factory method.
@@ -440,6 +466,14 @@ private:
 
 	static FadeType g_defaultFadeInType;
 	static FadeType g_defaultFadeOutType;
+
+	// Clip editor geometry it was last seen...
+	QPoint m_posEditor;
+	QSize m_sizeEditor;
+
+	// Clip editor zoom ratio accessors.
+	unsigned short m_iEditorHorizontalZoom;
+	unsigned short m_iEditorVerticalZoom;
 
 	// Local active/dirty flags.
 	bool m_bActive;

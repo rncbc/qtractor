@@ -103,6 +103,9 @@ void qtractorClip::clear (void)
 	setFadeInType(g_defaultFadeInType);
 	setFadeOutType(g_defaultFadeOutType);
 
+	m_iEditorHorizontalZoom = 100;
+	m_iEditorVerticalZoom = 100;
+
 	m_bDirty = false;
 }
 

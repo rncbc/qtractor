@@ -259,28 +259,6 @@ public:
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
 
-	// MIDI clip editor position/size accessors.
-	void setEditorPos(const QPoint& pos)
-		{ m_posEditor = pos; }
-	const QPoint& editorPos() const
-		{ return m_posEditor; }
-
-	void setEditorSize(const QSize& size)
-		{ m_sizeEditor = size; }
-	const QSize& editorSize() const
-		{ return m_sizeEditor; }
-
-	// MIDI clip editor zoom ratio accessors.
-	void setEditorHorizontalZoom(unsigned short iHorizontalZoom)
-		{ m_iEditorHorizontalZoom = iHorizontalZoom; }
-	unsigned short editorHorizontalZoom() const
-		{ return m_iEditorHorizontalZoom; }
-
-	void setEditorVerticalZoom(unsigned short iVerticalZoom)
-		{ m_iEditorVerticalZoom = iVerticalZoom; }
-	unsigned short editorVerticalZoom() const
-		{ return m_iEditorVerticalZoom; }
-
 	// MIDI clip editor splitter sizes accessors.
 	void setEditorHorizontalSizes(const QList<int>& sizes)
 		{ m_editorHorizontalSizes = sizes; }
@@ -386,14 +364,6 @@ private:
 
 	// This clip editor form widget.
 	qtractorMidiEditorForm *m_pMidiEditorForm;
-
-	// And for geometry it was last seen...
-	QPoint m_posEditor;
-	QSize m_sizeEditor;
-
-	// MIDI clip editor zoom ratio accessors.
-	unsigned short m_iEditorHorizontalZoom;
-	unsigned short m_iEditorVerticalZoom;
 
 	// MIDI clip editor splitter sizes accessors.
 	QList<int> m_editorHorizontalSizes;

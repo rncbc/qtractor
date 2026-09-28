@@ -1,7 +1,7 @@
 // qtractorMidiEditor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,12 +22,13 @@
 #ifndef __qtractorMidiEditor_h
 #define __qtractorMidiEditor_h
 
+#include "qtractorEditor.h"
+
 #include "qtractorMidiCursor.h"
 #include "qtractorMidiEditSelect.h"
 
 #include "qtractorMidiEvent.h"
 
-#include <QSplitter>
 #include <QHash>
 #include <QMap>
 
@@ -50,8 +51,6 @@ class qtractorMidiThumbView;
 class qtractorMidiEditCommand;
 class qtractorMidiClip;
 
-class qtractorTimeScale;
-
 class qtractorTrack;
 
 class QFrame;
@@ -63,7 +62,7 @@ class QCursor;
 //----------------------------------------------------------------------------
 // qtractorMidiEditor -- The main session track listview widget.
 
-class qtractorMidiEditor : public QSplitter
+class qtractorMidiEditor : public qtractorEditor
 {
 	Q_OBJECT
 
@@ -85,26 +84,6 @@ public:
 
 	qtractorMidiSequence *sequence() const;
 
-	// Event foreground (outline) color.
-	void setForeground(const QColor& fore);
-	const QColor& foreground() const;
-
-	// Event background (fill) color.
-	void setBackground(const QColor& back);
-	const QColor& background() const;
-
-	// Snap-to-bar zebra mode.
-	void setSnapZebra(bool bSnapZebra);
-	bool isSnapZebra() const;
-
-	// Snap-to-beat grid mode.
-	void setSnapGrid(bool bSnapGrid);
-	bool isSnapGrid() const;
-
-	// Floating tool-tips mode.
-	void setToolTips(bool bToolTips);
-	bool isToolTips() const;
-
 	// Drum mode (UI).
 	void setDrumMode(bool bDrumMode);
 	bool isDrumMode() const;
@@ -117,18 +96,9 @@ public:
 	void setEditModeDraw(bool bEditModeDraw);
 	bool isEditModeDraw() const;
 
-	// Zoom (view) modes.
-	enum { ZoomNone = 0, ZoomHorizontal = 1, ZoomVertical = 2, ZoomAll = 3 };
-
-	void setZoomMode(int iZoomMode);
-	int zoomMode() const;
-
 	// Zoom ratio accessors.
 	void setHorizontalZoom(unsigned short iHorizontalZoom);
-	unsigned short horizontalZoom() const;
-
 	void setVerticalZoom(unsigned short iVerticalZoom);
-	unsigned short verticalZoom() const;
 
 	// Splitter sizes accessors.
 	void setHorizontalSizes(const QList<int>& sizes);
@@ -138,16 +108,7 @@ public:
 	QList<int> verticalSizes() const;
 
 	// Local time scale accessors.
-	qtractorTimeScale *timeScale() const;
 	unsigned long timeOffset() const;
-
-	// Time-scale offset (in frames) accessors.
-	void setOffset(unsigned long iOffset);
-	unsigned long offset() const;
-
-	// Time-scale length (in frames) accessors.
-	void setLength(unsigned long iLength);
-	unsigned long length() const;
 
 	// Clip recording/overdub status.
 	bool isClipRecordEx() const;
@@ -177,23 +138,8 @@ public:
 	void setStepInputHead(unsigned long iStepInputHead, bool bSyncView = true);
 	int stepInputHeadX() const;
 
-	// Edit-head/tail accessors.
-	void setEditHead(unsigned long iEditHead, bool bSyncView = true);
-	int editHeadX() const;
-
-	void setEditTail(unsigned long iEditTail, bool bSyncView = true);
-	int editTailX() const;
-
-	// Play-head positioning.
-	void setPlayHead(unsigned long iPlayHead, bool bSyncView = true);
-	int playHeadX() const;
-
 	// Update time-scale to master session.
 	void updateTimeScale();
-
-	// Play-head follow-ness.
-	void setSyncView(bool bSyncView);
-	bool isSyncView() const;
 
 	// Note autition while editing.
 	void setSendNotes(bool bSendNotes);
@@ -338,17 +284,6 @@ public:
 	// MIDI event tool tip helper.
 	QString eventToolTip(qtractorMidiEvent *pEvent,
 		long iTimeDelta = 0, int iNoteDelta = 0, int iValueDelta = 0) const;
-
-	// Temporary sync-view/follow-playhead hold state.
-	void setSyncViewHoldOn(bool bOn);
-
-	void setSyncViewHold(bool bSyncViewHold);
-	bool isSyncViewHold() const;
-
-	// Return either snapped pixel/frame,
-	// or the passed one if [Alt] key is pressed.
-	unsigned int pixelSnap(unsigned int x) const;
-	unsigned long frameSnap(unsigned long iFrame) const;
 
 	// Make given frame position visible in view.
 	void ensureVisibleFrame(qtractorScrollView *pScrollView, unsigned long iFrame);
@@ -589,10 +524,6 @@ private:
 	// The editing sequence.
 	qtractorMidiClip *m_pMidiClip;
 
-	// Event fore/background colors.
-	QColor m_foreground;
-	QColor m_background;
-
 	// The main widget splitters.
 	QSplitter *m_pHSplitter;
 	QSplitter *m_pVSplitter;
@@ -607,13 +538,6 @@ private:
 	QFrame *m_pEditEventFrame;
 
 	qtractorMidiThumbView *m_pThumbView;
-
-	// The local time scale.
-	qtractorTimeScale *m_pTimeScale;
-
-	// The local time-scale offset/length.
-	unsigned long m_iOffset;
-	unsigned long m_iLength;
 
 	// Event cursors (main time-line).
 	qtractorMidiCursor m_cursor;
@@ -667,9 +591,6 @@ private:
 	// Viewport rubber-banding stuff.
 	qtractorRubberBand *m_pRubberBand;
 
-	// Zoom mode flag.
-	int m_iZoomMode;
-
 	// Drum mode (UI).
 	bool m_bDrumMode;
 
@@ -678,13 +599,6 @@ private:
 	bool m_bEditModeDraw;
 
 	bool m_bEventDragEdit;
-
-	// Snap-to-beat/bar grid/zebra mode.
-	bool m_bSnapZebra;
-	bool m_bSnapGrid;
-
-	// Floating tool-tips mode.
-	bool m_bToolTips;
 
 	// Last useful editing values.
 	struct {
@@ -696,14 +610,6 @@ private:
 
 	// Local step-input-hea positioning.
 	int  m_iStepInputHeadX;
-
-	// Local edit-head/tail positioning.
-	int  m_iEditHeadX;
-	int  m_iEditTailX;
-
-	// Local playhead positioning.
-	int  m_iPlayHeadX;
-	bool m_bSyncView;
 
 	// Note autition while editing.
 	bool m_bSendNotes;
@@ -743,10 +649,6 @@ private:
 	// Snap-to-scale (aka.in-place scale-quantize) stuff.
 	int m_iSnapToScaleKey;
 	int m_iSnapToScaleType;
-
-	// Temporary sync-view/follow-playhead hold state.
-	bool m_bSyncViewHold;
-	int  m_iSyncViewHold;
 
 	// Ghost track setting.
 	qtractorTrack *m_pGhostTrack;

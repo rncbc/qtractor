@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,6 +31,14 @@
 #include "qtractorSession.h"
 #include "qtractorFileList.h"
 
+#include "qtractorAudioEditor.h"
+#include "qtractorAudioEditorForm.h"
+
+#include "qtractorMainForm.h"
+
+#include "qtractorOptions.h"
+
+#include <QMessageBox>
 #include <QFileInfo>
 #include <QPainter>
 #include <QPolygon>
@@ -132,6 +140,43 @@ qtractorAudioClip::Hash qtractorAudioClip::g_hashTable;
 
 
 //----------------------------------------------------------------------
+// class qtractorAudioClip::FileKey -- Audio file hash key.
+//
+class qtractorAudioClip::FileKey
+{
+public:
+
+	// Constructor.
+	FileKey(qtractorAudioClip::Key *pKey) :
+		m_sFilename(pKey->filename()) {}
+
+	// Key accessors.
+	const QString& filename() const
+		{ return m_sFilename; }
+
+	// Match descriminator.
+	bool operator== (const FileKey& other) const
+	{
+		return m_sFilename == other.filename();
+	}
+
+private:
+
+	// Interesting variables.
+	QString m_sFilename;
+};
+
+
+uint qHash ( const qtractorAudioClip::FileKey& key )
+{
+	return qHash(key.filename());
+}
+
+
+qtractorAudioClip::FileHash qtractorAudioClip::g_hashFiles;
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioClip -- Audio file/buffer clip.
 //
 
@@ -151,6 +196,10 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	m_iOverlap = 0;
 
 	m_pFractGains = nullptr;
+
+	m_iRevision = 0;
+
+	m_pAudioEditorForm = nullptr;
 }
 
 // Copy constructor.
@@ -169,6 +218,10 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	m_iOverlap = clip.overlap();
 
 	m_pFractGains = nullptr;
+
+	m_iRevision = clip.revision();
+
+	m_pAudioEditorForm = nullptr;
 
 	setFilename(clip.filename());
 	setClipName(clip.clipName());
@@ -389,10 +442,132 @@ void qtractorAudioClip::closeAudioFile (void)
 }
 
 
+// Revisionist method.
+QString qtractorAudioClip::createFilePathRevision ( bool bForce )
+{
+	QString sFilename = filename();
+
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return sFilename;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return sFilename;
+
+	// Check file-hash reference...
+	if (m_iRevision > 0 && m_pKey) {
+		FileKey fkey(m_pKey);
+		FileHash::ConstIterator fiter = g_hashFiles.constFind(fkey);
+		if (fiter != g_hashFiles.constEnd() && fiter.value() > 1)
+			m_iRevision = 0;
+	}
+
+	if (m_iRevision == 0 || bForce) {
+		sFilename = pSession->createFilePath(pTrack->shortTrackName(), "mid");
+	//TODO:	sFilename = qtractorAudioFile::createFilePathRevision(sFilename);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorAudioClip::createFilePathRevision(%d): \"%s\" (%d)",
+			int(bForce), sFilename.toUtf8().constData(), m_iRevision);
+	#endif
+		m_iRevision = 0;
+	}
+
+	++m_iRevision;
+
+	return sFilename;
+}
+
+
+// Sync all ref-counted filenames.
+void qtractorAudioClip::setFilenameEx ( const QString& sFilename, bool bUpdate )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	if (m_pData == nullptr)
+		return;
+
+	removeHashKey();
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext()) {
+		qtractorAudioClip *pAudioClip = iter.next();
+		pSession->files()->removeClipItem(qtractorFileList::Audio, pAudioClip);
+		pAudioClip->setFilename(sFilename);
+		pAudioClip->updateHashKey();
+		pSession->files()->addClipItem(qtractorFileList::Audio, pAudioClip, true);
+		if (bUpdate) {
+			pAudioClip->setDirty(false);
+			pAudioClip->updateEditor(true);
+		}
+	}
+
+	insertHashKey();
+}
+
+
+// Sync all ref-counted clip-lengths.
+void qtractorAudioClip::setClipLengthEx ( unsigned long iClipLength )
+{
+	if (m_pData == nullptr)
+		return;
+
+	removeHashKey();
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext()) {
+		qtractorAudioClip *pAudioClip = iter.next();
+		pAudioClip->setClipLength(iClipLength);
+		pAudioClip->updateHashKey();
+	}
+
+	insertHashKey();
+}
+
+
+// Sync all ref-counted clip editors.
+void qtractorAudioClip::updateEditorEx ( bool bSelectClear )
+{
+	if (m_pData == nullptr)
+		return;
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->updateEditor(bSelectClear);
+}
+
+
+// Sync all ref-counted clip-dirtyness.
+void qtractorAudioClip::setDirtyEx ( bool bDirty )
+{
+	if (m_pData == nullptr)
+		return;
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->setDirty(bDirty);
+}
+
+
 // Manage local hash key.
 void qtractorAudioClip::insertHashKey (void)
 {
-	if (m_pKey) g_hashTable.insert(*m_pKey, m_pData);
+	if (m_pKey) {
+		// Increment file-hash reference...
+		FileKey fkey(m_pKey);
+		FileHash::Iterator fiter = g_hashFiles.find(fkey);
+		if (fiter == g_hashFiles.end())
+			fiter =  g_hashFiles.insert(fkey, 0);
+		++fiter.value();
+		// Insert actual clip-hash reference....
+		g_hashTable.insert(*m_pKey, m_pData);
+	}
 }
 
 
@@ -407,7 +582,17 @@ void qtractorAudioClip::updateHashKey (void)
 
 void qtractorAudioClip::removeHashKey (void)
 {
-	if (m_pKey) g_hashTable.remove(*m_pKey);
+	if (m_pKey) {
+		// Decrement file-hash reference...
+		FileKey fkey(m_pKey);
+		FileHash::Iterator fiter = g_hashFiles.find(fkey);
+		if (fiter != g_hashFiles.end()) {
+			if (--fiter.value() < 1)
+				g_hashFiles.remove(fkey);
+		}
+		// Remove actual clip-hash reference....
+		g_hashTable.remove(*m_pKey);
+	}
 }
 
 
@@ -585,6 +770,13 @@ void qtractorAudioClip::close (void)
 		}
 	}
 
+	// Sure close MIDI clip editor if any...
+	if (m_pAudioEditorForm) {
+		m_pAudioEditorForm->close();
+		delete m_pAudioEditorForm;
+		m_pAudioEditorForm = nullptr;
+	}
+
 	// Close and ditch stuff...
 	closeAudioFile();
 }
@@ -742,6 +934,137 @@ void qtractorAudioClip::draw (
 }
 
 
+// Clip editor method.
+bool qtractorAudioClip::startEditor ( QWidget *pParent )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return false;
+
+	if (m_pAudioEditorForm == nullptr) {
+		// Build up the editor form...
+		// What style do we create tool childs?
+		Qt::WindowFlags wflags = Qt::Window;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bKeepEditorsOnTop) {
+			wflags |= Qt::Tool;
+		//	wflags |= Qt::WindowStaysOnTopHint;
+		#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
+			// Make sure it has a parent...
+			if (pParent == nullptr)
+				pParent = qtractorMainForm::getInstance();
+		#else
+			// Make sure it's a top-level window...
+			pParent = nullptr;
+		#endif
+		}
+		// Do it...
+		m_pAudioEditorForm = new qtractorAudioEditorForm(pParent, wflags);
+		m_pAudioEditorForm->show();
+		m_pAudioEditorForm->setup(this);
+	} else {
+		// Just show up the editor form...
+		m_pAudioEditorForm->setup();
+		m_pAudioEditorForm->show();
+	}
+
+	// Get it up any way...
+	m_pAudioEditorForm->raise();
+	m_pAudioEditorForm->activateWindow();
+
+	return true;
+}
+
+
+// Clip editor update.
+void qtractorAudioClip::updateEditor ( bool bSelectClear )
+{
+	update();
+
+	if (m_pAudioEditorForm == nullptr)
+		return;
+
+	qtractorAudioEditor *pAudioEditor
+		= static_cast<qtractorAudioEditor *> (m_pAudioEditorForm->editor());
+	if (pAudioEditor) {
+		pAudioEditor->setOffset(clipStart());
+		pAudioEditor->setLength(clipLength());
+		qtractorTrack *pTrack = track();
+		if (pTrack) {
+			pAudioEditor->setForeground(pTrack->foreground());
+			pAudioEditor->setBackground(pTrack->background());
+
+		}
+		pAudioEditor->updateContents();
+	}
+
+	m_pAudioEditorForm->resetDirtyCount();
+	m_pAudioEditorForm->stabilizeForm();
+}
+
+
+// Clip editor update.
+void qtractorAudioClip::updateEditorContents (void)
+{
+	if (m_pAudioEditorForm == nullptr)
+		return;
+
+	qtractorAudioEditor *pAudioEditor
+		= static_cast<qtractorAudioEditor *> (m_pAudioEditorForm->editor());
+	if (pAudioEditor)
+		pAudioEditor->updateContents();
+
+	m_pAudioEditorForm->stabilizeForm();
+}
+
+
+void qtractorAudioClip::updateEditorTimeScale (void)
+{
+	if (m_pAudioEditorForm == nullptr)
+		return;
+
+	qtractorTrack *pTrack = track();
+	if (pTrack) {
+		qtractorSession *pSession = pTrack->session();
+		if (pSession)
+			pSession->updateTimeScale();
+	}
+
+	qtractorAudioEditor *pAudioEditor
+		= static_cast<qtractorAudioEditor *> (m_pAudioEditorForm->editor());
+	if (pAudioEditor)
+		pAudioEditor->updateTimeScale();
+}
+
+
+// Clip query-close method (return true if editing is done).
+bool qtractorAudioClip::queryEditor (void)
+{
+	if (m_pAudioEditorForm)
+		return m_pAudioEditorForm->queryClose();
+
+	// Are any dirty changes pending commit?
+	bool bQueryEditor = qtractorClip::queryEditor();
+	if (!bQueryEditor) {
+		switch (qtractorAudioEditorForm::querySave(filename())) {
+		case QMessageBox::Save:	{
+			// Save/replace the clip track...
+			bQueryEditor = saveCopyFile(createFilePathRevision(), true);
+			break;
+		}
+		case QMessageBox::Discard:
+			bQueryEditor = true;
+			break;
+		case QMessageBox::Cancel:
+			bQueryEditor = false;
+			break;
+		}
+	}
+
+	return bQueryEditor;
+}
+
+
 // Audio clip tool-tip.
 QString qtractorAudioClip::toolTip (void) const
 {
@@ -772,6 +1095,36 @@ QString qtractorAudioClip::toolTip (void) const
 	}
 
 	return sToolTip;
+}
+
+
+// Auto-save to (possible) new file revision.
+bool qtractorAudioClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return false;
+
+	// Do nothing if session is yet untitled...
+	if (pSession->sessionName().isEmpty())
+		return false;
+
+	// TODO: ?...
+	//
+
+	// Reference for immediate file addition...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		pMainForm->appendMessages(
+			QObject::tr("Audio file save: \"%1\".").arg(sFilename));
+		pMainForm->addMidiFile(sFilename);
+	}
+
+	return true;
 }
 
 

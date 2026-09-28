@@ -19,6 +19,9 @@ set (HEADERS
   qtractorAudioBuffer.h
   qtractorAudioClip.h
   qtractorAudioConnect.h
+  qtractorAudioEditor.h
+  qtractorAudioEditView.h
+  qtractorAudioEditTime.h
   qtractorAudioEngine.h
   qtractorAudioFile.h
   qtractorAudioListView.h
@@ -43,6 +46,7 @@ set (HEADERS
   qtractorCurveSelect.h
   qtractorDocument.h
   qtractorDssiPlugin.h
+  qtractorEditor.h
   qtractorEngine.h
   qtractorEngineCommand.h
   qtractorFileList.h
@@ -127,10 +131,12 @@ set (HEADERS
   qtractorVst3Plugin.h
   qtractorZipFile.h
   qtractorWsolaTimeStretcher.h
+  qtractorAudioEditorForm.h
   qtractorAudioIOMatrixForm.h
   qtractorBusForm.h
   qtractorClipForm.h
   qtractorConnectForm.h
+  qtractorEditorForm.h
   qtractorEditRangeForm.h
   qtractorExportForm.h
   qtractorInstrumentForm.h
@@ -159,6 +165,9 @@ set (SOURCES
   qtractorAudioBuffer.cpp
   qtractorAudioClip.cpp
   qtractorAudioConnect.cpp
+  qtractorAudioEditor.cpp
+  qtractorAudioEditView.cpp
+  qtractorAudioEditTime.cpp
   qtractorAudioEngine.cpp
   qtractorAudioFile.cpp
   qtractorAudioListView.cpp
@@ -182,6 +191,7 @@ set (SOURCES
   qtractorCurveFile.cpp
   qtractorCurveSelect.cpp
   qtractorDssiPlugin.cpp
+  qtractorEditor.cpp
   qtractorEngine.cpp
   qtractorEngineCommand.cpp
   qtractorFileList.cpp
@@ -259,10 +269,12 @@ set (SOURCES
   qtractorVst3Plugin.cpp
   qtractorWsolaTimeStretcher.cpp
   qtractorZipFile.cpp
+  qtractorAudioEditorForm.cpp
   qtractorAudioIOMatrixForm.cpp
   qtractorBusForm.cpp
   qtractorClipForm.cpp
   qtractorConnectForm.cpp
+  qtractorEditorForm.cpp
   qtractorEditRangeForm.cpp
   qtractorExportForm.cpp
   qtractorInstrumentForm.cpp
@@ -286,6 +298,7 @@ set (SOURCES
 )
 
 set (FORMS
+  qtractorAudioEditorForm.ui
   qtractorAudioIOMatrixForm.ui
   qtractorBusForm.ui
   qtractorClipForm.ui
