@@ -110,6 +110,7 @@ set (HEADERS
   qtractorSession.h
   qtractorSessionCommand.h
   qtractorSessionCursor.h
+  qtractorSessionList.h
   qtractorSpinBox.h
   qtractorTempoCurve.h
   qtractorTempoCurveCommand.h
@@ -244,6 +245,7 @@ set (SOURCES
   qtractorSession.cpp
   qtractorSessionCommand.cpp
   qtractorSessionCursor.cpp
+  qtractorSessionList.cpp
   qtractorSpinBox.cpp
   qtractorTempoCurve.cpp
   qtractorTempoCurveCommand.cpp

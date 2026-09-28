@@ -44,7 +44,7 @@ class qtractorMidiControlMapListItem : public QTreeWidgetItem
 {
 public:
 
-	// Contructor.
+	// Constructor.
 	qtractorMidiControlMapListItem() : QTreeWidgetItem() {}
 
 protected:

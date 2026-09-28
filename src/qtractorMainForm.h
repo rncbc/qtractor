@@ -33,6 +33,7 @@ class qtractorSyncEvent;
 class qtractorTracks;
 class qtractorThumbView;
 class qtractorMessageList;
+class qtractorSessionList;
 class qtractorFileSystem;
 class qtractorFiles;
 class qtractorMessages;
@@ -44,6 +45,8 @@ class qtractorMidiControl;
 class qtractorTimeSpinBox;
 class qtractorTempoSpinBox;
 class qtractorTempoCursor;
+class qtractorTrack;
+class qtractorClip;
 
 class qtractorInstrumentMenu;
 
@@ -96,6 +99,7 @@ public:
 	qtractorConnections *connections() const;
 	qtractorMixer *mixer() const;
 	qtractorThumbView *thumbView() const;
+	qtractorSessionList *sessionList() const;
 
 	QString sessionName(const QString& sFilename) const;
 	QString untitledName(void) const;
@@ -116,6 +120,8 @@ public:
 		{ return m_ui.editMenu; }
 	QMenu *trackMenu() const
 		{ return m_ui.trackMenu; }
+	QMenu *clipMenu() const
+		{ return m_ui.clipMenu; }
 	QMenu *trackCurveMenu() const
 		{ return m_ui.trackCurveMenu; }
 	QMenu *trackCurveModeMenu() const
@@ -132,6 +138,13 @@ public:
 
 	void addAudioFile(const QString& sFilename);
 	void addMidiFile(const QString& sFilename);
+
+	void selectClipFile(qtractorClip *pClip);
+	void selectClipOnSessionList(qtractorClip *pClip);
+	void selectClipOnTrackView(qtractorClip *pClip);
+
+	void selectTrackOnSessionList(qtractorTrack *pTrack);
+	void selectTrackOnTrackList(qtractorTrack *pTrack);
 
 	static QString styleSheet(const QString& sFilename);
 
@@ -256,6 +269,7 @@ public slots:
 	void viewToolbarTime(bool bOn);
 	void viewToolbarThumb(bool bOn);
 	void viewToolbarLocked(bool bOn);
+	void viewSessionList(bool bOn);
 	void viewFileSystem(bool bOn);
 	void viewFiles(bool bOn);
 	void viewMessages(bool bOn);
@@ -482,6 +496,7 @@ private:
 	// Instance variables...
 	qtractorOptions *m_pOptions;
 	qtractorSession *m_pSession;
+	qtractorSessionList *m_pSessionList;
 	qtractorFileSystem *m_pFileSystem;
 	qtractorFiles *m_pFiles;
 	qtractorMessages *m_pMessages;
