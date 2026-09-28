@@ -85,10 +85,10 @@ public:
 		TRACK_SOLO              = 0x66 // Custom-implementation ;)
 	};
 
-	// Default contructor (fake).
+	// Default constructor (fake).
 	qtractorMmcEvent() : m_cmd(Command(0)) {}
 		
-	// Contructor.
+	// Constructor.
 	qtractorMmcEvent(unsigned char *pSysex)
 		: m_cmd(Command(pSysex[4])),
 			m_data((const char *) &pSysex[6], (int) pSysex[5]) {}

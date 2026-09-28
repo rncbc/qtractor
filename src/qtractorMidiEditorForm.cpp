@@ -1121,7 +1121,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 			m_pSnapPerBeatComboBox->currentIndex()));
 
 	// Note that there's two modes for this method:
-	// whether pMidiClip is given non-null wich means
+	// whether pMidiClip is given non-null which means
 	// form initialization first setup or else...
 	if (pMidiClip) {
 		// Set initial MIDI clip properties has seen fit...

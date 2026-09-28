@@ -66,6 +66,8 @@
 
 #include <QRegularExpression>
 
+#include <time.h>
+
 #ifdef CONFIG_VST3_XCB
 #include <xcb/xcb.h>
 #endif
@@ -133,6 +135,14 @@ public:
 	tresult freeBlock (Vst::DataExchangeQueueID queueID,
 		Vst::DataExchangeBlockID blockID, TBool sendToController);
 
+	// Register/unregister the IDataExchangeReceiver for a processor so
+	// that freeBlock(sendToController=true) can deliver block data to the
+	// edit-controller on the main thread.
+	void registerDataExchangeReceiver (
+		Vst::IAudioProcessor *processor,
+		Vst::IDataExchangeReceiver *receiver);
+	void unregisterDataExchangeReceiver (Vst::IAudioProcessor *processor);
+
 	// IRunLoop adapters...
 	//
 	class RunLoop;
@@ -184,10 +194,11 @@ private:
 	//
 	struct DataExchangeQueue
 	{
-		DataExchangeQueue()	: processor(nullptr),
+		DataExchangeQueue()	: processor(nullptr), receiver(nullptr),
 			userContextID(0), blockSize(0), alignment(0) {}
 
 		Vst::IAudioProcessor          *processor;
+		Vst::IDataExchangeReceiver    *receiver;  // edit-controller side
 		Vst::DataExchangeUserContextID userContextID;
 		uint32                         blockSize;
 		uint32                         alignment;
@@ -205,6 +216,8 @@ private:
 	};
 
 	QHash<Vst::DataExchangeQueueID, DataExchangeQueue *> m_dataExchangeQueues;
+	// Processor → receiver mapping; populated by process_reset(), used by openQueue().
+	QHash<Vst::IAudioProcessor *, Vst::IDataExchangeReceiver *> m_dataExchangeReceivers;
 
 	Vst::DataExchangeQueueID m_nextQueueID;
 
@@ -811,6 +824,7 @@ tresult qtractorVst3PluginHost::openQueue (
 
 	DataExchangeQueue *queue = new DataExchangeQueue();
 	queue->processor     = processor;
+	queue->receiver      = m_dataExchangeReceivers.value(processor, nullptr);
 	queue->userContextID = userContextID;
 	queue->blockSize     = blockSize;
 	queue->alignment     = alignment;
@@ -829,6 +843,17 @@ tresult qtractorVst3PluginHost::openQueue (
 	const Vst::DataExchangeQueueID queueID = m_nextQueueID++;
 	m_dataExchangeQueues.insert(queueID, queue);
 	*outID = queueID;
+
+	// Notify the edit-controller that a queue has been opened.
+	// openQueue() is always called on the main/setup thread, so the
+	// call is direct (no queued dispatch needed).
+	if (queue->receiver) {
+		TBool dispatchOnBackground = false;
+		queue->receiver->queueOpened(userContextID, blockSize, dispatchOnBackground);
+		// dispatchOnBackground is an out parameter; ignore it — we always
+		// deliver on the main thread via QueuedConnection in freeBlock().
+	}
+
 	return kResultTrue;
 }
 
@@ -839,6 +864,10 @@ tresult qtractorVst3PluginHost::closeQueue (
 	DataExchangeQueue *queue = m_dataExchangeQueues.take(queueID);
 	if (!queue)
 		return kResultFalse;
+
+	// Notify the edit-controller that the queue is closing (main thread).
+	if (queue->receiver)
+		queue->receiver->queueClosed(queue->userContextID);
 
 	for (DataExchangeQueue::Block& block : queue->blocks)
 		::free(block.data);
@@ -876,7 +905,7 @@ tresult qtractorVst3PluginHost::lockBlock (
 tresult qtractorVst3PluginHost::freeBlock (
 	Vst::DataExchangeQueueID queueID,
 	Vst::DataExchangeBlockID blockID,
-	TBool /*sendToController*/ )
+	TBool sendToController )
 {
 	DataExchangeQueue *queue = m_dataExchangeQueues.value(queueID, nullptr);
 	if (!queue)
@@ -885,8 +914,46 @@ tresult qtractorVst3PluginHost::freeBlock (
 	if (int(blockID) >= queue->blocks.size())
 		return kResultFalse;
 
-	queue->blocks[int(blockID)].locked = false;
+	DataExchangeQueue::Block& b = queue->blocks[int(blockID)];
+
+	if (sendToController && queue->receiver) {
+		// Copy the block data here in the RT thread, then schedule
+		// delivery to the edit-controller on the main/UI thread.
+		const uint32 sz = queue->blockSize;
+		QByteArray copy(reinterpret_cast<const char *> (b.data), int(sz));
+		Vst::IDataExchangeReceiver *receiver = queue->receiver;
+		const Vst::DataExchangeUserContextID ctxID = queue->userContextID;
+		QMetaObject::invokeMethod(
+			QCoreApplication::instance(),
+			[receiver, ctxID, copy]() mutable {
+				Vst::DataExchangeBlock blk;
+				blk.data    = copy.data();
+				blk.size    = uint32(copy.size());
+				blk.blockID = 0;
+				receiver->onDataExchangeBlocksReceived(ctxID, 1, &blk, false);
+			},
+			Qt::QueuedConnection);
+	}
+
+	b.locked = false;
 	return kResultTrue;
+}
+
+
+void qtractorVst3PluginHost::registerDataExchangeReceiver (
+	Vst::IAudioProcessor *processor,
+	Vst::IDataExchangeReceiver *receiver )
+{
+	if (processor)
+		m_dataExchangeReceivers.insert(processor, receiver);
+}
+
+
+void qtractorVst3PluginHost::unregisterDataExchangeReceiver (
+	Vst::IAudioProcessor *processor )
+{
+	if (processor)
+		m_dataExchangeReceivers.remove(processor);
 }
 
 
@@ -1088,13 +1155,23 @@ void qtractorVst3PluginHost::updateProcessContext (
 	else
 		m_processContext.state &= ~Vst::ProcessContext::kPlaying;
 
+	struct timespec ts;
+	::clock_gettime(CLOCK_MONOTONIC, &ts);
+	m_processContext.systemTime
+		= int64(ts.tv_sec) * 1000000000LL + int64(ts.tv_nsec);
+	m_processContext.state |= Vst::ProcessContext::kSystemTimeValid;
+
 	m_processContext.sampleRate = timeInfo.sampleRate;
 	m_processContext.projectTimeSamples = timeInfo.frame;
 
+	m_processContext.continousTimeSamples = timeInfo.frame;
+	m_processContext.state |= Vst::ProcessContext::kContTimeValid;
+
 	m_processContext.state |= Vst::ProcessContext::kProjectTimeMusicValid;
 	m_processContext.projectTimeMusic = timeInfo.beats;
+
 	m_processContext.state |= Vst::ProcessContext::kBarPositionValid;
-	m_processContext.barPositionMusic = timeInfo.beats;
+	m_processContext.barPositionMusic = timeInfo.barBeats;
 
 	m_processContext.state |= Vst::ProcessContext::kTempoValid;
 	m_processContext.tempo  = timeInfo.tempo;
@@ -1129,6 +1206,7 @@ void qtractorVst3PluginHost::clear (void)
 		delete queue;
 	}
 	m_dataExchangeQueues.clear();
+	m_dataExchangeReceivers.clear();
 }
 
 
@@ -2548,6 +2626,10 @@ void qtractorVst3Plugin::Impl::deinitialize (void)
 			controller->setComponentHandler(nullptr);
 	}
 
+	// Remove any DataExchange receiver registration for this processor.
+	if (m_processor)
+		g_hostContext.unregisterDataExchangeReceiver(m_processor);
+
 	m_processor = nullptr;
 	m_handler = nullptr;
 
@@ -2692,6 +2774,25 @@ bool qtractorVst3Plugin::Impl::process_reset (
 
 	if (m_processor->setupProcessing(setup) != kResultOk)
 		return false;
+
+	// Query IProcessContextRequirements (mandatory since VST3 SDK 3.7.0).
+	// The result tells the host which ProcessContext fields the plug-in
+	// actually needs; we currently populate all fields unconditionally so
+	// every plug-in gets accurate context regardless of its declared mask.
+	// The call itself is required for SDK 3.7+ compliance (Host Checker).
+	FUnknownPtr<Vst::IProcessContextRequirements> pcreqs(m_processor);
+	if (pcreqs)
+		pcreqs->getProcessContextRequirements(); // result ignored — all fields filled
+
+	// Register the edit-controller as the DataExchange receiver so that
+	// freeBlock(sendToController=true) can forward block data on the main thread.
+	Vst::IEditController *controller = pType->impl()->controller();
+	// Try the controller first (separated component/controller).
+	FUnknownPtr<Vst::IDataExchangeReceiver> recv(controller);
+	if (recv == nullptr)
+		recv = FUnknownPtr<Vst::IDataExchangeReceiver> (m_processor);
+	if (recv)
+		g_hostContext.registerDataExchangeReceiver(m_processor, recv);
 
 	// Setup processor audio I/O buffers...
 	m_buffers_in.silenceFlags      = 0;

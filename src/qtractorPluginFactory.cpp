@@ -82,7 +82,7 @@ qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 }
 
 
-// Contructor.
+// Constructor.
 qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
 	: QObject(pParent), m_typeHint(qtractorPluginType::Any), m_bRescan(false)
 {
