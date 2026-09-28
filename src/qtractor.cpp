@@ -394,6 +394,24 @@ bool qtractorApplication::setupServer (void)
 			bServer = (pData->pid == pid);
 		m_pMemory->unlock();
 	}
+	else {
+		// Neither created nor attached: the key artifact that Qt keeps
+		// in the temporary directory has outlived the instance that
+		// made it -- killed by a signal before it could clean up --
+		// while the segment it names is already gone. create() then
+		// reports "already exists" and attach() "doesn't exist", and
+		// every later start quits as a duplicate of a process that is
+		// not there, silently, with exit status 2.
+		//
+		// The local server is the one thing that still knows whether
+		// an instance is really running, so ask it.
+		QLocalSocket probe;
+		probe.connectToServer(m_sUnique);
+		if (probe.waitForConnected(200))
+			probe.abort();
+		else
+			bServer = true;
+	}
 
 	if (bServer) {
 		QLocalServer::removeServer(m_sUnique);
