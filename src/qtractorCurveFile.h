@@ -65,7 +65,7 @@ public:
 	const QString& filename() const
 		{ return m_sFilename; }
 
-	// Current curve index accesors.
+	// Current curve index accessors.
 	void setCurrentIndex(unsigned long iCurrentIndex)
 		{ m_iCurrentIndex = iCurrentIndex; }
 	unsigned long currentIndex() const

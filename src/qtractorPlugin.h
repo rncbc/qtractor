@@ -88,10 +88,10 @@ public:
 	bool removeRef()
 		{ return (--m_iRefCount < 1); }
 
-	// Plugin file resgistry.
+	// Plugin file registry.
 	typedef QHash<QString, qtractorPluginFile *> Files;
 
-	// Plugin file resgistry methods.
+	// Plugin file registry methods.
 	static qtractorPluginFile *addFile(const QString& sFilename);
 	static void removeFile(qtractorPluginFile *pFile);
 

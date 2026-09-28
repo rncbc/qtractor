@@ -25,7 +25,6 @@
 #include "qtractorTrackList.h"
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
-#include "qtractorFiles.h"
 
 #include "qtractorAudioClip.h"
 #include "qtractorAudioFile.h"
@@ -2316,7 +2315,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 }
 
 
-// Clip file(item) selection convenience method.
+// Clip item selection convenience method.
 void qtractorTrackView::selectClip ( bool bReset )
 {
 	if (m_pClipDrag == nullptr)
@@ -2345,37 +2344,10 @@ void qtractorTrackView::selectClip ( bool bReset )
 		m_pTracks->selectionChangeNotify();
 	}
 
-	// Do the file view selection then...
-	qtractorTrack *pTrack = m_pClipDrag->track();
-	if (pTrack == nullptr)
-		return;
-
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == nullptr)
-		return;
-
-	qtractorFiles *pFiles = pMainForm->files();
-	if (pFiles == nullptr)
-		return;
-
-	switch (pTrack->trackType()) {
-	case qtractorTrack::Audio: {
-		qtractorAudioClip *pAudioClip
-			= static_cast<qtractorAudioClip *> (m_pClipDrag);
-		if (pAudioClip)
-			pFiles->selectAudioFile(pAudioClip->filename());
-		break;
-	}
-	case qtractorTrack::Midi: {
-		qtractorMidiClip *pMidiClip
-			= static_cast<qtractorMidiClip *> (m_pClipDrag);
-		if (pMidiClip)
-			pFiles->selectMidiFile(
-				pMidiClip->filename(), pMidiClip->trackChannel());
-		break;
-	}
-	default:
-		break;
+	if (pMainForm) {
+		pMainForm->selectClipFile(m_pClipDrag);
+		pMainForm->selectClipOnSessionList(m_pClipDrag);
 	}
 }
 
@@ -2491,9 +2463,45 @@ void qtractorTrackView::selectClipRect ( const QRect& rectDrag,
 }
 
 
+// Select one clip.
+void qtractorTrackView::selectClip ( qtractorClip *pClip, bool bReset )
+{
+	if (pClip == nullptr)
+		return;
+
+	// Reset selection (unconditional)...
+	int iUpdate = 0;
+	QRect rectUpdate = m_pClipSelect->rect();
+	if (bReset && m_pClipSelect->items().count() > 0) {
+		m_pClipSelect->reset();
+		++iUpdate;
+	}
+
+	TrackViewInfo tvi;
+	if (trackInfo(pClip->track(), &tvi)) {
+		QRect rectClip;
+		clipInfo(pClip, &rectClip, &tvi);
+		m_pClipSelect->selectItem(pClip, rectClip, true);
+		const QPoint& pos = rectClip.topLeft();
+		const int mx = qtractorScrollView::width();
+		ensureVisible(pos.x(), pos.y(), mx, 24);
+		++iUpdate;
+	}
+
+	// This is most probably an overall update...
+	if (iUpdate > 0) {
+		updateRect(rectUpdate.united(m_pClipSelect->rect()));
+		m_pTracks->selectionChangeNotify();
+	}
+}
+
+
 // Select one clip on current edit-range.
 void qtractorTrackView::selectClipRange ( qtractorClip *pClip, bool bReset )
 {
+	if (pClip == nullptr)
+		return;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;

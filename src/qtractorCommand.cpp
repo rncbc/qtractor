@@ -99,7 +99,7 @@ void qtractorCommandList::backout ( qtractorCommand *pCommand )
 }
 
 
-// Cannonical command methods.
+// Canonical command methods.
 bool qtractorCommandList::push ( qtractorCommand *pCommand )
 {
 	// Trim the command list from current last command...

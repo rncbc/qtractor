@@ -228,7 +228,7 @@ public:
 	bool lv2_ui_show_interface(LilvUI *ui) const;
 #endif
 
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 
 protected:
@@ -462,6 +462,8 @@ public:
 	// Update LV2 Time from JACK transport position.
 	static void updateTime(qtractorAudioEngine *pAudioEngine);
 	static void updateTimePost();
+	// Make ready LV2 Time ports.
+	void lv2_time_ports_changed();
 #ifdef CONFIG_LV2_TIME_POSITION
 	// Make ready LV2 Time position.
 	void lv2_time_position_changed();

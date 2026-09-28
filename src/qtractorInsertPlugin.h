@@ -293,7 +293,7 @@ public:
 	unsigned short instances(unsigned short iChannels, bool /*bMidi*/) const
 		{ return (iChannels > 0 ? 1 : 0); }
 
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 };
 
@@ -319,7 +319,7 @@ public:
 	unsigned short instances(unsigned short iChannels, bool bMidi) const
 		{ return (iChannels > 0 && bMidi ? 1 : 0); }
 
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 };
 
