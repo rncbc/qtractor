@@ -1228,7 +1228,7 @@ void qtractorAudioAuxSendPluginType::close (void)
 }
 
 
-// Instance cached-deferred accesors.
+// Instance cached-deferred accessors.
 const QString& qtractorAudioAuxSendPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
@@ -1290,7 +1290,7 @@ void qtractorMidiAuxSendPluginType::close (void)
 }
 
 
-// Instance cached-deferred accesors.
+// Instance cached-deferred accessors.
 const QString& qtractorMidiAuxSendPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {

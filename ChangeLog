@@ -4,6 +4,19 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- A Session overview is now integrated as a dockable-widget on
+  the main application window (cf. main menu View / Window /
+  Session List).
+
+- VST3 Plug-ins: make sure process context is actually updated
+  with transport info requirements. (EXPERIMENTAL)
+
+- Update any existing LV2 Time designated ports/parameters, when
+  inserting a LV2 Plug-in. (EXPERIMENTAL)
+
+
 1.6.4  2026-09-06  A Late-Summer'26 Hotfix Release.
 
 - Fixed a relatively recent crash-bug introduced to Clip/Merge...

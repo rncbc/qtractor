@@ -381,7 +381,7 @@ public:
 	// QTreeWidgetItem types.
 	enum { ClientItem = 1001, PortItem = 1002 };
 
-	// Widget accesors.
+	// Widget accessors.
 	qtractorClientListView *OListView() const     { return m_pOListView; }
 	qtractorClientListView *IListView() const     { return m_pIListView; }
 	qtractorConnectorView  *ConnectorView() const { return m_pConnectorView; }

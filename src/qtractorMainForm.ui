@@ -107,6 +107,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="viewSessionListAction"/>
    <addaction name="viewFileSystemAction"/>
    <addaction name="viewFilesAction"/>
    <addaction name="viewMessagesAction"/>
@@ -471,6 +472,7 @@
      <property name="title">
       <string>&amp;Windows</string>
      </property>
+     <addaction name="viewSessionListAction"/>
      <addaction name="viewFileSystemAction"/>
      <addaction name="viewFilesAction"/>
      <addaction name="viewMessagesAction"/>
@@ -2336,6 +2338,26 @@
     <property name="statusTip">
       <string>Lock/unlock main program window toolbar positions</string>
     </property>
+  </action>
+  <action name="viewSessionListAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="viewSessionList" />
+   </property>
+   <property name="text">
+    <string>Session &amp;List</string>
+   </property>
+   <property name="iconText">
+    <string>Session List</string>
+   </property>
+   <property name="toolTip">
+    <string>Session list</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide the session list window</string>
+   </property>
   </action>
   <action name="viewFileSystemAction">
    <property name="checkable">
