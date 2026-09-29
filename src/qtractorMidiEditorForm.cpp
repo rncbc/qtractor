@@ -74,6 +74,10 @@
 #define horizontalAdvance  width
 #endif
 
+// Local static consts.
+static const char *LayoutDockWindowsKey = "/MidiEditor/Layout/DockWindows";
+
+
 
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Main window form implementation.
@@ -769,7 +773,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pSnapToScaleTypeComboBox->setCurrentIndex(pOptions->iMidiSnapToScaleType);
 		// Restore whole dock windows state.
 		QByteArray aDockables = pOptions->settings().value(
-			"/MidiEditor/Layout/DockWindows").toByteArray();
+			LayoutDockWindowsKey).toByteArray();
 		if (aDockables.isEmpty()) {
 			// Some windows are forced initially as is...
 			insertToolBarBreak(m_ui.editViewToolbar);
@@ -993,8 +997,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		if (m_pMidiEventList->isFloating())
 			m_pMidiEventList->close();
 		// Save the dock windows state.
-		pOptions->settings().setValue(
-			"/MidiEditor/Layout/DockWindows", saveState());
+		pOptions->settings().setValue(LayoutDockWindowsKey, saveState());
 		// And this main windows state?
 		// pOptions->saveWidgetGeometry(this, true);
 	}

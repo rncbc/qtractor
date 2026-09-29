@@ -122,7 +122,6 @@ protected slots:
 	void viewStatusbar(bool bOn);
 	void viewToolbarFile(bool bOn);
 	void viewToolbarEdit(bool bOn);
-	void viewToolbarView(bool bOn);
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarTime(bool bOn);
 	void viewToolbarLocked(bool bOn);
@@ -137,10 +136,11 @@ protected slots:
 	void viewSnapGrid(bool bOn);
 	void viewToolTips(bool bOn);
 	void viewRefresh();
-	void viewFollow(bool bOn);
 
 	void transportStepBackward();
 	void transportStepForward();
+
+	void transportFollow(bool bOn);
 
 	void helpShortcuts();
 	void helpAbout();

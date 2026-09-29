@@ -82,7 +82,6 @@
      </property>
      <addaction name="viewToolbarFileAction"/>
      <addaction name="viewToolbarEditAction"/>
-     <addaction name="viewToolbarViewAction"/>
      <addaction name="viewToolbarTransportAction"/>
      <addaction name="viewToolbarTimeAction"/>
      <addaction name="separator"/>
@@ -120,8 +119,6 @@
     <addaction name="viewSnapMenu"/>
     <addaction name="separator"/>
     <addaction name="viewRefreshAction"/>
-    <addaction name="separator"/>
-    <addaction name="viewFollowAction"/>
    </widget>
    <widget class="QMenu" name="editMenu">
     <property name="title">
@@ -165,7 +162,7 @@
     <addaction name="transportPunchAction"/>
     <addaction name="transportPunchSetAction"/>
     <addaction name="separator"/>
-    <addaction name="transportPanicAction"/>
+    <addaction name="transportFollowAction"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
     <property name="title">
@@ -217,18 +214,6 @@
    <addaction name="separator"/>
    <addaction name="editDeleteAction"/>
   </widget>
-  <widget class="QToolBar" name="viewToolbar">
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="viewFollowAction"/>
-  </widget>
   <widget class="QToolBar" name="transportToolbar">
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -252,20 +237,9 @@
    <addaction name="separator"/>
    <addaction name="transportPunchAction"/>
    <addaction name="separator"/>
-   <addaction name="transportPanicAction"/>
+   <addaction name="transportFollowAction"/>
   </widget>
   <widget class="QToolBar" name="timeToolbar">
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QToolBar" name="editViewToolbar">
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
@@ -733,23 +707,6 @@
     <string>Show/hide the edit toolbar</string>
    </property>
   </action>
-  <action name="viewToolbarViewAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;View</string>
-   </property>
-   <property name="iconText">
-    <string>View Toolbar</string>
-   </property>
-   <property name="toolTip">
-    <string>View toolbar</string>
-   </property>
-   <property name="statusTip">
-    <string>Show/hide the view toolbar</string>
-   </property>
-  </action>
   <action name="viewToolbarTransportAction">
    <property name="checkable">
     <bool>true</bool>
@@ -975,29 +932,6 @@
    </property>
    <property name="shortcut">
     <string>F5</string>
-   </property>
-  </action>
-  <action name="viewFollowAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset theme="transportFollow" />
-   </property>
-   <property name="text">
-    <string>F&amp;ollow Playhead</string>
-   </property>
-   <property name="iconText">
-    <string>Follow Playhead</string>
-   </property>
-   <property name="toolTip">
-    <string>Follow playhead</string>
-   </property>
-   <property name="statusTip">
-    <string>Follow playhead</string>
-   </property>
-   <property name="shortcut">
-    <string/>
    </property>
   </action>
   <action name="transportBackwardAction">
@@ -1257,21 +1191,27 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="transportPanicAction">
+  <action name="transportFollowAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset theme="transportPanic" />
+    <iconset theme="transportFollow" />
    </property>
    <property name="text">
-    <string>Pa&amp;nic</string>
+    <string>F&amp;ollow Playhead</string>
    </property>
    <property name="iconText">
-    <string>Panic</string>
+    <string>Follow Playhead</string>
    </property>
    <property name="toolTip">
-    <string>Panic</string>
+    <string>Follow playhead</string>
    </property>
    <property name="statusTip">
-    <string>All audio tracks shut off (panic)</string>
+    <string>Follow playhead</string>
+   </property>
+   <property name="shortcut">
+    <string/>
    </property>
   </action>
   <action name="helpShortcutsAction">

@@ -37,7 +37,7 @@
 
 
 //----------------------------------------------------------------------------
-// qtractorEditor -- The main Audio sequence editor widget.
+// qtractorEditor -- Base clip editor widget.
 
 
 // Constructor.

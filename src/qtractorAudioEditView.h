@@ -30,6 +30,7 @@
 
 // Forward declarations.
 class qtractorAudioEditor;
+class qtractorAudioPeak;
 
 class QResizeEvent;
 class QMouseEvent;
@@ -97,6 +98,10 @@ protected:
 
 	// Resize event handler.
 	void resizeEvent(QResizeEvent *pResizeEvent);
+
+	// Draw the audio peaks (waveforms).
+	void drawAudioPeak(QPainter& painter,
+		unsigned long iFrameStart, unsigned long iFrameEnd, int w, int h);
 
 	// Draw the time scale.
 	void drawContents(QPainter *pPainter, const QRect& rect);

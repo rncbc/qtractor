@@ -89,7 +89,7 @@ public:
 	bool openAudioFile(const QString& sFilename,
 		int iMode = qtractorAudioFile::Read);
 
-	// Sequence properties accessors.
+	// Audio properties accessors.
 	qtractorAudioBuffer *buffer() const
 		{ return (m_pData ? m_pData->buffer() : nullptr); }
 
@@ -140,6 +140,12 @@ public:
 
 	bool clipExport(ClipExport pfnClipExport, void *pvArg,
 		unsigned long iOffset = 0, unsigned long iLength = 0) const;
+
+	// Gain fractionalizers(tm)...
+	typedef struct { int num, den; } FractGain;
+
+	FractGain *fractGains() const
+		{ return m_pFractGains; }
 
 	// Audio file hash key.
 	class FileKey;
@@ -285,9 +291,6 @@ private:
 
 	// Alternate overlap tag.
 	unsigned int m_iOverlap;
-
-	// Gain fractionalizers(tm)...
-	typedef struct { int num, den; } FractGain;
 
 	FractGain *m_pFractGains;
 

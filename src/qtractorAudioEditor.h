@@ -37,8 +37,10 @@ class qtractorCommand;
 
 class qtractorAudioEditTime;
 class qtractorAudioEditView;
+class qtractorAudioEditViewScale;
 
 class qtractorAudioClip;
+class qtractorAudioPeak;
 
 class qtractorTrack;
 
@@ -65,9 +67,11 @@ public:
 	// Audio clip sequence accessors.
 	void setAudioClip(qtractorAudioClip *pAudioClip);
 	qtractorAudioClip *audioClip() const;
+	qtractorAudioPeak *audioPeak() const;
 
 	// Audio clip properties accessors.
 	const QString& filename() const;
+	unsigned short channels() const;
 
 	// Child widgets accessors.
 	qtractorAudioEditTime *editTime() const;
@@ -171,6 +175,10 @@ public slots:
 
 protected:
 
+	// Audio-peak live-cycle methods.
+	void createAudioPeak();
+	void deleteAudioPeak();
+
 	// Ensure point visibility depending on view.
 	void ensureVisible(qtractorScrollView *pScrollView, const QPoint& pos);
 
@@ -223,10 +231,17 @@ private:
 
 	// The editing sequence.
 	qtractorAudioClip *m_pAudioClip;
+	qtractorAudioPeak *m_pAudioPeak;
+
+	// The main widget splitters.
+	QSplitter *m_pHSplitter;
+	QSplitter *m_pVSplitter;
 
 	// The main child widgets.
 	qtractorAudioEditTime *m_pEditTime;
 	qtractorAudioEditView *m_pEditView;
+	qtractorAudioEditViewScale *m_pEditViewScale;
+	QFrame *m_pEditViewHeader;
 };
 
 

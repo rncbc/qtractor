@@ -60,7 +60,7 @@ class QCursor;
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiEditor -- The main session track listview widget.
+// qtractorMidiEditor -- MIDI clip editor widget.
 
 class qtractorMidiEditor : public qtractorEditor
 {

@@ -716,7 +716,7 @@ unsigned char qtractorMidiEditor::snapToScale (
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiEdit::ClipBoard - MIDI editor clipaboard singleton.
+// qtractorMidiEdit::ClipBoard - MIDI editor clipboard singleton.
 
 // Singleton declaration.
 qtractorMidiEditor::ClipBoard qtractorMidiEditor::g_clipboard;
@@ -743,7 +743,7 @@ struct qtractorMidiEditor::DragTimeScale
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiEditor -- The main MIDI sequence editor widget.
+// qtractorMidiEditor -- MIDI clip editor widget.
 
 
 // Constructor.

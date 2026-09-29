@@ -68,6 +68,10 @@
 #endif
 
 
+// Local static consts.
+static const char *LayoutDockWindowsKey = "/AudioEditor/Layout/DockWindows";
+
+
 //-------------------------------------------------------------------------
 // qtractorAudioEditorForm -- Main window form implementation.
 
@@ -140,12 +144,11 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	m_pTempoSpinBox->setToolTip(tr("Current tempo (BPM)"));
 	m_pTempoSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTempoSpinBox);
-//	m_ui.timeToolbar->addSeparator();
+	m_ui.timeToolbar->addSeparator();
 
 	// Snap-per-beat combo-box.
-	m_pSnapPerBeatComboBox = new QComboBox(m_ui.viewToolbar);
+	m_pSnapPerBeatComboBox = new QComboBox(m_ui.timeToolbar);
 	m_pSnapPerBeatComboBox->setEditable(false);
-
 	// View/Snap-to-beat actions initialization...
 	int iSnap = 0;
 	const QIcon& snapIcon = QIcon::fromTheme("itemBeat");
@@ -170,7 +173,6 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 //	m_ui.viewSnapMenu->addSeparator();
 	m_ui.viewSnapMenu->addAction(m_ui.viewSnapZebraAction);
 	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
-
 	// Pre-fill the combo-boxes...
 	m_pSnapPerBeatComboBox->setIconSize(QSize(8, 16));
 	snapIter.toFront();
@@ -180,13 +182,9 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	while (snapIter.hasNext())
 		m_pSnapPerBeatComboBox->addItem(snapIcon, snapIter.next());
 //	m_pSnapPerBeatComboBox->insertItems(0, snapItems);
-
 	// Set combo-boxes tooltips...
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
-
-	// Add combo-boxes to toolbars...
-	m_ui.viewToolbar->addSeparator();
-	m_ui.viewToolbar->addWidget(m_pSnapPerBeatComboBox);
+	m_ui.timeToolbar->addWidget(m_pSnapPerBeatComboBox);
 
 	QStatusBar *pStatusBar = statusBar();
 
@@ -335,9 +333,6 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.viewToolbarEditAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarEdit(bool)));
-	QObject::connect(m_ui.viewToolbarViewAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewToolbarView(bool)));
 	QObject::connect(m_ui.viewToolbarTransportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarTransport(bool)));
@@ -374,9 +369,10 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
-	QObject::connect(m_ui.viewFollowAction,
+
+	QObject::connect(m_ui.transportFollowAction,
 		SIGNAL(triggered(bool)),
-		SLOT(viewFollow(bool)));
+		SLOT(transportFollow(bool)));
 
 	QObject::connect(m_ui.helpShortcutsAction,
 		SIGNAL(triggered(bool)),
@@ -429,45 +425,40 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		// Initial decorations toggle state.
-		m_ui.viewMenubarAction->setChecked(pOptions->bMidiMenubar);
-		m_ui.viewStatusbarAction->setChecked(pOptions->bMidiStatusbar);
-		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
-		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
-		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
-		m_ui.viewToolbarTransportAction->setChecked(pOptions->bMidiTransportToolbar);
-		m_ui.viewToolbarTimeAction->setChecked(pOptions->bMidiTimeToolbar);
-		m_ui.viewToolbarLockedAction->setChecked(pOptions->bMidiLockedToolbar);
-		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollow);
-		m_ui.viewSnapZebraAction->setChecked(pOptions->bMidiSnapZebra);
-		m_ui.viewSnapGridAction->setChecked(pOptions->bMidiSnapGrid);
-		m_ui.viewToolTipsAction->setChecked(pOptions->bMidiToolTips);
+		m_ui.viewMenubarAction->setChecked(pOptions->bAudioMenubar);
+		m_ui.viewStatusbarAction->setChecked(pOptions->bAudioStatusbar);
+		m_ui.viewToolbarFileAction->setChecked(pOptions->bAudioFileToolbar);
+		m_ui.viewToolbarEditAction->setChecked(pOptions->bAudioEditToolbar);
+		m_ui.viewToolbarTransportAction->setChecked(pOptions->bAudioTransportToolbar);
+		m_ui.viewToolbarTimeAction->setChecked(pOptions->bAudioTimeToolbar);
+		m_ui.viewToolbarLockedAction->setChecked(pOptions->bAudioLockedToolbar);
+		m_ui.transportFollowAction->setChecked(pOptions->bAudioFollow);
+		m_ui.viewSnapZebraAction->setChecked(pOptions->bAudioSnapZebra);
+		m_ui.viewSnapGridAction->setChecked(pOptions->bAudioSnapGrid);
+		m_ui.viewToolTipsAction->setChecked(pOptions->bAudioToolTips);
 		// Initial decorations visibility state.
-		viewMenubar(pOptions->bMidiMenubar);
-		viewStatusbar(pOptions->bMidiStatusbar);
-		viewToolbarFile(pOptions->bMidiFileToolbar);
-		viewToolbarEdit(pOptions->bMidiEditToolbar);
-		viewToolbarView(pOptions->bMidiViewToolbar);
-		viewToolbarTransport(pOptions->bMidiTransportToolbar);
-		viewToolbarTime(pOptions->bMidiTimeToolbar);
-		viewToolbarLocked(pOptions->bMidiLockedToolbar);
-		m_pAudioEditor->setZoomMode(pOptions->iMidiZoomMode);
-		m_pAudioEditor->setHorizontalZoom(pOptions->iMidiHorizontalZoom);
-		m_pAudioEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
-		m_pAudioEditor->setSnapZebra(pOptions->bMidiSnapZebra);
-		m_pAudioEditor->setSnapGrid(pOptions->bMidiSnapGrid);
-		m_pAudioEditor->setToolTips(pOptions->bMidiToolTips);
-		m_pAudioEditor->setSyncView(pOptions->bMidiFollow);
+		viewMenubar(pOptions->bAudioMenubar);
+		viewStatusbar(pOptions->bAudioStatusbar);
+		viewToolbarFile(pOptions->bAudioFileToolbar);
+		viewToolbarEdit(pOptions->bAudioEditToolbar);
+		viewToolbarTransport(pOptions->bAudioTransportToolbar);
+		viewToolbarTime(pOptions->bAudioTimeToolbar);
+		viewToolbarLocked(pOptions->bAudioLockedToolbar);
+		m_pAudioEditor->setZoomMode(pOptions->iAudioZoomMode);
+		m_pAudioEditor->setHorizontalZoom(pOptions->iAudioHorizontalZoom);
+		m_pAudioEditor->setVerticalZoom(pOptions->iAudioVerticalZoom);
+		m_pAudioEditor->setSnapZebra(pOptions->bAudioSnapZebra);
+		m_pAudioEditor->setSnapGrid(pOptions->bAudioSnapGrid);
+		m_pAudioEditor->setToolTips(pOptions->bAudioToolTips);
+		m_pAudioEditor->setSyncView(pOptions->bAudioFollow);
 		// Initial transport display options...
 		m_pAudioEditor->setSyncViewHold(pOptions->bSyncViewHold);
 		// Default snap-per-beat setting...
-		m_pSnapPerBeatComboBox->setCurrentIndex(pOptions->iMidiSnapPerBeat);
+		m_pSnapPerBeatComboBox->setCurrentIndex(pOptions->iAudioSnapPerBeat);
 		// Restore whole dock windows state.
 		QByteArray aDockables = pOptions->settings().value(
-			"/MidiEditor/Layout/DockWindows").toByteArray();
-		if (aDockables.isEmpty()) {
-			// Some windows are forced initially as is...
-			insertToolBarBreak(m_ui.editViewToolbar);
-		} else {
+			LayoutDockWindowsKey).toByteArray();
+		if (!aDockables.isEmpty()) {
 			// Make it as the last time.
 			restoreState(aDockables);
 		}
@@ -519,9 +510,6 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 		QObject::connect(m_ui.transportPunchSetAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportPunchSet()));
-		QObject::connect(m_ui.transportPanicAction,
-			SIGNAL(triggered(bool)),
-			pMainForm, SLOT(transportPanic()));
 		// Add to main editors list...
 		pMainForm->addEditorForm(this);
 	}
@@ -610,27 +598,25 @@ void qtractorAudioEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && isVisible()) {
 		// Save decorations state.
-		pOptions->bMidiMenubar = m_ui.menuBar->isVisible();
-		pOptions->bMidiStatusbar = statusBar()->isVisible();
-		pOptions->bMidiFileToolbar = m_ui.fileToolbar->isVisible();
-		pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
-		pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
-		pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
-		pOptions->bMidiTimeToolbar = m_ui.timeToolbar->isVisible();
-		pOptions->bMidiLockedToolbar = m_ui.viewToolbarLockedAction->isChecked();
-		pOptions->iMidiZoomMode = m_pAudioEditor->zoomMode();
-		pOptions->iMidiHorizontalZoom = m_pAudioEditor->horizontalZoom();
-		pOptions->iMidiVerticalZoom = m_pAudioEditor->verticalZoom();
-		pOptions->bMidiSnapZebra = m_pAudioEditor->isSnapZebra();
-		pOptions->bMidiSnapGrid = m_pAudioEditor->isSnapGrid();
-		pOptions->bMidiToolTips = m_pAudioEditor->isToolTips();
-		pOptions->iMidiDisplayFormat = (m_pAudioEditor->timeScale())->displayFormat();
-		pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
+		pOptions->bAudioMenubar = m_ui.menuBar->isVisible();
+		pOptions->bAudioStatusbar = statusBar()->isVisible();
+		pOptions->bAudioFileToolbar = m_ui.fileToolbar->isVisible();
+		pOptions->bAudioEditToolbar = m_ui.editToolbar->isVisible();
+		pOptions->bAudioTransportToolbar = m_ui.transportToolbar->isVisible();
+		pOptions->bAudioTimeToolbar = m_ui.timeToolbar->isVisible();
+		pOptions->bAudioLockedToolbar = m_ui.viewToolbarLockedAction->isChecked();
+		pOptions->iAudioZoomMode = m_pAudioEditor->zoomMode();
+		pOptions->iAudioHorizontalZoom = m_pAudioEditor->horizontalZoom();
+		pOptions->iAudioVerticalZoom = m_pAudioEditor->verticalZoom();
+		pOptions->bAudioSnapZebra = m_pAudioEditor->isSnapZebra();
+		pOptions->bAudioSnapGrid = m_pAudioEditor->isSnapGrid();
+		pOptions->bAudioToolTips = m_pAudioEditor->isToolTips();
+		pOptions->iAudioDisplayFormat = (m_pAudioEditor->timeScale())->displayFormat();
+		pOptions->bAudioFollow  = m_ui.transportFollowAction->isChecked();
 		// Save snap-per-beat setting...
-		pOptions->iMidiSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
+		pOptions->iAudioSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
 		// Save the dock windows state.
-		pOptions->settings().setValue(
-			"/MidiEditor/Layout/DockWindows", saveState());
+		pOptions->settings().setValue(LayoutDockWindowsKey, saveState());
 		// And this main windows state?
 		// pOptions->saveWidgetGeometry(this, true);
 	}
@@ -713,7 +699,7 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		const qtractorTimeScale::DisplayFormat displayFormat
-			= qtractorTimeScale::DisplayFormat(pOptions->iMidiDisplayFormat);
+			= qtractorTimeScale::DisplayFormat(pOptions->iAudioDisplayFormat);
 		pTimeScale->setDisplayFormat(displayFormat);
 		m_pTimeSpinBox->setDisplayFormat(displayFormat);
 	}
@@ -1168,13 +1154,6 @@ void qtractorAudioEditorForm::viewToolbarEdit ( bool bOn )
 }
 
 
-// Show/hide the view-toolbar.
-void qtractorAudioEditorForm::viewToolbarView ( bool bOn )
-{
-	m_ui.viewToolbar->setVisible(bOn);
-}
-
-
 // Show/hide the transport-toolbar.
 void qtractorAudioEditorForm::viewToolbarTransport ( bool bOn )
 {
@@ -1189,15 +1168,13 @@ void qtractorAudioEditorForm::viewToolbarTime( bool bOn )
 }
 
 
-// Lock/unlock midi window toolbar positions.
+// Lock/unlock window toolbar positions.
 void qtractorAudioEditorForm::viewToolbarLocked ( bool bOn )
 {
 	m_ui.fileToolbar->setMovable(!bOn);
 	m_ui.editToolbar->setMovable(!bOn);
-	m_ui.viewToolbar->setMovable(!bOn);
 	m_ui.transportToolbar->setMovable(!bOn);
 	m_ui.timeToolbar->setMovable(!bOn);
-	m_ui.editViewToolbar->setMovable(!bOn);
 }
 
 
@@ -1294,14 +1271,6 @@ void qtractorAudioEditorForm::viewRefresh (void)
 }
 
 
-// View follow playhead
-void qtractorAudioEditorForm::viewFollow ( bool bOn )
-{
-	m_pAudioEditor->setSyncView(bOn);
-}
-
-
-
 //-------------------------------------------------------------------------
 // qtractorAudioEditorForm -- Transport Action slots.
 
@@ -1380,6 +1349,13 @@ void qtractorAudioEditorForm::transportStepForward (void)
 	m_pAudioEditor->setSyncViewHoldOn(false);
 	m_pAudioEditor->setPlayHead(iPlayHead);
 	pSession->setPlayHead(iPlayHead);
+}
+
+
+// Transport follow playhead (local)
+void qtractorAudioEditorForm::transportFollow ( bool bOn )
+{
+	m_pAudioEditor->setSyncView(bOn);
 }
 
 

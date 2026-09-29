@@ -27,8 +27,8 @@
 
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioClip.h"
+#include "qtractorAudioPeak.h"
 
-#include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
 
 #include "qtractorTimeScaleCommand.h"
@@ -96,23 +96,64 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 {
 	// Initialize instance variables...
 	m_pAudioClip = nullptr;
+	m_pAudioPeak = nullptr;
+
+	// The main widget splitters.
+	m_pHSplitter = new QSplitter(Qt::Horizontal, this);
+	m_pHSplitter->setObjectName("qtractorAudioEditor::HSplitter");
+
+	m_pVSplitter = this;
+	m_pVSplitter->setObjectName("qtractorAudioEditor::VSplitter");
+
+	// Create child frame widgets...
+	QWidget *pVBoxLeft  = new QWidget(m_pHSplitter);
+	QWidget *pVBoxRight = new QWidget(m_pHSplitter);
 
 	// Create child view widgets...
-	m_pEditTime  = new qtractorAudioEditTime(this, this);
+	m_pEditViewHeader = new QFrame(pVBoxLeft);
+	m_pEditViewHeader->setFixedHeight(20);
+	m_pEditTime  = new qtractorAudioEditTime(this, pVBoxRight);
 	m_pEditTime->setFixedHeight(20);
-	m_pEditView  = new qtractorAudioEditView(this, this);
+	m_pEditView  = new qtractorAudioEditView(this, pVBoxRight);
+	m_pEditViewScale = new qtractorAudioEditViewScale(this, pVBoxLeft);
 
 	// Create child box layouts...
-	QVBoxLayout *pVBoxLayout = new QVBoxLayout(this);
-	pVBoxLayout->setContentsMargins(0, 0, 0, 0);
-	pVBoxLayout->setSpacing(0);
-	pVBoxLayout->addWidget(m_pEditTime);
-	pVBoxLayout->addWidget(m_pEditView);
-	QWidget::setLayout(pVBoxLayout);
+	QVBoxLayout *pVBoxLeftLayout = new QVBoxLayout(pVBoxLeft);
+	pVBoxLeftLayout->setContentsMargins(0, 0, 0, 0);
+	pVBoxLeftLayout->setSpacing(0);
+	pVBoxLeftLayout->addWidget(m_pEditViewHeader);
+	pVBoxLeftLayout->addWidget(m_pEditViewScale);
+	pVBoxLeft->setLayout(pVBoxLeftLayout);
+
+	QVBoxLayout *pVBoxRightLayout = new QVBoxLayout(pVBoxRight);
+	pVBoxRightLayout->setContentsMargins(0, 0, 0, 0);
+	pVBoxRightLayout->setSpacing(0);
+	pVBoxRightLayout->addWidget(m_pEditTime);
+	pVBoxRightLayout->addWidget(m_pEditView);
+	pVBoxRight->setLayout(pVBoxRightLayout);
+
+//	m_pHSplitter->setOpaqueResize(false);
+	m_pHSplitter->setStretchFactor(m_pHSplitter->indexOf(pVBoxLeft), 0);
+	m_pHSplitter->setHandleWidth(2);
+
+	m_pVSplitter->setHandleWidth(0);
+
+	m_pVSplitter->setWindowIcon(QIcon::fromTheme("qtractorAudioEditor"));
+	m_pVSplitter->setWindowTitle(tr("Audio Editor"));
+
+	QSplitter::setWindowIcon(QIcon::fromTheme("qtractorAudioEditor"));
+	QSplitter::setWindowTitle(tr("Audio Editor"));
 
 	// To have all views in positional sync.
 	QObject::connect(m_pEditView, SIGNAL(contentsMoving(int,int)),
 		m_pEditTime, SLOT(contentsXMovingSlot(int,int)));
+
+	// Initial splitter sizes.
+	QList<int> sizes;
+	// Initial horizontal splitter sizes...
+	sizes.append(24);
+	sizes.append(776);
+	m_pHSplitter->setSizes(sizes);
 }
 
 
@@ -120,6 +161,8 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 qtractorAudioEditor::~qtractorAudioEditor (void)
 {
 	resetDragState(nullptr);
+
+	deleteAudioPeak();
 }
 
 
@@ -130,6 +173,8 @@ void qtractorAudioEditor::setAudioClip ( qtractorAudioClip *pAudioClip )
 	m_pAudioClip = pAudioClip;
 
 	if (m_pAudioClip) {
+		// Open audio-peak generator...
+		createAudioPeak();
 		// Now set the editing audio range alright...
 		setOffset(m_pAudioClip->clipStart());
 		setLength(m_pAudioClip->clipLength());
@@ -157,15 +202,23 @@ void qtractorAudioEditor::setAudioClip ( qtractorAudioClip *pAudioClip )
 		}
 		// Got clip!
 	} else {
+		// Close audio-peak generator, if any...
+		deleteAudioPeak();
 		// Reset those little things too..
 		setOffset(0);
 		setLength(0);
 	}
 }
 
+
 qtractorAudioClip *qtractorAudioEditor::audioClip (void) const
 {
 	return m_pAudioClip;
+}
+
+qtractorAudioPeak *qtractorAudioEditor::audioPeak (void) const
+{
+	return m_pAudioPeak;
 }
 
 
@@ -173,6 +226,12 @@ qtractorAudioClip *qtractorAudioEditor::audioClip (void) const
 const QString& qtractorAudioEditor::filename (void) const
 {
 	return m_pAudioClip->filename();
+}
+
+
+unsigned short qtractorAudioEditor::channels (void) const
+{
+	return (m_pAudioPeak ? m_pAudioPeak->channels() : 0);
 }
 
 
@@ -192,6 +251,38 @@ void qtractorAudioEditor::setVerticalZoom ( unsigned short iVerticalZoom )
 
 	if (m_pAudioClip)
 		m_pAudioClip->setEditorVerticalZoom(iVerticalZoom);
+}
+
+// Audio-peak live-cycle methods.
+void qtractorAudioEditor::createAudioPeak (void)
+{
+	deleteAudioPeak();
+
+	if (m_pAudioClip == nullptr)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	const QString& sFilename = m_pAudioClip->filename();
+	const float fTimeStretch = m_pAudioClip->timeStretch();
+
+	qtractorAudioPeakFactory *pPeakFactory
+		= pSession->audioPeakFactory();
+	if (pPeakFactory) {
+		m_pAudioPeak = pPeakFactory->createPeak(
+			sFilename, fTimeStretch);
+	}
+}
+
+
+void qtractorAudioEditor::deleteAudioPeak (void)
+{
+	if (m_pAudioPeak) {
+		delete m_pAudioPeak;
+		m_pAudioPeak = nullptr;
+	}
 }
 
 

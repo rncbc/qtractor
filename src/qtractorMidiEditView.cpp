@@ -381,46 +381,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	pNode = cursor.seekPixel(dx);
 	const unsigned short iSnapPerBeat
 		= (m_pEditor->isSnapGrid() ? pTimeScale->snapPerBeat() : 0);
-#if 0
-	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
-	unsigned int iBeat = pNode->beatFromPixel(dx);
-	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
-	unsigned short iBar
-		= (m_pEditor->isSnapZebra() ? pNode->barFromBeat(iBeat) : 0);
-	int x = pNode->pixelFromBeat(iBeat) - dx;
-	int x2 = x;
-	while (x < w) {
-		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
-		if (bBeatIsBar) {
-			painter.setPen(rgbLine);
-			painter.drawLine(x - 1, 0, x - 1, h);
-			if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
-				painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
-			x2 = x;
-			if (iBeat == pNode->beat)
-				iPixelsPerBeat = pNode->pixelsPerBeat();
-		}
-		if (bBeatIsBar || iPixelsPerBeat > 8) {
-			painter.setPen(rgbLight);
-			painter.drawLine(x, 0, x, h);
-		}
-		if (iSnapPerBeat > 1) {
-			const int q = iPixelsPerBeat / iSnapPerBeat;
-			if (q > 4) {
-				painter.setPen(bDark
-					? rgbLight.darker(105) : rgbLight.lighter(120));
-				for (int i = 1; i < iSnapPerBeat; ++i) {
-					x = pTimeScale->pixelSnap(x + dx + q) - dx - 1;
-					painter.drawLine(x, 0, x, h);
-				}
-			}
-		}
-		pNode = cursor.seekBeat(++iBeat);
-		x = pNode->pixelFromBeat(iBeat) - dx;
-	}
-	if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
-		painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
-#else
+
 	unsigned short iBar = pNode->barFromPixel(dx);
 	if (iBar > 0) pNode = cursor.seekBar(--iBar);
 	int x = pNode->pixelFromBar(iBar) - dx;
@@ -466,7 +427,6 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		// Move forward...
 		x = x2;
 	}
-#endif
 
 	if (y > ch)
 		painter.fillRect(0, ch, w, h - ch, rgbLine);
