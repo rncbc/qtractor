@@ -2483,8 +2483,9 @@ void qtractorTrackView::selectClip ( qtractorClip *pClip, bool bReset )
 		clipInfo(pClip, &rectClip, &tvi);
 		m_pClipSelect->selectItem(pClip, rectClip, true);
 		const QPoint& pos = rectClip.topLeft();
-		const int mx = qtractorScrollView::width();
-		ensureVisible(pos.x(), pos.y(), mx, 24);
+		const int mx = (qtractorScrollView::width() >> 1);
+		const int dx = (mx >> 1);
+		ensureVisible(pos.x() + dx, pos.y(), mx, 24);
 		++iUpdate;
 	}
 

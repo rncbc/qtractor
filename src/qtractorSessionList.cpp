@@ -138,6 +138,48 @@ public:
 	QModelIndex indexOfBus(qtractorBus *pBus, int busMode) const;
 	int busModeOfIndex(const QModelIndex& index) const;
 
+protected:
+
+	// Helper functions.
+	QString trackTypeText(qtractorTrack::TrackType trackType) const
+	{
+		QString sText;
+		switch (trackType) {
+		case qtractorTrack::Audio:
+			sText = tr("Audio");
+			break;
+		case qtractorTrack::Midi:
+			sText = tr("MIDI");
+			break;
+		default:
+			break;
+		}
+		return sText;
+	}
+
+	QIcon trackTypeIcon(qtractorTrack::TrackType trackType) const
+	{
+		QIcon icon;
+		switch (trackType) {
+		case qtractorTrack::Audio:
+			icon = QIcon::fromTheme("trackAudio");
+			break;
+		case qtractorTrack::Midi:
+			icon = QIcon::fromTheme("trackMidi");
+			break;
+		default:
+			break;
+		}
+		return icon;
+	}
+
+	// Live item data roles.
+	QVariant dataDisplayRole(const QModelIndex& index) const;
+	QVariant dataDecorationRole(const QModelIndex& index) const;
+	QVariant dataUserRole(const QModelIndex& index) const;
+	QVariant dataFontRole(const QModelIndex& index) const;
+	QVariant dataForegroundRole(const QModelIndex& index) const;
+
 private:
 
 	// Forward declaration of the internal node type.
@@ -196,12 +238,8 @@ private:
 struct qtractorSessionListView::ItemModel::Node
 {
 	// Constructor.
-	Node(Node *pParent, ItemType itemType,
-		const QString& sName, const QString& sDetail,
-		void *pData = nullptr, const QIcon& icon0 = QIcon())
-		: parent(pParent), type(itemType),
-		  name(sName), detail(sDetail),
-		  data(pData), icon(icon0), busMode(0), cachedRow(0) {}
+	Node(Node *pParent, ItemType itemType, void *pData = nullptr)
+		: parent(pParent), type(itemType), data(pData), cachedRow(0) {}
 
 	// Destructor -- recursively deletes children (used only for m_pRoot
 	// to clean up the group nodes; live-data nodes are owned by m_nodePool).
@@ -223,12 +261,8 @@ struct qtractorSessionListView::ItemModel::Node
 
 	Node        *parent;
 	ItemType     type;
-	QString      name;
-	QString      detail;
-	void        *data;       // raw pointer to session object (may be nullptr)
-	QIcon        icon;
-	int          busMode;    // qtractorBus::Input|Output (bus nodes only)
-	int          cachedRow;  // position within parent's live list
+	void        *data;      // raw pointer to session object (may be nullptr)
+	int          cachedRow; // position within parent's live list
 
 	// Group nodes use this to hold the 3 child Node pointers
 	// (Inputs/Tracks/Outputs as immediate children of m_pRoot).
@@ -284,9 +318,32 @@ void qtractorSessionListView::ItemModel::clear (void)
 // are read live from the current session state.
 void qtractorSessionListView::ItemModel::refresh (void)
 {
-	// root is the invisible sentinel; top-level groups are its children.
+	// 0. Root is the invisible sentinel; top-level groups are its children.
 	if (m_pRoot == nullptr)
-		m_pRoot = new Node(nullptr, ItemRoot, QString(), QString());
+		m_pRoot = new Node(nullptr, ItemRoot);
+
+	// Create group-nodes if not there yet..
+
+	// 1. Inputs group.
+	if (m_pInputs == nullptr) {
+		m_pInputs = new Node(m_pRoot, ItemInputs);
+		m_pInputs->cachedRow = m_pRoot->children.count();
+		m_pRoot->children.append(m_pInputs);
+	}
+
+	// 2. Tracks group.
+	if (m_pTracks == nullptr) {
+		m_pTracks = new Node(m_pRoot, ItemTracks);
+		m_pTracks->cachedRow = m_pRoot->children.count();
+		m_pRoot->children.append(m_pTracks);
+	}
+
+	// 3. Outputs group.
+	if (m_pOutputs == nullptr) {
+		m_pOutputs = new Node(m_pRoot, ItemOutputs);
+		m_pOutputs->cachedRow = m_pRoot->children.count();
+		m_pRoot->children.append(m_pOutputs);
+	}
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -338,52 +395,6 @@ void qtractorSessionListView::ItemModel::refresh (void)
 		}
 	}
 
-	// Update group-node detail strings (counts may have changed).
-
-	// 1. Inputs group.
-	const int iInputsCount
-		= countBusesByMode(pSession->audioEngine(), qtractorBus::Input)
-		+ countBusesByMode(pSession->midiEngine(),  qtractorBus::Input);
-	const QString& sInputsDetail
-		= QString("[%1]").arg(iInputsCount);
-	if (m_pInputs == nullptr) {
-		m_pInputs = new Node(m_pRoot, ItemInputs,
-			tr("Inputs"), sInputsDetail);
-		m_pInputs->cachedRow = m_pRoot->children.count();
-		m_pRoot->children.append(m_pInputs);
-	} else {
-		m_pInputs->detail = sInputsDetail;
-	}
-
-	// 2. Tracks group.
-	const int iTracksCount
-		= pSession->tracks().count();
-	const QString& sTracksDetail
-		= QString("[%1]").arg(iTracksCount);
-	if (m_pTracks == nullptr) {
-		m_pTracks = new Node(m_pRoot, ItemTracks,
-			tr("Tracks"), sTracksDetail);
-		m_pTracks->cachedRow = m_pRoot->children.count();
-		m_pRoot->children.append(m_pTracks);
-	} else {
-		m_pTracks->detail = sTracksDetail;
-	}
-
-	// 3. Outputs group.
-	const int iOutputsCount
-		= countBusesByMode(pSession->audioEngine(), qtractorBus::Output)
-		+ countBusesByMode(pSession->midiEngine(),  qtractorBus::Output);
-	const QString& sOutputsDetail
-		= QString("[%1]").arg(iOutputsCount);
-	if (m_pOutputs == nullptr) {
-		m_pOutputs = new Node(m_pRoot, ItemOutputs,
-			tr("Outputs"), sOutputsDetail);
-		m_pOutputs->cachedRow = m_pRoot->children.count();
-		m_pRoot->children.append(m_pOutputs);
-	} else {
-		m_pOutputs->detail = sOutputsDetail;
-	}
-
 	endResetModel();
 }
 
@@ -404,30 +415,7 @@ qtractorSessionListView::ItemModel::nodeForTrack (
 	if (pNode)
 		return pNode;
 
-	QString sDetail;
-	QIcon trackIcon;
-	const QString& sTrackIcon = pTrack->trackIcon();
-	if (!sTrackIcon.isEmpty())
-		trackIcon = QIcon::fromTheme(sTrackIcon);
-	switch (pTrack->trackType()) {
-	case qtractorTrack::Audio:
-		sDetail = tr("Audio");
-		if (trackIcon.isNull())
-			trackIcon = QIcon::fromTheme("trackAudio");
-		break;
-	case qtractorTrack::Midi:
-		sDetail = tr("MIDI");
-		if (trackIcon.isNull())
-			trackIcon = QIcon::fromTheme("trackMidi");
-		break;
-	default:
-		break;
-	}
-	sDetail += ' ';
-	sDetail += tr("track");
-
-	pNode = new Node(pGroupNode, ItemTrack,
-		pTrack->shortTrackName(), sDetail, key, trackIcon);
+	pNode = new Node(pGroupNode, ItemTrack, key);
 	pNode->cachedRow = rowOfTrack(pTrack);
 	m_nodePool.insert(key, pNode);
 	return pNode;
@@ -446,25 +434,7 @@ qtractorSessionListView::ItemModel::nodeForClip (
 
 	qtractorTrack *pTrack = pClip->track();
 
-	QString sDetail;
-	if (pTrack) {
-		const QString& sTrackIcon = pTrack->trackIcon();
-		switch (pTrack->trackType()) {
-		case qtractorTrack::Audio:
-			sDetail = tr("Audio");
-			break;
-		case qtractorTrack::Midi:
-			sDetail = tr("MIDI");
-			break;
-		default:
-			break;
-		}
-	}
-	sDetail += ' ';
-	sDetail += tr("clip");
-
-	pNode = new Node(pTrackNode, ItemClip,
-		pClip->clipName(), sDetail,	key);
+	pNode = new Node(pTrackNode, ItemClip, key);
 	pNode->cachedRow = (pTrack ? rowOfClip(pTrack, pClip) : 0);
 	m_nodePool.insert(key, pNode);
 	return pNode;
@@ -488,41 +458,7 @@ qtractorSessionListView::ItemModel::nodeForBus (
 	if (pNode)
 		return pNode;
 
-	QIcon busIcon;
-	QString sDetail;
-	unsigned short iChannels = 0;
-	switch (pBus->busType()) {
-	case qtractorTrack::Audio: {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus) {
-			busIcon  = QIcon::fromTheme("trackAudio");
-			sDetail += tr("Audio");
-			iChannels = pAudioBus->channels();
-		}
-		break;
-	}
-	case qtractorTrack::Midi: {
-		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pBus);
-		if (pMidiBus) {
-			busIcon  = QIcon::fromTheme("trackMidi");
-			sDetail += tr("MIDI");
-			iChannels = 16;
-		}
-		break;
-	}
-	default:
-		break;
-	}
-	sDetail += ' ';
-	sDetail += tr("bus");
-	sDetail += ' ';
-	sDetail += QString("(%1)").arg(iChannels);
-
-	pNode = new Node(pGroupNode, ItemBus,
-		pBus->busName(), sDetail, key, busIcon);
-	pNode->busMode = busMode;
+	pNode = new Node(pGroupNode, ItemBus, key);
 	pNode->cachedRow = rowOfBus(pBus, busMode);
 	m_nodePool.insert(key, pNode);
 	return pNode;
@@ -860,66 +796,18 @@ qtractorSessionListView::ItemModel::data (
 	if (!index.isValid() || m_pRoot == nullptr)
 		return QVariant();
 
-	Node *pNode = static_cast<Node *> (index.internalPointer());
-
 	switch (role) {
 	case Qt::DisplayRole:
-		return (index.column() == 0) ? pNode->name : pNode->detail;
-
 	case Qt::ToolTipRole:
-		return (index.column() == 0) ? pNode->name : pNode->detail;
-
-	case Qt::UserRole:
-		// column 0: item type tag; column 1: raw data pointer.
-		if (index.column() == 0)
-			return pNode->type;
-		else
-			return QVariant::fromValue(pNode->data);
-
+		return dataDisplayRole(index);
 	case Qt::DecorationRole:
-		if (index.column() == 0 && !pNode->icon.isNull())
-			return pNode->icon;
-		break;
-
+		return dataDecorationRole(index);
+	case Qt::UserRole:
+		return dataUserRole(index);
 	case Qt::FontRole:
-		if (index.column() == 0 && pNode->type == ItemTrack) {
-			QFont font;
-			font.setBold(true);
-			return font;
-		}
-		break;
-
-	case Qt::ForegroundRole: {
-		bool bGrayed = false;
-		qtractorTrack *pTrack = nullptr;
-		switch (pNode->type) {
-		case ItemInputs:
-		case ItemTracks:
-		case ItemOutputs:
-			bGrayed = true;
-			break;
-		case ItemTrack:
-			pTrack = static_cast<qtractorTrack *> (pNode->data);
-			break;
-		case ItemClip: {
-			qtractorClip *pClip = static_cast<qtractorClip *> (pNode->data);
-			if (pClip) {
-				pTrack = pClip->track();
-				bGrayed = pClip->isClipMute();
-			}
-			break;
-		}
-		case ItemBus:
-		default:
-			break;
-		}
-		if (pTrack && (pTrack->isMute()
-			|| (!pTrack->isSolo() && (pTrack->session())->soloTracks())))
-			bGrayed = true;
-		if (bGrayed)
-			return QPalette().color(QPalette::Disabled, QPalette::Text);
-		// Fall-thru...
-	}
+		return dataFontRole(index);
+	case Qt::ForegroundRole:
+		return dataForegroundRole(index);
 	default:
 		break;
 	}
@@ -1121,6 +1009,235 @@ int qtractorSessionListView::ItemModel::busModeOfIndex (
 	} else {
 		return 0;
 	}
+}
+
+
+// Live item data roles.
+//
+QVariant
+qtractorSessionListView::ItemModel::dataDisplayRole (
+	const QModelIndex& index ) const
+{
+	Node *pNode = static_cast<Node *> (index.internalPointer());
+
+	QString sText;
+
+	switch (pNode->type) {
+	case ItemInputs:
+		if (index.column() == 0) {
+			sText = tr("Inputs");
+		} else {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				const int iInputsCount
+					= countBusesByMode(pSession->audioEngine(), qtractorBus::Input)
+					+ countBusesByMode(pSession->midiEngine(),  qtractorBus::Input);
+				sText = QString("[%1]").arg(iInputsCount);
+			}
+		}
+		break;
+	case ItemTracks:
+		if (index.column() == 0) {
+			sText = tr("Tracks");
+		} else {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession)
+				sText = QString("[%1]").arg(pSession->tracks().count());
+		}
+		break;
+	case ItemOutputs:
+		if (index.column() == 0) {
+			sText = tr("Outputs");
+		} else {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				const int iOutputsCount
+					= countBusesByMode(pSession->audioEngine(), qtractorBus::Output)
+					+ countBusesByMode(pSession->midiEngine(),  qtractorBus::Output);
+				sText = QString("[%1]").arg(iOutputsCount);
+			}
+		}
+		break;
+	case ItemTrack: {
+		qtractorTrack *pTrack = static_cast<qtractorTrack *> (pNode->data);
+		if (pTrack) {
+			if (index.column() == 0) {
+				sText = pTrack->shortTrackName();
+			} else {
+				sText  = trackTypeText(pTrack->trackType());
+				sText += ' ';
+				sText += tr("track");
+				sText += ' ';
+				sText += QString("[%1]").arg(pTrack->clips().count());
+			}
+		}
+		break;
+	}
+	case ItemClip: {
+		qtractorClip *pClip = static_cast<qtractorClip *> (pNode->data);
+		if (pClip) {
+			if (index.column() == 0) {
+				sText = pClip->clipName();
+			} else {
+				qtractorTrack *pTrack = pClip->track();
+				if (pTrack)
+					sText = trackTypeText(pTrack->trackType());
+				sText += ' ';
+				sText += tr("clip");
+			}
+		}
+		break;
+	}
+	case ItemBus: {
+		qtractorBus *pBus = reinterpret_cast<qtractorBus *> (
+			reinterpret_cast<quintptr> (pNode->data) & ~quintptr(0x3));
+		if (pBus) {
+			if (index.column() == 0) {
+				sText = pBus->busName();
+			} else {
+				unsigned short iChannels = 0;
+				switch (pBus->busType()) {
+				case qtractorTrack::Audio: {
+					qtractorAudioBus *pAudioBus
+						= static_cast<qtractorAudioBus *> (pBus);
+					if (pAudioBus)
+						iChannels = pAudioBus->channels();
+					break;
+				}
+				case qtractorTrack::Midi: {
+					qtractorMidiBus *pMidiBus
+						= static_cast<qtractorMidiBus *> (pBus);
+					if (pMidiBus)
+						iChannels = 16;
+					break;
+				}
+				default:
+					break;
+				}
+				sText = trackTypeText(pBus->busType());
+				sText += ' ';
+				sText += tr("bus");
+				sText += ' ';
+				sText += QString("(%1)").arg(iChannels);
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+
+	return sText;
+}
+
+
+QVariant
+qtractorSessionListView::ItemModel::dataDecorationRole (
+	const QModelIndex& index ) const
+{
+	QIcon icon;
+
+	if (index.column() != 0)
+		return icon;
+
+	Node *pNode = static_cast<Node *> (index.internalPointer());
+
+	switch (pNode->type) {
+	case ItemTrack: {
+		qtractorTrack *pTrack = static_cast<qtractorTrack *> (pNode->data);
+		if (pTrack) {
+			const QString& sTrackIcon = pTrack->trackIcon();
+			if (!sTrackIcon.isEmpty())
+				icon = QIcon::fromTheme(sTrackIcon);
+			if (icon.isNull())
+				icon = trackTypeIcon(pTrack->trackType());
+		}
+		break;
+	}
+	case ItemBus: {
+		qtractorBus *pBus = reinterpret_cast<qtractorBus *> (
+			reinterpret_cast<quintptr> (pNode->data) & ~quintptr(0x3));
+		if (pBus)
+			icon = trackTypeIcon(pBus->busType());
+		break;
+	}
+	default:
+		break;
+	}
+
+	return icon;
+}
+
+
+QVariant
+qtractorSessionListView::ItemModel::dataUserRole (
+	const QModelIndex& index ) const
+{
+	Node *pNode = static_cast<Node *> (index.internalPointer());
+
+	if (index.column() == 0)
+		return pNode->type;
+	else
+		return QVariant::fromValue(pNode->data);
+
+	return QVariant();
+}
+
+
+QVariant
+qtractorSessionListView::ItemModel::dataFontRole (
+	const QModelIndex& index ) const
+{
+	Node *pNode = static_cast<Node *> (index.internalPointer());
+
+	if (index.column() == 0 && pNode->type == ItemTrack) {
+		QFont font;
+		font.setBold(true);
+		return font;
+	}
+
+	return QVariant();
+}
+
+
+QVariant
+qtractorSessionListView::ItemModel::dataForegroundRole (
+	const QModelIndex& index ) const
+{
+	Node *pNode = static_cast<Node *> (index.internalPointer());
+
+	bool bGrayed = false;
+
+	qtractorTrack *pTrack = nullptr;
+	switch (pNode->type) {
+	case ItemInputs:
+	case ItemTracks:
+	case ItemOutputs:
+		bGrayed = true;
+		break;
+	case ItemTrack:
+		pTrack = static_cast<qtractorTrack *> (pNode->data);
+		break;
+	case ItemClip: {
+		qtractorClip *pClip = static_cast<qtractorClip *> (pNode->data);
+		if (pClip) {
+			pTrack = pClip->track();
+			bGrayed = pClip->isClipMute();
+		}
+		break;
+	}
+	case ItemBus:
+	default:
+		break;
+	}
+
+	if (pTrack && (pTrack->isMute()
+		|| (!pTrack->isSolo() && (pTrack->session())->soloTracks())))
+		bGrayed = true;
+	if (bGrayed)
+		return QPalette().color(QPalette::Disabled, QPalette::Text);
+
+	return QVariant();
 }
 
 
@@ -1672,7 +1789,7 @@ void qtractorSessionList::showEvent ( QShowEvent *pShowEvent )
 
 void qtractorSessionList::closeEvent ( QCloseEvent *pCloseEvent )
 {
-	QDockWidget::closeEvent(pCloseEvent);
+	QDockWidget::hide();
 
 	m_pListView->clear();
 
