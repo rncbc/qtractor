@@ -14905,22 +14905,22 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorSessionList</name>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1628"/>
+        <location filename="../qtractorSessionList.cpp" line="1745"/>
         <source>Session</source>
         <translation type="unfinished">Sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1747"/>
+        <location filename="../qtractorSessionList.cpp" line="1864"/>
         <source>&amp;Inputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1757"/>
+        <location filename="../qtractorSessionList.cpp" line="1874"/>
         <source>&amp;Outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1763"/>
+        <location filename="../qtractorSessionList.cpp" line="1880"/>
         <source>&amp;Buses...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14928,56 +14928,52 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorSessionListView::ItemModel</name>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="351"/>
+        <location filename="../qtractorSessionList.cpp" line="1028"/>
         <source>Inputs</source>
         <translation type="unfinished">Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="365"/>
+        <location filename="../qtractorSessionList.cpp" line="1041"/>
         <source>Tracks</source>
         <translation type="unfinished">Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="380"/>
+        <location filename="../qtractorSessionList.cpp" line="1050"/>
         <source>Outputs</source>
         <translation type="unfinished">Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="414"/>
-        <location filename="../qtractorSessionList.cpp" line="454"/>
-        <location filename="../qtractorSessionList.cpp" line="500"/>
+        <location filename="../qtractorSessionList.cpp" line="149"/>
         <source>Audio</source>
         <translation type="unfinished">Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="419"/>
-        <location filename="../qtractorSessionList.cpp" line="457"/>
-        <location filename="../qtractorSessionList.cpp" line="510"/>
+        <location filename="../qtractorSessionList.cpp" line="152"/>
         <source>MIDI</source>
         <translation type="unfinished">MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="427"/>
+        <location filename="../qtractorSessionList.cpp" line="1069"/>
         <source>track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="464"/>
+        <location filename="../qtractorSessionList.cpp" line="1086"/>
         <source>clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="519"/>
+        <location filename="../qtractorSessionList.cpp" line="1119"/>
         <source>bus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="937"/>
+        <location filename="../qtractorSessionList.cpp" line="825"/>
         <source>Name</source>
         <translation type="unfinished">Název</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="938"/>
+        <location filename="../qtractorSessionList.cpp" line="826"/>
         <source>Detail</source>
         <translation type="unfinished"></translation>
     </message>
