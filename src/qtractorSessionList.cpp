@@ -1789,7 +1789,7 @@ void qtractorSessionList::showEvent ( QShowEvent *pShowEvent )
 
 void qtractorSessionList::closeEvent ( QCloseEvent *pCloseEvent )
 {
-	QDockWidget::closeEvent(pCloseEvent);
+	QDockWidget::hide();
 
 	m_pListView->clear();
 
