@@ -41,6 +41,7 @@ class qtractorAudioEditViewScale;
 
 class qtractorAudioClip;
 class qtractorAudioPeak;
+class qtractorAudioPeakFactory;
 
 class qtractorTrack;
 
@@ -128,7 +129,19 @@ public:
 
 	// Update/sync integral contents.
 	void updateContents();
-	
+
+	// Start drag-move-selecting...
+	void dragMoveStart(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
+	// Update drag-move-selection...
+	void dragMoveUpdate(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
+	// Commit drag-move-selection...
+	void dragMoveCommit(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
 	// Keyboard event handler (common).
 	bool keyPress(qtractorScrollView *pScrollView,
 		int iKey, const Qt::KeyboardModifiers& modifiers);
@@ -152,7 +165,7 @@ public:
 	void ensureVisibleFrame(qtractorScrollView *pScrollView, unsigned long iFrame);
 
 	// Visualize the event selection drag-move.
-	void paintDragState(qtractorScrollView *pScrollView, QPainter *pPainter);
+	void paintDragState(qtractorScrollView *pScrollView, QPainter& painter);
 
 	// Reset drag/select/move state.
 	void resetDragState(qtractorScrollView *pScrollView);
@@ -166,6 +179,10 @@ public:
 	// Redirect selection notification.
 	void selectionChangeNotify();
 
+	// Audio-peak factory accessor (singleton)
+	static qtractorAudioPeakFactory *audioPeakFactory()
+		{ return g_pAudioPeakFactory; }
+
 public slots:
 
 	// Zoom view slots.
@@ -178,9 +195,6 @@ protected:
 	// Audio-peak live-cycle methods.
 	void createAudioPeak();
 	void deleteAudioPeak();
-
-	// Ensure point visibility depending on view.
-	void ensureVisible(qtractorScrollView *pScrollView, const QPoint& pos);
 
 	// Selection flags
 	enum { 
@@ -221,6 +235,29 @@ protected slots:
 	// Command execution notification slot.
 	void updateNotifySlot(unsigned int flags);
 
+	// Audio peak ready slot.
+	void audioPeakEventSlot();
+
+	// Check whether we're up to drag a clip fade-in/out or resize handles.
+	bool dragFadeInOutStart(
+		qtractorScrollView *pScrollView, const QPoint& pos);
+
+	// Clip fade-in/out handle drag-moving parts.
+	void dragFadeInOutMove(
+		qtractorScrollView *pScrolView, const QPoint& pos);
+
+	// Clip fade-in/out handle settler.
+	void dragFadeInOutDrop(
+		qtractorScrollView *pScrollView, const QPoint& pos);
+
+	// Show and move rubber-band item.
+	void moveRubberBand(
+		qtractorScrollView *pScrollView, const QRect& rectDrag, int thick);
+
+	// Show selection tooltip...
+	void showToolTip(
+		qtractorScrollView *pScrollView, const QRect& rect) const;
+
 signals:
 
 	// Emitted on selection/changes.
@@ -242,6 +279,26 @@ private:
 	qtractorAudioEditView *m_pEditView;
 	qtractorAudioEditViewScale *m_pEditViewScale;
 	QFrame *m_pEditViewHeader;
+
+	// Common drag state.
+	enum DragState {
+		DragNone = 0,
+		DragStart,
+		DragFadeIn,
+		DragFadeOut
+	} m_dragState, m_dragCursor;
+
+	// The current selecting/dragging stuff.
+	QPoint m_posDrag;
+	QRect  m_rectDrag;
+	QRect  m_rectHandle;
+	int    m_iDragClipX;
+
+	// Viewport rubber-banding stuff.
+	qtractorRubberBand *m_pRubberBand;
+
+	static qtractorAudioPeakFactory *g_pAudioPeakFactory;
+	static unsigned int              g_iAudioPeakRefCount;
 };
 
 

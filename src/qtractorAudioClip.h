@@ -116,7 +116,7 @@ public:
 	void process_export(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Clip paint method.
-	void draw(QPainter *pPainter,
+	void draw(QPainter& painter,
 		const QRect& clipRect, unsigned long iClipOffset);
 
 	// Clip update method (no-op).

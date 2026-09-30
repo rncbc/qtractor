@@ -309,6 +309,103 @@ float qtractorClip::fadeInOutGain ( unsigned long iOffset ) const
 }
 
 
+// Draw fade-in/out slopes and handles.
+void qtractorClip::drawFadeInOut (
+	QPainter& painter, FadeMode fadeMode, const QRect& rect )
+{
+	const int x = rect.left();
+	const int y = rect.top();
+	const int w = rect.width();
+	const int h = rect.height();
+#if 0
+	QPolygon polyg(3);
+	polyg.setPoint(0, x, y);
+	polyg.setPoint(1, x, h);
+	polyg.setPoint(2, x + w, y);
+	painter.drawPolygon(polyg);
+#else
+	const int w2 = (w >> 1);
+	const int w4 = (w >> 2);
+	QPolygon polyg(5);
+	polyg.setPoint(0, x, y);
+	polyg.setPoint(1, x, h);
+	if (fadeMode == FadeIn) {
+		switch (m_fadeInType) {
+		case Linear:
+			polyg.setPoint(2, x,          h);
+			polyg.setPoint(3, x,          h);
+			break;
+		case InQuad:
+			polyg.setPoint(2, x + w2,     h);
+			polyg.setPoint(3, x + w,      y);
+			break;
+		case OutQuad:
+			polyg.setPoint(2, x + w2,     y);
+			polyg.setPoint(3, x + w,      y);
+			break;
+		case InOutQuad:
+			polyg.setPoint(2, x + w2,     h);
+			polyg.setPoint(3, x + w2,     y);
+			break;
+		case InCubic:
+			polyg.setPoint(2, x + w - w4, h);
+			polyg.setPoint(3, x + w,      y);
+			break;
+		case OutCubic:
+			polyg.setPoint(2, x + w2,     y);
+			polyg.setPoint(3, x + w - w4, y);
+			break;
+		case InOutCubic:
+			polyg.setPoint(2, x + w - w4, h);
+			polyg.setPoint(3, x + w4,     y);
+			break;
+		}
+		polyg.setPoint(4, x + w, y);
+	}
+	else
+	if (fadeMode == FadeOut) {
+		switch (m_fadeOutType) {
+		case Linear:
+			polyg.setPoint(2, x,          h);
+			polyg.setPoint(3, x,          h);
+			break;
+		case InQuad:
+			polyg.setPoint(2, x - w2,     y);
+			polyg.setPoint(3, x - w,      y);
+			break;
+		case OutQuad:
+			polyg.setPoint(2, x - w2,     h);
+			polyg.setPoint(3, x - w,      y);
+			break;
+		case InOutQuad:
+			polyg.setPoint(2, x - w2,     h);
+			polyg.setPoint(3, x - w2,     y);
+			break;
+		case InCubic:
+			polyg.setPoint(2, x - w2,     y);
+			polyg.setPoint(3, x - w + w4, y);
+			break;
+		case OutCubic:
+			polyg.setPoint(2, x - w + w4, h);
+			polyg.setPoint(3, x - w,      y);
+			break;
+		case InOutCubic:
+			polyg.setPoint(2, x - w + w4, h);
+			polyg.setPoint(3, x - w4,     y);
+			break;
+		}
+		polyg.setPoint(4, x - w, y);
+	}
+	QPainterPath path;
+	path.moveTo(polyg.at(0));
+	path.lineTo(polyg.at(1));
+	path.cubicTo(polyg.at(2), polyg.at(3), polyg.at(4));
+	path.lineTo(polyg.at(0));
+	painter.drawPath(path);
+#endif
+}
+
+
 // Clip time reference settler method.
 void qtractorClip::updateClipTime (void)
 {
@@ -341,13 +438,13 @@ void qtractorClip::updateClipTime (void)
 
 // Base clip drawing method.
 void qtractorClip::drawClip (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter& painter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	// Draw the framed rectangle and background...
-	pPainter->drawRect(clipRect);
+	painter.drawRect(clipRect);
 
 	// Draw clip contents (virtual)
-	draw(pPainter, clipRect, iClipOffset);
+	draw(painter, clipRect, iClipOffset);
 
 	// Adjust the clip rectangle left origin...
 	qtractorSession *pSession = m_pTrack->session();
@@ -372,8 +469,8 @@ void qtractorClip::drawClip (
 			rgbText.saturation(),
 			(255 - rgbText.value()), 200);
 	}
-	pPainter->setPen(rgbText);
-	pPainter->drawText(rect,
+	painter.setPen(rgbText);
+	painter.drawText(rect,
 		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, clipTitle());
 
 	// Avoid drawing fade in/out handles
@@ -384,8 +481,8 @@ void qtractorClip::drawClip (
 	// Fade in/out handle color...
 	QColor rgbFade(rgbText);
 	rgbFade.setAlpha(80);
-	pPainter->setPen(rgbFade);
-	pPainter->setBrush(rgbFade);
+	painter.setPen(rgbFade);
+	painter.setBrush(rgbFade);
 
 	// Fade-in slope...
 	const int y = rect.top();
@@ -395,56 +492,7 @@ void qtractorClip::drawClip (
 	int w = pSession->pixelFromFrame(m_iFadeInLength);
 	const QRect rectFadeIn(x + w, y, 8, 8);
 	if (w > 0 && x + w > clipRect.left()) {
-	#if 0
-		QPolygon polyg(3);
-		polyg.setPoint(0, x, y);
-		polyg.setPoint(1, x, h);
-		polyg.setPoint(2, x + w, y);
-		pPainter->drawPolygon(polyg);
-	#else
-		const int w2 = (w >> 1);
-		const int w4 = (w >> 2);
-		QPolygon polyg(5);
-		polyg.setPoint(0, x, y);
-		polyg.setPoint(1, x, h);
-		switch (m_fadeInType) {
-		case Linear:
-			polyg.setPoint(2, x,          h);
-			polyg.setPoint(3, x,          h);
-			break;
-		case InQuad:
-			polyg.setPoint(2, x + w2,     h);
-			polyg.setPoint(3, x + w,      y);
-			break;
-		case OutQuad:
-			polyg.setPoint(2, x + w2,     y);
-			polyg.setPoint(3, x + w,      y);
-			break;
-		case InOutQuad:
-			polyg.setPoint(2, x + w2,     h);
-			polyg.setPoint(3, x + w2,     y);
-			break;
-		case InCubic:
-			polyg.setPoint(2, x + w - w4, h);
-			polyg.setPoint(3, x + w,      y);
-			break;
-		case OutCubic:
-			polyg.setPoint(2, x + w2,     y);
-			polyg.setPoint(3, x + w - w4, y);
-			break;
-		case InOutCubic:
-			polyg.setPoint(2, x + w - w4, h);
-			polyg.setPoint(3, x + w4,     y);
-			break;
-		}
-		polyg.setPoint(4, x + w, y);
-		QPainterPath path;
-		path.moveTo(polyg.at(0));
-		path.lineTo(polyg.at(1));
-		path.cubicTo(polyg.at(2), polyg.at(3), polyg.at(4));
-		path.lineTo(polyg.at(0));
-		pPainter->drawPath(path);
-	#endif
+		drawFadeInOut(painter, FadeIn, QRect(x, y, w, h));
 	}
 
 	// Fade-out slope...
@@ -452,81 +500,32 @@ void qtractorClip::drawClip (
 	w = pSession->pixelFromFrame(m_iFadeOutLength);
 	const QRect rectFadeOut(x - w - 8, y, 8, 8);
 	if (w > 0 && x - w < clipRect.right()) {
-	#if 0
-		QPolygon polyg(3);
-		polyg.setPoint(0, x, y);
-		polyg.setPoint(1, x, h);
-		polyg.setPoint(2, x - w, y);
-		pPainter->drawPolygon(polyg);
-	#else
-		const int w2 = (w >> 1);
-		const int w4 = (w >> 2);
-		QPolygon polyg(5);
-		polyg.setPoint(0, x, y);
-		polyg.setPoint(1, x, h);
-		switch (m_fadeOutType) {
-		case Linear:
-			polyg.setPoint(2, x,          h);
-			polyg.setPoint(3, x,          h);
-			break;
-		case InQuad:
-			polyg.setPoint(2, x - w2,     y);
-			polyg.setPoint(3, x - w,      y);
-			break;
-		case OutQuad:
-			polyg.setPoint(2, x - w2,     h);
-			polyg.setPoint(3, x - w,      y);
-			break;
-		case InOutQuad:
-			polyg.setPoint(2, x - w2,     h);
-			polyg.setPoint(3, x - w2,     y);
-			break;
-		case InCubic:
-			polyg.setPoint(2, x - w2,     y);
-			polyg.setPoint(3, x - w + w4, y);
-			break;
-		case OutCubic:
-			polyg.setPoint(2, x - w + w4, h);
-			polyg.setPoint(3, x - w,      y);
-			break;
-		case InOutCubic:
-			polyg.setPoint(2, x - w + w4, h);
-			polyg.setPoint(3, x - w4,     y);
-			break;
-		}
-		polyg.setPoint(4, x - w, y);
-		QPainterPath path;
-		path.moveTo(polyg.at(0));
-		path.lineTo(polyg.at(1));
-		path.cubicTo(polyg.at(2), polyg.at(3), polyg.at(4));
-		path.lineTo(polyg.at(0));
-		pPainter->drawPath(path);
-	#endif
+		drawFadeInOut(painter, FadeOut, QRect(x, y, w, h));
 	}
 
 	// Fade in/out handles...
 	if (rectFadeIn.intersects(clipRect))
-		pPainter->fillRect(rectFadeIn, rgbFade.darker(120));
+		painter.fillRect(rectFadeIn, rgbFade.darker(120));
 	if (rectFadeOut.intersects(clipRect))
-		pPainter->fillRect(rectFadeOut, rgbFade.darker(120));
+		painter.fillRect(rectFadeOut, rgbFade.darker(120));
 }
 
 
 // Recording clip drawing method.
 void qtractorClip::drawClipRecord (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter& painter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	// Draw the framed rectangle and background...
-	pPainter->drawRect(clipRect);
+	painter.drawRect(clipRect);
 
 	// Update clip rolling stats, if any...
 	update();
 
 	// Draw clip contents (virtual)...
-	draw(pPainter, clipRect, iClipOffset);
+	draw(painter, clipRect, iClipOffset);
 
 	// Draw red shade overlay...
-	pPainter->fillRect(clipRect, QColor(255, 0, 0, 120));
+	painter.fillRect(clipRect, QColor(255, 0, 0, 120));
 }
 
 

@@ -528,23 +528,6 @@
     <string>Ctrl+Shift+V</string>
    </property>
   </action>
-  <action name="editPasteRepeatAction">
-   <property name="text">
-    <string>Past&amp;e Repeat...</string>
-   </property>
-   <property name="iconText">
-    <string>Paste Repeat</string>
-   </property>
-   <property name="toolTip">
-    <string>Paste repeat</string>
-   </property>
-   <property name="statusTip">
-    <string>Paste/repeat local clipboard contents into the current audio clip</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+V</string>
-   </property>
-  </action>
   <action name="editDeleteAction">
    <property name="icon">
     <iconset theme="editDelete" />

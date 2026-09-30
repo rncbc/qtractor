@@ -172,14 +172,13 @@ protected:
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
 	// Draw the time scale.
-	void drawContents(QPainter *pPainter, const QRect& rect);
+	void drawContents(QPainter& painter, const QRect& rect);
 
 	// Retrive the given track row rectangular (in contents coordinates).
 	QRect trackRect(int iTrack) const;
 
 	// Draw table cell.
-	void drawCell(QPainter *pPainter, int iRow, int iCol,
-		const QRect& rect) const;
+	void drawCell(QPainter& painter, int iRow, int iCol, const QRect& rect) const;
 
 	// Context menu request slot.
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);

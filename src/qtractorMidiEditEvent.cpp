@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -638,47 +638,47 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 
 
 // Draw the time scale.
-void qtractorMidiEditEvent::drawContents ( QPainter *pPainter, const QRect& rect )
+void qtractorMidiEditEvent::drawContents ( QPainter& painter, const QRect& rect )
 {
-	pPainter->drawPixmap(rect, m_pixmap, rect);
+	painter.drawPixmap(rect, m_pixmap, rect);
 
 #ifdef CONFIG_GRADIENT
 	// Draw canvas edge-border shadows...
 	const int ws = 22;
 	const int xs = qtractorScrollView::viewport()->width() - ws;
 	if (rect.left() < ws)
-		pPainter->fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
+		painter.fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
 	if (rect.right() > xs)
-		pPainter->fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
+		painter.fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
 #endif
-	m_pEditor->paintDragState(this, pPainter);
+	m_pEditor->paintDragState(this, painter);
 
 	// Draw special play/edit-head/tail headers...
 	const int cx = qtractorScrollView::contentsX();
 
 	int x = m_pEditor->editHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::blue);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::blue);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	x = m_pEditor->editTailX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::blue);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::blue);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	x = m_pEditor->playHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::red);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::red);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	if (m_pEditor->isStepInputHead()) {
 		x = m_pEditor->stepInputHeadX() - cx;
 		if (x >= rect.left() && x <= rect.right()) {
-			pPainter->setPen(QColor(255, 0, 0, 120));
-			pPainter->drawLine(x, rect.top(), x, rect.bottom());
+			painter.setPen(QColor(255, 0, 0, 120));
+			painter.drawLine(x, rect.top(), x, rect.bottom());
 		}
 	}
 }

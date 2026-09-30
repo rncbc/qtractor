@@ -4597,7 +4597,7 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 
 // Visualize the event selection drag-move.
 void qtractorMidiEditor::paintDragState (
-	qtractorScrollView *pScrollView, QPainter *pPainter )
+	qtractorScrollView *pScrollView, QPainter& painter )
 {
 	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
@@ -4606,7 +4606,7 @@ void qtractorMidiEditor::paintDragState (
 	const QRect& rectSelect = (bEditView
 		? m_select.rectView() : m_select.rectEvent());
 	if (!rectSelect.isEmpty()) {
-		pPainter->fillRect(QRect(
+		painter.fillRect(QRect(
 			pScrollView->contentsToViewport(rectSelect.topLeft()),
 			rectSelect.size()), QColor(255, 0, 255, 40));
 	}
@@ -4813,17 +4813,17 @@ void qtractorMidiEditor::paintDragState (
 				rect.translate(m_posDelta.x(), 0);
 		}
 		// Paint the damn bastard...
-		pPainter->setPen(rgbaSelect);
+		painter.setPen(rgbaSelect);
 		if (pEvent == m_pEventDrag)
-			pPainter->setBrush(rgbaSelect.lighter());
+			painter.setBrush(rgbaSelect.lighter());
 		else
-			pPainter->setBrush(rgbaSelect);
+			painter.setBrush(rgbaSelect);
 		if (bEditView && m_bDrumMode) {
-			pPainter->drawPolygon(QPolygon(diamond).translated(
+			painter.drawPolygon(QPolygon(diamond).translated(
 				pScrollView->contentsToViewport(rect.center()
 				+ QPoint(1, 1)))); // ++diamond;
 		} else {
-			pPainter->drawRect(QRect(
+			painter.drawRect(QRect(
 				pScrollView->contentsToViewport(rect.topLeft()),
 				rect.size()));
 		}
@@ -4836,8 +4836,8 @@ void qtractorMidiEditor::paintDragState (
 	if (!bEditView && m_dragState == DragEventResize && !m_bEditModeDraw) {
 		QPen pen(Qt::DotLine);
 		pen.setColor(Qt::blue);
-		pPainter->setPen(pen);
-		pPainter->drawLine(
+		painter.setPen(pen);
+		painter.drawLine(
 			pScrollView->contentsToViewport(m_posDrag),
 			pScrollView->contentsToViewport(m_posDragEventResize));
 	}

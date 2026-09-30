@@ -1,7 +1,7 @@
 // qtractorTrackTime.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -60,7 +60,7 @@ protected:
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
 	// Draw the time scale.
-	void drawContents(QPainter *pPainter, const QRect& rect);
+	void drawContents(QPainter& painter, const QRect& rect);
 
 	// Check if some position header is to be dragged...
 	bool dragHeadStart(const QPoint& pos);

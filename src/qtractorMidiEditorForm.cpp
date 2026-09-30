@@ -892,7 +892,9 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 	if (m_pEventTypeGroup)
 		delete m_pEventTypeGroup;
 
-	// Ditch rec-mode/red palette...
+	// Ditch color palettes...
+	if (m_pYellowPalette)
+		delete m_pYellowPalette;
 	if (m_pRedPalette)
 		delete m_pRedPalette;
 

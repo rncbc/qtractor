@@ -289,7 +289,7 @@ public:
 	void ensureVisibleFrame(qtractorScrollView *pScrollView, unsigned long iFrame);
 
 	// Visualize the event selection drag-move.
-	void paintDragState(qtractorScrollView *pScrollView, QPainter *pPainter);
+	void paintDragState(qtractorScrollView *pScrollView, QPainter& painter);
 
 	// Reset drag/select/move state.
 	void resetDragState(qtractorScrollView *pScrollView);

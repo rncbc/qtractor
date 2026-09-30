@@ -160,6 +160,10 @@ public:
 	// Compute clip gain, given current fade-in/out slopes.
 	float fadeInOutGain(unsigned long iOffset) const;
 
+	// Draw fade-in/out slope.
+	void drawFadeInOut(QPainter& painter,
+		FadeMode fadeMode, const QRect& rect);
+
 	// Clip fade-in/out types helpers
 	//
 	struct FadeTypeInfo {
@@ -176,9 +180,9 @@ public:
 	void updateClipTime();
 
 	// Clip paint methods.
-	void drawClip(QPainter *pPainter,
+	void drawClip(QPainter& painter,
 		const QRect& clipRect, unsigned long iClipOffset);
-	void drawClipRecord(QPainter *pPainter,
+	void drawClipRecord(QPainter& painter,
 		const QRect& clipRect, unsigned long iClipOffset);
 
 	// Clip (re)open method.
@@ -205,7 +209,7 @@ public:
 		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
 
 	// Clip paint method.
-	virtual void draw(QPainter *pPainter,
+	virtual void draw(QPainter& painter,
 		const QRect& clipRect, unsigned long iClipOffset) = 0;
 
 	// Clip update method.
@@ -243,7 +247,6 @@ public:
 
 	static FadeType fadeTypeFromIndex(int iIndex);
 	static int indexFromFadeType(FadeType fadeType);
-
 
 	static void setDefaultFadeInType(FadeType fadeType);
 	static FadeType defaultFadeInType();

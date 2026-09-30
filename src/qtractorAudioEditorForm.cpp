@@ -531,7 +531,9 @@ qtractorAudioEditorForm::~qtractorAudioEditorForm (void)
 	qDeleteAll(m_snapPerBeatActions);
 	m_snapPerBeatActions.clear();
 
-	// Ditch rec-mode/red palette...
+	// Ditch color palettes...
+	if (m_pYellowPalette)
+		delete m_pYellowPalette;
 	if (m_pRedPalette)
 		delete m_pRedPalette;
 
@@ -548,7 +550,7 @@ qtractorAudioEditorForm::~qtractorAudioEditorForm (void)
 bool qtractorAudioEditorForm::queryClose (void)
 {
 	bool bQueryClose = true;
-
+#if 0//--TODO: m_iDirtyCount > 0
 	// Are we dirty enough to prompt it?
 	if (m_iDirtyCount > 0) {
 		if (isVisible()) {
@@ -568,7 +570,7 @@ bool qtractorAudioEditorForm::queryClose (void)
 			bQueryClose = saveClipFile(false);
 		}
 	}
-
+#endif
 	return bQueryClose;
 }
 
@@ -1404,7 +1406,8 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	if (pAudioClip)
 		pTrack = pAudioClip->track();
 	
-	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
+	m_ui.fileSaveAction->setEnabled(false);   //--TODO: m_iDirtyCount > 0
+	m_ui.fileSaveAsAction->setEnabled(false); //
 	m_ui.fileMuteAction->setEnabled(pAudioClip != nullptr);
 	m_ui.fileMuteAction->setChecked(pAudioClip && pAudioClip->isClipMute());
 

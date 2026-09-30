@@ -1,7 +1,7 @@
 // qtractorMidiEditList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -250,13 +250,13 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 
 // Draw the piano keyboard.
-void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect )
+void qtractorMidiEditList::drawContents ( QPainter& painter, const QRect& rect )
 {
-	pPainter->drawPixmap(rect, m_pixmap, rect);
+	painter.drawPixmap(rect, m_pixmap, rect);
 
 	// Are we sticking in some note?
 	if (m_iNoteOn >= 0) {
-		pPainter->fillPath(m_pathNote, m_iNoteVel > 0
+		painter.fillPath(m_pathNote, m_iNoteVel > 0
 			? QColor(255,   0, 120, 120)
 			: QColor(120, 120, 255, 120));
 	}

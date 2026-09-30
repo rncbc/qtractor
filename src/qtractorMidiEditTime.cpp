@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -348,9 +348,9 @@ void qtractorMidiEditTime::resizeEvent ( QResizeEvent *pResizeEvent )
 
 
 // Draw the time scale.
-void qtractorMidiEditTime::drawContents ( QPainter *pPainter, const QRect& rect )
+void qtractorMidiEditTime::drawContents ( QPainter& painter, const QRect& rect )
 {
-	pPainter->drawPixmap(rect, m_pixmap, rect);
+	painter.drawPixmap(rect, m_pixmap, rect);
 
 	// Draw special play/edit-head/tail headers...
 	const int cx = qtractorScrollView::contentsX();
@@ -364,9 +364,9 @@ void qtractorMidiEditTime::drawContents ( QPainter *pPainter, const QRect& rect 
 			x, h - d,
 			x, h,
 			x + d, h - d);
-		pPainter->setPen(Qt::blue);
-		pPainter->setBrush(Qt::blue);
-		pPainter->drawPolygon(polyg);
+		painter.setPen(Qt::blue);
+		painter.setBrush(Qt::blue);
+		painter.drawPolygon(polyg);
 	}
 
 	x = m_pEditor->editTailX() - cx;
@@ -376,9 +376,9 @@ void qtractorMidiEditTime::drawContents ( QPainter *pPainter, const QRect& rect 
 			x - d, h - d,
 			x, h,
 			x, h - d);
-		pPainter->setPen(Qt::blue);
-		pPainter->setBrush(Qt::blue);
-		pPainter->drawPolygon(polyg);
+		painter.setPen(Qt::blue);
+		painter.setBrush(Qt::blue);
+		painter.drawPolygon(polyg);
 	}
 
 	x = m_pEditor->playHeadX() - cx;
@@ -388,9 +388,9 @@ void qtractorMidiEditTime::drawContents ( QPainter *pPainter, const QRect& rect 
 			x - d, h - d,
 			x, h,
 			x + d, h - d);
-		pPainter->setPen(Qt::red);
-		pPainter->setBrush(Qt::red);
-		pPainter->drawPolygon(polyg);
+		painter.setPen(Qt::red);
+		painter.setBrush(Qt::red);
+		painter.drawPolygon(polyg);
 	}
 }
 
