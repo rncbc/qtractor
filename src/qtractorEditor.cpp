@@ -24,9 +24,12 @@
 
 #include "qtractorTimeScale.h"
 
+#include "qtractorScrollView.h"
+
 #include "qtractorSession.h"
 
 #include <QApplication>
+#include <QToolTip>
 
 
 // Follow-playhead: maximum iterations on hold.
@@ -388,6 +391,33 @@ unsigned long qtractorEditor::frameSnap ( unsigned long iFrame ) const
 		return iFrame;
 	else
 		return (m_pTimeScale ? m_pTimeScale->frameSnap(iFrame) : iFrame);
+}
+
+
+// Show selection tooltip...
+void qtractorEditor::showToolTip (
+	qtractorScrollView *pScrollView, const QRect& rect ) const
+{
+	if (!isToolTips())
+		return;
+
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	const unsigned long f0 = offset();
+	const unsigned long iFrameStart = frameSnap(
+		pTimeScale->frameFromPixel(qMax(0, rect.left())) + f0);
+	const unsigned long iFrameEnd = frameSnap(
+		pTimeScale->frameFromPixel(qMax(0, rect.right())) + f0);
+
+	QToolTip::showText(
+		QCursor::pos(),
+		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
+			.arg(pTimeScale->textFromFrame(iFrameStart))
+			.arg(pTimeScale->textFromFrame(iFrameEnd))
+			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
+		pScrollView->viewport());
 }
 
 

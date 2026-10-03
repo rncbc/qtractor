@@ -170,9 +170,6 @@ public:
 	// Reset drag/select/move state.
 	void resetDragState(qtractorScrollView *pScrollView);
 
-	// Command list accessor.
-	qtractorCommandList *commands() const;
-
 	// Command executioner...
 	bool execute(qtractorCommand *pCommand);
 
@@ -182,6 +179,9 @@ public:
 	// Audio-peak factory accessor (singleton)
 	static qtractorAudioPeakFactory *audioPeakFactory()
 		{ return g_pAudioPeakFactory; }
+
+	// Command list accessor.
+	qtractorCommandList *commands() const;
 
 public slots:
 
@@ -216,6 +216,14 @@ protected:
 
 	// Vertical line position drawing.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView);
+
+	// Audio clip fade-in/out accessors
+	//
+	int fadeInType() const;
+	unsigned long fadeInLength() const;
+
+	int fadeOutType() const;
+	unsigned long fadeOutLength() const;
 
 	// Specialized drag/time-scale (draft)...
 	struct DragTimeScale;
@@ -254,10 +262,6 @@ protected slots:
 	void moveRubberBand(
 		qtractorScrollView *pScrollView, const QRect& rectDrag, int thick);
 
-	// Show selection tooltip...
-	void showToolTip(
-		qtractorScrollView *pScrollView, const QRect& rect) const;
-
 signals:
 
 	// Emitted on selection/changes.
@@ -280,19 +284,19 @@ private:
 	qtractorAudioEditViewScale *m_pEditViewScale;
 	QFrame *m_pEditViewHeader;
 
-	// Common drag state.
-	enum DragState {
-		DragNone = 0,
-		DragStart,
+	// Common fade-in/out drag state.
+	enum DragFadeState {
+		DragFadeNone = 0,
+		DragFadeStart,
 		DragFadeIn,
 		DragFadeOut
-	} m_dragState, m_dragCursor;
+	} m_dragFadeState, m_dragFadeCursor;
 
-	// The current selecting/dragging stuff.
-	QPoint m_posDrag;
-	QRect  m_rectDrag;
-	QRect  m_rectHandle;
-	int    m_iDragClipX;
+	// The current fade-in/out dragging stuff.
+	QPoint m_posFadeStart;
+	QRect  m_rectFadeClip;
+	QRect  m_rectFadeHandle;
+	int    m_iDragFadeX;
 
 	// Viewport rubber-banding stuff.
 	qtractorRubberBand *m_pRubberBand;

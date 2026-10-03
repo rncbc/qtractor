@@ -1415,6 +1415,30 @@ void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView 
 }
 
 
+// MIDI clip fade-in/out accessors
+//
+int qtractorMidiEditor::fadeInType (void) const
+{
+	return (m_pMidiClip ? m_pMidiClip->fadeInType() : 0);
+}
+
+unsigned long qtractorMidiEditor::fadeInLength (void) const
+{
+	return (m_pMidiClip ? m_pMidiClip->fadeInLength() : 0);
+}
+
+
+int qtractorMidiEditor::fadeOutType (void) const
+{
+	return (m_pMidiClip ? m_pMidiClip->fadeOutType() : 0);
+}
+
+unsigned long qtractorMidiEditor::fadeOutLength() const
+{
+	return (m_pMidiClip ? m_pMidiClip->fadeOutLength() : 0);
+}
+
+
 // Child widgets accessors.
 QFrame *qtractorMidiEditor::editListHeader (void) const
 {
@@ -5607,36 +5631,6 @@ void qtractorMidiEditor::focusOut ( qtractorScrollView *pScrollView )
 {
 	if (m_dragState == DragStep && m_pDragStep == pScrollView)
 		resetDragState(pScrollView);
-}
-
-
-// Show selection tooltip...
-void qtractorMidiEditor::showToolTip (
-	qtractorScrollView *pScrollView, const QRect& rect ) const
-{
-	if (pScrollView == nullptr)
-		return;
-
-	if (!isToolTips())
-		return;
-
-	qtractorTimeScale *pTimeScale = timeScale();
-	if (pTimeScale == nullptr)
-		return;
-
-	const unsigned long iOffset = offset();
-	const unsigned long iFrameStart = frameSnap(
-		iOffset + pTimeScale->frameFromPixel(qMax(0, rect.left())));
-	const unsigned long iFrameEnd = frameSnap(
-		iOffset + pTimeScale->frameFromPixel(qMax(0, rect.right())));
-
-	QToolTip::showText(
-		QCursor::pos(),
-		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
-			.arg(pTimeScale->textFromFrame(iFrameStart))
-			.arg(pTimeScale->textFromFrame(iFrameEnd))
-			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
-		pScrollView->viewport());
 }
 
 

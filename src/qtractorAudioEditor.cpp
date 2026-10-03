@@ -96,10 +96,10 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 	m_pAudioPeak = nullptr;
 
 	// Common drag state.
-	m_dragState  = DragNone;
-	m_dragCursor = DragNone;
+	m_dragFadeState  = DragFadeNone;
+	m_dragFadeCursor = DragFadeNone;
 
-	m_iDragClipX = 0;
+	m_iDragFadeX = 0;
 
 	m_pRubberBand = nullptr;
 
@@ -374,6 +374,30 @@ void qtractorAudioEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView
 			(m_pEditTime->viewport())->update(QRect(x1 - d0, d0, h0, d0));
 		}
 	}
+}
+
+
+// Audio clip fade-in/out accessors
+//
+int qtractorAudioEditor::fadeInType (void) const
+{
+	return (m_pAudioClip ? m_pAudioClip->fadeInType() : 0);
+}
+
+unsigned long qtractorAudioEditor::fadeInLength (void) const
+{
+	return (m_pAudioClip ? m_pAudioClip->fadeInLength() : 0);
+}
+
+
+int qtractorAudioEditor::fadeOutType (void) const
+{
+	return (m_pAudioClip ? m_pAudioClip->fadeOutType() : 0);
+}
+
+unsigned long qtractorAudioEditor::fadeOutLength() const
+{
+	return (m_pAudioClip ? m_pAudioClip->fadeOutLength() : 0);
 }
 
 
@@ -767,8 +791,8 @@ void qtractorAudioEditor::dragMoveStart (
 	resetDragState(pScrollView);
 
 	// Remember what and where we'll be dragging/selecting...
-	m_dragState = DragStart;
-	m_posDrag   = pos;
+	m_dragFadeState = DragFadeStart;
+	m_posFadeStart  = pos;
 }
 
 
@@ -777,14 +801,14 @@ void qtractorAudioEditor::dragMoveUpdate (
 	qtractorScrollView *pScrollView, const QPoint& pos,
 	const Qt::KeyboardModifiers& modifiers )
 {
-	switch (m_dragState) {
-	case DragStart:
+	switch (m_dragFadeState) {
+	case DragFadeStart:
 		// Did we moved enough around?
-		if ((pos - m_posDrag).manhattanLength()
+		if ((pos - m_posFadeStart).manhattanLength()
 			< QApplication::startDragDistance())
 			break;
-		if (dragFadeInOutStart(pScrollView, pos)) {
-			m_dragState = m_dragCursor;
+		if (dragFadeInOutStart(pScrollView, m_posFadeStart)) {
+			m_dragFadeState = m_dragFadeCursor;
 			pScrollView->viewport()->setCursor(QCursor(Qt::SizeHorCursor));
 		}
 		pScrollView->viewport()->update();
@@ -793,7 +817,7 @@ void qtractorAudioEditor::dragMoveUpdate (
 	case DragFadeOut:
 		dragFadeInOutMove(pScrollView, pos);
 		break;
-	case DragNone:
+	case DragFadeNone:
 		// Try to catch mouse over the fade-in/out handles...
 		dragFadeInOutStart(pScrollView, pos);
 		// Fall thru...
@@ -808,13 +832,13 @@ void qtractorAudioEditor::dragMoveCommit (
 	qtractorScrollView *pScrollView, const QPoint& pos,
 	const Qt::KeyboardModifiers& modifiers )
 {
-	switch (m_dragState) {
+	switch (m_dragFadeState) {
 	case DragFadeIn:
 	case DragFadeOut:
 		dragFadeInOutDrop(pScrollView, pos);
 		break;
-	case DragStart:
-	case DragNone:
+	case DragFadeStart:
+	case DragFadeNone:
 	default:
 		break;
 	}
@@ -828,43 +852,40 @@ void qtractorAudioEditor::dragMoveCommit (
 bool qtractorAudioEditor::dragFadeInOutStart (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
-	if (m_pAudioClip == nullptr)
-		return false;
-
 	qtractorTimeScale *pTimeScale = timeScale();
 	if (pTimeScale == nullptr)
 		return false;
 
 	QWidget *pViewport = pScrollView->viewport();
-	const int h = pViewport->height();
 	const int w = pTimeScale->pixelFromFrame(length());
-	m_rectDrag.setRect(0, 0, w, h);
-
-	const QRect& rectClip = m_rectDrag;
+	const int h = pViewport->height();
+	const QRect rectClip(0, 0, w, h);
 
 	// Fade-in handle check...
-	m_rectHandle.setRect(rectClip.left() + 1
-		+ pTimeScale->pixelFromFrame(m_pAudioClip->fadeInLength()),
+	m_rectFadeHandle.setRect(rectClip.left() + 1
+		+ pTimeScale->pixelFromFrame(fadeInLength()),
 			rectClip.top() + 1, 10, 10);
-	if (m_rectHandle.contains(pos)) {
-		m_dragCursor = DragFadeIn;
+	if (m_rectFadeHandle.contains(pos)) {
+		m_dragFadeCursor = DragFadeIn;
 		pViewport->setCursor(QCursor(Qt::PointingHandCursor));
+		m_rectFadeClip = rectClip;
 		return true;
 	}
 
 	// Fade-out handle check...
-	m_rectHandle.setRect(rectClip.right() - 10
-		- pTimeScale->pixelFromFrame(m_pAudioClip->fadeOutLength()),
+	m_rectFadeHandle.setRect(rectClip.right() - 10
+		- pTimeScale->pixelFromFrame(fadeOutLength()),
 			rectClip.top() + 1, 10, 10);
-	if (m_rectHandle.contains(pos)) {
-		m_dragCursor = DragFadeOut;
+	if (m_rectFadeHandle.contains(pos)) {
+		m_dragFadeCursor = DragFadeOut;
 		pViewport->setCursor(QCursor(Qt::PointingHandCursor));
+		m_rectFadeClip = rectClip;
 		return true;
 	}
 
 	// Reset cursor if any persist around.
-	if (m_dragCursor != DragNone) {
-		m_dragCursor  = DragNone;
+	if (m_dragFadeCursor != DragFadeNone) {
+		m_dragFadeCursor  = DragFadeNone;
 		pViewport->unsetCursor();
 	}
 
@@ -882,25 +903,26 @@ void qtractorAudioEditor::dragFadeInOutMove (
 
 	// Always change horizontally wise...
 	const int x0 = pixelSnap(pos.x());
-	int dx = (x0 - m_posDrag.x());
-	if (m_rectHandle.left() + dx < m_rectDrag.left())
-		dx = m_rectDrag.left() - m_rectHandle.left();
-	else if (m_rectHandle.right() + dx > m_rectDrag.right())
-		dx = m_rectDrag.right() - m_rectHandle.right();
-	m_iDragClipX = dx;
-	moveRubberBand(pScrollView, m_rectHandle, 1);
+	int dx = (x0 - m_posFadeStart.x());
+	if (m_rectFadeHandle.left() + dx < m_rectFadeClip.left())
+		dx = m_rectFadeClip.left() - m_rectFadeHandle.left();
+	else
+	if (m_rectFadeHandle.right() + dx > m_rectFadeClip.right())
+		dx = m_rectFadeClip.right() - m_rectFadeHandle.right();
+	m_iDragFadeX = dx;
+	moveRubberBand(pScrollView, m_rectFadeHandle, 1);
 	pScrollView->ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	// Prepare to update the whole view area...
 	pScrollView->viewport()->update();
 
 	// Show fade-in/out tooltip..
-	QRect rect(m_rectDrag);
-	if (m_dragState == DragFadeIn)
-		rect.setRight(m_rectHandle.left() + m_iDragClipX);
+	QRect rect(m_rectFadeClip);
+	if (m_dragFadeState == DragFadeIn)
+		rect.setRight(m_rectFadeHandle.left() + m_iDragFadeX);
 	else
-	if (m_dragState == DragFadeOut)
-		rect.setLeft(m_rectHandle.right() + m_iDragClipX);
+	if (m_dragFadeState == DragFadeOut)
+		rect.setLeft(m_rectFadeHandle.right() + m_iDragFadeX);
 	showToolTip(pScrollView, rect);
 }
 
@@ -911,9 +933,6 @@ void qtractorAudioEditor::dragFadeInOutDrop (
 {
 	dragFadeInOutMove(pScrollView, pos);
 
-	if (m_pAudioClip == nullptr)
-		return;
-
 	qtractorTimeScale *pTimeScale = timeScale();
 	if (pTimeScale == nullptr)
 		return;
@@ -921,24 +940,24 @@ void qtractorAudioEditor::dragFadeInOutDrop (
 	// We'll build a command...
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("clip %1").arg(
-			m_dragState == DragFadeIn ? tr("fade-in") : tr("fade-out")));
+			m_dragFadeState == DragFadeIn ? tr("fade-in") : tr("fade-out")));
 
-	if (m_dragState == DragFadeIn) {
+	if (m_dragFadeState == DragFadeIn) {
 		pClipCommand->fadeInClip(m_pAudioClip,
 			pTimeScale->frameFromPixel(
-				m_rectHandle.left() + m_iDragClipX - m_rectDrag.left()),
-				m_pAudioClip->fadeInType());
+				m_rectFadeHandle.left() + m_iDragFadeX - m_rectFadeClip.left()),
+				qtractorClip::FadeType(fadeInType()));
 	}
 	else
-	if (m_dragState == DragFadeOut) {
+	if (m_dragFadeState == DragFadeOut) {
 		pClipCommand->fadeOutClip(m_pAudioClip,
 			pTimeScale->frameFromPixel(
-				m_rectDrag.right() - m_iDragClipX - m_rectHandle.right()),
-				m_pAudioClip->fadeOutType());
+				m_rectFadeClip.right() - m_iDragFadeX - m_rectFadeHandle.right()),
+				qtractorClip::FadeType(fadeOutType()));
 	}
 
 	// Reset state for proper redrawing...
-	m_dragState = DragNone;
+	m_dragFadeState = DragFadeNone;
 
 	// Put it in the form of an undoable command...
 	commands()->exec(pClipCommand);
@@ -955,7 +974,7 @@ void qtractorAudioEditor::moveRubberBand (
 	const int w = pViewport->width();
 
 	// Horizontal adjust...
-	rect.translate(m_iDragClipX, 0);
+	rect.translate(m_iDragFadeX, 0);
 	// Convert rectangle into view coordinates...
 	rect.moveTopLeft(pScrollView->contentsToViewport(rect.topLeft()));
 	// Make sure the rectangle doesn't get too off view,
@@ -983,33 +1002,6 @@ void qtractorAudioEditor::moveRubberBand (
 	// Ah, and make it visible, of course...
 	if (!m_pRubberBand->isVisible())
 		m_pRubberBand->show();
-}
-
-
-// Show selection tooltip...
-void qtractorAudioEditor::showToolTip (
-	qtractorScrollView *pScrollView, const QRect& rect ) const
-{
-	if (!isToolTips())
-		return;
-
-	qtractorTimeScale *pTimeScale = timeScale();
-	if (pTimeScale == nullptr)
-		return;
-
-	const unsigned long f0 = offset();
-	const unsigned long iFrameStart = frameSnap(
-		pTimeScale->frameFromPixel(qMax(0, rect.left())) + f0);
-	const unsigned long iFrameEnd = frameSnap(
-		pTimeScale->frameFromPixel(qMax(0, rect.right())) + f0);
-
-	QToolTip::showText(
-		QCursor::pos(),
-		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
-			.arg(pTimeScale->textFromFrame(iFrameStart))
-			.arg(pTimeScale->textFromFrame(iFrameEnd))
-			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
-		pScrollView->viewport());
 }
 
 
@@ -1095,10 +1087,10 @@ void qtractorAudioEditor::paintDragState (
 	qtractorScrollView *pScrollView, QPainter& painter )
 {
 	// Show/hide a moving clip fade in/out slope lines...
-	if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
-		QRect rectHandle(m_rectHandle);
+	if (m_dragFadeState == DragFadeIn || m_dragFadeState == DragFadeOut) {
+		QRect rectHandle(m_rectFadeHandle);
 		// Horizontal adjust...
-		rectHandle.translate(m_iDragClipX, 0);
+		rectHandle.translate(m_iDragFadeX, 0);
 		// Convert rectangle into view coordinates...
 		rectHandle.moveTopLeft(
 			pScrollView->contentsToViewport(rectHandle.topLeft()));
@@ -1107,14 +1099,14 @@ void qtractorAudioEditor::paintDragState (
 		QPen pen(Qt::DotLine);
 		pen.setColor(Qt::blue);
 		painter.setPen(pen);
-		if (m_dragState == DragFadeIn) {
-			vpos = pScrollView->contentsToViewport(m_rectDrag.bottomLeft());
+		if (m_dragFadeState == DragFadeIn) {
+			vpos = pScrollView->contentsToViewport(m_rectFadeClip.bottomLeft());
 			painter.drawLine(
 				vpos.x(), vpos.y(), rectHandle.left(), rectHandle.top());
 		}
 		else
-		if (m_dragState == DragFadeOut) {
-			vpos = pScrollView->contentsToViewport(m_rectDrag.bottomRight());
+		if (m_dragFadeState == DragFadeOut) {
+			vpos = pScrollView->contentsToViewport(m_rectFadeClip.bottomRight());
 			painter.drawLine(
 				rectHandle.right(), rectHandle.top(), vpos.x(), vpos.y());
 		}
@@ -1132,17 +1124,17 @@ void qtractorAudioEditor::resetDragState ( qtractorScrollView *pScrollView )
 	}
 
 	if (pScrollView) {
-		if (m_dragState != DragNone) {
-			m_dragCursor = DragNone;
+		if (m_dragFadeState != DragFadeNone) {
+			m_dragFadeCursor = DragFadeNone;
 			pScrollView->viewport()->unsetCursor();
 		}
-		if (m_dragState == DragFadeIn  ||
-			m_dragState == DragFadeOut) {
+		if (m_dragFadeState == DragFadeIn  ||
+			m_dragFadeState == DragFadeOut) {
 			updateContents();
 		}
 	}
 
-	m_dragState = DragNone;
+	m_dragFadeState = DragFadeNone;
 }
 
 

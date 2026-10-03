@@ -278,9 +278,6 @@ public:
 	// Lost focus handler.
 	void focusOut(qtractorScrollView *pScrollView);
 
-	// Show selection tooltip...
-	void showToolTip(qtractorScrollView *pScrollView, const QRect& rect) const;
-
 	// MIDI event tool tip helper.
 	QString eventToolTip(qtractorMidiEvent *pEvent,
 		long iTimeDelta = 0, int iNoteDelta = 0, int iValueDelta = 0) const;
@@ -477,6 +474,14 @@ protected:
 
 	// Vertical line position drawing.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView);
+
+	// MIDI clip fade-in/out accessors
+	//
+	int fadeInType() const;
+	unsigned long fadeInLength() const;
+
+	int fadeOutType() const;
+	unsigned long fadeOutLength() const;
 
 	// Specialized drag/time-scale (draft)...
 	struct DragTimeScale;

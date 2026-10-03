@@ -27,6 +27,8 @@
 
 // Forward decls.
 class qtractorTimeScale;
+class qtractorScrollView;
+class qtractorCommandList;
 
 
 //----------------------------------------------------------------------------
@@ -111,8 +113,14 @@ public:
 	unsigned int pixelSnap(unsigned int x) const;
 	unsigned long frameSnap(unsigned long iFrame) const;
 
+	// Show selection tooltip...
+	void showToolTip(qtractorScrollView *pScrollView, const QRect& rect) const;
+
 	// Update time-scale to master session.
 	virtual void updateTimeScale() = 0;
+
+	// Command list accessor.
+	virtual qtractorCommandList *commands() const = 0;
 
 protected:
 
@@ -128,6 +136,14 @@ protected:
 
 	// Vertical line position drawing.
 	virtual void drawPositionX(int& iPositionX, int x, bool bSyncView) = 0;
+
+	// Clip fade-in/out accessors.
+	//
+	virtual int fadeInType() const = 0;
+	virtual unsigned long fadeInLength() const = 0;
+
+	virtual int fadeOutType() const = 0;
+	virtual unsigned long fadeOutLength() const = 0;
 
 	// Temporary sync-view/follow-playhead hold state.
 	int m_iSyncViewHold;
