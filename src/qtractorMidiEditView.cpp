@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -336,15 +336,6 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 //	painter.initFrom(this);
 	painter.setFont(qtractorScrollView::font());
 
-	// Show that we may have clip limits...
-	if (m_pEditor->length() > 0) {
-		int x1 = pTimeScale->pixelFromFrame(m_pEditor->length()) - cx;
-		if (x1 < 0)
-			x1 = 0;
-		if (x1 < w)
-			painter.fillRect(x1, 0, w - x1, h, rgbBase.darker(105));
-	}
-
 	// Draw horizontal lines...
 	painter.setPen(rgbLight);
 //	p.setBrush(rgbDark);
@@ -459,6 +450,8 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	pNode = cursor.seekFrame(f1);
 	const unsigned long iTickEnd2 = pNode->tickFromFrame(f1);
 
+	painter.setRenderHint(QPainter::Antialiasing, true);
+
 	// Draw ghost-track events in dimmed transparecncy (alpha=55)...
 	qtractorTrack *pGhostTrack = m_pEditor->ghostTrack();
 	if (pGhostTrack) {
@@ -498,6 +491,22 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	drawEvents(painter, dx, cy, pSeq,
 		t0, iTickStart, iTickEnd, iTickEnd2, m_pEditor->isDrumMode(),
 		m_pEditor->foreground(), m_pEditor->background());
+
+	const int w1 = pTimeScale->pixelFromFrame(f0 + m_pEditor->length()) - dx;
+	const int w2 = qMin(w, w1);
+	if (w2 > 0)
+		m_pEditor->drawFadeInOut(painter, dx, QRect(0, 0, w2, h));
+
+	painter.setRenderHint(QPainter::Antialiasing, false);
+
+	// Show that we may have clip limits...
+	if (m_pEditor->length() > 0) {
+		int x1 = pTimeScale->pixelFromFrame(m_pEditor->length()) - cx;
+		if (x1 < 0)
+			x1 = 0;
+		if (x1 < w)
+			painter.fillRect(x1, 0, w - x1, h, QColor(0, 0, 0, 80));
+	}
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
@@ -649,25 +658,25 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 
 
 // Draw the track view.
-void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect )
+void qtractorMidiEditView::drawContents ( QPainter& painter, const QRect& rect )
 {
 	// Draw viewport canvas...
-	pPainter->drawPixmap(rect, m_pixmap, rect);
+	painter.drawPixmap(rect, m_pixmap, rect);
 
 #ifdef CONFIG_GRADIENT
 	// Draw canvas edge-border shadows...
 	const int ws = 22;
 	const int xs = qtractorScrollView::viewport()->width() - ws;
 	if (rect.left() < ws)
-		pPainter->fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
+		painter.fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
 	if (rect.right() > xs)
-		pPainter->fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
+		painter.fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
 #endif
-	m_pEditor->paintDragState(this, pPainter);
+	m_pEditor->paintDragState(this, painter);
 
 	// Are we sticking in some note?
 	if (m_iNoteOn >= 0) {
-		pPainter->fillRect(QRect(
+		painter.fillRect(QRect(
 			contentsToViewport(m_rectNote.topLeft()),
 			m_rectNote.size()),	m_iNoteVel > 0
 				? QColor(255,   0, 120, 40)
@@ -679,27 +688,27 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 
 	int x = m_pEditor->editHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::blue);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::blue);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	x = m_pEditor->editTailX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::blue);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::blue);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	x = m_pEditor->playHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::red);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::red);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	if (m_pEditor->isStepInputHead()) {
 		x = m_pEditor->stepInputHeadX() - cx;
 		if (x >= rect.left() && x <= rect.right()) {
-			pPainter->setPen(QColor(255, 0, 0, 120));
-			pPainter->drawLine(x, rect.top(), x, rect.bottom());
+			painter.setPen(QColor(255, 0, 0, 120));
+			painter.drawLine(x, rect.top(), x, rect.bottom());
 		}
 	}
 }

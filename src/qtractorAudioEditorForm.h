@@ -104,6 +104,7 @@ protected slots:
 	void fileProperties();
 	void fileRangeSet();
 	void fileLoopSet();
+	void fileExport();
 	void fileClose();
 
 	void editUndo();
@@ -135,7 +136,11 @@ protected slots:
 	void viewSnapZebra(bool bOn);
 	void viewSnapGrid(bool bOn);
 	void viewToolTips(bool bOn);
+	void viewFadeInOut(bool bOn);
 	void viewRefresh();
+
+	void transportBackward();
+	void transportForward();
 
 	void transportStepBackward();
 	void transportStepForward();
@@ -177,6 +182,9 @@ protected:
 
 	// Save current clip.
 	bool saveClipFile(bool bPrompt);
+
+	// Export current selection.
+	bool exportClip();
 
 private:
 

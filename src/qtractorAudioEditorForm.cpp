@@ -46,14 +46,16 @@
 
 #include "qtractorExportForm.h"
 
-#include "qtractorClipCommand.h"
 #include "qtractorTimeScaleCommand.h"
+#include "qtractorSessionCommand.h"
+
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #include <QWindow>
 #endif
 
 #include <QFileDialog>
+#include <QProgressBar>
 #include <QMessageBox>
 #include <QActionGroup>
 #include <QCloseEvent>
@@ -274,6 +276,9 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.fileLoopSetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileLoopSet()));
+	QObject::connect(m_ui.fileExportAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileExport()));
 	QObject::connect(m_ui.fileTrackInputsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileTrackInputs()));
@@ -314,9 +319,6 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.editSelectNoneAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectNone()));
-	QObject::connect(m_ui.editSelectInvertAction,
-		SIGNAL(triggered(bool)),
-		SLOT(editSelectInvert()));
 	QObject::connect(m_ui.editSelectRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectRange()));
@@ -366,6 +368,9 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.viewToolTipsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolTips(bool)));
+	QObject::connect(m_ui.viewFadeInOutAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewFadeInOut(bool)));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -436,6 +441,7 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 		m_ui.viewSnapZebraAction->setChecked(pOptions->bAudioSnapZebra);
 		m_ui.viewSnapGridAction->setChecked(pOptions->bAudioSnapGrid);
 		m_ui.viewToolTipsAction->setChecked(pOptions->bAudioToolTips);
+		m_ui.viewFadeInOutAction->setChecked(pOptions->bAudioFadeInOut);
 		// Initial decorations visibility state.
 		viewMenubar(pOptions->bAudioMenubar);
 		viewStatusbar(pOptions->bAudioStatusbar);
@@ -450,6 +456,7 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 		m_pAudioEditor->setSnapZebra(pOptions->bAudioSnapZebra);
 		m_pAudioEditor->setSnapGrid(pOptions->bAudioSnapGrid);
 		m_pAudioEditor->setToolTips(pOptions->bAudioToolTips);
+		m_pAudioEditor->setFadeInOut(pOptions->bAudioFadeInOut);
 		m_pAudioEditor->setSyncView(pOptions->bAudioFollow);
 		// Initial transport display options...
 		m_pAudioEditor->setSyncViewHold(pOptions->bSyncViewHold);
@@ -468,27 +475,29 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 		pOptions->loadActionShortcuts(this);
 	}
 
+	// Local transport actions...
+	QObject::connect(m_ui.transportBackwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportBackward()));
+	QObject::connect(m_ui.transportForwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportForward()));
+	QObject::connect(m_ui.transportStepBackwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportStepBackward()));
+	QObject::connect(m_ui.transportStepForwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportStepForward()));
+
 	// Make last-but-not-least connections....
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
-		QObject::connect(m_ui.transportBackwardAction,
-			SIGNAL(triggered(bool)),
-			pMainForm, SLOT(transportBackward()));
 		QObject::connect(m_ui.transportRewindAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportRewind()));
 		QObject::connect(m_ui.transportFastForwardAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportFastForward()));
-		QObject::connect(m_ui.transportForwardAction,
-			SIGNAL(triggered(bool)),
-			pMainForm, SLOT(transportForward()));
-		QObject::connect(m_ui.transportStepBackwardAction,
-			SIGNAL(triggered(bool)),
-			SLOT(transportStepBackward()));
-		QObject::connect(m_ui.transportStepForwardAction,
-			SIGNAL(triggered(bool)),
-			SLOT(transportStepForward()));
 		QObject::connect(m_ui.transportLoopAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportLoop()));
@@ -531,7 +540,9 @@ qtractorAudioEditorForm::~qtractorAudioEditorForm (void)
 	qDeleteAll(m_snapPerBeatActions);
 	m_snapPerBeatActions.clear();
 
-	// Ditch rec-mode/red palette...
+	// Ditch color palettes...
+	if (m_pYellowPalette)
+		delete m_pYellowPalette;
 	if (m_pRedPalette)
 		delete m_pRedPalette;
 
@@ -548,7 +559,7 @@ qtractorAudioEditorForm::~qtractorAudioEditorForm (void)
 bool qtractorAudioEditorForm::queryClose (void)
 {
 	bool bQueryClose = true;
-
+#if 0//--TODO: m_iDirtyCount > 0
 	// Are we dirty enough to prompt it?
 	if (m_iDirtyCount > 0) {
 		if (isVisible()) {
@@ -568,7 +579,7 @@ bool qtractorAudioEditorForm::queryClose (void)
 			bQueryClose = saveClipFile(false);
 		}
 	}
-
+#endif
 	return bQueryClose;
 }
 
@@ -611,6 +622,7 @@ void qtractorAudioEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bAudioSnapZebra = m_pAudioEditor->isSnapZebra();
 		pOptions->bAudioSnapGrid = m_pAudioEditor->isSnapGrid();
 		pOptions->bAudioToolTips = m_pAudioEditor->isToolTips();
+		pOptions->bAudioFadeInOut = m_pAudioEditor->isFadeInOut();
 		pOptions->iAudioDisplayFormat = (m_pAudioEditor->timeScale())->displayFormat();
 		pOptions->bAudioFollow  = m_ui.transportFollowAction->isChecked();
 		// Save snap-per-beat setting...
@@ -900,6 +912,195 @@ bool qtractorAudioEditorForm::saveClipFile ( bool bPrompt )
 }
 
 
+// Export current selection.
+bool qtractorAudioEditorForm::exportClip (void)
+{
+	qtractorAudioClip *pAudioClip = m_pAudioEditor->audioClip();
+	if (pAudioClip == nullptr)
+		return false;
+
+	qtractorTrack *pTrack = pAudioClip->track();
+	if (pTrack == nullptr)
+		return false;
+	if (pTrack->trackType() != qtractorTrack::Audio)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return false;
+
+	qtractorAudioBus *pAudioBus
+		= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+	if (pAudioBus == nullptr)
+		return false;
+
+	int iFormat = -1; // alias qtractorAudioFileFactory::defaultFormat();
+	qtractorExportClipForm exportForm(this);
+	exportForm.setExportTitle(tr("Export"));
+	exportForm.setExportType(qtractorTrack::Audio);
+	const QString& sExt = exportForm.exportExt();
+	QString sFilename = pSession->createFilePathEx(pAudioClip->clipName(), sExt);
+	exportForm.setExportPath(sFilename);
+	if (!exportForm.exec())
+		return false;
+	sFilename = exportForm.exportPath();
+	iFormat = exportForm.audioExportFormat();
+
+	if (sFilename.isEmpty() || sFilename.at(0) == '.')
+		return false;
+	if (QFileInfo(sFilename).suffix().isEmpty())
+		sFilename += '.' + sExt;
+
+	const unsigned int iBufferSize
+		= pSession->audioEngine()->bufferSizeEx();
+
+	qtractorAudioFile *pAudioFile
+		= qtractorAudioFileFactory::createAudioFile(sFilename,
+			pAudioBus->channels(), pSession->sampleRate(),
+			iBufferSize, iFormat);
+	if (pAudioFile == nullptr)
+		return false;
+
+	// Open the file for writing...
+	if (!pAudioFile->open(sFilename, qtractorAudioFile::Write)) {
+		delete pAudioFile;
+		return false;
+	}
+
+	// Should take sometime now...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Start logging...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		pMainForm->appendMessages(
+			tr("Audio clip export: \"%1\" started...")
+			.arg(sFilename));
+	}
+
+	//
+	const bool bSelected
+		= m_pAudioEditor->isSelected();
+	const unsigned long iExportStart
+		= (bSelected
+		? m_pAudioEditor->selectStart()
+		: pAudioClip->clipStart());
+	const unsigned long iExportEnd
+		= (bSelected
+		? m_pAudioEditor->selectEnd()
+		: pAudioClip->clipStart() + pAudioClip->clipLength());
+
+	const unsigned short iChannels = pAudioBus->channels();
+
+	// A progress indication might be friendly...
+	QProgressBar *pProgressBar = nullptr;
+	if (pMainForm)
+		pProgressBar = pMainForm->progressBar();
+	if (pProgressBar) {
+		pProgressBar->setRange(0, (iExportEnd - iExportStart) / 100);
+		pProgressBar->reset();
+		pProgressBar->show();
+	}
+
+	// Allocate merge audio scratch buffer...
+	const unsigned int iBlockSize
+		= pSession->audioEngine()->blockSize();
+
+	unsigned short i;
+	float **ppFrames = new float * [iChannels];
+	for (i = 0; i < iChannels; ++i)
+		ppFrames[i] = new float[iBlockSize];
+
+	// Setup clip buffers...
+	qtractorAudioBuffer *pBuff
+		= new qtractorAudioBuffer(pTrack->syncThread(), iChannels);
+	pBuff->setOffset(pAudioClip->clipOffset());
+	pBuff->setLength(pAudioClip->clipLength());
+	pBuff->setTimeStretch(pAudioClip->timeStretch());
+	pBuff->setPitchShift(pAudioClip->pitchShift());
+	pBuff->setStretcherFlags(pAudioClip->stretcherFlags());
+	pBuff->open(pAudioClip->filename());
+	pBuff->syncExport();
+	pBuff->seek(iExportStart);
+//	pBuff->syncExport();
+
+	// Loop-merge audio clips...
+	unsigned long iFrameStart = iExportStart;
+	unsigned long iFrameEnd = iFrameStart + iBlockSize;
+	int count = 0;
+
+	// Loop until EOF...
+	while (iFrameStart < iExportEnd && iFrameEnd > iExportStart) {
+		// Zero-silence on scratch buffers...
+		for (i = 0; i < iChannels; ++i)
+			::memset(ppFrames[i], 0, iBlockSize * sizeof(float));
+		// Should force sync now and then...
+		if ((count % 33) == 0) pBuff->syncExport();
+		// Quite similar to qtractorAudioClip::process()...
+		const unsigned long iClipStart = pAudioClip->clipStart();
+		const unsigned long iClipEnd   = iClipStart + pAudioClip->clipLength();;
+		const float fGain = pAudioClip->clipGain();
+		if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
+			const unsigned long iOffset = iFrameEnd - iClipStart;
+			while (!pBuff->inSync(0, 0))
+				pBuff->syncExport();
+			pBuff->readMix(ppFrames, iOffset,
+				iChannels, iClipStart - iFrameStart,
+				fGain * pAudioClip->fadeInOutGain(iOffset));
+		}
+		else
+		if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
+			const unsigned long iFrame = iFrameStart - iClipStart;
+			while (!pBuff->inSync(iFrame, iFrame))
+				pBuff->syncExport();
+			pBuff->readMix(ppFrames, iBlockSize, iChannels, 0,
+				fGain * pAudioClip->fadeInOutGain(iFrameEnd - iClipStart));
+		}
+		// Actually write to merge audio file;
+		// - check for last incomplete block...
+		if (iFrameEnd > iExportEnd)
+			pAudioFile->write(ppFrames, iBlockSize - (iFrameEnd - iExportEnd));
+		else
+			pAudioFile->write(ppFrames, iBlockSize);
+		// Advance to next buffer...
+		iFrameStart = iFrameEnd;
+		iFrameEnd = iFrameStart + iBlockSize;
+		if (++count > 100 && pProgressBar) {
+			pProgressBar->setValue(pProgressBar->value() + iBlockSize);
+			qtractorSession::stabilize();
+			count = 0;
+		}
+	}
+
+	// Close and free it up...
+	delete pBuff;
+
+	for (i = 0; i < iChannels; ++i)
+		delete [] ppFrames[i];
+	delete [] ppFrames;
+
+	pAudioFile->close();
+	delete pAudioFile;
+
+	if (pProgressBar)
+		pProgressBar->hide();
+
+	// Stop logging...
+	if (pMainForm) {
+		pMainForm->addAudioFile(sFilename);
+		pMainForm->appendMessages(
+			tr("Audio clip export: \"%1\" complete.")
+			.arg(sFilename));
+	}
+
+	// Done with it...
+	QApplication::restoreOverrideCursor();
+
+	// That's it...
+	return true;
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorAudioEditorForm -- File Action slots.
 
@@ -936,9 +1137,12 @@ void qtractorAudioEditorForm::fileProperties (void)
 	if (pAudioClip == nullptr)
 		return;
 
-	qtractorClipForm clipForm(this);
-	clipForm.setClip(pAudioClip);
-	clipForm.exec();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorClipForm clipForm(pMainForm);
+		clipForm.setClip(pAudioClip);
+		clipForm.exec();
+	}
 }
 
 
@@ -1007,11 +1211,20 @@ void qtractorAudioEditorForm::fileTrackProperties (void)
 // Edit-range setting to clip extents.
 void qtractorAudioEditorForm::fileRangeSet (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorTracks *pTracks = pMainForm->tracks();
-		if (pTracks)
-			pTracks->rangeClip(m_pAudioEditor->audioClip());
+	if (m_pAudioEditor->isSelected()) {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			pSession->setEditHead(m_pAudioEditor->selectStart());
+			pSession->setEditTail(m_pAudioEditor->selectEnd());
+			m_pAudioEditor->selectionChangeNotify();
+		}
+	} else {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorTracks *pTracks = pMainForm->tracks();
+			if (pTracks)
+				pTracks->rangeClip(m_pAudioEditor->audioClip());
+		}
 	}
 }
 
@@ -1019,12 +1232,35 @@ void qtractorAudioEditorForm::fileRangeSet (void)
 // Loop-range setting to clip extents.
 void qtractorAudioEditorForm::fileLoopSet (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorTracks *pTracks = pMainForm->tracks();
-		if (pTracks)
-			pTracks->loopClip(m_pAudioEditor->audioClip());
+	if (m_pAudioEditor->isSelected()) {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			unsigned long iLoopStart = m_pAudioEditor->selectStart();
+			unsigned long iLoopEnd   = m_pAudioEditor->selectEnd();
+			if (pSession->isLooping()
+				&& iLoopStart == pSession->loopStart()
+				&& iLoopEnd   == pSession->loopEnd()) {
+				iLoopStart = iLoopEnd = 0;
+			}
+			pSession->execute(
+				new qtractorSessionLoopCommand(
+					pSession, iLoopStart, iLoopEnd));
+		}
+	} else {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorTracks *pTracks = pMainForm->tracks();
+			if (pTracks)
+				pTracks->loopClip(m_pAudioEditor->audioClip());
+		}
 	}
+}
+
+
+// Export current clip selection.
+void qtractorAudioEditorForm::fileExport (void)
+{
+	exportClip();
 }
 
 
@@ -1119,7 +1355,7 @@ void qtractorAudioEditorForm::editSelectAll (void)
 // Select contents range.
 void qtractorAudioEditorForm::editSelectRange (void)
 {
-	m_pAudioEditor->selectRange(m_pAudioEditor->editView(), true, true);
+	m_pAudioEditor->selectRange(m_pAudioEditor->editView(), false, true);
 }
 
 
@@ -1243,6 +1479,14 @@ void qtractorAudioEditorForm::viewToolTips ( bool bOn )
 }
 
 
+// Set fade in/out controls view mode
+void qtractorAudioEditorForm::viewFadeInOut ( bool bOn )
+{
+	m_pAudioEditor->setFadeInOut(bOn);
+	m_pAudioEditor->updateContents();
+}
+
+
 // Change snap-per-beat setting via menu.
 void qtractorAudioEditorForm::viewSnap (void)
 {
@@ -1274,6 +1518,181 @@ void qtractorAudioEditorForm::viewRefresh (void)
 //-------------------------------------------------------------------------
 // qtractorAudioEditorForm -- Transport Action slots.
 
+// Transport backward.
+void qtractorAudioEditorForm::transportBackward (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pAudioEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	// Clip boundaries...
+	const unsigned long iClipStart
+		= m_pAudioEditor->offset();
+	const unsigned long iClipEnd
+		= iClipStart + m_pAudioEditor->length();
+
+	unsigned long iPlayHead = pSession->playHead();
+	if (iClipStart >= iPlayHead)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAudioEditorForm::transportBackward()");
+#endif
+
+	// Move playhead to edit-tail, head or full session-start.
+	bool bShiftKeyModifier = QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier);
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bShiftKeyModifier)
+		bShiftKeyModifier = !bShiftKeyModifier;
+	if (bShiftKeyModifier) {
+		iPlayHead = iClipStart;
+	} else {
+		const bool bPlaying = pSession->isPlaying();
+		QList<unsigned long> list;
+		list.append(iClipStart);
+		if (iClipEnd >= iPlayHead) {
+			if (iPlayHead > pSession->playHeadAutoBackward())
+				list.append(pSession->playHeadAutoBackward());
+			if (iPlayHead > pSession->editHead())
+				list.append(pSession->editHead());
+			if (iPlayHead > pSession->editTail() && !bPlaying)
+				list.append(pSession->editTail());
+			if (pSession->isLooping()) {
+				if (iPlayHead > pSession->loopStart())
+					list.append(pSession->loopStart());
+				if (iPlayHead > pSession->loopEnd() && !bPlaying)
+					list.append(pSession->loopEnd());
+			}
+			if (pSession->isPunching()) {
+				if (iPlayHead > pSession->punchIn())
+					list.append(pSession->punchIn());
+				if (iPlayHead > pSession->punchOut() && !bPlaying)
+					list.append(pSession->punchOut());
+			}
+			if (m_pAudioEditor->isSelected()) {
+				const unsigned long iSelectStart
+					= m_pAudioEditor->selectStart();
+				const unsigned long iSelectEnd
+					= m_pAudioEditor->selectEnd();
+				if (iPlayHead > iSelectStart)
+					list.append(iSelectStart);
+				if (iPlayHead > iSelectEnd)
+					list.append(iSelectEnd);
+			}
+			qtractorTimeScale::Marker *pMarker
+				= pTimeScale->markers().seekFrame(iPlayHead);
+			while (pMarker && pMarker->frame >= iPlayHead)
+				pMarker = pMarker->prev();
+			if (pMarker && iPlayHead > pMarker->frame)
+				list.append(pMarker->frame);
+		}
+		else
+		if (!bPlaying)
+			list.append(iClipEnd);
+		std::sort(list.begin(), list.end());
+		iPlayHead = list.last();
+	}
+
+	// Do it!...
+	m_pAudioEditor->setSyncViewHoldOn(false);
+	m_pAudioEditor->setPlayHead(iPlayHead);
+
+	pSession->setPlayHead(iPlayHead);
+
+	m_pAudioEditor->selectionChangeNotify();
+}
+
+
+// Transport forward
+void qtractorAudioEditorForm::transportForward (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pAudioEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	// Clip boundaries...
+	const unsigned long iClipStart = m_pAudioEditor->offset();
+	const unsigned long iClipEnd = iClipStart + m_pAudioEditor->length();
+
+	unsigned long iPlayHead = pSession->playHead();
+	if (iPlayHead >= iClipEnd)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAudioEditorForm::transportForward()");
+#endif
+
+	// Move playhead to edit-head, tail or full session-end.
+	bool bShiftKeyModifier = QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier);
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bShiftKeyModifier)
+		bShiftKeyModifier = !bShiftKeyModifier;
+	if (bShiftKeyModifier) {
+		iPlayHead = iClipEnd;
+	} else {
+		QList<unsigned long> list;
+		if (iPlayHead >= iClipStart) {
+			if (iPlayHead < pSession->playHeadAutoBackward())
+				list.append(pSession->playHeadAutoBackward());
+			if (iPlayHead < pSession->editHead())
+				list.append(pSession->editHead());
+			if (iPlayHead < pSession->editTail())
+				list.append(pSession->editTail());
+			if (pSession->isLooping()) {
+				if (iPlayHead < pSession->loopStart())
+					list.append(pSession->loopStart());
+				if (iPlayHead < pSession->loopEnd())
+					list.append(pSession->loopEnd());
+			}
+			if (pSession->isPunching()) {
+				if (iPlayHead < pSession->punchIn())
+					list.append(pSession->punchIn());
+				if (iPlayHead < pSession->punchOut())
+					list.append(pSession->punchOut());
+			}
+			if (m_pAudioEditor->isSelected()) {
+				const unsigned long iSelectStart
+					= m_pAudioEditor->selectStart();
+				const unsigned long iSelectEnd
+					= m_pAudioEditor->selectEnd();
+				if (iPlayHead < iSelectStart)
+					list.append(iSelectStart);
+				if (iPlayHead < iSelectEnd)
+					list.append(iSelectEnd);
+			}
+			qtractorTimeScale::Marker *pMarker
+				= pTimeScale->markers().seekFrame(iPlayHead);
+			while (pMarker && iPlayHead >= pMarker->frame)
+				pMarker = pMarker->next();
+			if (pMarker && iPlayHead < pMarker->frame)
+				list.append(pMarker->frame);
+			list.append(iClipEnd);
+		}
+		else list.append(iClipStart);
+		std::sort(list.begin(), list.end());
+		iPlayHead = list.first();
+	}
+
+	// Do it!...
+	m_pAudioEditor->setSyncViewHoldOn(false);
+	m_pAudioEditor->setPlayHead(iPlayHead);
+
+	pSession->setPlayHead(iPlayHead);
+
+	m_pAudioEditor->selectionChangeNotify();
+}
+
+
 // Transport step-backward (local)
 void qtractorAudioEditorForm::transportStepBackward (void)
 {
@@ -1285,31 +1704,53 @@ void qtractorAudioEditorForm::transportStepBackward (void)
 	if (pTimeScale == nullptr)
 		return;
 
+	// Clip boundaries...
+	const unsigned long iClipStart
+		= m_pAudioEditor->offset();
+	const unsigned long iClipEnd
+		= iClipStart + m_pAudioEditor->length();
+
 	unsigned long iPlayHead = pSession->playHead();
-	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
-	if (iSnapPerBeat > 0) {
-		// Step-backward a beat/fraction...
-		const unsigned long t0
-			= pTimeScale->tickFromFrame(iPlayHead);
-		const unsigned int iBeat
-			= pTimeScale->beatFromTick(t0);
-		const unsigned long t1
-			= pTimeScale->tickFromBeat(iBeat > 0 ? iBeat : iBeat + 1);
-		const unsigned long t2
-			= pTimeScale->tickFromBeat(iBeat > 0 ? iBeat - 1 : iBeat);
-		const unsigned long dt
-			= (t1 - t2) / iSnapPerBeat;
-		iPlayHead = pTimeScale->frameFromTick(
-			pTimeScale->tickSnap(t0 > dt ? t0 - dt : 0));
+	if (iClipStart >= iPlayHead)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAudioEditorForm::transportStepBackward()");
+#endif
+
+	if (iPlayHead > iClipEnd) {
+		iPlayHead = iClipEnd;
 	} else {
-		// Step-backward a bar...
-		const unsigned short iBar
-			= pTimeScale->barFromFrame(iPlayHead);
-		iPlayHead = pTimeScale->frameFromBar(iBar > 0 ? iBar - 1 : iBar);
+		const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
+		if (iSnapPerBeat > 0) {
+			// Step-backward a beat/fraction...
+			const unsigned long t0
+				= pTimeScale->tickFromFrame(iPlayHead);
+			const unsigned int iBeat
+				= pTimeScale->beatFromTick(t0);
+			const unsigned long t1
+				= pTimeScale->tickFromBeat(iBeat > 0 ? iBeat : iBeat + 1);
+			const unsigned long t2
+				= pTimeScale->tickFromBeat(iBeat > 0 ? iBeat - 1 : iBeat);
+			const unsigned long dt
+				= (t1 - t2) / iSnapPerBeat;
+			iPlayHead = pTimeScale->frameFromTick(
+				pTimeScale->tickSnap(t0 > dt ? t0 - dt : 0));
+		} else {
+			// Step-backward a bar...
+			const unsigned short iBar
+				= pTimeScale->barFromFrame(iPlayHead);
+			iPlayHead = pTimeScale->frameFromBar(iBar > 0 ? iBar - 1 : iBar);
+		}
 	}
+
+	// Do it!...
 	m_pAudioEditor->setSyncViewHoldOn(false);
 	m_pAudioEditor->setPlayHead(iPlayHead);
+
 	pSession->setPlayHead(iPlayHead);
+
+	m_pAudioEditor->selectionChangeNotify();
 }
 
 
@@ -1324,31 +1765,53 @@ void qtractorAudioEditorForm::transportStepForward (void)
 	if (pTimeScale == nullptr)
 		return;
 
+	// Clip boundaries...
+	const unsigned long iClipStart
+		= m_pAudioEditor->offset();
+	const unsigned long iClipEnd
+		= iClipStart + m_pAudioEditor->length();
+
 	unsigned long iPlayHead = pSession->playHead();
-	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
-	if (iSnapPerBeat > 0) {
-		// Step-forward a beat/fraction...
-		const unsigned long t0
-			= pTimeScale->tickFromFrame(iPlayHead);
-		const unsigned int iBeat
-			= pTimeScale->beatFromTick(t0);
-		const unsigned long t1
-			= pTimeScale->tickFromBeat(iBeat);
-		const unsigned long t2
-			= pTimeScale->tickFromBeat(iBeat + 1);
-		const unsigned long dt
-			= (t2 - t1) / iSnapPerBeat;
-		iPlayHead = pTimeScale->frameFromTick(
-			pTimeScale->tickSnap(t0 + dt));
+	if (iPlayHead >= iClipEnd)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorAudioEditorForm::transportStepForward()");
+#endif
+
+	if (iPlayHead < iClipStart) {
+		iPlayHead = iClipStart;
 	} else {
-		// Step-forward a bar...
-		const unsigned short iBar
-			= pTimeScale->barFromFrame(iPlayHead);
-		iPlayHead = pTimeScale->frameFromBar(iBar + 1);
+		const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
+		if (iSnapPerBeat > 0) {
+			// Step-forward a beat/fraction...
+			const unsigned long t0
+				= pTimeScale->tickFromFrame(iPlayHead);
+			const unsigned int iBeat
+				= pTimeScale->beatFromTick(t0);
+			const unsigned long t1
+				= pTimeScale->tickFromBeat(iBeat);
+			const unsigned long t2
+				= pTimeScale->tickFromBeat(iBeat + 1);
+			const unsigned long dt
+				= (t2 - t1) / iSnapPerBeat;
+			iPlayHead = pTimeScale->frameFromTick(
+				pTimeScale->tickSnap(t0 + dt));
+		} else {
+			// Step-forward a bar...
+			const unsigned short iBar
+				= pTimeScale->barFromFrame(iPlayHead);
+			iPlayHead = pTimeScale->frameFromBar(iBar + 1);
+		}
 	}
+
+	// Do it!...
 	m_pAudioEditor->setSyncViewHoldOn(false);
 	m_pAudioEditor->setPlayHead(iPlayHead);
+
 	pSession->setPlayHead(iPlayHead);
+
+	m_pAudioEditor->selectionChangeNotify();
 }
 
 
@@ -1404,7 +1867,8 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	if (pAudioClip)
 		pTrack = pAudioClip->track();
 	
-	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
+	m_ui.fileSaveAction->setEnabled(false);   //--TODO: m_iDirtyCount > 0
+	m_ui.fileSaveAsAction->setEnabled(false); //--
 	m_ui.fileMuteAction->setEnabled(pAudioClip != nullptr);
 	m_ui.fileMuteAction->setChecked(pAudioClip && pAudioClip->isClipMute());
 
@@ -1424,11 +1888,11 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	const bool bSelected = m_pAudioEditor->isSelected();
 	const bool bSelectable = m_pAudioEditor->isSelectable();
 	const bool bClipboard = m_pAudioEditor->isClipboard();
-	m_ui.editCutAction->setEnabled(bSelected);
-	m_ui.editCopyAction->setEnabled(bSelected);
+	m_ui.editCutAction->setEnabled(false);    //--TODO: bSelected
+	m_ui.editCopyAction->setEnabled(false);   //--
 	m_ui.editPasteAction->setEnabled(bClipboard);
 	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
-	m_ui.editDeleteAction->setEnabled(bSelected);
+	m_ui.editDeleteAction->setEnabled(false); //--TODO: bSelected
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	// Update the main window caption...
@@ -1469,15 +1933,16 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 		const bool bRolling   = (bPlaying && bRecording);
 		const bool bBumped    = (!bRolling && (iPlayHead > 0 || bPlaying));
 		const int iRolling = pMainForm->rolling();
-		m_ui.transportBackwardAction->setEnabled(bBumped);
+		const unsigned long iClipStart = m_pAudioEditor->offset();
+		const unsigned long iClipEnd = iClipStart + m_pAudioEditor->length();
+		const bool bForward   = (iPlayHead < iClipEnd);
+		const bool bBackward  = (iPlayHead > iClipStart);
+		m_ui.transportBackwardAction->setEnabled(iPlayHead > iClipStart);
 		m_ui.transportRewindAction->setEnabled(bBumped);
 		m_ui.transportFastForwardAction->setEnabled(!bRolling);
-		m_ui.transportForwardAction->setEnabled(
-			!bRolling && (iPlayHead < pSession->sessionEnd()
-				|| iPlayHead < pSession->editHead()
-				|| iPlayHead < pSession->editTail()));
-		m_ui.transportStepBackwardAction->setEnabled(bBumped);
-		m_ui.transportStepForwardAction->setEnabled(!bRolling);
+		m_ui.transportForwardAction->setEnabled(bForward);
+		m_ui.transportStepBackwardAction->setEnabled(bBumped && bBackward);
+		m_ui.transportStepForwardAction->setEnabled(!bRolling && bForward);
 		m_ui.transportLoopAction->setEnabled(
 			!bRolling && (bLooping || bSelectable));
 		m_ui.transportLoopSetAction->setEnabled(

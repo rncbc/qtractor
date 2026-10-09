@@ -67,6 +67,7 @@
     <addaction name="separator"/>
     <addaction name="fileRangeSetAction"/>
     <addaction name="fileLoopSetAction"/>
+    <addaction name="fileExportAction"/>
     <addaction name="separator"/>
     <addaction name="fileTrackMenu"/>
     <addaction name="separator"/>
@@ -115,6 +116,8 @@
     <addaction name="separator"/>
     <addaction name="viewToolTipsAction"/>
     <addaction name="separator"/>
+    <addaction name="viewFadeInOutAction"/>
+    <addaction name="separator"/>
     <addaction name="viewZoomMenu"/>
     <addaction name="viewSnapMenu"/>
     <addaction name="separator"/>
@@ -124,6 +127,15 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <widget class="QMenu" name="editSelectMenu">
+     <property name="title" >
+      <string>&amp;Select</string>
+     </property>
+     <addaction name="editSelectAllAction"/>
+     <addaction name="editSelectNoneAction"/>
+     <addaction name="separator" />
+     <addaction name="editSelectRangeAction"/>
+    </widget>
     <addaction name="editUndoAction"/>
     <addaction name="editRedoAction"/>
     <addaction name="separator"/>
@@ -133,6 +145,8 @@
     <addaction name="editPasteRepeatAction"/>
     <addaction name="separator"/>
     <addaction name="editDeleteAction"/>
+    <addaction name="separator"/>
+    <addaction name="editSelectMenu"/>
    </widget>
    <widget class="QMenu" name="transportMenu">
     <property name="title">
@@ -397,6 +411,20 @@
     <string>Set loop-range from clip extents</string>
    </property>
   </action>
+  <action name="fileExportAction">
+   <property name="text">
+    <string>&amp;Export...</string>
+   </property>
+   <property name="iconText">
+    <string>Clip Export</string>
+   </property>
+   <property name="toolTip">
+    <string>Clip export</string>
+   </property>
+   <property name="statusTip">
+    <string>Export current clip selection</string>
+   </property>
+  </action>
   <action name="fileCloseAction">
    <property name="text">
     <string>&amp;Close</string>
@@ -528,23 +556,6 @@
     <string>Ctrl+Shift+V</string>
    </property>
   </action>
-  <action name="editPasteRepeatAction">
-   <property name="text">
-    <string>Past&amp;e Repeat...</string>
-   </property>
-   <property name="iconText">
-    <string>Paste Repeat</string>
-   </property>
-   <property name="toolTip">
-    <string>Paste repeat</string>
-   </property>
-   <property name="statusTip">
-    <string>Paste/repeat local clipboard contents into the current audio clip</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+V</string>
-   </property>
-  </action>
   <action name="editDeleteAction">
    <property name="icon">
     <iconset theme="editDelete" />
@@ -597,23 +608,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
-   </property>
-  </action>
-  <action name="editSelectInvertAction">
-   <property name="text">
-    <string>&amp;Invert</string>
-   </property>
-   <property name="iconText">
-    <string>Select Invert</string>
-   </property>
-   <property name="toolTip">
-    <string>Select invert</string>
-   </property>
-   <property name="statusTip">
-    <string>Select invert</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+I</string>
    </property>
   </action>
   <action name="editSelectRangeAction">
@@ -915,6 +909,23 @@
    </property>
    <property name="statusTip">
     <string>Floating tool tips view mode</string>
+   </property>
+  </action>
+  <action name="viewFadeInOutAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Fade In/Out</string>
+   </property>
+   <property name="iconText">
+    <string>Fade in/out</string>
+   </property>
+   <property name="toolTip">
+    <string>Fade in/out</string>
+   </property>
+   <property name="statusTip">
+    <string>Fade in/out controls</string>
    </property>
   </action>
   <action name="viewRefreshAction">

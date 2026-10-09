@@ -100,11 +100,10 @@ protected:
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
 	// Draw the audio peaks (waveforms).
-	void drawAudioPeak(QPainter& painter,
-		unsigned long iFrameStart, unsigned long iFrameEnd, int w, int h);
+	void drawAudioPeak(QPainter& painter, int dx, const QRect& clipRect);
 
 	// Draw the time scale.
-	void drawContents(QPainter *pPainter, const QRect& rect);
+	void drawContents(QPainter& painter, const QRect& rect);
 
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);

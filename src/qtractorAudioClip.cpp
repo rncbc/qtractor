@@ -409,6 +409,10 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	updateHashKey();
 	insertHashKey();
 
+	// Update/reset audio clip editor if any...
+	if (m_pAudioEditorForm)
+		m_pAudioEditorForm->setup(this);
+
 	return true;
 }
 
@@ -770,7 +774,7 @@ void qtractorAudioClip::close (void)
 		}
 	}
 
-	// Sure close MIDI clip editor if any...
+	// Sure close audio clip editor if any...
 	if (m_pAudioEditorForm) {
 		m_pAudioEditorForm->close();
 		delete m_pAudioEditorForm;
@@ -851,7 +855,7 @@ void qtractorAudioClip::process_export (
 
 // Audio clip paint method.
 void qtractorAudioClip::draw (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter& painter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	qtractorSession *pSession = track()->session();
 	if (pSession == nullptr)
@@ -919,11 +923,11 @@ void qtractorAudioClip::draw (
 	// Close, draw and free the polygons...
 	QColor fg(track()->foreground());
 	fg.setAlpha(200);
-	pPainter->setPen(fg.lighter(140));
-	pPainter->setBrush(fg);
+	painter.setPen(fg.lighter(140));
+	painter.setBrush(fg);
 	for (k = 0; k < iChannels; ++k) {
-		pPainter->drawPolygon(*pPolyMax[k]);
-		pPainter->drawPolygon(*pPolyRms[k]);
+		painter.drawPolygon(*pPolyMax[k]);
+		painter.drawPolygon(*pPolyRms[k]);
 		delete pPolyRms[k];
 		delete pPolyMax[k];
 	}
@@ -1044,8 +1048,8 @@ bool qtractorAudioClip::queryEditor (void)
 		return m_pAudioEditorForm->queryClose();
 
 	// Are any dirty changes pending commit?
-	bool bQueryEditor = qtractorClip::queryEditor();
-	if (!bQueryEditor) {
+	bool bQueryEditor = true;
+	if (isDirty()) {
 		switch (qtractorAudioEditorForm::querySave(filename())) {
 		case QMessageBox::Save:	{
 			// Save/replace the clip track...
@@ -1053,7 +1057,7 @@ bool qtractorAudioClip::queryEditor (void)
 			break;
 		}
 		case QMessageBox::Discard:
-			bQueryEditor = true;
+		//	bQueryEditor = true;
 			break;
 		case QMessageBox::Cancel:
 			bQueryEditor = false;
@@ -1167,6 +1171,20 @@ bool qtractorAudioClip::loadClipElement (
 				qtractorDocument::boolFromText(eChild.text()));
 	#endif
 	#endif
+		else if (eChild.tagName() == "revision")
+			qtractorAudioClip::setRevision(eChild.text().toUShort());
+		else if (eChild.tagName() == "editor-pos") {
+			const QStringList& sxy = eChild.text().split(',');
+			setEditorPos(QPoint(sxy.at(0).toInt(), sxy.at(1).toInt()));
+		}
+		else if (eChild.tagName() == "editor-size") {
+			const QStringList& swh = eChild.text().split(',');
+			setEditorSize(QSize(swh.at(0).toInt(), swh.at(1).toInt()));
+		}
+		else if (eChild.tagName() == "editor-horizontal-zoom")
+			setEditorHorizontalZoom(eChild.text().toUShort());
+		else if (eChild.tagName() == "editor-vertical-zoom")
+			setEditorVerticalZoom(eChild.text().toUShort());
 	}
 
 	return true;
@@ -1203,6 +1221,33 @@ bool qtractorAudioClip::saveClipElement (
 				qtractorTimeStretcher::RubberBandFinerR3)), &eAudioClip);
 #endif
 #endif
+	const unsigned short iRevision = qtractorAudioClip::revision();
+	if (iRevision > 0) {
+		pDocument->saveTextElement("revision",
+			QString::number(iRevision), &eAudioClip);
+	}
+	const QPoint& posEditor = editorPos();
+	if (posEditor.x() >= 0 && posEditor.y() >= 0) {
+		pDocument->saveTextElement("editor-pos",
+			QString::number(posEditor.x()) + ',' +
+			QString::number(posEditor.y()), &eAudioClip);
+	}
+	const QSize& sizeEditor = editorSize();
+	if (!sizeEditor.isNull() && sizeEditor.isValid()) {
+		pDocument->saveTextElement("editor-size",
+			QString::number(sizeEditor.width()) + ',' +
+			QString::number(sizeEditor.height()), &eAudioClip);
+	}
+	const unsigned short iEditorHorizontalZoom = editorHorizontalZoom();
+	if (iEditorHorizontalZoom != 100) {
+		pDocument->saveTextElement("editor-horizontal-zoom",
+			QString::number(iEditorHorizontalZoom), &eAudioClip);
+	}
+	const unsigned short iEditorVerticalZoom = editorVerticalZoom();
+	if (iEditorVerticalZoom != 100) {
+		pDocument->saveTextElement("editor-vertical-zoom",
+			QString::number(iEditorVerticalZoom), &eAudioClip);
+	}
 	pElement->appendChild(eAudioClip);
 
 	return true;

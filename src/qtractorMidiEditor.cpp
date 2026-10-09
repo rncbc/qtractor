@@ -37,10 +37,8 @@
 #include "qtractorMidiToolsForm.h"
 
 #include "qtractorInstrument.h"
-#include "qtractorRubberBand.h"
-#include "qtractorTimeScale.h"
 
-#include "qtractorTimeScaleCommand.h"
+#include "qtractorTimeScale.h"
 
 #include "qtractorSession.h"
 #include "qtractorOptions.h"
@@ -761,8 +759,6 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_pEventDrag = nullptr;
 	m_bEventDragEdit = false;
 
-	m_pRubberBand = nullptr;
-
 	// Drum mode (UI).
 	m_bDrumMode = false;
 
@@ -922,6 +918,12 @@ qtractorMidiEditor::~qtractorMidiEditor (void)
 	}
 }
 
+// Current editing clip accessor.
+qtractorClip *qtractorMidiEditor::clip (void) const
+{
+	return midiClip();
+}
+
 
 // Editing sequence accessor.
 void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
@@ -947,6 +949,21 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 				setDrumMode(pTrack->isMidiDrums());
 			else
 				setDrumMode(iEditorDrumMode > 0);
+			// Set ghost-track by name...
+			const QString& sGhostTrackName
+				= m_pMidiClip->ghostTrackName();
+			qtractorSession *pSession = pTrack->session();
+			if (pSession && !sGhostTrackName.isEmpty()) {
+				for (pTrack = pSession->tracks().first();
+						pTrack; pTrack = pTrack->next()) {
+					if (pTrack->trackType() == qtractorTrack::Midi
+						&& (pTrack->trackName() == sGhostTrackName ||
+							pTrack->shortTrackName() == sGhostTrackName)) {
+						m_pGhostTrack = pTrack;
+						break;
+					}
+				}
+			}
 		}
 		// And the last but not least...
 		qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
@@ -958,21 +975,6 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 			m_last.note = (pSeq->noteMin() + pSeq->noteMax()) >> 1;
 			if (m_last.note == 0)
 				m_last.note = 0x3c; // Default to middle-C.
-		}
-		// Set ghost-track by name...
-		const QString& sGhostTrackName
-			= m_pMidiClip->ghostTrackName();
-		qtractorSession *pSession = pTrack->session();
-		if (pSession && !sGhostTrackName.isEmpty()) {
-			for (pTrack = pSession->tracks().first();
-					pTrack; pTrack = pTrack->next()) {
-				if (pTrack->trackType() == qtractorTrack::Midi
-					&& (pTrack->trackName() == sGhostTrackName ||
-						pTrack->shortTrackName() == sGhostTrackName)) {
-					m_pGhostTrack = pTrack;
-					break;
-				}
-			}
 		}
 		// Set zoom ratios...
 		const unsigned short iHorizontalZoom
@@ -2046,29 +2048,6 @@ void qtractorMidiEditor::ensureVisible (
 }
 
 
-// Make given frame position visible in view.
-void qtractorMidiEditor::ensureVisibleFrame (
-	qtractorScrollView *pScrollView, unsigned long iFrame )
-{
-	qtractorTimeScale *pTimeScale = timeScale();
-	if (pTimeScale == nullptr)
-		return;
-
-	const int x0 = pScrollView->contentsX();
-	const int y  = pScrollView->contentsY();
-	const int w  = pScrollView->viewport()->width();
-	const int w3 = w - (w >> 3);
-	int x = pTimeScale->pixelFromFrame(iFrame)
-		  - pTimeScale->pixelFromFrame(offset());
-	if (x < x0)
-		x -= w3;
-	else if (x > x0 + w3)
-		x += w3;
-	pScrollView->ensureVisible(x, y, 0, 0);
-//	pScrollView->setFocus();
-}
-
-
 // Clear all selection.
 void qtractorMidiEditor::clearSelect (void)
 {
@@ -3050,7 +3029,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 
 
 // Start drag-move-selecting...
-void qtractorMidiEditor::dragMoveStart (
+bool qtractorMidiEditor::dragMoveStart (
 	qtractorScrollView *pScrollView, const QPoint& pos,
 	const Qt::KeyboardModifiers& modifiers )
 {
@@ -3065,13 +3044,16 @@ void qtractorMidiEditor::dragMoveStart (
 		updateDragMove(pScrollView, pos + m_posStep);
 		// Fall thru...
 	case DragPaste:
-		return;
+		return true;
 	default:
 		break;
 	}
 
 	// Force null state.
 	resetDragState(pScrollView);
+
+	if (qtractorEditor::dragMoveStart(pScrollView, pos, modifiers))
+		return true;
 
 	// Remember what and where we'll be dragging/selecting...
 	m_dragState  = DragStart;
@@ -3100,14 +3082,19 @@ void qtractorMidiEditor::dragMoveStart (
 	if (m_bSendNotes && m_pEventDrag
 		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON)
 		m_pEditList->dragNoteOn(m_pEventDrag->note(), m_pEventDrag->velocity());
+
+	return true;
 }
 
 
 // Update drag-move-selection...
-void qtractorMidiEditor::dragMoveUpdate (
+bool qtractorMidiEditor::dragMoveUpdate (
 	qtractorScrollView *pScrollView, const QPoint& pos,
 	const Qt::KeyboardModifiers& modifiers )
 {
+	if (qtractorEditor::dragMoveUpdate(pScrollView, pos, modifiers))
+		return true;
+
 	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
@@ -3220,15 +3207,22 @@ void qtractorMidiEditor::dragMoveUpdate (
 		= (pScrollView->contentsHeight() - pos.y())
 		/ m_pEditList->itemHeight();
 	m_pEditList->dragNoteOn(iNote, -1);
+
+	return true;
 }
 
 
 // Commit drag-move-selection...
-void qtractorMidiEditor::dragMoveCommit (
+bool qtractorMidiEditor::dragMoveCommit (
 	qtractorScrollView *pScrollView, const QPoint& pos,
 	const Qt::KeyboardModifiers& modifiers )
 {
-	int flags = qtractorMidiEditor::SelectCommit;
+	if (qtractorEditor::dragMoveCommit(pScrollView, pos, modifiers)) {
+		resetDragState(pScrollView);
+		return true;
+	}
+
+	int flags = SelectCommit;
 
 	bool bModifier = (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 
@@ -3297,6 +3291,7 @@ void qtractorMidiEditor::dragMoveCommit (
 
 	// Force null state.
 	resetDragState(pScrollView);
+	return true;
 }
 
 
@@ -3690,14 +3685,8 @@ void qtractorMidiEditor::updateDragSelect (
 		= (rectSelect.width() > 1 || rectSelect.height() > 1);
 
 	if (bRectSelect) {
-		// Create rubber-band, if not already...
-		if (m_pRubberBand == nullptr) {
-			m_pRubberBand = new qtractorRubberBand(
-				QRubberBand::Rectangle, pScrollView->viewport());
-			m_pRubberBand->show();
-		}
 		// Rubber-band selection...
-		m_pRubberBand->setGeometry(QRect(
+		moveRubberBand(pScrollView, QRect(
 			pScrollView->contentsToViewport(rectSelect.topLeft()),
 			rectSelect.size()));
 	}
@@ -4597,8 +4586,10 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 
 // Visualize the event selection drag-move.
 void qtractorMidiEditor::paintDragState (
-	qtractorScrollView *pScrollView, QPainter *pPainter )
+	qtractorScrollView *pScrollView, QPainter& painter )
 {
+	qtractorEditor::paintDragState(pScrollView, painter);
+
 	const bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
@@ -4606,7 +4597,7 @@ void qtractorMidiEditor::paintDragState (
 	const QRect& rectSelect = (bEditView
 		? m_select.rectView() : m_select.rectEvent());
 	if (!rectSelect.isEmpty()) {
-		pPainter->fillRect(QRect(
+		painter.fillRect(QRect(
 			pScrollView->contentsToViewport(rectSelect.topLeft()),
 			rectSelect.size()), QColor(255, 0, 255, 40));
 	}
@@ -4813,17 +4804,17 @@ void qtractorMidiEditor::paintDragState (
 				rect.translate(m_posDelta.x(), 0);
 		}
 		// Paint the damn bastard...
-		pPainter->setPen(rgbaSelect);
+		painter.setPen(rgbaSelect);
 		if (pEvent == m_pEventDrag)
-			pPainter->setBrush(rgbaSelect.lighter());
+			painter.setBrush(rgbaSelect.lighter());
 		else
-			pPainter->setBrush(rgbaSelect);
+			painter.setBrush(rgbaSelect);
 		if (bEditView && m_bDrumMode) {
-			pPainter->drawPolygon(QPolygon(diamond).translated(
+			painter.drawPolygon(QPolygon(diamond).translated(
 				pScrollView->contentsToViewport(rect.center()
 				+ QPoint(1, 1)))); // ++diamond;
 		} else {
-			pPainter->drawRect(QRect(
+			painter.drawRect(QRect(
 				pScrollView->contentsToViewport(rect.topLeft()),
 				rect.size()));
 		}
@@ -4836,8 +4827,8 @@ void qtractorMidiEditor::paintDragState (
 	if (!bEditView && m_dragState == DragEventResize && !m_bEditModeDraw) {
 		QPen pen(Qt::DotLine);
 		pen.setColor(Qt::blue);
-		pPainter->setPen(pen);
-		pPainter->drawLine(
+		painter.setPen(pen);
+		painter.drawLine(
 			pScrollView->contentsToViewport(m_posDrag),
 			pScrollView->contentsToViewport(m_posDragEventResize));
 	}
@@ -4847,6 +4838,8 @@ void qtractorMidiEditor::paintDragState (
 // Reset drag/select/move state.
 void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 {
+	qtractorEditor::resetDragState(pScrollView);
+
 	if (m_bEventDragEdit) {
 		const qtractorMidiEditSelect::ItemList& items = m_select.items();
 		qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
@@ -4866,12 +4859,6 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 	m_pDragStep = nullptr;
 
 	m_posDragEventResize = QPoint(0, 0);
-
-	if (m_pRubberBand) {
-		m_pRubberBand->hide();
-		delete m_pRubberBand;
-		m_pRubberBand = nullptr;
-	}
 
 	if (pScrollView) {
 		if (m_dragState != DragNone) {
@@ -4930,14 +4917,6 @@ void qtractorMidiEditor::executeTool ( int iToolIndex )
 qtractorCommandList *qtractorMidiEditor::commands (void) const
 {
 	return (m_pMidiClip ? m_pMidiClip->commands() : nullptr);
-}
-
-
-// Command executioner...
-bool qtractorMidiEditor::execute ( qtractorCommand *pCommand )
-{
-	qtractorCommandList *pCommands = commands();
-	return (pCommands ? pCommands->exec(pCommand) : false);
 }
 
 
@@ -5170,25 +5149,10 @@ const QString& qtractorMidiEditor::control14Name ( unsigned char controller ) co
 }
 
 
-// Command execution notification slot.
-void qtractorMidiEditor::updateNotifySlot ( unsigned int flags )
-{
-	if (flags & qtractorCommand::Refresh)
-		updateContents();
-
-	if (flags & qtractorCommand::Reset)
-		emit changeNotifySignal(nullptr);
-	else
-		emit changeNotifySignal(this);
-}
-
-
 // Emit selection/changes.
 void qtractorMidiEditor::selectionChangeNotify (void)
 {
-	setSyncViewHoldOn(true);
-
-	emit selectNotifySignal(this);
+	qtractorEditor::selectionChangeNotify();
 
 	m_pThumbView->update();
 }
@@ -5607,36 +5571,6 @@ void qtractorMidiEditor::focusOut ( qtractorScrollView *pScrollView )
 {
 	if (m_dragState == DragStep && m_pDragStep == pScrollView)
 		resetDragState(pScrollView);
-}
-
-
-// Show selection tooltip...
-void qtractorMidiEditor::showToolTip (
-	qtractorScrollView *pScrollView, const QRect& rect ) const
-{
-	if (pScrollView == nullptr)
-		return;
-
-	if (!isToolTips())
-		return;
-
-	qtractorTimeScale *pTimeScale = timeScale();
-	if (pTimeScale == nullptr)
-		return;
-
-	const unsigned long iOffset = offset();
-	const unsigned long iFrameStart = frameSnap(
-		iOffset + pTimeScale->frameFromPixel(qMax(0, rect.left())));
-	const unsigned long iFrameEnd = frameSnap(
-		iOffset + pTimeScale->frameFromPixel(qMax(0, rect.right())));
-
-	QToolTip::showText(
-		QCursor::pos(),
-		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
-			.arg(pTimeScale->textFromFrame(iFrameStart))
-			.arg(pTimeScale->textFromFrame(iFrameEnd))
-			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
-		pScrollView->viewport());
 }
 
 

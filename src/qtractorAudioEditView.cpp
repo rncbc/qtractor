@@ -59,7 +59,10 @@ qtractorAudioEditViewScale::qtractorAudioEditViewScale (
 {
 	m_pEditor = pEditor;
 
-	QWidget::setMinimumWidth(24);
+	QWidget::setMinimumWidth(32);
+
+	QWidget::setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+
 //	QWidget::setBackgroundRole(QPalette::Mid);
 
 	const QFont& font = QWidget::font();
@@ -197,10 +200,10 @@ void qtractorAudioEditView::updateContentsWidth ( int iContentsWidth )
 			= m_pEditor->length();
 		const int x0
 			= pTimeScale->pixelFromFrame(f0);
-		const int w0
+		const int w1
 			= pTimeScale->pixelFromFrame(f0 + f1) - x0;
-		if (iContentsWidth < w0)
-			iContentsWidth = w0;
+		if (iContentsWidth < w1)
+			iContentsWidth = w1;
 		iContentsWidth += pTimeScale->pixelFromBeat(pTimeScale->beatsPerBar());
 		if (iContentsWidth  < qtractorScrollView::width())
 			iContentsWidth += qtractorScrollView::width();
@@ -391,12 +394,6 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 		pMarker = pMarker->next();
 	}
 
-	//
-	// Draw the clip(s) contents...
-	//
-	const unsigned long iFrameStart = pTimeScale->frameFromPixel(dx);
-	const unsigned long iFrameEnd = pTimeScale->frameFromPixel(dx + w);
-
 	// Draw the zero-lines...
 	int y0 = (hn >> 1) + 2;
 	for (unsigned short i = 0; i < iChannels; ++i) {
@@ -407,11 +404,28 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 		y0 += hn - 4;
 	}
 
-	painter.setRenderHint(QPainter::Antialiasing, true);
+	//
+	// Draw the clip(s) contents...
+	//
 
-	drawAudioPeak(painter, iFrameStart, iFrameEnd, w, h);
+	const int w1 = pTimeScale->pixelFromFrame(f0 + m_pEditor->length()) - dx;
+	const int w2 = qMin(w, w1);
+	if (w2 > 0) {
+		const QRect clipRect(0, 0, w2, h);
+		painter.setRenderHint(QPainter::Antialiasing, true);
+		drawAudioPeak(painter, dx, clipRect);
+		m_pEditor->drawFadeInOut(painter, dx, clipRect);
+		painter.setRenderHint(QPainter::Antialiasing, false);
+	}
 
-	painter.setRenderHint(QPainter::Antialiasing, false);
+	// Show that we may have clip limits...
+	if (m_pEditor->length() > 0) {
+		int x1 = pTimeScale->pixelFromFrame(m_pEditor->length()) - cx;
+		if (x1 < 0)
+			x1 = 0;
+		if (x1 < w)
+			painter.fillRect(x1, 0, w - x1, h, QColor(0, 0, 0, 80));
+	}
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
@@ -456,25 +470,19 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 			painter.drawLine(x, 0, x, h);
 		}
 	}
-
-	// Show that we may have clip limits...
-	if (m_pEditor->length() > 0) {
-		int x1 = pTimeScale->pixelFromFrame(m_pEditor->length()) - cx;
-		if (x1 < 0)
-			x1 = 0;
-		if (x1 < w)
-			painter.fillRect(x1, 0, w - x1, h, QColor(0, 0, 0, 120));
-	}
-
 }
 
 
 // Draw the audio peaks (waveforms).
-void qtractorAudioEditView::drawAudioPeak ( QPainter& painter,
-	unsigned long iFrameStart, unsigned long iFrameEnd, int w, int h )
+void qtractorAudioEditView::drawAudioPeak (
+	QPainter& painter, int dx, const QRect& clipRect )
 {
 	qtractorAudioClip *pAudioClip = m_pEditor->audioClip();
 	if (pAudioClip == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	if (pTimeScale == nullptr)
 		return;
 
 	qtractorAudioClip::FractGain *pFractGains = pAudioClip->fractGains();
@@ -484,6 +492,12 @@ void qtractorAudioEditView::drawAudioPeak ( QPainter& painter,
 	qtractorAudioPeak *pPeak = m_pEditor->audioPeak();
 	if (pPeak == nullptr)
 		return;
+
+	const int w = qtractorScrollView::viewport()->width();
+	const int h = qtractorScrollView::viewport()->height();
+
+	const unsigned long iFrameStart = pTimeScale->frameFromPixel(dx);
+	const unsigned long iFrameEnd = pTimeScale->frameFromPixel(dx + w);
 
 	const unsigned long f0 = m_pEditor->offset();
 	unsigned long iFrameOffset = iFrameStart;
@@ -500,7 +514,8 @@ void qtractorAudioEditView::drawAudioPeak ( QPainter& painter,
 	if (pPeakFrames == nullptr)
 		return;
 
-	const unsigned int iPeakLength = pPeak->peakLength();
+	const int w2 = clipRect.width();
+	const unsigned int iPeakLength = (pPeak->peakLength() * w2) / w;
 	if (iPeakLength < 1)
 		return;
 
@@ -524,7 +539,7 @@ void qtractorAudioEditView::drawAudioPeak ( QPainter& painter,
 	// Build polygonal vertexes...
 	const int n2 = int(iPeakLength);
 	for (int n = 0; n < n2; ++n) {
-		x = (n * w) / n2;
+		x = (n * w2) / n2;
 		y = h2;
 		for (k = 0; k < iChannels; ++k) {
 			const qtractorAudioClip::FractGain& fractGain = pFractGains[k];
@@ -541,9 +556,9 @@ void qtractorAudioEditView::drawAudioPeak ( QPainter& painter,
 	}
 
 	// Close, draw and free the polygons...
-	QColor fg(pAudioClip->track()->foreground());
+	QColor fg(m_pEditor->foreground().lighter(120));
 	fg.setAlpha(200);
-	painter.setPen(fg.lighter(140));
+	painter.setPen(fg.lighter(120));
 	painter.setBrush(fg);
 	for (k = 0; k < iChannels; ++k) {
 		painter.drawPolygon(*pPolyMax[k]);
@@ -559,40 +574,40 @@ void qtractorAudioEditView::drawAudioPeak ( QPainter& painter,
 
 
 // Draw the time scale.
-void qtractorAudioEditView::drawContents ( QPainter *pPainter, const QRect& rect )
+void qtractorAudioEditView::drawContents ( QPainter& painter, const QRect& rect )
 {
-	pPainter->drawPixmap(rect, m_pixmap, rect);
+	painter.drawPixmap(rect, m_pixmap, rect);
 
 #ifdef CONFIG_GRADIENT
 	// Draw canvas edge-border shadows...
 	const int ws = 22;
 	const int xs = qtractorScrollView::viewport()->width() - ws;
 	if (rect.left() < ws)
-		pPainter->fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
+		painter.fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
 	if (rect.right() > xs)
-		pPainter->fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
+		painter.fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
 #endif
-	m_pEditor->paintDragState(this, pPainter);
+	m_pEditor->paintDragState(this, painter);
 
 	// Draw special play/edit-head/tail headers...
 	const int cx = qtractorScrollView::contentsX();
 
 	int x = m_pEditor->editHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::blue);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::blue);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	x = m_pEditor->editTailX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::blue);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::blue);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	x = m_pEditor->playHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::red);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::red);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 }
 
@@ -662,6 +677,9 @@ void qtractorAudioEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	default:
 		return;
 	}
+
+	// Remember what and where we'll be dragging/selecting...
+	m_pEditor->dragMoveStart(this, pos, pMouseEvent->modifiers());
 }
 
 
@@ -669,7 +687,13 @@ void qtractorAudioEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 void qtractorAudioEditView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse move...
-	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+//	qtractorScrollView::mouseMoveEvent(pMouseEvent);
+
+	// Are we already moving/dragging something?
+	const QPoint& pos
+		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
+
+	m_pEditor->dragMoveUpdate(this, pos, pMouseEvent->modifiers());
 }
 
 
@@ -677,7 +701,13 @@ void qtractorAudioEditView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 void qtractorAudioEditView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	// Process mouse release...
-	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+//	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
+
+	// Were we moving/dragging something?
+	const QPoint& pos
+		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
+
+	m_pEditor->dragMoveCommit(this, pos, pMouseEvent->modifiers());
 }
 
 

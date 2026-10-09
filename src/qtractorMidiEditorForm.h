@@ -183,9 +183,13 @@ protected slots:
 	void viewSnapZebra(bool bOn);
 	void viewSnapGrid(bool bOn);
 	void viewToolTips(bool bOn);
+	void viewFadeInOut(bool bOn);
 	void viewRefresh();
 	void viewPreview(bool bOn);
 	void viewFollow(bool bOn);
+
+	void transportBackward();
+	void transportForward();
 
 	void transportStepBackward();
 	void transportStepForward();

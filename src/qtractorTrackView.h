@@ -276,7 +276,7 @@ protected:
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
 	// Draw the track view
-	void drawContents(QPainter *pPainter, const QRect& rect);
+	void drawContents(QPainter& painter, const QRect& rect);
 
 	// Track view state info.
 	struct TrackViewInfo

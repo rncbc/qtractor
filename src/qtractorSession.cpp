@@ -1290,10 +1290,18 @@ void qtractorSession::releaseFilePath ( const QString& sFilename )
 QString qtractorSession::createFilePath (
 	const QString& sBaseName, const QString& sExt, bool bAcquire )
 {
-	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
-	if (!sFilename.isEmpty())
-		sFilename += '-';
-	sFilename += qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
+	QString sBaseNameEx = qtractorSession::sanitize(m_props.sessionName);
+	if (!sBaseNameEx.isEmpty())
+		sBaseNameEx += '-';
+	sBaseNameEx += sBaseName;
+
+	return createFilePathEx(sBaseNameEx, sExt, bAcquire);
+}
+
+QString qtractorSession::createFilePathEx (
+	const QString& sBaseNameEx, const QString& sExt, bool bAcquire )
+{
+	QString sFilename = qtractorSession::sanitize(sBaseNameEx) + "-%1." + sExt;
 
 	// If there are any existing, similar filenames,
 	// take the version suffix from the most recent...

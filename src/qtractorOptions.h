@@ -321,6 +321,7 @@ public:
 	bool bAudioSnapZebra;
 	bool bAudioSnapGrid;
 	bool bAudioToolTips;
+	bool bAudioFadeInOut;
 
 	// MIDI Editor options...
 	bool bMidiMenubar;
@@ -349,6 +350,7 @@ public:
 	bool bMidiSnapZebra;
 	bool bMidiSnapGrid;
 	bool bMidiToolTips;
+	bool bMidiFadeInOut;
 	int  iMidiViewType;
 	int  iMidiEventType;
 	int  iMidiEventParam;

@@ -153,6 +153,8 @@
     <addaction name="separator"/>
     <addaction name="viewToolTipsAction"/>
     <addaction name="separator"/>
+    <addaction name="viewFadeInOutAction"/>
+    <addaction name="separator"/>
     <addaction name="viewNoteNamesAction"/>
     <addaction name="viewNoteDurationAction"/>
     <addaction name="viewNoteColorAction"/>
@@ -1506,6 +1508,23 @@
    </property>
    <property name="statusTip">
     <string>Floating tool tips view mode</string>
+   </property>
+  </action>
+  <action name="viewFadeInOutAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Fade In/Out</string>
+   </property>
+   <property name="iconText">
+    <string>Fade in/out</string>
+   </property>
+   <property name="toolTip">
+    <string>Fade in/out</string>
+   </property>
+   <property name="statusTip">
+    <string>Fade in/out controls</string>
    </property>
   </action>
   <action name="viewRefreshAction">

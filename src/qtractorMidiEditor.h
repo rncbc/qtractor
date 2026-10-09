@@ -34,12 +34,6 @@
 
 
 // Forward declarations.
-class qtractorScrollView;
-class qtractorRubberBand;
-
-class qtractorCommandList;
-class qtractorCommand;
-
 class qtractorMidiEditList;
 class qtractorMidiEditTime;
 class qtractorMidiEditView;
@@ -72,6 +66,9 @@ public:
 	qtractorMidiEditor(QWidget *pParent);
 	// Destructor.
 	~qtractorMidiEditor();
+
+	// Current editing clip accessor.
+	qtractorClip *clip() const;
 
 	// MIDI clip sequence accessors.
 	void setMidiClip(qtractorMidiClip *pMidiClip);
@@ -188,7 +185,8 @@ public:
 	void cutClipboard();
 	void copyClipboard();
 	void pasteClipboard(
-		unsigned short iPasteCount = 1, unsigned long iPastePeriod = 0);
+		unsigned short iPasteCount = 1,
+		unsigned long iPastePeriod = 0);
 
 	// Retrieve current paste period.
 	// (as from current clipboard width)
@@ -252,15 +250,15 @@ public:
 		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Start drag-move-selecting...
-	void dragMoveStart(qtractorScrollView *pScrollView,
+	bool dragMoveStart(qtractorScrollView *pScrollView,
 		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Update drag-move-selection...
-	void dragMoveUpdate(qtractorScrollView *pScrollView,
+	bool dragMoveUpdate(qtractorScrollView *pScrollView,
 		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Commit drag-move-selection...
-	void dragMoveCommit(qtractorScrollView *pScrollView,
+	bool dragMoveCommit(qtractorScrollView *pScrollView,
 		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Trap for help/tool-tip and leave events.
@@ -278,18 +276,12 @@ public:
 	// Lost focus handler.
 	void focusOut(qtractorScrollView *pScrollView);
 
-	// Show selection tooltip...
-	void showToolTip(qtractorScrollView *pScrollView, const QRect& rect) const;
-
 	// MIDI event tool tip helper.
 	QString eventToolTip(qtractorMidiEvent *pEvent,
 		long iTimeDelta = 0, int iNoteDelta = 0, int iValueDelta = 0) const;
 
-	// Make given frame position visible in view.
-	void ensureVisibleFrame(qtractorScrollView *pScrollView, unsigned long iFrame);
-
 	// Visualize the event selection drag-move.
-	void paintDragState(qtractorScrollView *pScrollView, QPainter *pPainter);
+	void paintDragState(qtractorScrollView *pScrollView, QPainter& painter);
 
 	// Reset drag/select/move state.
 	void resetDragState(qtractorScrollView *pScrollView);
@@ -311,9 +303,6 @@ public:
 
 	// Command list accessor.
 	qtractorCommandList *commands() const;
-
-	// Command executioner...
-	bool execute(qtractorCommand *pCommand);
 
 	// Note name map accessor.
 	const QString noteName(unsigned char note) const;
@@ -386,6 +375,8 @@ protected:
 	// Zoom centering context.
 	struct ZoomCenter
 	{
+		ZoomCenter() : x(0), y(0), item(0), frame(0) {}
+
 		int x, y, item;
 		unsigned long frame;
 	};
@@ -507,14 +498,7 @@ protected slots:
 	void horizontalSplitterSlot();
 	void verticalSplitterSlot();
 
-	// Command execution notification slot.
-	void updateNotifySlot(unsigned int flags);
-
 signals:
-
-	// Emitted on selection/changes.
-	void selectNotifySignal(QObject *);
-	void changeNotifySignal(QObject *);
 
 	// Send note event signale.
 	void sendNoteSignal(int, int, bool);
@@ -587,9 +571,6 @@ private:
 
 	// Drag(draw) event-value position.
 	QPoint m_posDragEventResize;
-
-	// Viewport rubber-banding stuff.
-	qtractorRubberBand *m_pRubberBand;
 
 	// Drum mode (UI).
 	bool m_bDrumMode;

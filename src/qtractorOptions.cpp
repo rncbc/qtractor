@@ -381,6 +381,7 @@ void qtractorOptions::loadOptions (void)
 	bAudioSnapZebra   = m_settings.value("/SnapZebra", false).toBool();
 	bAudioSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
 	bAudioToolTips    = m_settings.value("/ToolTips", true).toBool();
+	bAudioFadeInOut   = m_settings.value("/FadeInOut", true).toBool();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // AudioEditor
@@ -415,6 +416,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiSnapZebra   = m_settings.value("/SnapZebra", false).toBool();
 	bMidiSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
 	bMidiToolTips    = m_settings.value("/ToolTips", true).toBool();
+	bMidiFadeInOut   = m_settings.value("/FadeInOut", false).toBool();
 	iMidiViewType    = m_settings.value("/ViewType", 0).toInt();
 	iMidiEventType   = m_settings.value("/EventType", 0).toInt();
 	iMidiEventParam  = m_settings.value("/EventParam", 0).toInt();
@@ -731,6 +733,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/SnapZebra", bAudioSnapZebra);
 	m_settings.setValue("/SnapGrid", bAudioSnapGrid);
 	m_settings.setValue("/ToolTips", bAudioToolTips);
+	m_settings.setValue("/FadeInOut", bAudioFadeInOut);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // MidiEditor
@@ -765,6 +768,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/SnapZebra", bMidiSnapZebra);
 	m_settings.setValue("/SnapGrid", bMidiSnapGrid);
 	m_settings.setValue("/ToolTips", bMidiToolTips);
+	m_settings.setValue("/FadeInOut", bMidiFadeInOut);
 	m_settings.setValue("/ViewType", iMidiViewType);
 	m_settings.setValue("/EventType", iMidiEventType);
 	m_settings.setValue("/EventParam", iMidiEventParam);

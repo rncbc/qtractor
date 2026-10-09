@@ -29,18 +29,13 @@
 
 
 // Forward declarations.
-class qtractorScrollView;
-class qtractorRubberBand;
-
-class qtractorCommandList;
-class qtractorCommand;
-
 class qtractorAudioEditTime;
 class qtractorAudioEditView;
 class qtractorAudioEditViewScale;
 
 class qtractorAudioClip;
 class qtractorAudioPeak;
+class qtractorAudioPeakFactory;
 
 class qtractorTrack;
 
@@ -63,6 +58,9 @@ public:
 	qtractorAudioEditor(QWidget *pParent);
 	// Destructor.
 	~qtractorAudioEditor();
+
+	// Current editing clip accessor.
+	qtractorClip *clip() const;
 
 	// Audio clip sequence accessors.
 	void setAudioClip(qtractorAudioClip *pAudioClip);
@@ -93,7 +91,8 @@ public:
 	void redoCommand();
 
 	// Whether there's any items currently selected.
-	bool isSelected() const;
+	bool isSelected() const
+		{ return (m_rectSelect.width() > 1); }
 
 	// Whether there's any items on the clipboard.
 	static bool isClipboard();
@@ -102,7 +101,8 @@ public:
 	void cutClipboard();
 	void copyClipboard();
 	void pasteClipboard(
-		unsigned short iPasteCount = 1, unsigned long iPastePeriod = 0);
+		unsigned short iPasteCount = 1,
+		unsigned long iPastePeriod = 0);
 
 	// Retrieve current paste period.
 	// (as from current clipboard width)
@@ -128,7 +128,19 @@ public:
 
 	// Update/sync integral contents.
 	void updateContents();
-	
+
+	// Start drag-move-selecting...
+	bool dragMoveStart(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
+	// Update drag-move-selection...
+	bool dragMoveUpdate(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
+	// Commit drag-move-selection...
+	bool dragMoveCommit(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
 	// Keyboard event handler (common).
 	bool keyPress(qtractorScrollView *pScrollView,
 		int iKey, const Qt::KeyboardModifiers& modifiers);
@@ -140,6 +152,8 @@ public:
 	// Zoom centering context.
 	struct ZoomCenter
 	{
+		ZoomCenter() : x(0), y(0), frame(0) {}
+
 		int x, y;
 		unsigned long frame;
 	};
@@ -148,23 +162,22 @@ public:
 	void zoomCenterPre(ZoomCenter& zc) const;
 	void zoomCenterPost(const ZoomCenter& zc);
 
-	// Make given frame position visible in view.
-	void ensureVisibleFrame(qtractorScrollView *pScrollView, unsigned long iFrame);
-
 	// Visualize the event selection drag-move.
-	void paintDragState(qtractorScrollView *pScrollView, QPainter *pPainter);
+	void paintDragState(qtractorScrollView *pScrollView, QPainter& painter);
 
 	// Reset drag/select/move state.
 	void resetDragState(qtractorScrollView *pScrollView);
 
+	// Audio-peak factory accessor (singleton)
+	static qtractorAudioPeakFactory *audioPeakFactory()
+		{ return g_pAudioPeakFactory; }
+
 	// Command list accessor.
 	qtractorCommandList *commands() const;
 
-	// Command executioner...
-	bool execute(qtractorCommand *pCommand);
-
-	// Redirect selection notification.
-	void selectionChangeNotify();
+	// Current selection sccessors (in frames)
+	unsigned long selectStart() const;
+	unsigned long selectEnd() const;
 
 public slots:
 
@@ -178,9 +191,6 @@ protected:
 	// Audio-peak live-cycle methods.
 	void createAudioPeak();
 	void deleteAudioPeak();
-
-	// Ensure point visibility depending on view.
-	void ensureVisible(qtractorScrollView *pScrollView, const QPoint& pos);
 
 	// Selection flags
 	enum { 
@@ -203,8 +213,10 @@ protected:
 	// Vertical line position drawing.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView);
 
-	// Specialized drag/time-scale (draft)...
-	struct DragTimeScale;
+	// Selection resize drag-move methods.
+	bool dragResizeStart(qtractorScrollView *pScrollView, const QPoint& pos);
+	void dragResizeUpdate(qtractorScrollView *pScrollView, const QPoint& pos);
+	void dragResizeCommit(qtractorScrollView *pScrollView, const QPoint& pos);
 
 protected slots:
 
@@ -218,14 +230,8 @@ protected slots:
 	void verticalZoomOutSlot();
 	void verticalZoomResetSlot();
 
-	// Command execution notification slot.
-	void updateNotifySlot(unsigned int flags);
-
-signals:
-
-	// Emitted on selection/changes.
-	void selectNotifySignal(QObject *);
-	void changeNotifySignal(QObject *);
+	// Audio peak ready slot.
+	void audioPeakEventSlot();
 
 private:
 
@@ -233,15 +239,30 @@ private:
 	qtractorAudioClip *m_pAudioClip;
 	qtractorAudioPeak *m_pAudioPeak;
 
-	// The main widget splitters.
-	QSplitter *m_pHSplitter;
-	QSplitter *m_pVSplitter;
-
 	// The main child widgets.
 	qtractorAudioEditTime *m_pEditTime;
 	qtractorAudioEditView *m_pEditView;
 	qtractorAudioEditViewScale *m_pEditViewScale;
 	QFrame *m_pEditViewHeader;
+
+	// Common drag state.
+	enum DragState {
+		DragNone = 0,
+		DragStart,
+		DragSelect,
+		DragResizeLeft,
+		DragResizeRight
+	} m_dragState, m_dragCursor;
+
+	// The current selecting/dragging stuff.
+	QPoint m_posDrag;
+	QRect m_rectDrag;
+
+	// Current selection (in pixels).
+	QRect m_rectSelect;
+
+	static qtractorAudioPeakFactory *g_pAudioPeakFactory;
+	static unsigned int              g_iAudioPeakRefCount;
 };
 
 

@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -281,10 +281,10 @@ void qtractorTrackTime::resizeEvent ( QResizeEvent *pResizeEvent )
 
 
 // Draw the time scale.
-void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
+void qtractorTrackTime::drawContents ( QPainter& painter, const QRect& rect )
 {
 	// Render the famous pixmap region...
-	pPainter->drawPixmap(rect, m_pixmap, rect);
+	painter.drawPixmap(rect, m_pixmap, rect);
 
 	// Headers a-head...
 	const int cx = qtractorScrollView::contentsX();
@@ -301,9 +301,9 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 			x + d, h - d,
 			x, h,
 			x, h - d);
-		pPainter->setPen(Qt::blue);
-		pPainter->setBrush(Qt::blue);
-		pPainter->drawPolygon(polyg);
+		painter.setPen(Qt::blue);
+		painter.setBrush(Qt::blue);
+		painter.drawPolygon(polyg);
 	}
 
 	// Draw edit-tail line...
@@ -314,9 +314,9 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 			x, h - d,
 			x, h,
 			x - d, h - d);
-		pPainter->setPen(Qt::blue);
-		pPainter->setBrush(Qt::blue);
-		pPainter->drawPolygon(polyg);
+		painter.setPen(Qt::blue);
+		painter.setBrush(Qt::blue);
+		painter.drawPolygon(polyg);
 	}
 
 	// Draw special play-head header...
@@ -327,9 +327,9 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 			x - d, h - d,
 			x, h,
 			x + d, h - d);
-		pPainter->setPen(Qt::red);
-		pPainter->setBrush(Qt::red);
-		pPainter->drawPolygon(polyg);
+		painter.setPen(Qt::red);
+		painter.setBrush(Qt::red);
+		painter.drawPolygon(polyg);
 	}
 }
 

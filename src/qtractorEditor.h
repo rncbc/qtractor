@@ -27,6 +27,14 @@
 
 // Forward decls.
 class qtractorTimeScale;
+class qtractorScrollView;
+
+class qtractorClip;
+
+class qtractorCommandList;
+class qtractorCommand;
+
+class qtractorRubberBand;
 
 
 //----------------------------------------------------------------------------
@@ -34,12 +42,17 @@ class qtractorTimeScale;
 
 class qtractorEditor : public QSplitter
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
 	qtractorEditor(QWidget *pParent);
 	// Destructor.
-	~qtractorEditor();
+	virtual ~qtractorEditor();
+
+	// Current editing clip accessor.
+	virtual qtractorClip *clip() const = 0;
 
 	// Event foreground (outline) color.
 	void setForeground(const QColor& fore);
@@ -57,9 +70,13 @@ public:
 	void setSnapGrid(bool bSnapGrid);
 	bool isSnapGrid() const;
 
-	// Floating tool-tips mode.
+	// Floating tool-tips view mode.
 	void setToolTips(bool bToolTips);
 	bool isToolTips() const;
+
+	// Fade in/out controls and view mode.
+	void setFadeInOut(bool bFadeInOut);
+	bool isFadeInOut() const;
 
 	// Zoom (view) modes.
 	enum { ZoomNone = 0, ZoomHorizontal = 1, ZoomVertical = 2, ZoomAll = 3 };
@@ -111,8 +128,39 @@ public:
 	unsigned int pixelSnap(unsigned int x) const;
 	unsigned long frameSnap(unsigned long iFrame) const;
 
+	// Show selection tooltip...
+	void showToolTip(
+		qtractorScrollView *pScrollView, const QRect& rect) const;
+
+	// Make given frame position visible in view.
+	void ensureVisibleFrame(
+		qtractorScrollView *pScrollView, unsigned long iFrame);
+
 	// Update time-scale to master session.
 	virtual void updateTimeScale() = 0;
+
+	// Command list accessor.
+	virtual qtractorCommandList *commands() const = 0;
+
+	// Command executioner...
+	bool execute(qtractorCommand *pCommand);
+
+	// Draw the fade in/out slopes and handles.
+	void drawFadeInOut(QPainter& painter, int dx, const QRect& clipRect);
+
+	// Redirect selection notification.
+	virtual void selectionChangeNotify();
+
+signals:
+
+	// Emitted on selection/changes.
+	void selectNotifySignal(QObject *);
+	void changeNotifySignal(QObject *);
+
+protected slots:
+
+	// Command execution notification slot.
+	void updateNotifySlot(unsigned int flags);
 
 protected:
 
@@ -128,6 +176,45 @@ protected:
 
 	// Vertical line position drawing.
 	virtual void drawPositionX(int& iPositionX, int x, bool bSyncView) = 0;
+
+	// Update/sync integral contents.
+	virtual void updateContents() = 0;
+
+	// Start drag-move-selecting...
+	virtual bool dragMoveStart(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
+	// Update drag-move-selection...
+	virtual bool dragMoveUpdate(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
+	// Commit drag-move-selection...
+	virtual bool dragMoveCommit(qtractorScrollView *pScrollView,
+		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
+
+	// Visualize the current drag/select/move state.
+	virtual void paintDragState(
+		qtractorScrollView *pScrollView, QPainter& painter);
+
+	// Reset drag/select/move state.
+	virtual void resetDragState(
+		qtractorScrollView *pScrollView);
+
+	// Check whether we're up to drag a clip fade-in/out or resize handles.
+	bool dragFadeInOutStart(
+		qtractorScrollView *pScrollView, const QPoint& pos);
+
+	// Clip fade-in/out handle drag-moving parts.
+	void dragFadeInOutMove(
+		qtractorScrollView *pScrolView, const QPoint& pos);
+
+	// Clip fade-in/out handle settler.
+	void dragFadeInOutDrop(
+		qtractorScrollView *pScrollView, const QPoint& pos);
+
+	// Show and move rubber-band item.
+	void moveRubberBand(
+		qtractorScrollView *pScrollView, const QRect& rectDrag, int thick = 1);
 
 	// Temporary sync-view/follow-playhead hold state.
 	int m_iSyncViewHold;
@@ -152,8 +239,11 @@ private:
 	bool m_bSnapZebra;
 	bool m_bSnapGrid;
 
-	// Floating tool-tips mode.
+	// Floating tool-tips view mode.
 	bool m_bToolTips;
+
+	// Fade in/out control and view mode.
+	bool m_bFadeInOut;
 
 	// Local edit-head/tail positioning.
 	int  m_iEditHeadX;
@@ -165,6 +255,23 @@ private:
 
 	// Temporary sync-view/follow-playhead hold state.
 	bool m_bSyncViewHold;
+
+	// Common fade-in/out drag state.
+	enum DragFadeState {
+		DragFadeNone = 0,
+		DragFadeStart,
+		DragFadeIn,
+		DragFadeOut
+	} m_dragFadeState, m_dragFadeCursor;
+
+	// The current fade-in/out dragging stuff.
+	QPoint m_posFadeStart;
+	QRect  m_rectFadeClip;
+	QRect  m_rectFadeHandle;
+	int    m_iDragFadeX;
+
+	// Viewport rubber-banding stuff.
+	qtractorRubberBand *m_pRubberBand;
 };
 
 

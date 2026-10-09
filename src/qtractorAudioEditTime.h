@@ -60,7 +60,7 @@ protected:
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
 	// Draw the time scale.
-	void drawContents(QPainter *pPainter, const QRect& rect);
+	void drawContents(QPainter& painter, const QRect& rect);
 
 	// Check if some position header is to be dragged...
 	bool dragHeadStart(const QPoint& pos);

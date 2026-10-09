@@ -1033,7 +1033,7 @@ void qtractorMidiClip::process_export (
 
 // MIDI clip paint method.
 void qtractorMidiClip::draw (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter& painter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
@@ -1069,8 +1069,8 @@ void qtractorMidiClip::draw (
 	const unsigned long iTimeEnd = pNode->tickFromPixel(cx + cw);
 
 	const QColor& fg = pTrack->foreground();
-	pPainter->setPen(fg);
-	pPainter->setBrush(fg.lighter(120));
+	painter.setPen(fg);
+	painter.setBrush(fg.lighter(120));
 
 	const bool bClipRecord = (pTrack->clipRecord() == this);
 	const int h1 = clipRect.height() - 2;
@@ -1084,7 +1084,7 @@ void qtractorMidiClip::draw (
 		diamond.append(QPoint(-h4, h4));
 		diamond.append(QPoint(  0, h2 + 2));
 		diamond.append(QPoint( h4, h4));
-		pPainter->setRenderHint(QPainter::Antialiasing, true);
+		painter.setRenderHint(QPainter::Antialiasing, true);
 	}
 
 	qtractorMidiEvent *pEvent
@@ -1109,16 +1109,16 @@ void qtractorMidiClip::draw (
 					const QPolygon& polyg
 						= QPolygon(diamond).translated(x, y);
 					if (h2 > 3)
-						pPainter->drawPolygon(polyg.translated(1, 0)); // shadow
-					pPainter->drawPolygon(polyg); // diamond
+						painter.drawPolygon(polyg.translated(1, 0)); // shadow
+					painter.drawPolygon(polyg); // diamond
 				} else {
 					int w = (t1 < t2 || !bClipRecord
 						? clipRect.x() + pNode->pixelFromTick(t2) - cx
 						: clipRect.right()) - x; // Pending note-off? (while recording)
 					if (w < 3) w = 3;
-					pPainter->fillRect(x, y, w, h2, fg);
+					painter.fillRect(x, y, w, h2, fg);
 					if (w > 4 && h2 > 3)
-						pPainter->fillRect(x + 1, y + 1, w - 4, h2 - 3, fg.lighter(140));
+						painter.fillRect(x + 1, y + 1, w - 4, h2 - 3, fg.lighter(140));
 				}
 			}
 		}
@@ -1126,7 +1126,7 @@ void qtractorMidiClip::draw (
 	}
 
 	if (bDrumMode)
-		pPainter->setRenderHint(QPainter::Antialiasing, false);
+		painter.setRenderHint(QPainter::Antialiasing, false);
 }
 
 
@@ -1261,8 +1261,8 @@ bool qtractorMidiClip::queryEditor (void)
 		return m_pMidiEditorForm->queryClose();
 
 	// Are any dirty changes pending commit?
-	bool bQueryEditor = qtractorClip::queryEditor();
-	if (!bQueryEditor) {
+	bool bQueryEditor = true;
+	if (isDirty()) {
 		switch (qtractorMidiEditorForm::querySave(filename())) {
 		case QMessageBox::Save:	{
 			// Save/replace the clip track...
@@ -1270,7 +1270,7 @@ bool qtractorMidiClip::queryEditor (void)
 			break;
 		}
 		case QMessageBox::Discard:
-			bQueryEditor = true;
+		//	bQueryEditor = true;
 			break;
 		case QMessageBox::Cancel:
 			bQueryEditor = false;
@@ -1420,8 +1420,11 @@ bool qtractorMidiClip::saveClipElement (
 		qtractorMidiClip::relativeFilename(pDocument), &eMidiClip);
 	pDocument->saveTextElement("track-channel",
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
-	pDocument->saveTextElement("revision",
-		QString::number(qtractorMidiClip::revision()), &eMidiClip);
+	const unsigned short iRevision = qtractorMidiClip::revision();
+	if (iRevision > 0) {
+		pDocument->saveTextElement("revision",
+			QString::number(iRevision), &eMidiClip);
+	}
 	const QPoint& posEditor = editorPos();
 	if (posEditor.x() >= 0 && posEditor.y() >= 0) {
 		pDocument->saveTextElement("editor-pos",
