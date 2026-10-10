@@ -1200,8 +1200,8 @@ void qtractorVst3PluginHost::clear (void)
 	::memset(&m_processContext, 0, sizeof(Vst::ProcessContext));
 
 	// Clean up any leaked data-exchange queues.
-	for (DataExchangeQueue *queue : m_dataExchangeQueues) {
-		for (DataExchangeQueue::Block& block : queue->blocks)
+	foreach (DataExchangeQueue *queue, m_dataExchangeQueues) {
+		foreach (const DataExchangeQueue::Block& block, queue->blocks)
 			::free(block.data);
 		delete queue;
 	}
@@ -2207,16 +2207,16 @@ public:
 	#endif
 		if (!m_restarting) {
 			m_restarting = true;
-			if (flags & Vst::kReloadComponent)
+			if (flags & Vst::kReloadComponent) {
 				m_pPlugin->impl()->deactivate();
-			m_pPlugin->resetParamValues(true);
-			QByteArray data;
-			if (m_pPlugin->impl()->getState(data))
-				m_pPlugin->impl()->setState(data);
-			m_pPlugin->updateParamValues(true);
-			m_pPlugin->resetParamValues(false);
-			if (flags & Vst::kReloadComponent)
+				m_pPlugin->resetParamValues(true);
+				QByteArray data;
+				if (m_pPlugin->impl()->getState(data))
+					m_pPlugin->impl()->setState(data);
+				m_pPlugin->updateParamValues(true);
+				m_pPlugin->resetParamValues(false);
 				m_pPlugin->impl()->activate();
+			}
 			m_restarting = false;
 		}
 		return kResultOk;
@@ -2320,19 +2320,8 @@ public:
 			m_widget->resize(size);
 		else
 			m_widget->setFixedSize(size);
+		m_plugView->onSize(rect);
 		m_resizing = false;
-
-		// Per VST3 spec: call onSize() with the *requested* rect when the view's
-		// current reported size differs from it. getSize() still reflects the
-		// pre-resize state here because QWidget::resize() is asynchronous.
-		ViewRect rect0;
-		if (m_plugView->getSize(&rect0) == kResultOk) {
-			const QSize size0(
-				rect0.right  - rect0.left,
-				rect0.bottom - rect0.top);
-			if (size != size0)
-				m_plugView->onSize(rect);
-		}
 
 		return kResultOk;
 	}
