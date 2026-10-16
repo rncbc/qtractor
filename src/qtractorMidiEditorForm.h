@@ -66,6 +66,8 @@ public:
 	// MIDI editor widget accessor.
 	qtractorEditor *editor() const;
 
+	qtractorMidiEditor *midiEditor() const;
+
 	// Local time-scale accessor.
 	unsigned long timeOffset() const;
 

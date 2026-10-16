@@ -1043,6 +1043,12 @@ QMenu *qtractorMidiEditorForm::editMenu (void) const
 // MIDI editor widget accessor.
 qtractorEditor *qtractorMidiEditorForm::editor (void) const
 {
+	return midiEditor();
+}
+
+
+qtractorMidiEditor *qtractorMidiEditorForm::midiEditor (void) const
+{
 	return m_pMidiEditor;
 }
 
@@ -2568,6 +2574,7 @@ void qtractorMidiEditorForm::helpShortcuts (void)
 	const QList<QAction *>& actions
 		= findChildren<QAction *> (QString(), Qt::FindDirectChildrenOnly);
 	qtractorShortcutForm shortcutForm(actions, this);
+	shortcutForm.setWindowTitle(tr("MIDI Editor Shortcuts"));
 	shortcutForm.setActionControl(nullptr); // Disable MIDI Controllers here!
 	if (shortcutForm.exec() && shortcutForm.isDirtyActionShortcuts())
 		pOptions->saveActionShortcuts(this);

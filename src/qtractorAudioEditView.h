@@ -55,7 +55,7 @@ public:
 	~qtractorAudioEditViewScale();
 
 protected:
-	
+
 	// Specific event handlers.
 	void paintEvent(QPaintEvent *);
 
@@ -104,6 +104,9 @@ protected:
 
 	// Draw the time scale.
 	void drawContents(QPainter& painter, const QRect& rect);
+
+	// Focus lost event.
+	void focusOutEvent(QFocusEvent *pFocusEvent);
 
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);

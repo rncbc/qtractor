@@ -1678,8 +1678,14 @@ bool qtractorMidiEditor::isSelected (void) const
 // Whether there's any item on the clipboard.
 bool qtractorMidiEditor::isClipboard (void)
 {
-	// Tell whether there's any item on the clipboard.
 	return (g_clipboard.items.count() > 0);
+}
+
+
+// Clear the clipboard...
+void qtractorMidiEditor::clearClipboard (void)
+{
+	g_clipboard.clear();
 }
 
 
@@ -4487,10 +4493,10 @@ void qtractorMidiEditor::executeDragPaste (
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
-		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*iter.key());
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
 			continue;
+		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*iter.key());
 		const long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);

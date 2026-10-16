@@ -62,6 +62,8 @@ public:
 	// Audio editor widget accessor.
 	qtractorEditor *editor() const;
 
+	qtractorAudioEditor *audioEditor() const;
+
 	// Audio clip sequence accessors.
 	qtractorAudioClip *audioClip() const;
 
@@ -71,6 +73,9 @@ public:
 	// Special executive setup method.
 	void setup(qtractorAudioClip *pAudioClip = nullptr);
 
+	// Special audio-peak reset method.
+	void resetAudioPeak();
+
 	// Reset coomposite dirty flag.
 	void resetDirtyCount();
 
@@ -79,7 +84,7 @@ public:
 
 	// Edit menu accessor.
 	QMenu *editMenu() const;
-	
+
 	// Save(as) warning message box.
 	static int querySave(const QString& sFilename, QWidget *pParent = nullptr);
 

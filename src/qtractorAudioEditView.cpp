@@ -265,6 +265,8 @@ void qtractorAudioEditView::resizeEvent ( QResizeEvent *pResizeEvent )
 	m_gradRight = gradRight;
 #endif
 
+	m_pEditor->focusOut(this);
+
 	// FIXME: Prevent any overlay selection during resizing this,
 	// as the overlay rectangles will certainly be wrong...
 	if (m_pEditor->isSelected()) {
@@ -617,6 +619,15 @@ void qtractorAudioEditView::contentsXMovingSlot ( int cx, int /*cy*/ )
 {
 	if (qtractorScrollView::contentsX() != cx)
 		qtractorScrollView::setContentsPos(cx, qtractorScrollView::contentsY());
+}
+
+
+// Focus lost event.
+void qtractorAudioEditView::focusOutEvent ( QFocusEvent *pFocusEvent )
+{
+	m_pEditor->focusOut(this);
+
+	qtractorScrollView::focusOutEvent(pFocusEvent);
 }
 
 

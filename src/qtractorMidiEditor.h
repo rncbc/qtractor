@@ -181,6 +181,9 @@ public:
 	// Whether there's any items on the clipboard.
 	static bool isClipboard();
 
+	// Clear the clipboard...
+	static void clearClipboard();
+
 	// Clipboard commands.
 	void cutClipboard();
 	void copyClipboard();

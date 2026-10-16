@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioClip.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorAudioFile.h"
 #include "qtractorAudioPeak.h"
 
 #include "qtractorTimeStretcher.h"
@@ -273,7 +274,8 @@ bool qtractorAudioClip::isOverlap ( unsigned int iOverlapSize ) const
 }
 
 
-// The main use method.
+// The main use methods.
+//
 bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 {
 	closeAudioFile();
@@ -410,14 +412,13 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	insertHashKey();
 
 	// Update/reset audio clip editor if any...
-	if (m_pAudioEditorForm)
-		m_pAudioEditorForm->setup(this);
+	//if (m_pAudioEditorForm)
+	//	m_pAudioEditorForm->setup(this);
 
 	return true;
 }
 
 
-// Private cleanup.
 void qtractorAudioClip::closeAudioFile (void)
 {
 	if (m_pData) {
@@ -468,8 +469,11 @@ QString qtractorAudioClip::createFilePathRevision ( bool bForce )
 	}
 
 	if (m_iRevision == 0 || bForce) {
-		sFilename = pSession->createFilePath(pTrack->shortTrackName(), "mid");
-	//TODO:	sFilename = qtractorAudioFile::createFilePathRevision(sFilename);
+		const QFileInfo info(sFilename);
+		QString sExt = info.suffix();
+		if (sExt.isEmpty())
+			sExt = qtractorAudioFileFactory::defaultExt();
+		sFilename = pSession->createFilePathEx(info.completeBaseName(), sExt);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorAudioClip::createFilePathRevision(%d): \"%s\" (%d)",
 			int(bForce), sFilename.toUtf8().constData(), m_iRevision);
@@ -556,6 +560,18 @@ void qtractorAudioClip::setDirtyEx ( bool bDirty )
 	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->setDirty(bDirty);
+}
+
+
+// Reset all ref-counted clip audio-peaks.
+void qtractorAudioClip::resetAudioPeakEx (void)
+{
+	if (m_pData == nullptr)
+		return;
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->resetAudioPeak();
 }
 
 
@@ -988,8 +1004,7 @@ void qtractorAudioClip::updateEditor ( bool bSelectClear )
 	if (m_pAudioEditorForm == nullptr)
 		return;
 
-	qtractorAudioEditor *pAudioEditor
-		= static_cast<qtractorAudioEditor *> (m_pAudioEditorForm->editor());
+	qtractorAudioEditor *pAudioEditor = m_pAudioEditorForm->audioEditor();
 	if (pAudioEditor) {
 		pAudioEditor->setOffset(clipStart());
 		pAudioEditor->setLength(clipLength());
@@ -1013,8 +1028,7 @@ void qtractorAudioClip::updateEditorContents (void)
 	if (m_pAudioEditorForm == nullptr)
 		return;
 
-	qtractorAudioEditor *pAudioEditor
-		= static_cast<qtractorAudioEditor *> (m_pAudioEditorForm->editor());
+	qtractorAudioEditor *pAudioEditor = m_pAudioEditorForm->audioEditor();
 	if (pAudioEditor)
 		pAudioEditor->updateContents();
 
@@ -1034,8 +1048,7 @@ void qtractorAudioClip::updateEditorTimeScale (void)
 			pSession->updateTimeScale();
 	}
 
-	qtractorAudioEditor *pAudioEditor
-		= static_cast<qtractorAudioEditor *> (m_pAudioEditorForm->editor());
+	qtractorAudioEditor *pAudioEditor = m_pAudioEditorForm->audioEditor();
 	if (pAudioEditor)
 		pAudioEditor->updateTimeScale();
 }
@@ -1102,6 +1115,32 @@ QString qtractorAudioClip::toolTip (void) const
 }
 
 
+// Special audio-peak reset method.
+void qtractorAudioClip::resetAudioPeak (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	qtractorAudioPeakFactory *pPeakFactory
+		= pSession->audioPeakFactory();
+	if (pPeakFactory == nullptr)
+		return;
+
+	if (m_pPeak)
+		delete m_pPeak;
+
+	m_pPeak = pPeakFactory->createPeak(filename(), timeStretch());
+
+	if (m_pAudioEditorForm)
+		m_pAudioEditorForm->resetAudioPeak();
+}
+
+
 // Auto-save to (possible) new file revision.
 bool qtractorAudioClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
 {
@@ -1117,15 +1156,72 @@ bool qtractorAudioClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
 	if (pSession->sessionName().isEmpty())
 		return false;
 
-	// TODO: ?...
-	//
+	// Open the source file independently (not through the ring-buffer).
+	qtractorAudioFile *pSrc
+		= qtractorAudioFileFactory::createAudioFile(filename());
+	if (pSrc == nullptr)
+		return false;
+	if (!pSrc->open(filename(), qtractorAudioFile::Read)) {
+		delete pSrc;
+		return false;
+	}
+
+	const unsigned short iChannels   = pSrc->channels();
+	const unsigned int   iSampleRate = pSrc->sampleRate();
+	// Copy from file beginning through the end of the clip region.
+	const unsigned long  iFrames     = clipOffset() + clipLength();
+
+	if (iChannels < 1) {
+		pSrc->close(); delete pSrc;
+		return false;
+	}
+
+	// Create the destination revision file with the same format.
+	qtractorAudioFile *pDst
+		= qtractorAudioFileFactory::createAudioFile(
+			sFilename, iChannels, iSampleRate, 4096, -1);
+	if (pDst == nullptr) {
+		pSrc->close(); delete pSrc;
+		return false;
+	}
+	if (!pDst->open(sFilename, qtractorAudioFile::Write)) {
+		delete pDst;
+		pSrc->close(); delete pSrc;
+		return false;
+	}
+
+	pSrc->seek(0);
+
+	const unsigned int iBufSize = 4096;
+	float **ppBuf = new float *[iChannels];
+	for (unsigned short c = 0; c < iChannels; ++c)
+		ppBuf[c] = new float[iBufSize];
+
+	unsigned long iPos = 0;
+	while (iPos < iFrames) {
+		const unsigned int n = (unsigned int) qMin((unsigned long)iBufSize, iFrames - iPos);
+		const int r = pSrc->read(ppBuf, n);
+		if (r <= 0) break;
+		pDst->write(ppBuf, (unsigned int)r);
+		iPos += (unsigned long)r;
+	}
+
+	for (unsigned short c = 0; c < iChannels; ++c)
+		delete[] ppBuf[c];
+	delete[] ppBuf;
+
+	pSrc->close(); delete pSrc;
+	pDst->close(); delete pDst;
+
+	if (bUpdate)
+		setFilenameEx(sFilename, true);
 
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		pMainForm->appendMessages(
 			QObject::tr("Audio file save: \"%1\".").arg(sFilename));
-		pMainForm->addMidiFile(sFilename);
+		pMainForm->addAudioFile(sFilename);
 	}
 
 	return true;

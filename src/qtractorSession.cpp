@@ -1301,11 +1301,19 @@ QString qtractorSession::createFilePath (
 QString qtractorSession::createFilePathEx (
 	const QString& sBaseNameEx, const QString& sExt, bool bAcquire )
 {
-	QString sFilename = qtractorSession::sanitize(sBaseNameEx) + "-%1." + sExt;
+	int iFileNo = 0;
+	QString sBaseName = sBaseNameEx;
+	const QRegularExpression rxRevision("(.+)\\-(\\d+)$");
+	QRegularExpressionMatch match = rxRevision.match(sBaseName);
+	if (match.hasMatch()) {
+		sBaseName = match.captured(1);
+		iFileNo = match.captured(2).toInt();
+	}
+
+	QString sFilename = qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
 
 	// If there are any existing, similar filenames,
 	// take the version suffix from the most recent...
-	int iFileNo = 0;
 	QDir dir(m_props.sessionDir);
 	const QStringList filter(sFilename.arg('*'));
 	const QStringList& files
@@ -1314,8 +1322,9 @@ QString qtractorSession::createFilePathEx (
 		QRegularExpression rx(sFilename.arg("([\\d]+)"));
 		QRegularExpressionMatchIterator iter = rx.globalMatch(files.first());
 		if (iter.hasNext()) {
-			QRegularExpressionMatch match = iter.next();
-			while (iter.hasNext()) match = iter.next();
+			match = iter.next();
+			while (iter.hasNext())
+				match = iter.next();
 			iFileNo = match.captured(1).toInt();
 		}
 	}

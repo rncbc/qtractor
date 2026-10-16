@@ -73,11 +73,13 @@
 
 #include "qtractorTakeRangeForm.h"
 
-#include "qtractorEditorForm.h"
-#include "qtractorMidiEditor.h"
-
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
+
+#include "qtractorEditorForm.h"
+
+#include "qtractorAudioEditor.h"
+#include "qtractorMidiEditor.h"
 
 #include "qtractorTrackCommand.h"
 #include "qtractorCurveCommand.h"
@@ -2510,6 +2512,9 @@ bool qtractorMainForm::closeSession (void)
 		qtractorLv2PluginType::lv2_close();
 	#endif
 		qtractorPluginFile::clearAll();
+		// Clear editors clipboard...
+		qtractorMidiEditor::clearClipboard();
+		qtractorAudioEditor::clearClipboard();
 	#ifdef CONFIG_LIBZ
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();

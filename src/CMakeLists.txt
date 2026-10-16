@@ -20,6 +20,7 @@ set (HEADERS
   qtractorAudioClip.h
   qtractorAudioConnect.h
   qtractorAudioEditor.h
+  qtractorAudioEditCommand.h
   qtractorAudioEditView.h
   qtractorAudioEditTime.h
   qtractorAudioEngine.h
@@ -166,6 +167,7 @@ set (SOURCES
   qtractorAudioClip.cpp
   qtractorAudioConnect.cpp
   qtractorAudioEditor.cpp
+  qtractorAudioEditCommand.cpp
   qtractorAudioEditView.cpp
   qtractorAudioEditTime.cpp
   qtractorAudioEngine.cpp
