@@ -446,10 +446,10 @@ void qtractorTrackView::updateContentsRecord (void)
 
 	
 // Draw the track view.
-void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
+void qtractorTrackView::drawContents ( QPainter& painter, const QRect& rect )
 {
 	// Draw viewport canvas...
-	pPainter->drawPixmap(rect, m_pixmap, rect);
+	painter.drawPixmap(rect, m_pixmap, rect);
 
 	// Lines a-head...
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -480,11 +480,11 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					qtractorScrollView::contentsToViewport(rectClip.topLeft()));
 				rectClip = rectClip.intersected(rectView);
 				if (!rectClip.isEmpty())
-					pPainter->fillRect(rectClip, rgbaSelect);
+					painter.fillRect(rectClip, rgbaSelect);
 			}
 			// Draw clip contents on the fly...
 			if (pClipItem->rubberBand) {
-				pPainter->save();
+				painter.save();
 				QRect rectClip(pClipItem->rect);
 				if (m_bDragSingleTrack) {
 					rectClip.setY(m_iDragSingleTrackY);
@@ -499,11 +499,11 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				rectClip = rectClip.intersected(rectView);
 				QColor bg = pClip->track()->background();
 				bg.setAlpha(120); // somewhat-translucent...
-				pPainter->setPen(bg.darker());
-				pPainter->setBrush(bg);
-				pPainter->drawRect(rectClip);
-				pClip->draw(pPainter, rectClip, offset);
-				pPainter->restore();
+				painter.setPen(bg.darker());
+				painter.setBrush(bg);
+				painter.drawRect(rectClip);
+				pClip->draw(painter, rectClip, offset);
+				painter.restore();
 			}
 		}
 	}
@@ -513,12 +513,12 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		// Highlight current clip...
 		const QRect& rectView
 			= qtractorScrollView::viewport()->rect().adjusted(-4, -4, +4, +4);
-		const QPen old_pen = pPainter->pen();
+		const QPen old_pen = painter.pen();
 		QPen pen = old_pen;
 		pen.setColor(QColor(60, 120, 255, 120));
 		pen.setStyle(Qt::SolidLine);
 		pen.setWidth(5);
-		pPainter->setPen(pen);
+		painter.setPen(pen);
 		QRect rectClip;
 		TrackViewInfo tvi;
 		qtractorClip  *pCurrentClip  = m_pClipDrag;
@@ -529,7 +529,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			qtractorScrollView::contentsToViewport(rectClip.topLeft()));
 		rectClip = rectClip.intersected(rectView);
 		if (!rectClip.isEmpty())
-			pPainter->drawRect(rectClip);
+			painter.drawRect(rectClip);
 		// Highlight all hash-linked MIDI clips...
 		if (pCurrentClip->track()->trackType() == qtractorTrack::Midi) {
 			qtractorMidiClip *pCurrentMidiClip
@@ -537,7 +537,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			if (pCurrentMidiClip && pCurrentMidiClip->isHashLinked()) {
 				pen.setStyle(Qt::DotLine);
 				pen.setWidth(3);
-				pPainter->setPen(pen);
+				painter.setPen(pen);
 				const QList<qtractorMidiClip *>& list
 					= pCurrentMidiClip->linkedClips();
 				QListIterator<qtractorMidiClip *> iter(list);
@@ -555,12 +555,12 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						qtractorScrollView::contentsToViewport(rectClip.topLeft()));
 					rectClip = rectClip.intersected(rectView);
 					if (!rectClip.isEmpty())
-						pPainter->drawRect(rectClip.adjusted(+2, +2, -2, -2));
+						painter.drawRect(rectClip.adjusted(+2, +2, -2, -2));
 				}
 			}
 		}
 		// Restore previous drawing pen...
-		pPainter->setPen(old_pen);
+		painter.setPen(old_pen);
 	}
 
 	// Common stuff for the job(s) ahead...
@@ -604,16 +604,16 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						rect.left() - 1, y1 - cy + 1, rect.width() + 2, h);
 					// Track/clip background colors...
 					QColor bg = pTrack->background();
-					pPainter->setPen(bg.darker());
+					painter.setPen(bg.darker());
 					bg.setAlpha(192); // translucency...
 				#ifdef CONFIG_GRADIENT
 					const int y = trackRect.y();
 					QLinearGradient grad(0, y, 0, y + h);
 					grad.setColorAt(0.4, bg);
 					grad.setColorAt(1.0, bg.darker(130));
-					pPainter->setBrush(grad);
+					painter.setBrush(grad);
 				#else
-					pPainter->setBrush(bg);
+					painter.setBrush(bg);
 				#endif
 					unsigned long iClipStart  = pClipRecord->clipStart();
 					unsigned long iClipOffset = pClipRecord->clipOffset();
@@ -668,10 +668,10 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							const QRect& headRect
 								= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 							if (!headRect.isEmpty()) {
-								const QBrush brush(pPainter->brush());
+								const QBrush brush(painter.brush());
 								pClipRecord->drawClipRecord(
-									pPainter, headRect, iHeadOffset);
-								pPainter->setBrush(brush);
+									painter, headRect, iHeadOffset);
+								painter.setBrush(brush);
 							}
 							if (iPlayHead < iFrameTime)
 								iClipOffset += (iFrameTime - iPlayHead);
@@ -692,7 +692,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 						if (!clipRect.isEmpty())
 							pClipRecord->drawClipRecord(
-								pPainter, clipRect, iClipOffset);
+								painter, clipRect, iClipOffset);
 					}
 				}
 				pTrack = pTrack->next();
@@ -704,7 +704,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 	
 	// Automation curve drawing...
-	pPainter->setRenderHint(QPainter::Antialiasing, true);
+	painter.setRenderHint(QPainter::Antialiasing, true);
 
 	x = rect.left();
 	w = rect.width();
@@ -739,14 +739,14 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			int yc3, xc3 = xc1 + 4;
 			QColor rgbCurve(pCurve->color());
 			QPen pen(rgbCurve);
-			pPainter->setPen(pen);
+			painter.setPen(pen);
 			QPainterPath path;
 			path.moveTo(xc1, yc1);
 			while (pNode && pNode->frame < iTrackEnd) {
 				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
 				yc2 = y2 - int(cursor.scale(pNode) * float(h)) - cy;
 				if (!bLocked)
-					pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
+					painter.drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
 				switch (mode) {
 				case qtractorCurve::Hold:
 					path.lineTo(xc2, yc1);
@@ -792,12 +792,12 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			path.lineTo(xc2, yc2);
 			// Draw line...
 			//pen.setWidth(2);
-			pPainter->strokePath(path, pen);	
+			painter.strokePath(path, pen);
 			// Fill semi-transparent area...
 			rgbCurve.setAlpha(60);
 			path.lineTo(xc2, y2 - cy);
 			path.lineTo(xc1, y2 - cy);
-			pPainter->fillPath(path, rgbCurve);
+			painter.fillPath(path, rgbCurve);
 			if (m_bCurveEdit && m_pCurveSelect->isCurrentCurve(pCurve)) {
 				const qtractorCurveSelect::ItemList& items
 					= m_pCurveSelect->items();
@@ -811,7 +811,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						QRect rectNode(pItem->rectNode);
 						rectNode.moveTopLeft(contentsToViewport(
 							rectNode.topLeft() + QPoint(m_iDragCurveX, 0)));
-						pPainter->fillRect(rectNode, QColor(0, 0, 255, 80));
+						painter.fillRect(rectNode, QColor(0, 0, 255, 80));
 					}
 				}
 			}
@@ -831,19 +831,19 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			int yc2, yc1 = y2 - int(pTempoCurve->scaleFocused(pNode, frame) * float(h)) - cy;
 			QColor rgbCurve(pTempoCurve->color());
 			QPen pen(rgbCurve);
-			pPainter->setPen(pen);
+			painter.setPen(pen);
 			QPainterPath path;
 			path.moveTo(xc1, yc1);
 			while (pNode && pNode->frame < iTrackEnd) {
 				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
 				yc2 = y2 - int(pTempoCurve->scaleFocused(pNode) * float(h)) - cy;
 				if (pNode->getAttached()) { /* draw and fill the node ;-) */
-					pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
-					pPainter->drawRect(QRect(xc2 - 3, yc2 - 3, 6, 6));
-					pPainter->drawRect(QRect(xc2 - 2, yc2 - 2, 4, 4));
-					pPainter->drawRect(QRect(xc2 - 1, yc2 - 1, 2, 2));
+					painter.drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
+					painter.drawRect(QRect(xc2 - 3, yc2 - 3, 6, 6));
+					painter.drawRect(QRect(xc2 - 2, yc2 - 2, 4, 4));
+					painter.drawRect(QRect(xc2 - 1, yc2 - 1, 2, 2));
 				} else /* draw an empty node rectangle */
-					pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
+					painter.drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
 				path.lineTo(xc2, yc1);
 				yc1 = yc2;
 				path.lineTo(xc2, yc2);
@@ -856,12 +856,12 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			path.lineTo(xc2, yc2);
 			// Draw line...
 			//pen.setWidth(2);
-			pPainter->strokePath(path, pen);	
+			painter.strokePath(path, pen);	
 			// Fill semi-transparent area...
 			rgbCurve.setAlpha(60);
 			path.lineTo(xc2, y2 - cy);
 			path.lineTo(xc1, y2 - cy);
-			pPainter->fillPath(path, rgbCurve);
+			painter.fillPath(path, rgbCurve);
 			if (m_bCurveEdit && m_pTempoCurveSelect->isCurrentCurve(pTempoCurve)) {
 				const qtractorTempoCurveSelect::ItemList& items
 					= m_pTempoCurveSelect->items();
@@ -875,7 +875,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						QRect rectNode(pItem->rectNode);
 						rectNode.moveTopLeft(contentsToViewport(
 							rectNode.topLeft() + QPoint(m_iDragCurveX, 0)));
-						pPainter->fillRect(rectNode, QColor(0, 0, 255, 80));
+						painter.fillRect(rectNode, QColor(0, 0, 255, 80));
 					}
 				}
 			}
@@ -883,48 +883,48 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		pTrack = pTrack->next();
 	}
 
-	pPainter->setRenderHint(QPainter::Antialiasing, false);
+	painter.setRenderHint(QPainter::Antialiasing, false);
 
 #ifdef CONFIG_GRADIENT
 	// Draw canvas edge-border shadows...
 	const int ws = 22;
 	const int xs = qtractorScrollView::viewport()->width() - ws;
 	if (rect.left() < ws)
-		pPainter->fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
+		painter.fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
 	if (rect.right() > xs)
-		pPainter->fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
+		painter.fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
 #endif
 
 	// Draw edit-head line...
 	//m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 	x = m_iEditHeadX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::blue);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::blue);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	// Draw edit-tail line...
 	//m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
 	x = m_iEditTailX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::blue);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::blue);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	// Draw auto-backward play-head line...
 	//m_iPlayHeadAutobackwardX = pSession->pixelFromFrame(pSession->playHeadAutobackward());
 	x = m_iPlayHeadAutoBackwardX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(QColor(240, 0, 0, 60));
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(QColor(240, 0, 0, 60));
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	// Draw play-head line...
 	//m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
 	x = m_iPlayHeadX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::red);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		painter.setPen(Qt::red);
+		painter.drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	// Show/hide a moving clip fade in/out slope lines...
@@ -938,16 +938,16 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		QPoint vpos;
 		QPen pen(Qt::DotLine);
 		pen.setColor(Qt::blue);
-		pPainter->setPen(pen);
+		painter.setPen(pen);
 		if (m_dragState == DragClipFadeIn) {
 			vpos = contentsToViewport(m_rectDrag.bottomLeft());
-			pPainter->drawLine(
+			painter.drawLine(
 				vpos.x(), vpos.y(), rectHandle.left(), rectHandle.top());
 		} 
 		else 
 		if (m_dragState == DragClipFadeOut) {
 			vpos = contentsToViewport(m_rectDrag.bottomRight());
-			pPainter->drawLine(
+			painter.drawLine(
 				rectHandle.right(), rectHandle.top(), vpos.x(), vpos.y());
 		}
 	}
@@ -1091,7 +1091,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			}
 			const QRect trackRect(0, y1 - cy + 1, w, y2 - y1 - 2);
 		//	painter.fillRect(trackRect, rgbMid);
-			pTrack->drawTrack(&painter, trackRect, iTrackStart, iTrackEnd,
+			pTrack->drawTrack(painter, trackRect, iTrackStart, iTrackEnd,
 				m_pSessionCursor->clip(iTrack));
 			painter.setPen(rgbDark);
 			painter.drawLine(0, y2 - cy - 1, w, y2 - cy - 1);
@@ -3704,7 +3704,7 @@ bool qtractorTrackView::dragClipStartEx (
 		return false;
 
 	// Fade-in handle check...
-	m_rectHandle.setRect(rectClip.left() + 1
+	m_rectHandle.setRect(rectClip.left()
 		+ pSession->pixelFromFrame(pClip->fadeInLength()),
 			rectClip.top() + 1, 8, 8);
 	if (m_rectHandle.contains(pos)) {
@@ -3771,26 +3771,36 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 		return;
 
 	// Always change horizontally wise...
-	const int x0 = pixelSnap(pos.x());
-	int dx = (x0 - m_posDrag.x());
+	int dx = pos.x() - m_posDrag.x();
 	if (m_rectHandle.left() + dx < m_rectDrag.left())
 		dx = m_rectDrag.left() - m_rectHandle.left();
 	else if (m_rectHandle.right() + dx > m_rectDrag.right())
 		dx = m_rectDrag.right() - m_rectHandle.right();
-	m_iDragClipX = dx;
-	moveRubberBand(&m_pRubberBand, m_rectHandle);
-	ensureVisible(pos.x(), pos.y(), 24, 24);
-	
+
+	int x0 = 0;
+	if (m_dragState == DragClipFadeIn)
+		x0 = m_rectHandle.left();
+	else
+	if (m_dragState == DragClipFadeOut)
+		x0 = m_rectHandle.right();
+
+	dx += x0;
+
+	m_iDragClipX = (dx >= 0 ? pixelSnap(dx) : -pixelSnap(-dx)) - x0;
+
+	moveRubberBand(&m_pRubberBand, m_rectHandle, 1);
+	ensureVisible(pos.x(), m_rectHandle.top() + 1, 24, 0);
+
 	// Prepare to update the whole view area...
 	updateRect(m_rectDrag);
 
 	// Show fade-in/out tooltip..
 	QRect rect(m_rectDrag);
 	if (m_dragState == DragClipFadeIn)
-		rect.setRight(m_rectHandle.left() + m_iDragClipX);
+		rect.setRight(x0 + m_iDragClipX);
 	else
 	if (m_dragState == DragClipFadeOut)
-		rect.setLeft(m_rectHandle.right() + m_iDragClipX);
+		rect.setLeft(x0 + m_iDragClipX);
 	showToolTip(rect, 0);
 }
 
@@ -3817,7 +3827,7 @@ void qtractorTrackView::dragClipFadeDrop ( const QPoint& pos )
 			pSession->frameFromPixel(
 				m_rectHandle.left() + m_iDragClipX - m_rectDrag.left()),
 				m_pClipDrag->fadeInType());
-	} 
+	}
 	else
 	if (m_dragState == DragClipFadeOut) {
 		pClipCommand->fadeOutClip(m_pClipDrag,
@@ -6153,7 +6163,7 @@ bool qtractorTrackView::isSyncViewHold (void) const
 }
 
 
-// Return either snapped pixel, or the passed one if [Alt] key is pressed.
+// Return either snapped pixel or the passed one if [Alt] key is pressed.
 unsigned int qtractorTrackView::pixelSnap ( unsigned int x ) const
 {
 	if (QApplication::keyboardModifiers() & Qt::AltModifier)
@@ -6164,7 +6174,7 @@ unsigned int qtractorTrackView::pixelSnap ( unsigned int x ) const
 }
 
 
-// Return either snapped frame, or the passed one if [Alt] key is pressed.
+// Return either snapped frame or the passed one if [Alt] key is pressed.
 unsigned long qtractorTrackView::frameSnap ( unsigned long iFrame ) const
 {
 	if (QApplication::keyboardModifiers() & Qt::AltModifier)

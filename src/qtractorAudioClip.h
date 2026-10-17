@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,8 +25,12 @@
 #include "qtractorClip.h"
 #include "qtractorAudioBuffer.h"
 
+#include "qtractorCommand.h"
+
+
 // Forward declarations.
 class qtractorAudioPeak;
+class qtractorAudioEditorForm;
 
 
 //----------------------------------------------------------------------
@@ -85,7 +89,7 @@ public:
 	bool openAudioFile(const QString& sFilename,
 		int iMode = qtractorAudioFile::Read);
 
-	// Sequence properties accessors.
+	// Audio properties accessors.
 	qtractorAudioBuffer *buffer() const
 		{ return (m_pData ? m_pData->buffer() : nullptr); }
 
@@ -112,20 +116,44 @@ public:
 	void process_export(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Clip paint method.
-	void draw(QPainter *pPainter,
+	void draw(QPainter& painter,
 		const QRect& clipRect, unsigned long iClipOffset);
 
 	// Clip update method (no-op).
 	void update() {}
 
+	// Clip editor methods.
+	bool startEditor(QWidget *pParent = nullptr);
+	void updateEditor(bool bSelectClear);
+	void updateEditorContents();
+	void updateEditorTimeScale();
+	bool queryEditor();
+
 	// Audio clip tool-tip.
 	QString toolTip() const;
+
+	// Special audio-peak reset methods.
+	void resetAudioPeak();
+
+	// Auto-save to (possible) new file revision.
+	bool saveCopyFile(const QString& sFilename, bool bUpdate);
 
 	// Audio clip export method.
 	typedef void (*ClipExport)(float **, unsigned int, void *);
 
 	bool clipExport(ClipExport pfnClipExport, void *pvArg,
 		unsigned long iOffset = 0, unsigned long iLength = 0) const;
+
+	// Gain fractionalizers(tm)...
+	typedef struct { int num, den; } FractGain;
+
+	FractGain *fractGains() const
+		{ return m_pFractGains; }
+
+	// Audio file hash key.
+	class FileKey;
+
+	typedef QHash<FileKey, int> FileHash;
 
 	// Most interesting key/data (ref-counted?)...
 	class Key;
@@ -136,10 +164,10 @@ public:
 		// Constructor.
 		Data(qtractorTrack *pTrack, unsigned short iChannels)
 			: m_pBuff(new qtractorAudioBuffer(
-				pTrack->syncThread(), iChannels)) {}
-
+				pTrack->syncThread(), iChannels)),
+			  m_pCommands(new qtractorCommandList()) {}
 		// Destructor.
-		~Data() { clear(); delete m_pBuff; }
+		~Data() { clear(); delete m_pCommands; delete m_pBuff; }
 
 		// Buffer accessor.
 		qtractorAudioBuffer *buffer() const
@@ -182,16 +210,37 @@ public:
 		void clear()
 			{ m_clips.clear(); }
 
+		// Commands (undo/redo) accessor.
+		qtractorCommandList *commands() const
+			{ return m_pCommands; }
+
 	private:
 
 		// Interesting variables.
 		qtractorAudioBuffer *m_pBuff;
+
+		qtractorCommandList *m_pCommands;
 
 		// Ref-counting related stuff.
 		QList<qtractorAudioClip *> m_clips;
 	};
 
 	typedef QHash<Key, Data *> Hash;
+
+	// Sync all ref-counted filenames.
+	void setFilenameEx(const QString& sFilename, bool bUpdate);
+
+	// Sync all ref-counted clip-lengths.
+	void setClipLengthEx(unsigned long iClipLength);
+
+	// Sync all ref-counted clip editors.
+	void updateEditorEx(bool bSelectClear);
+
+	// Sync all ref-counted clip-dirtyness.
+	void setDirtyEx(bool bDirty);
+
+	// Reset all ref-counted clip audio-peaks.
+	void resetAudioPeakEx();
 
 	// Manage local hash key.
 	void insertHashKey();
@@ -207,6 +256,19 @@ public:
 
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
+
+	// Revisionist accessors.
+	void setRevision(unsigned short iRevision)
+		{ m_iRevision = iRevision; }
+	unsigned short revision() const
+		{ return m_iRevision; }
+
+	// Revisionist method.
+	QString createFilePathRevision(bool bForce = false);
+
+	// Local command-list (undo/redo) accessor.
+	qtractorCommandList *commands() const
+		{ return (m_pData ? m_pData->commands() : nullptr); }
 
 protected:
 
@@ -236,9 +298,6 @@ private:
 	// Alternate overlap tag.
 	unsigned int m_iOverlap;
 
-	// Gain fractionalizers(tm)...
-	typedef struct { int num, den; } FractGain;
-
 	FractGain *m_pFractGains;
 
 	// Most interesting key/data (ref-counted?)...
@@ -246,6 +305,15 @@ private:
 	Data *m_pData;
 
 	static Hash g_hashTable;
+
+	// Audio file hash key.
+	static FileHash g_hashFiles;
+
+	// Revisionist count.
+	unsigned short m_iRevision;
+
+	// This clip editor form widget.
+	qtractorAudioEditorForm *m_pAudioEditorForm;
 };
 
 

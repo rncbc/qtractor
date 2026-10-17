@@ -1739,7 +1739,7 @@ void qtractorTrack::process_curve ( unsigned long iFrame )
 
 
 // Track paint method.
-void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
+void qtractorTrack::drawTrack ( QPainter& painter, const QRect& trackRect,
 	unsigned long iTrackStart, unsigned long iTrackEnd, qtractorClip *pClip )
 {
 	const int y = trackRect.y();
@@ -1785,24 +1785,24 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
 			}
 			qDebug("%s@%d: x0=%d, x1=%d, x2=%d", __func__, __LINE__, x0, x1, x2);
-			pPainter->setPen(pen);
-			pPainter->setBrush(brush);
+			painter.setPen(pen);
+			painter.setBrush(brush);
 			// Draw the clip...
 			const QRect clipRect(x1, y, x2 - x1, h);
-			pClip->drawClip(pPainter, clipRect, iClipOffset);
+			pClip->drawClip(painter, clipRect, iClipOffset);
 			if (pClip == pClipRecordEx)
-				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
+				painter.fillRect(clipRect, QColor(255, 0, 0, 60));
 			else
 			if (pClip->isClipMute())
-				pPainter->fillRect(clipRect, QColor(0, 0, 0, 60));
+				painter.fillRect(clipRect, QColor(0, 0, 0, 60));
 		}
 		pClip = pClip->next();
 	}
 
 	if (m_props.mute || ((this->trackType() != qtractorTrack::Tempo) && !m_props.solo && m_pSession->soloTracks()))
-		pPainter->fillRect(trackRect, QColor(0, 0, 0, 60));
+		painter.fillRect(trackRect, QColor(0, 0, 0, 60));
 	else if ((this->trackType() == qtractorTrack::Tempo) && !m_props.solo)
-		pPainter->fillRect(trackRect, QColor(0, 0, 0, 60));
+		painter.fillRect(trackRect, QColor(0, 0, 0, 60));
 }
 
 

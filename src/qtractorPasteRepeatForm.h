@@ -1,7 +1,7 @@
 // qtractorPasteRepeatForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,6 +50,9 @@ public:
 	void setRepeatPeriod(unsigned long iRepeatPeriod);
 	unsigned long repeatPeriod() const;
 
+	void setFixedRepeatPeriod(bool bFixedRepeatPeriod);
+	bool isFixedRepeatPeriod() const;
+
 protected slots:
 
 	void accept();
@@ -65,6 +68,8 @@ private:
 
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
+
+	bool m_bFixedRepeatPeriod;
 
 	int m_iDirtyCount;
 };

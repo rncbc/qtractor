@@ -233,7 +233,7 @@ protected:
 			= m_pForm->rangeStart() - pClip->clipStart();
 		const QRect rectClip(0, 0, w, h);
 		painter.drawRect(rectClip);
-		pClip->draw(&painter, rectClip, iClipOffset);
+		pClip->draw(painter, rectClip, iClipOffset);
 	}
 
 	// Paint method...

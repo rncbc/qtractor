@@ -251,7 +251,7 @@ public:
 	void process_curve(unsigned long iFrame);
 
 	// Track paint method.
-	void drawTrack(QPainter *pPainter, const QRect& trackRect,
+	void drawTrack(QPainter& painter, const QRect& trackRect,
 		unsigned long iTrackStart, unsigned long iTrackEnd,
 		qtractorClip *pClip = nullptr);
 

@@ -1,7 +1,7 @@
 // qtractorPasteRepeatForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,8 +43,11 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm ( QWidget *pParent )
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::WindowModal);
 
-	// Initialize dirty control state.
+	// Initialize instance variables.
 	m_pTimeScale  = nullptr;
+	m_bFixedRepeatPeriod = false;
+
+	// Initialize dirty control state.
 	m_iDirtyCount = 0;
 
 	// Copy from global time-scale instance...
@@ -121,8 +124,24 @@ void qtractorPasteRepeatForm::setRepeatPeriod ( unsigned long iRepeatPeriod )
 
 unsigned long qtractorPasteRepeatForm::repeatPeriod (void) const
 {
-	return (m_ui.RepeatPeriodCheckBox->isChecked()
+	return (m_ui.RepeatPeriodCheckBox->isChecked() || m_bFixedRepeatPeriod
 		? m_ui.RepeatPeriodSpinBox->value() : 0);
+}
+
+
+void qtractorPasteRepeatForm::setFixedRepeatPeriod ( bool bFixedRepeatPeriod )
+{
+	m_bFixedRepeatPeriod = bFixedRepeatPeriod;
+
+	if (!m_ui.RepeatPeriodCheckBox->isChecked() && m_bFixedRepeatPeriod)
+		m_ui.RepeatPeriodCheckBox->setChecked(true);
+
+	stabilizeForm();
+}
+
+bool qtractorPasteRepeatForm::isFixedRepeatPeriod (void) const
+{
+	return m_bFixedRepeatPeriod;
 }
 
 
@@ -208,8 +227,9 @@ void qtractorPasteRepeatForm::formatChanged ( int iDisplayFormat )
 // Stabilize current form state.
 void qtractorPasteRepeatForm::stabilizeForm (void)
 {
-	bool bEnabled = m_ui.RepeatPeriodCheckBox->isChecked();
-	m_ui.RepeatPeriodSpinBox->setEnabled(bEnabled);
+	const bool bEnabled = m_ui.RepeatPeriodCheckBox->isChecked();
+	m_ui.RepeatPeriodCheckBox->setEnabled(!m_bFixedRepeatPeriod);
+	m_ui.RepeatPeriodSpinBox->setEnabled(bEnabled && !m_bFixedRepeatPeriod);
 	m_ui.RepeatFormatComboBox->setEnabled(bEnabled);
 
 	m_ui.DialogButtonBox->button(
