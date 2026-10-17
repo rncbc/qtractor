@@ -28,7 +28,6 @@
 
 #include "qtractorAudioClip.h"
 #include "qtractorAudioEngine.h"
-#include "qtractorAudioMonitor.h"
 
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
@@ -38,7 +37,6 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorShortcutForm.h"
-#include "qtractorPasteRepeatForm.h"
 #include "qtractorClipForm.h"
 
 #include "qtractorTimeScale.h"
@@ -304,9 +302,6 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.editCopyAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editCopy()));
-	QObject::connect(m_ui.editPasteRepeatAction,
-		SIGNAL(triggered(bool)),
-		SLOT(editPasteRepeat()));
 	QObject::connect(m_ui.editPasteAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editPaste()));
@@ -665,6 +660,12 @@ QMenu *qtractorAudioEditorForm::editMenu (void) const
 // Audio editor widget accessor.
 qtractorEditor *qtractorAudioEditorForm::editor (void) const
 {
+	return audioEditor();
+}
+
+
+qtractorAudioEditor *qtractorAudioEditorForm::audioEditor (void) const
+{
 	return m_pAudioEditor;
 }
 
@@ -835,6 +836,13 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 
 	// Done.
 	stabilizeForm();
+}
+
+
+// Special audio-peak reset method.
+void qtractorAudioEditorForm::resetAudioPeak (void)
+{
+	m_pAudioEditor->resetAudioPeak();
 }
 
 
@@ -1307,20 +1315,6 @@ void qtractorAudioEditorForm::editCopy (void)
 void qtractorAudioEditorForm::editPaste (void)
 {
 	m_pAudioEditor->pasteClipboard();
-}
-
-
-// Paste/repeat from clipboard.
-void qtractorAudioEditorForm::editPasteRepeat (void)
-{
-	qtractorPasteRepeatForm pasteForm(this);
-	pasteForm.setRepeatPeriod(m_pAudioEditor->pastePeriod());
-	if (pasteForm.exec()) {
-		m_pAudioEditor->pasteClipboard(
-			pasteForm.repeatCount(),
-			pasteForm.repeatPeriod()
-		);
-	}
 }
 
 
@@ -1835,6 +1829,7 @@ void qtractorAudioEditorForm::helpShortcuts (void)
 	const QList<QAction *>& actions
 		= findChildren<QAction *> (QString(), Qt::FindDirectChildrenOnly);
 	qtractorShortcutForm shortcutForm(actions, this);
+	shortcutForm.setWindowTitle(tr("Audio Editor Shortcuts"));
 	shortcutForm.setActionControl(nullptr); // Disable Audio Controllers here!
 	if (shortcutForm.exec() && shortcutForm.isDirtyActionShortcuts())
 		pOptions->saveActionShortcuts(this);
@@ -1866,7 +1861,7 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	qtractorAudioClip *pAudioClip = m_pAudioEditor->audioClip();
 	if (pAudioClip)
 		pTrack = pAudioClip->track();
-	
+
 	m_ui.fileSaveAction->setEnabled(false);   //--TODO: m_iDirtyCount > 0
 	m_ui.fileSaveAsAction->setEnabled(false); //--
 	m_ui.fileMuteAction->setEnabled(pAudioClip != nullptr);
@@ -1888,11 +1883,10 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	const bool bSelected = m_pAudioEditor->isSelected();
 	const bool bSelectable = m_pAudioEditor->isSelectable();
 	const bool bClipboard = m_pAudioEditor->isClipboard();
-	m_ui.editCutAction->setEnabled(false);    //--TODO: bSelected
-	m_ui.editCopyAction->setEnabled(false);   //--
+	m_ui.editCutAction->setEnabled(bSelected);
+	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(bClipboard);
-	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
-	m_ui.editDeleteAction->setEnabled(false); //--TODO: bSelected
+	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	// Update the main window caption...
@@ -2019,8 +2013,8 @@ void qtractorAudioEditorForm::updateZoomMenu (void)
 	m_ui.viewZoomAllAction->setChecked(
 		iZoomMode == qtractorAudioEditor::ZoomAll);
 }
- 
- 
+
+
 // Snap-per-beat view menu builder.
 void qtractorAudioEditorForm::updateSnapMenu (void)
 {

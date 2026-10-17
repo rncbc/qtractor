@@ -592,8 +592,11 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	}
 
 	if (m_iRevision == 0 || bForce) {
-		sFilename = pSession->createFilePath(pTrack->shortTrackName(), "mid");
-		sFilename = qtractorMidiFile::createFilePathRevision(sFilename);
+		const QFileInfo info(sFilename);
+		QString sExt = info.suffix();
+		if (sExt.isEmpty())
+			sExt = "mid";
+		sFilename = pSession->createFilePathEx(info.completeBaseName(), sExt);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorMidiClip::createFilePathRevision(%d): \"%s\" (%d)",
 			int(bForce), sFilename.toUtf8().constData(), m_iRevision);
@@ -1194,8 +1197,7 @@ void qtractorMidiClip::updateEditor ( bool bSelectClear )
 	if (m_pMidiEditorForm == nullptr)
 		return;
 
-	qtractorMidiEditor *pMidiEditor
-		= static_cast<qtractorMidiEditor *> (m_pMidiEditorForm->editor());
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->midiEditor();
 	if (pMidiEditor) {
 		pMidiEditor->reset(bSelectClear);
 		pMidiEditor->setOffset(clipStart());
@@ -1226,8 +1228,7 @@ void qtractorMidiClip::updateEditorContents (void)
 	if (m_pMidiEditorForm == nullptr)
 		return;
 
-	qtractorMidiEditor *pMidiEditor
-		= static_cast<qtractorMidiEditor *> (m_pMidiEditorForm->editor());
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->midiEditor();
 	if (pMidiEditor)
 		pMidiEditor->updateContents();
 
@@ -1732,8 +1733,7 @@ void qtractorMidiClip::updateStepInput (void)
 	if (m_pMidiEditorForm == nullptr)
 		return;
 
-	qtractorMidiEditor *pMidiEditor
-		= static_cast<qtractorMidiEditor *> (m_pMidiEditorForm->editor());
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->midiEditor();
 	if (pMidiEditor) {
 		pMidiEditor->setStepInputHead(
 			m_iStepInputLast > 0 ? m_iStepInputTail : m_iStepInputHead);

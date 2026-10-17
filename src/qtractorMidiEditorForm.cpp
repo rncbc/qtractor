@@ -42,7 +42,6 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorShortcutForm.h"
-#include "qtractorPasteRepeatForm.h"
 #include "qtractorClipForm.h"
 
 #include "qtractorTimeScale.h"
@@ -465,9 +464,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.editCopyAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editCopy()));
-	QObject::connect(m_ui.editPasteRepeatAction,
-		SIGNAL(triggered(bool)),
-		SLOT(editPasteRepeat()));
 	QObject::connect(m_ui.editPasteAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editPaste()));
@@ -1043,6 +1039,12 @@ QMenu *qtractorMidiEditorForm::editMenu (void) const
 // MIDI editor widget accessor.
 qtractorEditor *qtractorMidiEditorForm::editor (void) const
 {
+	return midiEditor();
+}
+
+
+qtractorMidiEditor *qtractorMidiEditorForm::midiEditor (void) const
+{
 	return m_pMidiEditor;
 }
 
@@ -1569,20 +1571,6 @@ void qtractorMidiEditorForm::editCopy (void)
 void qtractorMidiEditorForm::editPaste (void)
 {
 	m_pMidiEditor->pasteClipboard();
-}
-
-
-// Paste/repeat from clipboard.
-void qtractorMidiEditorForm::editPasteRepeat (void)
-{
-	qtractorPasteRepeatForm pasteForm(this);
-	pasteForm.setRepeatPeriod(m_pMidiEditor->pastePeriod());
-	if (pasteForm.exec()) {
-		m_pMidiEditor->pasteClipboard(
-			pasteForm.repeatCount(),
-			pasteForm.repeatPeriod()
-		);
-	}
 }
 
 
@@ -2568,6 +2556,7 @@ void qtractorMidiEditorForm::helpShortcuts (void)
 	const QList<QAction *>& actions
 		= findChildren<QAction *> (QString(), Qt::FindDirectChildrenOnly);
 	qtractorShortcutForm shortcutForm(actions, this);
+	shortcutForm.setWindowTitle(tr("MIDI Editor Shortcuts"));
 	shortcutForm.setActionControl(nullptr); // Disable MIDI Controllers here!
 	if (shortcutForm.exec() && shortcutForm.isDirtyActionShortcuts())
 		pOptions->saveActionShortcuts(this);
@@ -2681,7 +2670,6 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(bClipboard);
-	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 	m_ui.editDeleteAction->setEnabled(bSelected);
 //	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);

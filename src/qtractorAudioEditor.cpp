@@ -21,12 +21,14 @@
 
 #include "qtractorAbout.h"
 #include "qtractorAudioEditor.h"
+#include "qtractorAudioEditCommand.h"
 
 #include "qtractorAudioEditTime.h"
 #include "qtractorAudioEditView.h"
 
 #include "qtractorAudioClip.h"
 #include "qtractorAudioPeak.h"
+#include "qtractorAudioFile.h"
 
 #include "qtractorTimeScale.h"
 
@@ -62,6 +64,8 @@
 // Audio-peak factory singleton.
 qtractorAudioPeakFactory *qtractorAudioEditor::g_pAudioPeakFactory  = nullptr;
 unsigned int              qtractorAudioEditor::g_iAudioPeakRefCount = 0;
+
+qtractorAudioEditor::Clipboard qtractorAudioEditor::g_clipboard;
 
 // Constructor.
 qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
@@ -512,37 +516,28 @@ void qtractorAudioEditor::redoCommand (void)
 // Whether there's any item on the clipboard.
 bool qtractorAudioEditor::isClipboard (void)
 {
-	// TODO: ?...
-	//
-	return false;
+	return (!g_clipboard.isEmpty());
+}
+
+
+// Clear the clipboard...
+void qtractorAudioEditor::clearClipboard (void)
+{
+	g_clipboard.clear();
 }
 
 
 // Cut current selection to clipboard.
 void qtractorAudioEditor::cutClipboard (void)
 {
-	if (m_pAudioClip == nullptr)
-		return;
-
-	if (!isSelected())
-		return;
-
-	// TODO: ?...
-	//
+	executeEditSelect(Cut);
 }
 
 
 // Copy current selection to clipboard.
 void qtractorAudioEditor::copyClipboard (void)
 {
-	if (m_pAudioClip == nullptr)
-		return;
-
-	if (!isSelected())
-		return;
-
-	// TODO: ?...
-	//
+	executeEditSelect(Copy);
 }
 
 
@@ -550,15 +545,13 @@ void qtractorAudioEditor::copyClipboard (void)
 // (as from current clipboard width)
 unsigned long qtractorAudioEditor::pastePeriod (void) const
 {
-	// TODO: ?...
-	//
-	return 0;
+	return g_clipboard.frames;
 }
 
 
 // Paste from clipboard.
 void qtractorAudioEditor::pasteClipboard (
-	unsigned short iPasteCount, unsigned long iPastePeriod )
+	unsigned short iPasteCount, unsigned long /*iPastePeriod*/ )
 {
 	if (m_pAudioClip == nullptr)
 		return;
@@ -566,21 +559,46 @@ void qtractorAudioEditor::pasteClipboard (
 	if (!isClipboard())
 		return;
 
-	// Reset any current selection, whatsoever...
-	clearSelect();
-	resetDragState(nullptr);
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
 
-	// Multi-paste period...
-	if (iPastePeriod < 1)
-		iPastePeriod = pastePeriod();
+	// Make sure the mouse pointer is properly located...
+	const QPoint& pos = m_pEditView->viewportToContents(
+		m_pEditView->viewport()->mapFromGlobal(QCursor::pos()));
 
-	// TODO: ?...
-	//
+	const float fRatio
+		= float(pTimeScale->sampleRate()) / float(g_clipboard.sampleRate);
+	const unsigned long iLength
+		= ::lrintf(fRatio * float(g_clipboard.frames));
+
+	const int x0 = pTimeScale->pixelFromFrame(offset());
+	m_rectDrag.setX(pixelSnap(x0 + pos.x()) - x0);
+	m_rectDrag.setWidth(pTimeScale->pixelFromFrame(iLength));
+	m_rectDrag.setHeight(m_pEditView->viewport()->height());
+
+	// We'll start a brand new floating state...
+	m_dragState = m_dragCursor = DragPaste;
+	m_posDrag   = m_rectDrag.topLeft();
+	m_posStep   = QPoint(0, 0);
+
+	m_pEditView->viewport()->setCursor(
+		QCursor(QIcon::fromTheme("editPaste").pixmap(22), 12, 12));
+
+	// Let's-a go...
+	updateDragMove(m_pEditView, pos + m_posStep);
 }
 
 
 // Execute event removal.
 void qtractorAudioEditor::deleteSelect (void)
+{
+	executeEditSelect(Delete);
+}
+
+
+// Clip selection executive method.
+void qtractorAudioEditor::executeEditSelect ( EditCommand cmd )
 {
 	if (m_pAudioClip == nullptr)
 		return;
@@ -588,8 +606,175 @@ void qtractorAudioEditor::deleteSelect (void)
 	if (!isSelected())
 		return;
 
-	// TODO: ?...
-	//
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+	if (pTimeScale->sampleRate() < 1)
+		return;
+
+	const unsigned long f0 = offset();
+	const unsigned long iFrameStart = selectStart() - f0;
+	const unsigned long iFrameEnd = selectEnd() - f0;
+
+	const QString& sSrcFilename = m_pAudioClip->filename();
+
+	qtractorAudioFile *pSrc
+		= qtractorAudioFileFactory::createAudioFile(sSrcFilename);
+	if (pSrc == nullptr)
+		return;
+
+	if (!pSrc->open(sSrcFilename, qtractorAudioFile::Read)) {
+		delete pSrc;
+		return;
+	}
+
+	const unsigned short iChannels    = pSrc->channels();
+	const unsigned int   iSampleRate  = pSrc->sampleRate();
+
+	if (iChannels < 1 || iSampleRate < 1) {
+		pSrc->close();
+		delete pSrc;
+		return;
+	}
+
+	const float fRatio
+		= float(iSampleRate) / float(pTimeScale->sampleRate());
+
+	const unsigned long iStart
+		= ::lrintf(fRatio * float(m_pAudioClip->clipOffset() + iFrameStart));
+	const unsigned long iLength
+		= ::lrintf(fRatio * float(iFrameEnd - iFrameStart));
+
+	if (iStart + iLength > pSrc->frames()) {
+		pSrc->close();
+		delete pSrc;
+		return;
+	}
+
+	if (!pSrc->seek(iStart)) {
+		pSrc->close();
+		delete pSrc;
+		return;
+	}
+
+	// Whether to reset the static clipboard descriptor...
+	if (cmd == Cut || cmd == Copy)
+		g_clipboard.reset();
+
+	// Whether to have a temporary file holding the current selection...
+	QString sDstFilename;
+
+	if (cmd == Cut || cmd == Copy || cmd == Move) {
+
+		// Write to a temp file in the default format.
+		const int iFileNo
+			= g_clipboard.filelist.count() + 1;
+		sDstFilename = QDir::tempPath()
+			+ QString("/qtractor-%1.")
+				.arg(qHash(sSrcFilename) ^ qHash(iFileNo), 16)
+			+ qtractorAudioFileFactory::defaultExt();
+
+		qtractorAudioFile *pDst
+			= qtractorAudioFileFactory::createAudioFile(
+				sDstFilename, iChannels, iSampleRate, 4096);
+		if (pDst == nullptr) {
+			pSrc->close();
+			delete pSrc;
+			return;
+		}
+
+		if (!pDst->open(sDstFilename, qtractorAudioFile::Write)) {
+			delete pDst;
+			pSrc->close();
+			delete pSrc;
+			return;
+		}
+
+		// Might take sometime now...
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+		const unsigned int iBufSize = 4096;
+		float **ppBuf = new float * [iChannels];
+		for (unsigned short i = 0; i < iChannels; ++i)
+			ppBuf[i] = new float [iBufSize];
+
+		unsigned int iRemain = iLength;
+		while (iRemain > 0) {
+			const int nread = pSrc->read(ppBuf, qMin(iBufSize, iRemain));
+			if (nread < 1)
+				break;
+			pDst->write(ppBuf, nread);
+			iRemain -= nread;
+		}
+
+		for (unsigned short i = 0; i < iChannels; ++i)
+			delete[] ppBuf[i];
+		delete [] ppBuf;
+
+		pDst->close();
+		delete pDst;
+
+		// Done with it...
+		QApplication::restoreOverrideCursor();
+
+		// Fake it as clipboard file...
+		g_clipboard.filelist.append(sDstFilename);
+	}
+
+	// Populate the static clipboard descriptor...
+	if (cmd == Cut || cmd == Copy) {
+		g_clipboard.filename   = sDstFilename;
+		g_clipboard.channels   = iChannels;
+		g_clipboard.sampleRate = iSampleRate;
+		g_clipboard.frames     = iLength;
+	}
+
+	// Almost done.
+	pSrc->close();
+	delete pSrc;
+
+	qtractorAudioEditCommand *pEditCommand = nullptr;
+	QString sName;
+
+	switch (cmd) {
+	case Cut:
+		pEditCommand = new qtractorAudioEditCommand(
+			m_pAudioClip,
+			tr("cut audio"),
+			qtractorAudioEditCommand::DeleteRange,
+			iStart, iLength);
+		break;
+	case Delete:
+		pEditCommand = new qtractorAudioEditCommand(
+			m_pAudioClip,
+			tr("delete audio"),
+			qtractorAudioEditCommand::DeleteRange,
+			iStart, iLength);
+		break;
+	case Move: {
+		const int x0 = pTimeScale->pixelFromFrame(f0);
+		const unsigned long iFrameAfter
+			= pTimeScale->frameFromPixel(x0 + m_rectDrag.x()) - f0;
+		const unsigned long iAfter
+			= ::lrintf(fRatio * float(iFrameAfter));
+		pEditCommand = new qtractorAudioEditCommand(
+			m_pAudioClip,
+			tr("move audio"),
+			qtractorAudioEditCommand::MoveRange,
+			iStart, iLength,
+			iAfter, sDstFilename);
+	}	// Fall thru...
+	case Copy:
+		selectionChangeNotify();
+		// Fall thru...
+	default:
+		break;
+	}
+
+	if (pEditCommand) {
+		clearSelect();
+		execute(pEditCommand);
+	}
 }
 
 
@@ -672,14 +857,19 @@ void qtractorAudioEditor::updateDragSelect (
 		m_rectSelect.setRight(0);
 	}
 
+	const int x0 = pTimeScale->pixelFromFrame(offset());
+	const int w2 = pTimeScale->pixelFromFrame(offset() + length()) - x0;
+	const int x1 = qMax(0,  (int)pixelSnap(x0 + rectSelect.left())  - x0);
+	const int x2 = qMin(w2, (int)pixelSnap(x0 + rectSelect.right()) - x0);
+
 	if (flags & SelectToggle) {
 		if (m_rectSelect.left() > rectSelect.left())
-			m_rectSelect.setLeft(pixelSnap(rectSelect.left()));
+			m_rectSelect.setLeft(x1);
 		if (m_rectSelect.right() < rectSelect.right())
-			m_rectSelect.setRight(pixelSnap(rectSelect.right()));
+			m_rectSelect.setRight(x2);
 	} else {
-		m_rectSelect.setLeft(pixelSnap(rectSelect.left()));
-		m_rectSelect.setRight(pixelSnap(rectSelect.right()));
+		m_rectSelect.setLeft(x1);
+		m_rectSelect.setRight(x2);
 	}
 
 	rectUpdate = rectUpdate.united(m_rectSelect);
@@ -746,6 +936,22 @@ bool qtractorAudioEditor::dragMoveStart (
 	qtractorScrollView *pScrollView, const QPoint& pos,
 	const Qt::KeyboardModifiers& modifiers )
 {
+	// Are we already step-moving or pasting something?
+	switch (m_dragState) {
+	case DragStep:
+		// One-click change from drag-step to drag-move...
+		m_dragState = DragMove;
+		m_posDrag   = m_rectDrag.center();
+		m_posStep   = QPoint(0, 0);
+		updateDragMove(pScrollView, pos + m_posStep);
+		// Fall thru...
+	case DragMove:
+	case DragPaste:
+		return true;
+	default:
+		break;
+	}
+
 	// Force null state.
 	resetDragState(pScrollView);
 
@@ -782,6 +988,16 @@ bool qtractorAudioEditor::dragMoveUpdate (
 			m_rectDrag  = m_rectSelect;
 			break;
 		}
+		// Check if we're about to drag/move current selection..
+		if (m_rectSelect.contains(m_posDrag)) {
+			// Start drag-moving...
+			m_dragState = DragMove;
+			m_rectDrag  = m_rectSelect;
+			updateDragMove(pScrollView, pos + m_posStep);
+			// Show appropriate mouse cursor...
+			pScrollView->viewport()->setCursor(QCursor(Qt::SizeHorCursor));
+			break;
+		}
 		// Just about to start rubber-banding...
 		m_dragState = DragSelect;
 		// Take care of no-selection modifier...
@@ -803,10 +1019,16 @@ bool qtractorAudioEditor::dragMoveUpdate (
 		// Update selection resize...
 		dragResizeUpdate(pScrollView, pos);
 		break;
+	case DragMove:
+	case DragPaste:
+		// Drag-moving...
+		updateDragMove(pScrollView, pos + m_posStep);
+		break;
 	case DragNone:
 		// Check for selection resize...
 		dragResizeStart(pScrollView, pos);
 		// Fall thru...
+	case DragStep:
 	default:
 		break;
 	}
@@ -863,7 +1085,16 @@ bool qtractorAudioEditor::dragMoveCommit (
 		// Commit selection resize...
 		dragResizeCommit(pScrollView, pos);
 		break;
+	case DragMove:
+		// Move it...
+		executeDragMove(pScrollView, pos + m_posStep);
+		break;
+	case DragPaste:
+		// Paste it...
+		executeDragPaste(pScrollView, pos + m_posStep);
+		break;
 	case DragNone:
+	case DragStep:
 	default:
 		break;
 	}
@@ -916,7 +1147,8 @@ void qtractorAudioEditor::dragResizeUpdate (
 	QRect rectUpdate(m_rectSelect);
 
 	const int x0 = pTimeScale->pixelFromFrame(offset());
-	const int x1 = pixelSnap(x0 + pos.x()) - x0;
+	const int w2 = pTimeScale->pixelFromFrame(offset() + length()) - x0;
+	const int x1 = qBound(0, (int)pixelSnap(x0 + pos.x()) - x0, w2);
 	switch (m_dragState) {
 	case DragResizeLeft:
 		if (m_rectSelect.right() > x1) {
@@ -953,6 +1185,92 @@ void qtractorAudioEditor::dragResizeCommit (
 	dragResizeUpdate(pScrollView, pos);
 
 	selectionChangeNotify();
+}
+
+
+// Drag-move current selection.
+void qtractorAudioEditor::updateDragMove (
+	qtractorScrollView *pScrollView, const QPoint& pos )
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	const int wm = (m_rectDrag.width() >> 1);
+	pScrollView->ensureVisible(pos.x() + wm, 0, wm, 0);
+
+	const int dx = pos.x() - m_rectDrag.x();
+	const int x0 = pTimeScale->pixelFromFrame(offset());
+	const int w2 = pTimeScale->pixelFromFrame(offset() + length()) - x0;
+	const int x1 = qBound(0, (int)pixelSnap(x0 + m_rectDrag.x() + dx) - x0, w2);
+
+	m_rectDrag.moveTopLeft(QPoint(x1, 0));
+
+	moveRubberBand(pScrollView,
+		QRect(pScrollView->contentsToViewport(
+			m_rectDrag.topLeft()),
+			m_rectDrag.size()), 1);
+
+	// Show drag/move selection tooltip...
+	showToolTip(pScrollView, m_rectDrag);
+}
+
+
+// Finalize the selection drag-move.
+void qtractorAudioEditor::executeDragMove (
+	qtractorScrollView *pScrollView, const QPoint& pos )
+{
+	if (m_pAudioClip == nullptr)
+		return;
+
+	updateDragMove(pScrollView, pos + m_posStep);
+
+	// TODO: ?...
+	//
+	executeEditSelect(Move);
+}
+
+
+// Finalize the selection drag-paste.
+void qtractorAudioEditor::executeDragPaste (
+	qtractorScrollView *pScrollView, const QPoint& pos )
+{
+	if (m_pAudioClip == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	if (!isClipboard())
+		return;
+
+	updateDragMove(pScrollView, pos + m_posStep);
+
+	const unsigned long f0 = offset();
+	const int x0 = pTimeScale->pixelFromFrame(f0);
+	const unsigned long iFrameStart
+		= pTimeScale->frameFromPixel(x0 + m_rectDrag.x()) - f0;
+
+	const float fRatio
+		= float(g_clipboard.sampleRate) / float(pTimeScale->sampleRate());
+
+	const unsigned long iStart
+		= ::lrintf(fRatio * float(iFrameStart));
+	const unsigned long iLength
+		= g_clipboard.frames;
+
+	clearSelect();
+
+	qtractorAudioEditCommand *pEditCommand
+		= new qtractorAudioEditCommand(
+			m_pAudioClip,
+			tr("paste audio"),
+			qtractorAudioEditCommand::InsertRange,
+			iStart, iLength,
+			0, g_clipboard.filename);
+
+	execute(pEditCommand);
 }
 
 
@@ -1064,13 +1382,19 @@ void qtractorAudioEditor::resetDragState ( qtractorScrollView *pScrollView )
 {
 	qtractorEditor::resetDragState(pScrollView);
 
+	m_rectDrag = QRect(0, 0, 0, 0);
+	m_posStep = QPoint(0, 0);
+
 	if (pScrollView) {
 		if (m_dragState != DragNone) {
 			m_dragCursor = DragNone;
 			pScrollView->viewport()->unsetCursor();
 		}
-		if (m_dragState == DragResizeLeft ||
-			m_dragState == DragResizeRight) {
+		if (m_dragState == DragResizeLeft  ||
+			m_dragState == DragResizeRight ||
+			m_dragState == DragMove        ||
+			m_dragState == DragPaste       ||
+			m_dragState == DragStep) {
 			pScrollView->viewport()->update();
 		}
 	}
@@ -1100,15 +1424,25 @@ bool qtractorAudioEditor::keyPress ( qtractorScrollView *pScrollView,
 	switch (iKey) {
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
+		if (m_dragState == DragStep) {
+			executeDragMove(pScrollView, m_posDrag);
+		} else {
+			const QPoint& pos = pScrollView->viewportToContents(
+				pScrollView->viewport()->mapFromGlobal(QCursor::pos()));
+			if (m_dragState == DragMove)
+				executeDragMove(pScrollView, pos);
+			else if (m_dragState == DragPaste)
+				executeDragPaste(pScrollView, pos);
+		}
 		resetDragState(pScrollView);
 		break;
 	case Qt::Key_Escape:
-		if (m_dragState == DragResizeLeft || m_dragState == DragResizeRight) {
+		if (m_dragState == DragResizeLeft || m_dragState == DragResizeRight)
 			selectRect(pScrollView, m_rectDrag, false, true);
-		} else {
+		else
+		if (m_dragState == DragSelect)
 			clearSelect();
-			resetDragState(pScrollView);
-		}
+		resetDragState(pScrollView);
 		break;
 	case Qt::Key_Home:
 		if (modifiers & Qt::ControlModifier) {
@@ -1207,10 +1541,76 @@ bool qtractorAudioEditor::keyPress ( qtractorScrollView *pScrollView,
 bool qtractorAudioEditor::keyStep ( qtractorScrollView *pScrollView,
 	int iKey, const Qt::KeyboardModifiers& modifiers )
 {
-	// Only applicable if something is selected...
-	// TODO: ?...
-	//
-	return false;
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return false;
+
+	// Set initial bound conditions...
+	if (m_dragState == DragNone && m_rectSelect.width() > 1) {
+		m_dragState = m_dragCursor = DragStep;
+		m_rectDrag  = m_rectSelect;
+		m_posDrag   = m_rectDrag.topLeft();
+		m_posStep   = QPoint(0, 0);
+		updateDragMove(pScrollView, m_posDrag);
+		pScrollView->viewport()->setCursor(Qt::SizeHorCursor);
+	}
+
+	// Now to say the truth...
+	if (m_dragState != DragMove &&
+		m_dragState != DragStep &&
+		m_dragState != DragPaste)
+		return false;
+
+	// Only applicable if something is being dragged...
+	if (m_rectDrag.width() < 2)
+		return false;
+
+	const int x0 = pTimeScale->pixelFromFrame(offset());
+	const int w2 = pTimeScale->pixelFromFrame(offset() + length()) - x0;
+
+	int iHorizontalStep = 0;
+	int x1 = x0 + m_posStep.x();
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekPixel(x1);
+	if (modifiers & Qt::ShiftModifier) {
+		iHorizontalStep = pNode->pixelsPerBeat() * pNode->beatsPerBar;
+	} else {
+		unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
+		if (iSnapPerBeat > 0)
+			iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+	}
+	if (iHorizontalStep < 4)
+		iHorizontalStep = 4;
+	if (iKey == Qt::Key_Left)
+		x1 -= iHorizontalStep;
+	else
+		x1 += iHorizontalStep;
+	m_posStep.setX((x1 < 0 ? -pixelSnap(-x1) : pixelSnap(x1)) - x0);
+
+	// Early sanity check...
+	QPoint pos = m_posDrag;
+	if (m_dragState == DragMove || m_dragState == DragPaste) {
+		pos = pScrollView->viewportToContents(
+			pScrollView->viewport()->mapFromGlobal(QCursor::pos()));
+	}
+
+	int x2 = - pos.x();
+/*
+	if (m_dragState == DragMove || m_dragState == DragPaste)
+		x2 += (m_posDrag.x() + m_rectDrag.x());
+*/
+	if (m_posStep.x() < x2) {
+		m_posStep.setX (x2);
+	} else {
+		x2 += w2 - m_rectDrag.width();
+	if (m_posStep.x() > x2)
+		m_posStep.setX (x2);
+	}
+
+	// Do our deeds...
+	updateDragMove(pScrollView, pos + m_posStep);
+
+	return true;
 }
 
 
@@ -1241,6 +1641,17 @@ unsigned long qtractorAudioEditor::selectEnd (void) const
 
 	const int x0 = pTimeScale->pixelFromFrame(offset());
 	return frameSnap(pTimeScale->frameFromPixel(x0 + m_rectSelect.right()));
+}
+
+
+// Focus lost event.
+void qtractorAudioEditor::focusOut ( qtractorScrollView *pScrollView )
+{
+	if (m_dragState == DragStep ||
+		m_dragState == DragMove ||
+		m_dragState == DragPaste) {
+		resetDragState(pScrollView);
+	}
 }
 
 

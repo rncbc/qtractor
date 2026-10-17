@@ -26,6 +26,7 @@
 
 #include <QHash>
 #include <QMap>
+#include <QDir>
 
 
 // Forward declarations.
@@ -97,6 +98,9 @@ public:
 	// Whether there's any items on the clipboard.
 	static bool isClipboard();
 
+	// Clear the clipboard...
+	static void clearClipboard();
+
 	// Clipboard commands.
 	void cutClipboard();
 	void copyClipboard();
@@ -149,6 +153,9 @@ public:
 	bool keyStep(qtractorScrollView *pScrollView,
 		int iKey, const Qt::KeyboardModifiers& modifiers);
 
+	// Lost focus handler.
+	void focusOut(qtractorScrollView *pScrollView);
+
 	// Zoom centering context.
 	struct ZoomCenter
 	{
@@ -172,6 +179,9 @@ public:
 	static qtractorAudioPeakFactory *audioPeakFactory()
 		{ return g_pAudioPeakFactory; }
 
+	// Audio-peak reset method.
+	void resetAudioPeak() { createAudioPeak(); }
+
 	// Command list accessor.
 	qtractorCommandList *commands() const;
 
@@ -188,12 +198,12 @@ public slots:
 
 protected:
 
-	// Audio-peak live-cycle methods.
+	// Audio-peak life-cycle methods.
 	void createAudioPeak();
 	void deleteAudioPeak();
 
 	// Selection flags
-	enum { 
+	enum {
 		SelectNone   = 0,
 		SelectClear  = 1,
 		SelectToggle = 2,
@@ -210,6 +220,15 @@ protected:
 	void updateDragSelect(qtractorScrollView *pScrollView,
 		const QRect& rectSelect, int flags);
 
+	// Drag-move current selection.
+	void updateDragMove(qtractorScrollView *pScrollView, const QPoint& pos);
+
+	// Finalize the selection drag-move.
+	void executeDragMove(qtractorScrollView *pScrollView, const QPoint& pos);
+
+	// Finalize the selection drag-paste.
+	void executeDragPaste(qtractorScrollView *pScrollView, const QPoint& pos);
+
 	// Vertical line position drawing.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView);
 
@@ -217,6 +236,54 @@ protected:
 	bool dragResizeStart(qtractorScrollView *pScrollView, const QPoint& pos);
 	void dragResizeUpdate(qtractorScrollView *pScrollView, const QPoint& pos);
 	void dragResizeCommit(qtractorScrollView *pScrollView, const QPoint& pos);
+
+	//----------------------------------------------------------------------------
+	// Static clipboard for audio sample data.
+	//
+	struct Clipboard
+	{
+		Clipboard() : channels(0), sampleRate(0), frames(0) {}
+
+		~Clipboard() { clear(); }
+
+		bool isEmpty() const
+		{
+			return filename.isEmpty()
+				|| channels < 1
+				|| sampleRate < 1
+				|| frames == 0;
+		}
+
+		void reset()
+		{
+			filename.clear();
+			channels   = 0;
+			sampleRate = 0;
+			frames     = 0;
+		}
+
+		void clear()
+		{
+			reset();
+
+			QStringListIterator iter(filelist);
+			while (iter.hasNext())
+				QFile::remove(iter.next());
+		}
+
+		QString        filename;   // path to temp WAV holding copied frames
+		unsigned short channels;   // channel count
+		unsigned int   sampleRate; // original sample rate
+		unsigned long  frames;     // number of frames copied
+
+		QStringList    filelist;
+	};
+
+	// Selection edit command types.
+	enum EditCommand { Cut, Copy, Delete, Move };
+
+	// Clip selection executive method.
+	void executeEditSelect(EditCommand cmd);
 
 protected slots:
 
@@ -251,18 +318,24 @@ private:
 		DragStart,
 		DragSelect,
 		DragResizeLeft,
-		DragResizeRight
+		DragResizeRight,
+		DragStep,
+		DragMove,
+		DragPaste
 	} m_dragState, m_dragCursor;
 
 	// The current selecting/dragging stuff.
 	QPoint m_posDrag;
 	QRect m_rectDrag;
+	QPoint m_posStep;
 
 	// Current selection (in pixels).
 	QRect m_rectSelect;
 
-	static qtractorAudioPeakFactory *g_pAudioPeakFactory;
-	static unsigned int              g_iAudioPeakRefCount;
+	static qtractorAudioPeakFactory   *g_pAudioPeakFactory;
+	static unsigned int                g_iAudioPeakRefCount;
+
+	static Clipboard g_clipboard;
 };
 
 
