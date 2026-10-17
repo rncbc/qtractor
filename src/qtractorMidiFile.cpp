@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1341,39 +1341,6 @@ void qtractorMidiFile::writeMarker (
 		const QByteArray aMarker = pMarker->text.toLatin1();
 		writeData((unsigned char *) aMarker.constData(), aMarker.length());
 	}
-}
-
-
-// Create filename revision (name says it all).
-QString qtractorMidiFile::createFilePathRevision (
-	const QString& sFilename, int iRevision )
-{
-	QFileInfo fi(sFilename);
-
-	const QRegularExpression rxRevision("(.+)\\-(\\d+)$");
-	QString sBasename = fi.baseName();
-	QRegularExpressionMatch match = rxRevision.match(sBasename);
-	if (match.hasMatch()) {
-		sBasename = match.captured(1);
-		iRevision = match.captured(2).toInt();
-	}
-
-	sBasename += "-%1." + fi.completeSuffix();
-
-	if (iRevision < 1)
-		++iRevision;
-
-	const QDir adir(fi.absoluteDir());
-	fi.setFile(adir, sBasename.arg(iRevision));
-	while (fi.exists())
-		fi.setFile(adir, sBasename.arg(++iRevision));
-
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiFile::createFilePathRevision(\"%s\")",
-		fi.absoluteFilePath().toUtf8().constData());
-#endif
-
-	return fi.absoluteFilePath();
 }
 
 

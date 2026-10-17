@@ -1,7 +1,7 @@
 // qtractorScrollView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -172,7 +172,7 @@ void qtractorScrollView::resizeEvent ( QResizeEvent *pResizeEvent )
 void qtractorScrollView::paintEvent ( QPaintEvent *pPaintEvent )
 {
 	QPainter painter(QAbstractScrollArea::viewport());
-	drawContents(&painter, pPaintEvent->rect().adjusted(0, 0, 1, 1));
+	drawContents(painter, pPaintEvent->rect().adjusted(0, 0, 1, 1));
 }
 
 

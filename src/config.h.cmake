@@ -242,6 +242,9 @@
 /* Define if debugger stack-trace is enabled. */
 #cmakedefine CONFIG_STACKTRACE @CONFIG_STACKTRACE@
 
+/* Define if audio clip editor is enabled. */
+#cmakedefine CONFIG_AUDIO_EDITOR @CONFIG_AUDIO_EDITOR@
+
 /* Define if Wayland is supported (NOT RECOMMENDED) */
 #cmakedefine CONFIG_WAYLAND @CONFIG_WAYLAND@
 

@@ -1,7 +1,7 @@
 // qtractorAudioPeak.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,6 +32,7 @@
 
 
 // Forward declarations.
+class qtractorAudioPeakFactory;
 class qtractorAudioPeakThread;
 
 
@@ -44,7 +45,9 @@ class qtractorAudioPeakFile
 public:
 
 	// Constructor.
-	qtractorAudioPeakFile(const QString& sFilename, float fTimeStretch);
+	qtractorAudioPeakFile(
+		qtractorAudioPeakFactory *pPeakFactory,
+		const QString& sFilename, float fTimeStretch);
 
 	// Default destructor.
 	~qtractorAudioPeakFile();
@@ -57,8 +60,8 @@ public:
 
 	// Peak cache properties accessors.
 	QString name() const;
-	unsigned short period();
-	unsigned short channels();
+	unsigned short period() const;
+	unsigned short channels() const;
 
 	// Audio peak file header.
 	struct Header
@@ -100,7 +103,9 @@ public:
 	bool isWaitSync() const;
 
 	// Peak filename standard.
-	static QString peakName(const QString& sFilename, float fTimeStretch);
+	static QString peakName(
+		const QString& sFilename, float fTimeStretch,
+		unsigned short iPeakPeriod);
 
 protected:
 
@@ -114,6 +119,8 @@ protected:
 private:
 
 	// Instance variables.
+	qtractorAudioPeakFactory *m_pPeakFactory;
+
 	QString        m_sFilename;
 	float          m_fTimeStretch;
 
@@ -241,9 +248,6 @@ public:
 	// Cleanup method.
 	void cleanup();
 
-	// Singleton instance accessor.
-	static qtractorAudioPeakFactory *getInstance();
-
 signals:
 
 	// Peak ready signal.
@@ -267,9 +271,6 @@ private:
 
 	// The current running peak-period.
 	unsigned short m_iPeakPeriod;
-
-	// The pseudo-singleton instance.
-	static qtractorAudioPeakFactory *g_pPeakFactory;
 };
 
 

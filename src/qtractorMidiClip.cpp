@@ -183,9 +183,6 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 
 	m_pMidiEditorForm = nullptr;
 
-	m_iEditorHorizontalZoom = 100;
-	m_iEditorVerticalZoom = 100;
-
 	m_iEditorDrumMode = -1;
 
 	m_iBeatsPerBar2 = 0;
@@ -226,8 +223,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 
 	m_pMidiEditorForm = nullptr;
 
-	m_iEditorHorizontalZoom = clip.editorHorizontalZoom();
-	m_iEditorVerticalZoom = clip.editorVerticalZoom();
+	setEditorHorizontalZoom(clip.editorHorizontalZoom());
+	setEditorVerticalZoom(clip.editorVerticalZoom());
 
 	m_editorHorizontalSizes = clip.editorHorizontalSizes();
 	m_editorVerticalSizes = clip.editorVerticalSizes();
@@ -595,8 +592,11 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	}
 
 	if (m_iRevision == 0 || bForce) {
-		sFilename = pSession->createFilePath(pTrack->shortTrackName(), "mid");
-		sFilename = qtractorMidiFile::createFilePathRevision(sFilename);
+		const QFileInfo info(sFilename);
+		QString sExt = info.suffix();
+		if (sExt.isEmpty())
+			sExt = "mid";
+		sFilename = pSession->createFilePathEx(info.completeBaseName(), sExt);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorMidiClip::createFilePathRevision(%d): \"%s\" (%d)",
 			int(bForce), sFilename.toUtf8().constData(), m_iRevision);
@@ -1036,7 +1036,7 @@ void qtractorMidiClip::process_export (
 
 // MIDI clip paint method.
 void qtractorMidiClip::draw (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter& painter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
@@ -1072,8 +1072,8 @@ void qtractorMidiClip::draw (
 	const unsigned long iTimeEnd = pNode->tickFromPixel(cx + cw);
 
 	const QColor& fg = pTrack->foreground();
-	pPainter->setPen(fg);
-	pPainter->setBrush(fg.lighter(120));
+	painter.setPen(fg);
+	painter.setBrush(fg.lighter(120));
 
 	const bool bClipRecord = (pTrack->clipRecord() == this);
 	const int h1 = clipRect.height() - 2;
@@ -1087,7 +1087,7 @@ void qtractorMidiClip::draw (
 		diamond.append(QPoint(-h4, h4));
 		diamond.append(QPoint(  0, h2 + 2));
 		diamond.append(QPoint( h4, h4));
-		pPainter->setRenderHint(QPainter::Antialiasing, true);
+		painter.setRenderHint(QPainter::Antialiasing, true);
 	}
 
 	qtractorMidiEvent *pEvent
@@ -1112,16 +1112,16 @@ void qtractorMidiClip::draw (
 					const QPolygon& polyg
 						= QPolygon(diamond).translated(x, y);
 					if (h2 > 3)
-						pPainter->drawPolygon(polyg.translated(1, 0)); // shadow
-					pPainter->drawPolygon(polyg); // diamond
+						painter.drawPolygon(polyg.translated(1, 0)); // shadow
+					painter.drawPolygon(polyg); // diamond
 				} else {
 					int w = (t1 < t2 || !bClipRecord
 						? clipRect.x() + pNode->pixelFromTick(t2) - cx
 						: clipRect.right()) - x; // Pending note-off? (while recording)
 					if (w < 3) w = 3;
-					pPainter->fillRect(x, y, w, h2, fg);
+					painter.fillRect(x, y, w, h2, fg);
 					if (w > 4 && h2 > 3)
-						pPainter->fillRect(x + 1, y + 1, w - 4, h2 - 3, fg.lighter(140));
+						painter.fillRect(x + 1, y + 1, w - 4, h2 - 3, fg.lighter(140));
 				}
 			}
 		}
@@ -1129,7 +1129,7 @@ void qtractorMidiClip::draw (
 	}
 
 	if (bDrumMode)
-		pPainter->setRenderHint(QPainter::Antialiasing, false);
+		painter.setRenderHint(QPainter::Antialiasing, false);
 }
 
 
@@ -1197,7 +1197,7 @@ void qtractorMidiClip::updateEditor ( bool bSelectClear )
 	if (m_pMidiEditorForm == nullptr)
 		return;
 
-	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->midiEditor();
 	if (pMidiEditor) {
 		pMidiEditor->reset(bSelectClear);
 		pMidiEditor->setOffset(clipStart());
@@ -1228,7 +1228,7 @@ void qtractorMidiClip::updateEditorContents (void)
 	if (m_pMidiEditorForm == nullptr)
 		return;
 
-	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->midiEditor();
 	if (pMidiEditor)
 		pMidiEditor->updateContents();
 
@@ -1248,7 +1248,8 @@ void qtractorMidiClip::updateEditorTimeScale (void)
 			pSession->updateTimeScale();
 	}
 
-	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	qtractorMidiEditor *pMidiEditor
+		= static_cast<qtractorMidiEditor *> (m_pMidiEditorForm->editor());
 	if (pMidiEditor)
 		pMidiEditor->updateTimeScale();
 }
@@ -1261,8 +1262,8 @@ bool qtractorMidiClip::queryEditor (void)
 		return m_pMidiEditorForm->queryClose();
 
 	// Are any dirty changes pending commit?
-	bool bQueryEditor = qtractorClip::queryEditor();
-	if (!bQueryEditor) {
+	bool bQueryEditor = true;
+	if (isDirty()) {
 		switch (qtractorMidiEditorForm::querySave(filename())) {
 		case QMessageBox::Save:	{
 			// Save/replace the clip track...
@@ -1270,7 +1271,7 @@ bool qtractorMidiClip::queryEditor (void)
 			break;
 		}
 		case QMessageBox::Discard:
-			bQueryEditor = true;
+		//	bQueryEditor = true;
 			break;
 		case QMessageBox::Cancel:
 			bQueryEditor = false;
@@ -1368,19 +1369,17 @@ bool qtractorMidiClip::loadClipElement (
 			qtractorMidiClip::setRevision(eChild.text().toUShort());
 		else if (eChild.tagName() == "editor-pos") {
 			const QStringList& sxy = eChild.text().split(',');
-			m_posEditor.setX(sxy.at(0).toInt());
-			m_posEditor.setY(sxy.at(1).toInt());
+			setEditorPos(QPoint(sxy.at(0).toInt(), sxy.at(1).toInt()));
 		}
 		else if (eChild.tagName() == "editor-size") {
 			const QStringList& swh = eChild.text().split(',');
-			m_sizeEditor.setWidth(swh.at(0).toInt());
-			m_sizeEditor.setHeight(swh.at(1).toInt());
+			setEditorSize(QSize(swh.at(0).toInt(), swh.at(1).toInt()));
 		}
 		else if (eChild.tagName() == "editor-horizontal-zoom") {
-			m_iEditorHorizontalZoom = eChild.text().toUShort();
+			setEditorHorizontalZoom(eChild.text().toUShort());
 		}
 		else if (eChild.tagName() == "editor-vertical-zoom") {
-			m_iEditorVerticalZoom = eChild.text().toUShort();
+			setEditorVerticalZoom(eChild.text().toUShort());
 		}
 		else if (eChild.tagName() == "editor-horizontal-sizes") {
 			const QStringList& hsizes = eChild.text().split(',');
@@ -1422,25 +1421,32 @@ bool qtractorMidiClip::saveClipElement (
 		qtractorMidiClip::relativeFilename(pDocument), &eMidiClip);
 	pDocument->saveTextElement("track-channel",
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
-	pDocument->saveTextElement("revision",
-		QString::number(qtractorMidiClip::revision()), &eMidiClip);
-	if (m_posEditor.x() >= 0 && m_posEditor.y() >= 0) {
+	const unsigned short iRevision = qtractorMidiClip::revision();
+	if (iRevision > 0) {
+		pDocument->saveTextElement("revision",
+			QString::number(iRevision), &eMidiClip);
+	}
+	const QPoint& posEditor = editorPos();
+	if (posEditor.x() >= 0 && posEditor.y() >= 0) {
 		pDocument->saveTextElement("editor-pos",
-			QString::number(m_posEditor.x()) + ',' +
-			QString::number(m_posEditor.y()), &eMidiClip);
+			QString::number(posEditor.x()) + ',' +
+			QString::number(posEditor.y()), &eMidiClip);
 	}
-	if (!m_sizeEditor.isNull() && m_sizeEditor.isValid()) {
+	const QSize& sizeEditor = editorSize();
+	if (!sizeEditor.isNull() && sizeEditor.isValid()) {
 		pDocument->saveTextElement("editor-size",
-			QString::number(m_sizeEditor.width()) + ',' +
-			QString::number(m_sizeEditor.height()), &eMidiClip);
+			QString::number(sizeEditor.width()) + ',' +
+			QString::number(sizeEditor.height()), &eMidiClip);
 	}
-	if (m_iEditorHorizontalZoom != 100) {
+	const unsigned short iEditorHorizontalZoom = editorHorizontalZoom();
+	if (iEditorHorizontalZoom != 100) {
 		pDocument->saveTextElement("editor-horizontal-zoom",
-			QString::number(m_iEditorHorizontalZoom), &eMidiClip);
+			QString::number(iEditorHorizontalZoom), &eMidiClip);
 	}
-	if (m_iEditorVerticalZoom != 100) {
+	const unsigned short iEditorVerticalZoom = editorVerticalZoom();
+	if (iEditorVerticalZoom != 100) {
 		pDocument->saveTextElement("editor-vertical-zoom",
-			QString::number(m_iEditorVerticalZoom), &eMidiClip);
+			QString::number(iEditorVerticalZoom), &eMidiClip);
 	}
 	if (m_editorHorizontalSizes.count() >= 2) {
 		pDocument->saveTextElement("editor-horizontal-sizes",
@@ -1724,8 +1730,12 @@ void qtractorMidiClip::advanceStepInput (void)
 // Step-input editor update...
 void qtractorMidiClip::updateStepInput (void)
 {
-	if (m_pMidiEditorForm && m_pMidiEditorForm->editor()) {
-		m_pMidiEditorForm->editor()->setStepInputHead(
+	if (m_pMidiEditorForm == nullptr)
+		return;
+
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->midiEditor();
+	if (pMidiEditor) {
+		pMidiEditor->setStepInputHead(
 			m_iStepInputLast > 0 ? m_iStepInputTail : m_iStepInputHead);
 	}
 }

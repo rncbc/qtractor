@@ -74,10 +74,12 @@
 #include "qtractorTakeRangeForm.h"
 
 #include "qtractorAudioClip.h"
-
 #include "qtractorMidiClip.h"
+
+#include "qtractorEditorForm.h"
+
+#include "qtractorAudioEditor.h"
 #include "qtractorMidiEditor.h"
-#include "qtractorMidiEditorForm.h"
 
 #include "qtractorTrackCommand.h"
 #include "qtractorCurveCommand.h"
@@ -2510,6 +2512,9 @@ bool qtractorMainForm::closeSession (void)
 		qtractorLv2PluginType::lv2_close();
 	#endif
 		qtractorPluginFile::clearAll();
+		// Clear editors clipboard...
+		qtractorMidiEditor::clearClipboard();
+		qtractorAudioEditor::clearClipboard();
 	#ifdef CONFIG_LIBZ
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();
@@ -5481,11 +5486,11 @@ void qtractorMainForm::viewRefresh (void)
 		m_pThumbView->updateContents();
 
 	// Update other editors contents...
-	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	QListIterator<qtractorEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditorForm *pForm = iter.next();
+		qtractorEditorForm *pForm = iter.next();
 		pForm->updateTimeScale();
-		qtractorMidiEditor *pEditor = pForm->editor();
+		qtractorEditor *pEditor = pForm->editor();
 		pEditor->setEditHead(iEditHead, false);
 		pEditor->setEditTail(iEditTail, false);
 	}
@@ -6963,7 +6968,7 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 	m_pThumbView->updatePlayHead(iPlayHead);
 
 	// Update other editors thumb-views...
-	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	QListIterator<qtractorEditorForm *> iter(m_editors);
 	while (iter.hasNext())
 		iter.next()->updatePlayHead(iPlayHead);
 
@@ -7183,7 +7188,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_pThumbView->updateThumb();
 
 	// Update editors too...
-	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	QListIterator<qtractorEditorForm *> iter(m_editors);
 	while (iter.hasNext())
 		iter.next()->stabilizeForm();
 }
@@ -7715,7 +7720,7 @@ void qtractorMainForm::updateSyncViewHold (void)
 		m_pTracks->trackView()->setSyncViewHold(m_pOptions->bSyncViewHold);
 
 	// Update editors ...
-	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	QListIterator<qtractorEditorForm *> iter(m_editors);
 	while (iter.hasNext())
 		(iter.next()->editor())->setSyncViewHold(m_pOptions->bSyncViewHold);
 }
@@ -8333,13 +8338,13 @@ void qtractorMainForm::updateCustomStyleSheet (void)
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Editors stuff.
 
-void qtractorMainForm::addEditorForm ( qtractorMidiEditorForm *pEditorForm )
+void qtractorMainForm::addEditorForm ( qtractorEditorForm *pEditorForm )
 {
 	if (m_editors.indexOf(pEditorForm) < 0)
 		m_editors.append(pEditorForm);
 }
 
-void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
+void qtractorMainForm::removeEditorForm ( qtractorEditorForm *pEditorForm )
 {
 	const int iEditorForm = m_editors.indexOf(pEditorForm);
 	if (iEditorForm >= 0)
@@ -8358,9 +8363,9 @@ void qtractorMainForm::updateEditorForms (void)
 		wflags |= Qt::WindowStaysOnTopHint;
 	}
 
-	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	QListIterator<qtractorEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditorForm *pForm = iter.next();
+		qtractorEditorForm *pForm = iter.next();
 		const bool bVisible = pForm->isVisible();
 	#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
 		if (m_pOptions->bKeepEditorsOnTop)
@@ -8394,7 +8399,7 @@ void qtractorMainForm::fastTimerSlot (void)
 		m_pTracks->trackView()->setPlayHead(iPlayHead,
 			m_ui.transportFollowAction->isChecked());
 		// Update editors play-head...
-		QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+		QListIterator<qtractorEditorForm *> iter(m_editors);
 		while (iter.hasNext())
 			(iter.next()->editor())->setPlayHead(iPlayHead);
 		// Update transport status anyway...
@@ -9659,9 +9664,9 @@ void qtractorMainForm::selectNotifySlot ( QObject *pSender )
 	}
 
 	// Update editors edit-head/tails...
-	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	QListIterator<qtractorEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditor *pEditor = (iter.next())->editor();
+		qtractorEditor *pEditor = (iter.next())->editor();
 		if (pEditor != pMidiEditor) {
 			pEditor->setEditHead(iEditHead, false);
 			pEditor->setEditTail(iEditTail, false);
@@ -9706,7 +9711,7 @@ void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 
 // Common update helper.
 void qtractorMainForm::updateContents (
-	qtractorMidiEditor *pMidiEditor, bool bRefresh )
+	qtractorEditor *pEditor, bool bRefresh )
 {
 	// Maybe, just maybe, we've made things larger...
 	m_pTempoCursor->clear();
@@ -9719,10 +9724,10 @@ void qtractorMainForm::updateContents (
 		m_pTracks->updateContents(bRefresh);
 
 	// Update other editors contents...
-	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	QListIterator<qtractorEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditorForm *pForm = iter.next();
-		if (pForm->editor() != pMidiEditor)
+		qtractorEditorForm *pForm = iter.next();
+		if (pForm->editor() != pEditor)
 			pForm->updateTimeScale();
 	}
 
