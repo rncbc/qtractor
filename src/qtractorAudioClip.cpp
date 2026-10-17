@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioClip.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorAudioFile.h"
 #include "qtractorAudioPeak.h"
 
 #include "qtractorTimeStretcher.h"
@@ -31,6 +32,18 @@
 #include "qtractorSession.h"
 #include "qtractorFileList.h"
 
+#if !defined(CONFIG_AUDIO_EDITOR)
+#include "qtractorClipForm.h"
+#endif
+
+#include "qtractorAudioEditor.h"
+#include "qtractorAudioEditorForm.h"
+
+#include "qtractorMainForm.h"
+
+#include "qtractorOptions.h"
+
+#include <QMessageBox>
 #include <QFileInfo>
 #include <QPainter>
 #include <QPolygon>
@@ -132,6 +145,43 @@ qtractorAudioClip::Hash qtractorAudioClip::g_hashTable;
 
 
 //----------------------------------------------------------------------
+// class qtractorAudioClip::FileKey -- Audio file hash key.
+//
+class qtractorAudioClip::FileKey
+{
+public:
+
+	// Constructor.
+	FileKey(qtractorAudioClip::Key *pKey) :
+		m_sFilename(pKey->filename()) {}
+
+	// Key accessors.
+	const QString& filename() const
+		{ return m_sFilename; }
+
+	// Match descriminator.
+	bool operator== (const FileKey& other) const
+	{
+		return m_sFilename == other.filename();
+	}
+
+private:
+
+	// Interesting variables.
+	QString m_sFilename;
+};
+
+
+uint qHash ( const qtractorAudioClip::FileKey& key )
+{
+	return qHash(key.filename());
+}
+
+
+qtractorAudioClip::FileHash qtractorAudioClip::g_hashFiles;
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioClip -- Audio file/buffer clip.
 //
 
@@ -151,6 +201,10 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	m_iOverlap = 0;
 
 	m_pFractGains = nullptr;
+
+	m_iRevision = 0;
+
+	m_pAudioEditorForm = nullptr;
 }
 
 // Copy constructor.
@@ -169,6 +223,10 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	m_iOverlap = clip.overlap();
 
 	m_pFractGains = nullptr;
+
+	m_iRevision = clip.revision();
+
+	m_pAudioEditorForm = nullptr;
 
 	setFilename(clip.filename());
 	setClipName(clip.clipName());
@@ -220,7 +278,8 @@ bool qtractorAudioClip::isOverlap ( unsigned int iOverlapSize ) const
 }
 
 
-// The main use method.
+// The main use methods.
+//
 bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 {
 	closeAudioFile();
@@ -356,11 +415,14 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	updateHashKey();
 	insertHashKey();
 
+	// Update/reset audio clip editor if any...
+	//if (m_pAudioEditorForm)
+	//	m_pAudioEditorForm->setup(this);
+
 	return true;
 }
 
 
-// Private cleanup.
 void qtractorAudioClip::closeAudioFile (void)
 {
 	if (m_pData) {
@@ -389,10 +451,147 @@ void qtractorAudioClip::closeAudioFile (void)
 }
 
 
+// Revisionist method.
+QString qtractorAudioClip::createFilePathRevision ( bool bForce )
+{
+	QString sFilename = filename();
+
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return sFilename;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return sFilename;
+
+	// Check file-hash reference...
+	if (m_iRevision > 0 && m_pKey) {
+		FileKey fkey(m_pKey);
+		FileHash::ConstIterator fiter = g_hashFiles.constFind(fkey);
+		if (fiter != g_hashFiles.constEnd() && fiter.value() > 1)
+			m_iRevision = 0;
+	}
+
+	if (m_iRevision == 0 || bForce) {
+		const QFileInfo info(sFilename);
+		QString sExt = info.suffix();
+		if (sExt.isEmpty())
+			sExt = qtractorAudioFileFactory::defaultExt();
+		sFilename = pSession->createFilePathEx(info.completeBaseName(), sExt);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorAudioClip::createFilePathRevision(%d): \"%s\" (%d)",
+			int(bForce), sFilename.toUtf8().constData(), m_iRevision);
+	#endif
+		m_iRevision = 0;
+	}
+
+	++m_iRevision;
+
+	return sFilename;
+}
+
+
+// Sync all ref-counted filenames.
+void qtractorAudioClip::setFilenameEx ( const QString& sFilename, bool bUpdate )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	if (m_pData == nullptr)
+		return;
+
+	removeHashKey();
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext()) {
+		qtractorAudioClip *pAudioClip = iter.next();
+		pSession->files()->removeClipItem(qtractorFileList::Audio, pAudioClip);
+		pAudioClip->setFilename(sFilename);
+		pAudioClip->updateHashKey();
+		pSession->files()->addClipItem(qtractorFileList::Audio, pAudioClip, true);
+		if (bUpdate) {
+			pAudioClip->setDirty(false);
+			pAudioClip->updateEditor(true);
+		}
+	}
+
+	insertHashKey();
+}
+
+
+// Sync all ref-counted clip-lengths.
+void qtractorAudioClip::setClipLengthEx ( unsigned long iClipLength )
+{
+	if (m_pData == nullptr)
+		return;
+
+	removeHashKey();
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext()) {
+		qtractorAudioClip *pAudioClip = iter.next();
+		pAudioClip->setClipLength(iClipLength);
+		pAudioClip->updateHashKey();
+	}
+
+	insertHashKey();
+}
+
+
+// Sync all ref-counted clip editors.
+void qtractorAudioClip::updateEditorEx ( bool bSelectClear )
+{
+	if (m_pData == nullptr)
+		return;
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->updateEditor(bSelectClear);
+}
+
+
+// Sync all ref-counted clip-dirtyness.
+void qtractorAudioClip::setDirtyEx ( bool bDirty )
+{
+	if (m_pData == nullptr)
+		return;
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->setDirty(bDirty);
+}
+
+
+// Reset all ref-counted clip audio-peaks.
+void qtractorAudioClip::resetAudioPeakEx (void)
+{
+	if (m_pData == nullptr)
+		return;
+
+	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	while (iter.hasNext())
+		iter.next()->resetAudioPeak();
+}
+
+
 // Manage local hash key.
 void qtractorAudioClip::insertHashKey (void)
 {
-	if (m_pKey) g_hashTable.insert(*m_pKey, m_pData);
+	if (m_pKey) {
+		// Increment file-hash reference...
+		FileKey fkey(m_pKey);
+		FileHash::Iterator fiter = g_hashFiles.find(fkey);
+		if (fiter == g_hashFiles.end())
+			fiter =  g_hashFiles.insert(fkey, 0);
+		++fiter.value();
+		// Insert actual clip-hash reference....
+		g_hashTable.insert(*m_pKey, m_pData);
+	}
 }
 
 
@@ -407,7 +606,17 @@ void qtractorAudioClip::updateHashKey (void)
 
 void qtractorAudioClip::removeHashKey (void)
 {
-	if (m_pKey) g_hashTable.remove(*m_pKey);
+	if (m_pKey) {
+		// Decrement file-hash reference...
+		FileKey fkey(m_pKey);
+		FileHash::Iterator fiter = g_hashFiles.find(fkey);
+		if (fiter != g_hashFiles.end()) {
+			if (--fiter.value() < 1)
+				g_hashFiles.remove(fkey);
+		}
+		// Remove actual clip-hash reference....
+		g_hashTable.remove(*m_pKey);
+	}
 }
 
 
@@ -585,6 +794,13 @@ void qtractorAudioClip::close (void)
 		}
 	}
 
+	// Sure close audio clip editor if any...
+	if (m_pAudioEditorForm) {
+		m_pAudioEditorForm->close();
+		delete m_pAudioEditorForm;
+		m_pAudioEditorForm = nullptr;
+	}
+
 	// Close and ditch stuff...
 	closeAudioFile();
 }
@@ -659,7 +875,7 @@ void qtractorAudioClip::process_export (
 
 // Audio clip paint method.
 void qtractorAudioClip::draw (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter& painter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	qtractorSession *pSession = track()->session();
 	if (pSession == nullptr)
@@ -727,11 +943,11 @@ void qtractorAudioClip::draw (
 	// Close, draw and free the polygons...
 	QColor fg(track()->foreground());
 	fg.setAlpha(200);
-	pPainter->setPen(fg.lighter(140));
-	pPainter->setBrush(fg);
+	painter.setPen(fg.lighter(140));
+	painter.setBrush(fg);
 	for (k = 0; k < iChannels; ++k) {
-		pPainter->drawPolygon(*pPolyMax[k]);
-		pPainter->drawPolygon(*pPolyRms[k]);
+		painter.drawPolygon(*pPolyMax[k]);
+		painter.drawPolygon(*pPolyRms[k]);
 		delete pPolyRms[k];
 		delete pPolyMax[k];
 	}
@@ -739,6 +955,141 @@ void qtractorAudioClip::draw (
 	// Done on polygons.
 	delete [] pPolyRms;
 	delete [] pPolyMax;
+}
+
+
+// Clip editor method.
+bool qtractorAudioClip::startEditor ( QWidget *pParent )
+{
+#if !defined(CONFIG_AUDIO_EDITOR)
+	// Make sure the regular clip-form is started modal...
+	qtractorClipForm clipForm(pParent);
+	clipForm.setClip(this);
+	return clipForm.exec();
+#else
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return false;
+
+	if (m_pAudioEditorForm == nullptr) {
+		// Build up the editor form...
+		// What style do we create tool childs?
+		Qt::WindowFlags wflags = Qt::Window;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bKeepEditorsOnTop) {
+			wflags |= Qt::Tool;
+		//	wflags |= Qt::WindowStaysOnTopHint;
+		#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
+			// Make sure it has a parent...
+			if (pParent == nullptr)
+				pParent = qtractorMainForm::getInstance();
+		#else
+			// Make sure it's a top-level window...
+			pParent = nullptr;
+		#endif
+		}
+		// Do it...
+		m_pAudioEditorForm = new qtractorAudioEditorForm(pParent, wflags);
+		m_pAudioEditorForm->show();
+		m_pAudioEditorForm->setup(this);
+	} else {
+		// Just show up the editor form...
+		m_pAudioEditorForm->setup();
+		m_pAudioEditorForm->show();
+	}
+
+	// Get it up any way...
+	m_pAudioEditorForm->raise();
+	m_pAudioEditorForm->activateWindow();
+
+	return true;
+#endif // CONFIG_AUDIO_EDITOR
+}
+
+
+// Clip editor update.
+void qtractorAudioClip::updateEditor ( bool bSelectClear )
+{
+	update();
+
+	if (m_pAudioEditorForm == nullptr)
+		return;
+
+	qtractorAudioEditor *pAudioEditor = m_pAudioEditorForm->audioEditor();
+	if (pAudioEditor) {
+		pAudioEditor->setOffset(clipStart());
+		pAudioEditor->setLength(clipLength());
+		qtractorTrack *pTrack = track();
+		if (pTrack) {
+			pAudioEditor->setForeground(pTrack->foreground());
+			pAudioEditor->setBackground(pTrack->background());
+
+		}
+		pAudioEditor->updateContents();
+	}
+
+	m_pAudioEditorForm->resetDirtyCount();
+	m_pAudioEditorForm->stabilizeForm();
+}
+
+
+// Clip editor update.
+void qtractorAudioClip::updateEditorContents (void)
+{
+	if (m_pAudioEditorForm == nullptr)
+		return;
+
+	qtractorAudioEditor *pAudioEditor = m_pAudioEditorForm->audioEditor();
+	if (pAudioEditor)
+		pAudioEditor->updateContents();
+
+	m_pAudioEditorForm->stabilizeForm();
+}
+
+
+void qtractorAudioClip::updateEditorTimeScale (void)
+{
+	if (m_pAudioEditorForm == nullptr)
+		return;
+
+	qtractorTrack *pTrack = track();
+	if (pTrack) {
+		qtractorSession *pSession = pTrack->session();
+		if (pSession)
+			pSession->updateTimeScale();
+	}
+
+	qtractorAudioEditor *pAudioEditor = m_pAudioEditorForm->audioEditor();
+	if (pAudioEditor)
+		pAudioEditor->updateTimeScale();
+}
+
+
+// Clip query-close method (return true if editing is done).
+bool qtractorAudioClip::queryEditor (void)
+{
+	if (m_pAudioEditorForm)
+		return m_pAudioEditorForm->queryClose();
+
+	// Are any dirty changes pending commit?
+	bool bQueryEditor = true;
+	if (isDirty()) {
+		switch (qtractorAudioEditorForm::querySave(filename())) {
+		case QMessageBox::Save:	{
+			// Save/replace the clip track...
+			bQueryEditor = saveCopyFile(createFilePathRevision(), true);
+			break;
+		}
+		case QMessageBox::Discard:
+		//	bQueryEditor = true;
+			break;
+		case QMessageBox::Cancel:
+			bQueryEditor = false;
+			break;
+		}
+	}
+
+	return bQueryEditor;
 }
 
 
@@ -772,6 +1123,119 @@ QString qtractorAudioClip::toolTip (void) const
 	}
 
 	return sToolTip;
+}
+
+
+// Special audio-peak reset method.
+void qtractorAudioClip::resetAudioPeak (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	qtractorAudioPeakFactory *pPeakFactory
+		= pSession->audioPeakFactory();
+	if (pPeakFactory == nullptr)
+		return;
+
+	if (m_pPeak)
+		delete m_pPeak;
+
+	m_pPeak = pPeakFactory->createPeak(filename(), timeStretch());
+
+	if (m_pAudioEditorForm)
+		m_pAudioEditorForm->resetAudioPeak();
+}
+
+
+// Auto-save to (possible) new file revision.
+bool qtractorAudioClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return false;
+
+	// Do nothing if session is yet untitled...
+	if (pSession->sessionName().isEmpty())
+		return false;
+
+	// Open the source file independently (not through the ring-buffer).
+	qtractorAudioFile *pSrc
+		= qtractorAudioFileFactory::createAudioFile(filename());
+	if (pSrc == nullptr)
+		return false;
+	if (!pSrc->open(filename(), qtractorAudioFile::Read)) {
+		delete pSrc;
+		return false;
+	}
+
+	const unsigned short iChannels   = pSrc->channels();
+	const unsigned int   iSampleRate = pSrc->sampleRate();
+	// Copy from file beginning through the end of the clip region.
+	const unsigned long  iFrames     = clipOffset() + clipLength();
+
+	if (iChannels < 1) {
+		pSrc->close(); delete pSrc;
+		return false;
+	}
+
+	// Create the destination revision file with the same format.
+	qtractorAudioFile *pDst
+		= qtractorAudioFileFactory::createAudioFile(
+			sFilename, iChannels, iSampleRate, 4096, -1);
+	if (pDst == nullptr) {
+		pSrc->close(); delete pSrc;
+		return false;
+	}
+	if (!pDst->open(sFilename, qtractorAudioFile::Write)) {
+		delete pDst;
+		pSrc->close(); delete pSrc;
+		return false;
+	}
+
+	pSrc->seek(0);
+
+	const unsigned int iBufSize = 4096;
+	float **ppBuf = new float *[iChannels];
+	for (unsigned short c = 0; c < iChannels; ++c)
+		ppBuf[c] = new float[iBufSize];
+
+	unsigned long iPos = 0;
+	while (iPos < iFrames) {
+		const unsigned int n = (unsigned int) qMin((unsigned long)iBufSize, iFrames - iPos);
+		const int r = pSrc->read(ppBuf, n);
+		if (r <= 0) break;
+		pDst->write(ppBuf, (unsigned int)r);
+		iPos += (unsigned long)r;
+	}
+
+	for (unsigned short c = 0; c < iChannels; ++c)
+		delete[] ppBuf[c];
+	delete[] ppBuf;
+
+	pSrc->close(); delete pSrc;
+	pDst->close(); delete pDst;
+
+	if (bUpdate)
+		setFilenameEx(sFilename, true);
+
+	// Reference for immediate file addition...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		pMainForm->appendMessages(
+			QObject::tr("Audio file save: \"%1\".").arg(sFilename));
+		pMainForm->addAudioFile(sFilename);
+	}
+
+	return true;
 }
 
 
@@ -814,6 +1278,20 @@ bool qtractorAudioClip::loadClipElement (
 				qtractorDocument::boolFromText(eChild.text()));
 	#endif
 	#endif
+		else if (eChild.tagName() == "revision")
+			qtractorAudioClip::setRevision(eChild.text().toUShort());
+		else if (eChild.tagName() == "editor-pos") {
+			const QStringList& sxy = eChild.text().split(',');
+			setEditorPos(QPoint(sxy.at(0).toInt(), sxy.at(1).toInt()));
+		}
+		else if (eChild.tagName() == "editor-size") {
+			const QStringList& swh = eChild.text().split(',');
+			setEditorSize(QSize(swh.at(0).toInt(), swh.at(1).toInt()));
+		}
+		else if (eChild.tagName() == "editor-horizontal-zoom")
+			setEditorHorizontalZoom(eChild.text().toUShort());
+		else if (eChild.tagName() == "editor-vertical-zoom")
+			setEditorVerticalZoom(eChild.text().toUShort());
 	}
 
 	return true;
@@ -850,6 +1328,33 @@ bool qtractorAudioClip::saveClipElement (
 				qtractorTimeStretcher::RubberBandFinerR3)), &eAudioClip);
 #endif
 #endif
+	const unsigned short iRevision = qtractorAudioClip::revision();
+	if (iRevision > 0) {
+		pDocument->saveTextElement("revision",
+			QString::number(iRevision), &eAudioClip);
+	}
+	const QPoint& posEditor = editorPos();
+	if (posEditor.x() >= 0 && posEditor.y() >= 0) {
+		pDocument->saveTextElement("editor-pos",
+			QString::number(posEditor.x()) + ',' +
+			QString::number(posEditor.y()), &eAudioClip);
+	}
+	const QSize& sizeEditor = editorSize();
+	if (!sizeEditor.isNull() && sizeEditor.isValid()) {
+		pDocument->saveTextElement("editor-size",
+			QString::number(sizeEditor.width()) + ',' +
+			QString::number(sizeEditor.height()), &eAudioClip);
+	}
+	const unsigned short iEditorHorizontalZoom = editorHorizontalZoom();
+	if (iEditorHorizontalZoom != 100) {
+		pDocument->saveTextElement("editor-horizontal-zoom",
+			QString::number(iEditorHorizontalZoom), &eAudioClip);
+	}
+	const unsigned short iEditorVerticalZoom = editorVerticalZoom();
+	if (iEditorVerticalZoom != 100) {
+		pDocument->saveTextElement("editor-vertical-zoom",
+			QString::number(iEditorVerticalZoom), &eAudioClip);
+	}
 	pElement->appendChild(eAudioClip);
 
 	return true;

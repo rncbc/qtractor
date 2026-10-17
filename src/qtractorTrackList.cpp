@@ -1196,7 +1196,7 @@ QList<qtractorTrack *> qtractorTrackList::selectedTracks (
 
 // Draw table cell.
 void qtractorTrackList::drawCell (
-	QPainter *pPainter, int iRow, int iCol, const QRect& rect ) const
+	QPainter& painter, int iRow, int iCol, const QRect& rect ) const
 {
 	const QPalette& pal = qtractorScrollView::palette();
 	const Item *pItem = m_items.at(iRow);
@@ -1225,15 +1225,15 @@ void qtractorTrackList::drawCell (
 	QLinearGradient grad(0, rect.top(), 0, rect.bottom());
 	grad.setColorAt(0.4, bg);
 	grad.setColorAt(1.0, bg.darker(120));
-	pPainter->fillRect(rect, grad);
+	painter.fillRect(rect, grad);
 #else
-	pPainter->fillRect(rect, bg);
+	painter.fillRect(rect, bg);
 #endif
-	pPainter->setPen(fg);
+	painter.setPen(fg);
 	if (iCol == Number) {
 		if (pItem->icon.isNull()
 			|| rect.height() > qtractorTrack::HeightMin + 4) {
-			pPainter->drawText(rectText,
+			painter.drawText(rectText,
 				Qt::AlignHCenter | Qt::AlignTop,
 				QString::number(iRow + 1));
 		}
@@ -1241,17 +1241,17 @@ void qtractorTrackList::drawCell (
 			const int x = rect.left()
 				+ ((rect.width() - pItem->icon.width()) >> 1);
 			const int y = rect.bottom()	- (pItem->icon.height() + 2);
-			pPainter->drawPixmap(x, y, pItem->icon) ;
+			painter.drawPixmap(x, y, pItem->icon) ;
 		}
 	} else if (iCol == Channel) {
 		if ((pItem->track)->trackType() == qtractorTrack::Midi
 			|| rect.height() < qtractorTrack::HeightMin + 4) {
-			pPainter->drawText(rectText,
+			painter.drawText(rectText,
 				Qt::AlignHCenter | Qt::AlignTop,
 				pItem->text.at(iCol - 1));
 		}
 	} else if (iCol == Bus) {
-		pPainter->fillRect( // ribbon filler...
+		painter.fillRect( // ribbon filler...
 			rect.x() + 2, rect.y() + 2, 4, rect.height() - 4,
 			pItem->ribbon);
 		rectText.setX(rectText.x() + 6); // ribbon spacing...
@@ -1268,14 +1268,14 @@ void qtractorTrackList::drawCell (
 			break;
 		}
 		if (pPixmap) {
-			pPainter->drawPixmap(rectText.x(), rectText.y(), *pPixmap);
+			painter.drawPixmap(rectText.x(), rectText.y(), *pPixmap);
 			if ((pItem->track)->trackType() == qtractorTrack::Midi &&
 				(pItem->track)->pluginList()) {
 				qtractorMidiManager *pMidiManager
 					= ((pItem->track)->pluginList())->midiManager();
 				if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
-					const int h = QFontMetrics(pPainter->font()).height();
-					pPainter->drawPixmap(
+					const int h = QFontMetrics(painter.font()).height();
+					painter.drawPixmap(
 						rectText.x(),
 						rectText.y() + h,
 						*m_pPixmap[IconAudio]);
@@ -1301,7 +1301,7 @@ void qtractorTrackList::drawCell (
 			}
 			pItem->plugins->setPalette(pal2);
 		}
-		pPainter->drawText(rectText,
+		painter.drawText(rectText,
 			Qt::AlignLeft | Qt::AlignTop,
 			pItem->text.at(iCol - 1));
 	} else {
@@ -1311,18 +1311,18 @@ void qtractorTrackList::drawCell (
 			else
 				rectText.setBottom((pItem->buttons)->pos().y() - 4);
 		}
-		pPainter->drawText(rectText,
+		painter.drawText(rectText,
 			Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap,
 			pItem->text.at(iCol - 1));
 	}
 
 	// Do some simple embossing...
-	pPainter->setPen(bg.lighter(120));
-	pPainter->drawLine(rect.left(), rect.top(), rect.left(), rect.bottom());
-	pPainter->drawLine(rect.left(), rect.top(), rect.right(), rect.top());
-	pPainter->setPen(bg.darker(120));
-	pPainter->drawLine(rect.right(), rect.top(), rect.right(), rect.bottom());
-	pPainter->drawLine(rect.left(), rect.bottom(), rect.right(), rect.bottom());
+	painter.setPen(bg.lighter(120));
+	painter.drawLine(rect.left(), rect.top(), rect.left(), rect.bottom());
+	painter.drawLine(rect.left(), rect.top(), rect.right(), rect.top());
+	painter.setPen(bg.darker(120));
+	painter.drawLine(rect.right(), rect.top(), rect.right(), rect.bottom());
+	painter.drawLine(rect.left(), rect.bottom(), rect.right(), rect.bottom());
 }
 
 
@@ -1414,7 +1414,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 						}
 					}
 					// Paint item cell...
-					drawCell(&painter, iTrack, iCol, rect);
+					drawCell(painter, iTrack, iCol, rect);
 				}
 				else if (iCol == Name)
 					pItem->updateButtons(this, false);
@@ -1442,9 +1442,9 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 
 
 // Draw the time scale.
-void qtractorTrackList::drawContents ( QPainter *pPainter, const QRect& rect )
+void qtractorTrackList::drawContents ( QPainter& painter, const QRect& rect )
 {
-	pPainter->drawPixmap(rect, m_pixmap, rect);
+	painter.drawPixmap(rect, m_pixmap, rect);
 }
 
 

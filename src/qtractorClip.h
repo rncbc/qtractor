@@ -29,6 +29,7 @@
 
 // Forward declarations.
 class qtractorClipCommand;
+class qtractorCommandList;
 
 class QWidget;
 
@@ -159,6 +160,10 @@ public:
 	// Compute clip gain, given current fade-in/out slopes.
 	float fadeInOutGain(unsigned long iOffset) const;
 
+	// Draw fade-in/out slope.
+	void drawFadeInOut(QPainter& painter,
+		FadeMode fadeMode, const QRect& rect);
+
 	// Clip fade-in/out types helpers
 	//
 	struct FadeTypeInfo {
@@ -175,9 +180,9 @@ public:
 	void updateClipTime();
 
 	// Clip paint methods.
-	void drawClip(QPainter *pPainter,
+	void drawClip(QPainter& painter,
 		const QRect& clipRect, unsigned long iClipOffset);
-	void drawClipRecord(QPainter *pPainter,
+	void drawClipRecord(QPainter& painter,
 		const QRect& clipRect, unsigned long iClipOffset);
 
 	// Clip (re)open method.
@@ -204,17 +209,18 @@ public:
 		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
 
 	// Clip paint method.
-	virtual void draw(QPainter *pPainter,
+	virtual void draw(QPainter& painter,
 		const QRect& clipRect, unsigned long iClipOffset) = 0;
 
 	// Clip update method.
 	virtual void update() = 0;
 
 	// Clip editor methods.
-	virtual bool startEditor(QWidget *pParent = nullptr);
-	virtual void updateEditor(bool bSelectClear);
-	virtual void updateEditorContents();
-	virtual bool queryEditor();
+	virtual bool startEditor(QWidget *pParent = nullptr) = 0;
+	virtual void updateEditor(bool bSelectClear) = 0;
+	virtual void updateEditorContents() = 0;
+	virtual void updateEditorTimeScale() = 0;
+	virtual bool queryEditor() = 0;
 
 	// Clip tool-tip.
 	virtual QString toolTip() const;
@@ -242,7 +248,6 @@ public:
 
 	static FadeType fadeTypeFromIndex(int iIndex);
 	static int indexFromFadeType(FadeType fadeType);
-
 
 	static void setDefaultFadeInType(FadeType fadeType);
 	static FadeType defaultFadeInType();
@@ -385,6 +390,31 @@ public:
 		virtual float operator() (float t) const = 0;
 	};
 
+	// Clip editor position/size accessors.
+	void setEditorPos(const QPoint& pos)
+		{ m_posEditor = pos; }
+	const QPoint& editorPos() const
+		{ return m_posEditor; }
+
+	void setEditorSize(const QSize& size)
+		{ m_sizeEditor = size; }
+	const QSize& editorSize() const
+		{ return m_sizeEditor; }
+
+	// Clip editor zoom ratio accessors.
+	void setEditorHorizontalZoom(unsigned short iHorizontalZoom)
+		{ m_iEditorHorizontalZoom = iHorizontalZoom; }
+	unsigned short editorHorizontalZoom() const
+		{ return m_iEditorHorizontalZoom; }
+
+	void setEditorVerticalZoom(unsigned short iVerticalZoom)
+		{ m_iEditorVerticalZoom = iVerticalZoom; }
+	unsigned short editorVerticalZoom() const
+		{ return m_iEditorVerticalZoom; }
+
+	// Local command-list (undo/redo) accessor.
+	virtual qtractorCommandList *commands() const = 0;
+
 protected:
 
 	// Fade functor factory method.
@@ -440,6 +470,14 @@ private:
 
 	static FadeType g_defaultFadeInType;
 	static FadeType g_defaultFadeOutType;
+
+	// Clip editor geometry it was last seen...
+	QPoint m_posEditor;
+	QSize m_sizeEditor;
+
+	// Clip editor zoom ratio accessors.
+	unsigned short m_iEditorHorizontalZoom;
+	unsigned short m_iEditorVerticalZoom;
 
 	// Local active/dirty flags.
 	bool m_bActive;
