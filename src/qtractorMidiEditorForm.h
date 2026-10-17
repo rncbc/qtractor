@@ -22,6 +22,8 @@
 #ifndef __qtractorMidiEditorForm_h
 #define __qtractorMidiEditorForm_h
 
+#include "qtractorEditorForm.h"
+
 #include "ui_qtractorMidiEditorForm.h"
 
 
@@ -49,7 +51,7 @@ class QPalette;
 //----------------------------------------------------------------------------
 // qtractorMidiEditorForm -- UI wrapper form.
 
-class qtractorMidiEditorForm : public QMainWindow
+class qtractorMidiEditorForm : public qtractorEditorForm
 {
 	Q_OBJECT
 
@@ -62,10 +64,11 @@ public:
 	~qtractorMidiEditorForm();
 
 	// MIDI editor widget accessor.
-	qtractorMidiEditor *editor() const;
+	qtractorEditor *editor() const;
+
+	qtractorMidiEditor *midiEditor() const;
 
 	// Local time-scale accessor.
-	qtractorTimeScale *timeScale() const;
 	unsigned long timeOffset() const;
 
 	// MIDI clip sequence accessors.
@@ -129,7 +132,6 @@ protected slots:
 	void editCut();
 	void editCopy();
 	void editPaste();
-	void editPasteRepeat();
 	void editDelete();
 	void editModeOn(bool bOn);
 	void editModeOff(bool bOn);
@@ -182,9 +184,13 @@ protected slots:
 	void viewSnapZebra(bool bOn);
 	void viewSnapGrid(bool bOn);
 	void viewToolTips(bool bOn);
+	void viewFadeInOut(bool bOn);
 	void viewRefresh();
 	void viewPreview(bool bOn);
 	void viewFollow(bool bOn);
+
+	void transportBackward();
+	void transportForward();
 
 	void transportStepBackward();
 	void transportStepForward();

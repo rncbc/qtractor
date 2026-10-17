@@ -369,6 +369,8 @@ public:
 	// Create a brand new filename (absolute file path).
 	QString createFilePath(
 		const QString& sBaseName, const QString& sExt, bool bAcquire = false);
+	QString createFilePathEx(
+		const QString& sBaseNameEx, const QString& sExt, bool bAcquire = false);
 
 	// Session directory relative/absolute file path helpers.
 	QString relativeFilePath(const QString& sFilename) const;

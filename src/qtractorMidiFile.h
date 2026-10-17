@@ -1,7 +1,7 @@
 // qtractorMidiFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -83,10 +83,6 @@ public:
 		const QString& sOldFilename, unsigned short iTrackChannel,
 		unsigned short iFormat, qtractorMidiSequence *pSeq,
 		qtractorTimeScale *pTimeScale = nullptr, unsigned long iTimeOffset = 0);
-
-	// Create filename revision.
-	static QString createFilePathRevision(
-		const QString& sFilename, int iRevision = 0);
 
 protected:
 

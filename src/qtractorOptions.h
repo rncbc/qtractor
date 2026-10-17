@@ -311,6 +311,26 @@ public:
 	bool bTrackViewCurveEdit;
 	int  iTrackColorSaturation;
 
+	// Audio Editor options...
+	bool bAudioMenubar;
+	bool bAudioStatusbar;
+	bool bAudioFileToolbar;
+	bool bAudioEditToolbar;
+	bool bAudioViewToolbar;
+	bool bAudioTransportToolbar;
+	bool bAudioTimeToolbar;
+	bool bAudioLockedToolbar;
+	int  iAudioDisplayFormat;
+	bool bAudioFollow;
+	int  iAudioZoomMode;
+	int  iAudioHorizontalZoom;
+	int  iAudioVerticalZoom;
+	int  iAudioSnapPerBeat;
+	bool bAudioSnapZebra;
+	bool bAudioSnapGrid;
+	bool bAudioToolTips;
+	bool bAudioFadeInOut;
+
 	// MIDI Editor options...
 	bool bMidiMenubar;
 	bool bMidiStatusbar;
@@ -338,6 +358,7 @@ public:
 	bool bMidiSnapZebra;
 	bool bMidiSnapGrid;
 	bool bMidiToolTips;
+	bool bMidiFadeInOut;
 	int  iMidiViewType;
 	int  iMidiEventType;
 	int  iMidiEventParam;
