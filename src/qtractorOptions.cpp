@@ -360,7 +360,33 @@ void qtractorOptions::loadOptions (void)
 	iTrackColorSaturation = m_settings.value("/TrackColorSaturation", 100).toInt();
 	m_settings.endGroup();
 
-	// MIDI options group.
+	// Audio editor options group.
+	m_settings.beginGroup("/AudioEditor");
+
+	m_settings.beginGroup("/View");
+	bAudioMenubar     = m_settings.value("/Menubar", true).toBool();
+	bAudioStatusbar   = m_settings.value("/Statusbar", true).toBool();
+	bAudioFileToolbar = m_settings.value("/FileToolbar", true).toBool();
+	bAudioEditToolbar = m_settings.value("/EditToolbar", true).toBool();
+	bAudioViewToolbar = m_settings.value("/ViewToolbar", true).toBool();
+	bAudioTransportToolbar = m_settings.value("/TransportToolbar", false).toBool();
+	bAudioTimeToolbar = m_settings.value("/TimeToolbar", false).toBool();
+	bAudioLockedToolbar = m_settings.value("/LockedToolbar", false).toBool();
+	iAudioDisplayFormat = m_settings.value("/DisplayFormat", 1).toInt();
+	bAudioFollow      = m_settings.value("/Follow", false).toBool();
+	iAudioZoomMode    = m_settings.value("/ZoomMode", 3).toInt();
+	iAudioHorizontalZoom = m_settings.value("/HorizontalZoom", 100).toInt();
+	iAudioVerticalZoom = m_settings.value("/VerticalZoom", 100).toInt();
+	iAudioSnapPerBeat = m_settings.value("/SnapPerBeat", 4).toInt();
+	bAudioSnapZebra   = m_settings.value("/SnapZebra", false).toBool();
+	bAudioSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
+	bAudioToolTips    = m_settings.value("/ToolTips", true).toBool();
+	bAudioFadeInOut   = m_settings.value("/FadeInOut", true).toBool();
+	m_settings.endGroup();
+
+	m_settings.endGroup(); // AudioEditor
+
+	// MIDI editor options group.
 	m_settings.beginGroup("/MidiEditor");
 
 	m_settings.beginGroup("/View");
@@ -390,6 +416,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiSnapZebra   = m_settings.value("/SnapZebra", false).toBool();
 	bMidiSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
 	bMidiToolTips    = m_settings.value("/ToolTips", true).toBool();
+	bMidiFadeInOut   = m_settings.value("/FadeInOut", false).toBool();
 	iMidiViewType    = m_settings.value("/ViewType", 0).toInt();
 	iMidiEventType   = m_settings.value("/EventType", 0).toInt();
 	iMidiEventParam  = m_settings.value("/EventParam", 0).toInt();
@@ -685,7 +712,33 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TrackColorSaturation", iTrackColorSaturation);
 	m_settings.endGroup();
 
-	// MIDI Editor options group.
+	// Audio editor options group.
+	m_settings.beginGroup("/AudioEditor");
+
+	m_settings.beginGroup("/View");
+	m_settings.setValue("/Menubar", bAudioMenubar);
+	m_settings.setValue("/Statusbar", bAudioStatusbar);
+	m_settings.setValue("/FileToolbar", bAudioFileToolbar);
+	m_settings.setValue("/EditToolbar", bAudioEditToolbar);
+	m_settings.setValue("/ViewToolbar", bAudioViewToolbar);
+	m_settings.setValue("/TransportToolbar", bAudioTransportToolbar);
+	m_settings.setValue("/TimeToolbar", bAudioTimeToolbar);
+	m_settings.setValue("/LockedToolbar", bAudioLockedToolbar);
+	m_settings.setValue("/DisplayFormat", iAudioDisplayFormat);
+	m_settings.setValue("/Follow", bAudioFollow);
+	m_settings.setValue("/ZoomMode", iAudioZoomMode);
+	m_settings.setValue("/HorizontalZoom", iAudioHorizontalZoom);
+	m_settings.setValue("/VerticalZoom", iAudioVerticalZoom);
+	m_settings.setValue("/SnapPerBeat", iAudioSnapPerBeat);
+	m_settings.setValue("/SnapZebra", bAudioSnapZebra);
+	m_settings.setValue("/SnapGrid", bAudioSnapGrid);
+	m_settings.setValue("/ToolTips", bAudioToolTips);
+	m_settings.setValue("/FadeInOut", bAudioFadeInOut);
+	m_settings.endGroup();
+
+	m_settings.endGroup(); // MidiEditor
+
+	// MIDI editor options group.
 	m_settings.beginGroup("/MidiEditor");
 
 	m_settings.beginGroup("/View");
@@ -715,6 +768,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/SnapZebra", bMidiSnapZebra);
 	m_settings.setValue("/SnapGrid", bMidiSnapGrid);
 	m_settings.setValue("/ToolTips", bMidiToolTips);
+	m_settings.setValue("/FadeInOut", bMidiFadeInOut);
 	m_settings.setValue("/ViewType", iMidiViewType);
 	m_settings.setValue("/EventType", iMidiEventType);
 	m_settings.setValue("/EventParam", iMidiEventParam);

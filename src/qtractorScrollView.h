@@ -1,7 +1,7 @@
 // qtractorScrollView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,7 +80,7 @@ protected:
 	void wheelEvent(QWheelEvent *pWheelEvent);
 
 	// Draw the virtual contents.
-	virtual void drawContents(QPainter *pPainter, const QRect& rect) = 0;
+	virtual void drawContents(QPainter& painter, const QRect& rect) = 0;
 
 	// Rectangular contents update.
 	virtual void updateContents(const QRect& rect);

@@ -153,6 +153,8 @@
     <addaction name="separator"/>
     <addaction name="viewToolTipsAction"/>
     <addaction name="separator"/>
+    <addaction name="viewFadeInOutAction"/>
+    <addaction name="separator"/>
     <addaction name="viewNoteNamesAction"/>
     <addaction name="viewNoteDurationAction"/>
     <addaction name="viewNoteColorAction"/>
@@ -228,7 +230,6 @@
     <addaction name="editCutAction"/>
     <addaction name="editCopyAction"/>
     <addaction name="editPasteAction"/>
-    <addaction name="editPasteRepeatAction"/>
     <addaction name="separator"/>
     <addaction name="editDeleteAction"/>
     <addaction name="separator"/>
@@ -720,23 +721,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="editPasteRepeatAction">
-   <property name="text">
-    <string>Past&amp;e Repeat...</string>
-   </property>
-   <property name="iconText">
-    <string>Paste Repeat</string>
-   </property>
-   <property name="toolTip">
-    <string>Paste repeat</string>
-   </property>
-   <property name="statusTip">
-    <string>Paste/repeat local clipboard contents into the current MIDI clip</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+V</string>
    </property>
   </action>
   <action name="editDeleteAction">
@@ -1506,6 +1490,23 @@
    </property>
    <property name="statusTip">
     <string>Floating tool tips view mode</string>
+   </property>
+  </action>
+  <action name="viewFadeInOutAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Fade In/Out</string>
+   </property>
+   <property name="iconText">
+    <string>Fade in/out</string>
+   </property>
+   <property name="toolTip">
+    <string>Fade in/out</string>
+   </property>
+   <property name="statusTip">
+    <string>Fade in/out controls</string>
    </property>
   </action>
   <action name="viewRefreshAction">

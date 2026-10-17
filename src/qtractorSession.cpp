@@ -1290,14 +1290,30 @@ void qtractorSession::releaseFilePath ( const QString& sFilename )
 QString qtractorSession::createFilePath (
 	const QString& sBaseName, const QString& sExt, bool bAcquire )
 {
-	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
-	if (!sFilename.isEmpty())
-		sFilename += '-';
-	sFilename += qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
+	QString sBaseNameEx = qtractorSession::sanitize(m_props.sessionName);
+	if (!sBaseNameEx.isEmpty())
+		sBaseNameEx += '-';
+	sBaseNameEx += sBaseName;
+
+	return createFilePathEx(sBaseNameEx, sExt, bAcquire);
+}
+
+QString qtractorSession::createFilePathEx (
+	const QString& sBaseNameEx, const QString& sExt, bool bAcquire )
+{
+	int iFileNo = 0;
+	QString sBaseName = sBaseNameEx;
+	const QRegularExpression rxRevision("(.+)\\-(\\d+)$");
+	QRegularExpressionMatch match = rxRevision.match(sBaseName);
+	if (match.hasMatch()) {
+		sBaseName = match.captured(1);
+		iFileNo = match.captured(2).toInt();
+	}
+
+	QString sFilename = qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
 
 	// If there are any existing, similar filenames,
 	// take the version suffix from the most recent...
-	int iFileNo = 0;
 	QDir dir(m_props.sessionDir);
 	const QStringList filter(sFilename.arg('*'));
 	const QStringList& files
@@ -1306,8 +1322,9 @@ QString qtractorSession::createFilePath (
 		QRegularExpression rx(sFilename.arg("([\\d]+)"));
 		QRegularExpressionMatchIterator iter = rx.globalMatch(files.first());
 		if (iter.hasNext()) {
-			QRegularExpressionMatch match = iter.next();
-			while (iter.hasNext()) match = iter.next();
+			match = iter.next();
+			while (iter.hasNext())
+				match = iter.next();
 			iFileNo = match.captured(1).toInt();
 		}
 	}
