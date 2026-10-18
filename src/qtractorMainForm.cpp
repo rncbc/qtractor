@@ -2515,8 +2515,8 @@ bool qtractorMainForm::closeSession (void)
 	#endif
 		qtractorPluginFile::clearAll();
 		// Clear editors clipboard...
-		qtractorMidiEditor::clearClipboard();
 		qtractorAudioEditor::clearClipboard();
+		qtractorMidiEditor::clearClipboard();
 	#ifdef CONFIG_LIBZ
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();

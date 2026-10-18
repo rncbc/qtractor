@@ -45,7 +45,8 @@ qtractorMidiEditSelect::Item *qtractorMidiEditSelect::findItem (
 	qtractorMidiEvent *pEvent )
 {
 	// Check if this very event already exists...
-	return m_items.value(pEvent, nullptr);
+	const QList<Item *>& items = m_items.values(pEvent);
+	return (items.count() > 0 ? items.first() : nullptr);
 }
 
 
@@ -65,16 +66,19 @@ void qtractorMidiEditSelect::selectItem ( qtractorMidiEvent *pEvent,
 	const QRect& rectEvent, const QRect& rectView,
 	bool bSelect, bool bToggle )
 {
-	Item *pItem = findItem(pEvent);
-	if (pItem) {
-		const unsigned int flags = pItem->flags;
-		if ( (!bSelect && (flags & 2) == 0) ||
-			(( bSelect && (flags & 3) == 3) && bToggle))
-			pItem->flags &= ~1;
-		else
-		if ( ( bSelect && (flags & 2) == 0) ||
-			((!bSelect && (flags & 3) == 2) && bToggle))
-			pItem->flags |=  1;
+	const QList<Item *>& items
+		= m_items.values(pEvent);
+	if (items.count() > 0) {
+		foreach(Item *pItem, items) {
+			const unsigned int flags = pItem->flags;
+			if ( (!bSelect && (flags & 2) == 0) ||
+				(( bSelect && (flags & 3) == 3) && bToggle))
+				pItem->flags &= ~1;
+			else
+			if ( ( bSelect && (flags & 2) == 0) ||
+				((!bSelect && (flags & 3) == 2) && bToggle))
+				pItem->flags |=  1;
+		}
 	} 
 	else if (bSelect)
 		addItem(pEvent, rectEvent, rectView);
