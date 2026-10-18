@@ -41,11 +41,11 @@
 qtractorAudioEditCommand::qtractorAudioEditCommand (
 	qtractorAudioClip *pAudioClip, const QString& sName,
 	CommandType ctype, unsigned long iStart, unsigned long iLength,
-	unsigned long iAfter, const QString& sFilename )
+	unsigned short iCount, const QString& sFilename, unsigned long iAfter )
 	: qtractorCommand(sName), m_pAudioClip(pAudioClip), m_ctype(ctype),
-	  m_iStart(iStart), m_iLength(iLength), m_iAfter(iAfter),
-	  m_sFilename(sFilename), m_iPrevLength(0), m_iNextLength(0),
-	  m_iRedoCount(0)
+	  m_iStart(iStart), m_iLength(iLength), m_iCount(iCount),
+	  m_sFilename(sFilename), m_iAfter(iAfter),
+	  m_iPrevLength(0), m_iNextLength(0), m_iRedoCount(0)
 {
 	// Capture the current file path as the "before" state.
 	m_sPrevFilename = m_pAudioClip->filename();
@@ -59,7 +59,7 @@ qtractorAudioEditCommand::qtractorAudioEditCommand (
 		m_iNextLength = m_iPrevLength - m_iLength;
 	else
 	if (m_ctype == InsertRange)
-		m_iNextLength = m_iPrevLength + m_iLength;
+		m_iNextLength = m_iPrevLength + m_iLength * m_iCount;
 	else
 		m_iNextLength = m_iPrevLength;
 
@@ -181,7 +181,7 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 	else
 	if (m_ctype == InsertRange) {
 		bOk = insertFrames(ppBuf, iBufSize,
-			pDst, pSrc, m_iStart, m_iLength);
+			pDst, pSrc, m_iStart, m_iLength, m_iCount);
 	}
 	else
 	if (m_ctype == MoveRange) {
@@ -252,7 +252,7 @@ bool qtractorAudioEditCommand::insertFrames (
 	float **ppFrames, unsigned int nframes,
 	qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
 	unsigned long iStart, unsigned long iLength,
-	unsigned int iCount ) const
+	unsigned short iCount ) const
 {
 	// Open the clipboard/temp. source file.
 	if (m_sFilename.isEmpty())
@@ -272,7 +272,7 @@ bool qtractorAudioEditCommand::insertFrames (
 	bool bOk = streamFrames(ppFrames, nframes, pDst, pSrc, 0, iStart);
 
 	// Phase 2: insert the clipboard/temp. frames.
-	if (bOk) for (unsigned int i = 0; i < iCount; ++i) {
+	if (bOk) for (unsigned short i = 0; i < iCount; ++i) {
 		bOk = streamFrames(ppFrames, nframes, pDst, pTmp, 0, iLength);
 	}
 

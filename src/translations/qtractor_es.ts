@@ -1076,27 +1076,27 @@ Duración:	%3</translation>
 <context>
     <name>qtractorAudioEditor</name>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="122"/>
+        <location filename="../qtractorAudioEditor.cpp" line="129"/>
         <source>Audio Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="757"/>
+        <location filename="../qtractorAudioEditor.cpp" line="766"/>
         <source>cut audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="764"/>
+        <location filename="../qtractorAudioEditor.cpp" line="773"/>
         <source>delete audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="776"/>
+        <location filename="../qtractorAudioEditor.cpp" line="785"/>
         <source>move audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="1282"/>
+        <location filename="../qtractorAudioEditor.cpp" line="1308"/>
         <source>paste audio</source>
         <translation type="unfinished"></translation>
     </message>
