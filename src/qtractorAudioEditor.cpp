@@ -32,6 +32,8 @@
 
 #include "qtractorTimeScale.h"
 
+#include "qtractorRubberBand.h"
+
 #include "qtractorSession.h"
 #include "qtractorOptions.h"
 
@@ -80,6 +82,11 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 	m_dragCursor = DragNone;
 
 	m_rectSelect.setRect(0, 0, 0, 0);
+
+	// Paste interim stuff.
+	m_iPasteCount  = 0;
+
+	m_ppRubberBand = nullptr;
 
 	// Create child frame widgets...
 	QWidget *pHBoxMain  = new QWidget(this);
@@ -600,6 +607,8 @@ void qtractorAudioEditor::pasteClipboard (
 		QCursor(QIcon::fromTheme("editPaste").pixmap(22), 12, 12));
 
 	// Let's-a go...
+	m_iPasteCount = iPasteCount;
+
 	updateDragMove(m_pEditView, pos + m_posStep);
 }
 
@@ -775,8 +784,8 @@ void qtractorAudioEditor::executeEditSelect ( EditCommand cmd )
 			m_pAudioClip,
 			tr("move audio"),
 			qtractorAudioEditCommand::MoveRange,
-			iStart, iLength,
-			iAfter, sDstFilename);
+			iStart, iLength, 1,
+			sDstFilename, iAfter);
 	}	// Fall thru...
 	case Copy:
 		selectionChangeNotify();
@@ -1220,10 +1229,27 @@ void qtractorAudioEditor::updateDragMove (
 
 	m_rectDrag.moveTopLeft(QPoint(x1, 0));
 
-	moveRubberBand(pScrollView,
-		QRect(pScrollView->contentsToViewport(
-			m_rectDrag.topLeft()),
-			m_rectDrag.size()), 1);
+	QRect rect(pScrollView->contentsToViewport(
+		m_rectDrag.topLeft()),
+		m_rectDrag.size());
+
+	if (m_iPasteCount < 1)
+		m_iPasteCount = 1;
+
+	if (m_ppRubberBand == nullptr) {
+		m_ppRubberBand = new qtractorRubberBand * [m_iPasteCount];
+		for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+			m_ppRubberBand[i] = new qtractorRubberBand(
+				QRubberBand::Rectangle, pScrollView->viewport(), 3);
+		}
+	}
+
+	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+		m_ppRubberBand[i]->setGeometry(rect);
+		if (!m_ppRubberBand[i]->isVisible())
+			m_ppRubberBand[i]->show();
+		rect.moveTopLeft(rect.topLeft() + QPoint(rect.width(), 0));
+	}
 
 	// Show drag/move selection tooltip...
 	showToolTip(pScrollView, m_rectDrag);
@@ -1281,8 +1307,8 @@ void qtractorAudioEditor::executeDragPaste (
 			m_pAudioClip,
 			tr("paste audio"),
 			qtractorAudioEditCommand::InsertRange,
-			iStart, iLength,
-			0, g_clipboard.filename);
+			iStart, iLength, m_iPasteCount,
+			g_clipboard.filename);
 
 	execute(pEditCommand);
 }
@@ -1414,6 +1440,16 @@ void qtractorAudioEditor::resetDragState ( qtractorScrollView *pScrollView )
 	}
 
 	m_dragState = DragNone;
+
+	// Pasting no more....
+	if (m_ppRubberBand) {
+		for (unsigned short i = 0; i < m_iPasteCount; ++i)
+			delete m_ppRubberBand[i];
+		delete [] m_ppRubberBand;
+		m_ppRubberBand = nullptr;
+	}
+
+	m_iPasteCount  = 0;
 }
 
 
