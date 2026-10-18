@@ -39,6 +39,7 @@ class qtractorAudioPeak;
 class qtractorAudioPeakFactory;
 
 class qtractorTrack;
+class qtractorRubberBand;
 
 class QFrame;
 class QComboBox;
@@ -332,6 +333,12 @@ private:
 	// Current selection (in pixels).
 	QRect m_rectSelect;
 
+	// Paste/move interim parameters.
+	unsigned short m_iPasteCount;
+
+	qtractorRubberBand **m_ppRubberBand;
+
+	// Audio-peak stuff.
 	static qtractorAudioPeakFactory   *g_pAudioPeakFactory;
 	static unsigned int                g_iAudioPeakRefCount;
 
