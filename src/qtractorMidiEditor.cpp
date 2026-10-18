@@ -1676,9 +1676,15 @@ bool qtractorMidiEditor::isSelected (void) const
 
 
 // Whether there's any item on the clipboard.
-bool qtractorMidiEditor::isClipboard (void)
+bool qtractorMidiEditor::isClipboard (void) const
 {
-	return (g_clipboard.items.count() > 0);
+	if (g_clipboard.items.count() < 1)
+		return false;
+
+	const qtractorMidiEvent::EventType etype
+		= g_clipboard.items.first()->type();
+	return (etype == m_pEditView->eventType()
+		 || etype == m_pEditEvent->eventType());
 }
 
 
