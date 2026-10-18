@@ -96,7 +96,7 @@ public:
 		{ return (m_rectSelect.width() > 1); }
 
 	// Whether there's any items on the clipboard.
-	static bool isClipboard();
+	bool isClipboard() const;
 
 	// Clear the clipboard...
 	static void clearClipboard();
