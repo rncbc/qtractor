@@ -1905,7 +1905,7 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(bClipboard);
-	m_ui.editPasteRepeatAction->setEnabled(false); // TODO: bClipboard
+	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 

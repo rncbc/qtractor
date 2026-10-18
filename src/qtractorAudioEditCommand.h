@@ -65,19 +65,22 @@ public:
 	// Constructor.
 	// iStart    – intra-file frame position of the selection start.
 	// iLength   – length in frames of the selection / region to insert.
-	// iAfter    – intra-file frame position of the target region to move.
-	//             (only used for MoveRange; otherwise ignored).
+	// iCount    – number of regions to insert (only used for InsertRange;
+	//             otherwise ignored).
 	// sFilename – path to the audio file whose frames are to be inserted
 	//             (only used for InsertRange and MoveRange; ignored for
 	//             DeleteRange).
+	// iAfter    – intra-file frame position of the target region to move
+	//             (only used for MoveRange; otherwise ignored).
 	qtractorAudioEditCommand(
 		qtractorAudioClip *pAudioClip,
 		const QString& sName,
 		CommandType ctype,
 		unsigned long iStart,
 		unsigned long iLength,
-		unsigned long iAfter = 0,
-		const QString& sFilename = QString());
+		unsigned short iCount = 1,
+		const QString& sFilename = QString(),
+		unsigned long iAfter = 0);
 
 	// Destructor.
 	~qtractorAudioEditCommand();
@@ -103,7 +106,7 @@ protected:
 	bool insertFrames(float **ppFrames, unsigned int nframes,
 		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
 		unsigned long iStart, unsigned long iLength,
-		unsigned int iCount = 1) const;
+		unsigned short iCount) const;
 
 	bool moveFrames(float **ppFrames, unsigned int nframes,
 		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
@@ -121,8 +124,9 @@ private:
 	CommandType        m_ctype;
 	unsigned long      m_iStart;    // intra-file selection start (frames)
 	unsigned long      m_iLength;   // selection / insertion length (frames)
-	unsigned long      m_iAfter;    // intra-file move target (frames)
+	unsigned short     m_iCount;    // number of regions to insert
 	QString            m_sFilename; // clipboard source for InsertRange
+	unsigned long      m_iAfter;    // intra-file move target (frames)
 
 	// Revision file paths captured at construction / first redo.
 	QString m_sPrevFilename;  // file path before this command (undo target)
