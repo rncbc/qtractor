@@ -117,6 +117,7 @@ protected slots:
 	void editCut();
 	void editCopy();
 	void editPaste();
+	void editPasteRepeat();
 	void editDelete();
 	void editSelectAll();
 	void editSelectNone();
