@@ -55,7 +55,7 @@ public:
 		unsigned int flags;
 	};
 
-	typedef QHash<qtractorMidiEvent *, Item *> ItemList;
+	typedef QMultiHash<qtractorMidiEvent *, Item *> ItemList;
 
 	// Event selection item lookup.
 	Item *findItem(qtractorMidiEvent *pEvent);

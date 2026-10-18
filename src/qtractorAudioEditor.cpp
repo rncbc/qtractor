@@ -514,9 +514,23 @@ void qtractorAudioEditor::redoCommand (void)
 
 
 // Whether there's any item on the clipboard.
-bool qtractorAudioEditor::isClipboard (void)
+bool qtractorAudioEditor::isClipboard (void) const
 {
-	return (!g_clipboard.isEmpty());
+	if (g_clipboard.isEmpty())
+		return false;
+
+	if (m_pAudioClip == nullptr)
+		return false;
+
+	qtractorAudioBuffer *pBuff = m_pAudioClip->buffer();
+	if (pBuff == nullptr)
+		return false;
+
+	qtractorAudioFile *pFile = pBuff->file();
+	if (pFile == nullptr)
+		return false;
+
+	return (g_clipboard.sampleRate == pFile->sampleRate());
 }
 
 
