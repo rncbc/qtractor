@@ -132,6 +132,7 @@ protected slots:
 	void editCut();
 	void editCopy();
 	void editPaste();
+	void editPasteRepeat();
 	void editDelete();
 	void editModeOn(bool bOn);
 	void editModeOff(bool bOn);
