@@ -37,7 +37,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="1234"/>
         <source>Audio file save: &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Збереження файла звукових даних: «%1».</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2874"/>
@@ -1005,7 +1005,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.cpp" line="1042"/>
         <source>clip tempo</source>
-        <translation type="unfinished"></translation>
+        <translation>ритм кліпу</translation>
     </message>
 </context>
 <context>
@@ -1013,44 +1013,44 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorAudioEditTime.cpp" line="939"/>
         <source>Play-head</source>
-        <translation type="unfinished">Позиція відтворення</translation>
+        <translation>Позиція відтворення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditTime.cpp" line="942"/>
         <source>Edit-head</source>
-        <translation type="unfinished"></translation>
+        <translation>Позиція редагування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditTime.cpp" line="945"/>
         <source>Edit-tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Хвіст редагування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditTime.cpp" line="948"/>
         <source>Loop-start</source>
-        <translation type="unfinished">Початок циклу</translation>
+        <translation>Початок циклу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditTime.cpp" line="951"/>
         <source>Loop-end</source>
-        <translation type="unfinished">Кінець циклу</translation>
+        <translation>Кінець циклу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditTime.cpp" line="954"/>
         <source>Punch-in</source>
-        <translation type="unfinished">Вхід врізки</translation>
+        <translation>Вхід врізки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditTime.cpp" line="957"/>
         <source>Punch-out</source>
-        <translation type="unfinished">Вихід врізки</translation>
+        <translation>Вихід врізки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditTime.cpp" line="987"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
-        <translation type="unfinished">Початок:	%1
+        <translation>Початок:	%1
 Кінець:	%2
 Тривалість:	%3</translation>
     </message>
@@ -1060,17 +1060,17 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditView.cpp" line="154"/>
         <source>Zoom in (horizontal)</source>
-        <translation type="unfinished">Збільшити (горизонтально)</translation>
+        <translation>Збільшити (горизонтально)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditView.cpp" line="155"/>
         <source>Zoom out (horizontal)</source>
-        <translation type="unfinished">Зменшити (горизонтально)</translation>
+        <translation>Зменшити (горизонтально)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditView.cpp" line="156"/>
         <source>Zoom reset (horizontal)</source>
-        <translation type="unfinished">Скинути масштабування (горизонтально)</translation>
+        <translation>Скинути масштабування (горизонтально)</translation>
     </message>
 </context>
 <context>
@@ -1078,27 +1078,27 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="122"/>
         <source>Audio Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="757"/>
         <source>cut audio</source>
-        <translation type="unfinished"></translation>
+        <translation>обрізати звук</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="764"/>
         <source>delete audio</source>
-        <translation type="unfinished"></translation>
+        <translation>вилучити звук</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="776"/>
         <source>move audio</source>
-        <translation type="unfinished"></translation>
+        <translation>пересунути звук</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="1282"/>
         <source>paste audio</source>
-        <translation type="unfinished"></translation>
+        <translation>вставити звук</translation>
     </message>
 </context>
 <context>
@@ -1106,1204 +1106,1204 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="34"/>
         <source>Audio Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="50"/>
         <location filename="../qtractorAudioEditorForm.ui" line="675"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Файл</translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="54"/>
         <source>&amp;Track</source>
-        <translation type="unfinished">Д&amp;оріжка</translation>
+        <translation>Д&amp;оріжка</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="78"/>
         <source>&amp;View</source>
-        <translation type="unfinished">П&amp;ерегляд</translation>
+        <translation>П&amp;ерегляд</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="82"/>
         <source>&amp;Toolbars</source>
-        <translation type="unfinished">П&amp;анелі інструментів</translation>
+        <translation>П&amp;анелі інструментів</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="93"/>
         <source>&amp;Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Масштаб</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="109"/>
         <source>S&amp;nap</source>
-        <translation type="unfinished"></translation>
+        <translation>П&amp;рилипання</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="128"/>
         <location filename="../qtractorAudioEditorForm.ui" line="692"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">З&amp;міни</translation>
+        <translation>З&amp;міни</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="132"/>
         <source>&amp;Select</source>
-        <translation type="unfinished">Поз&amp;начення</translation>
+        <translation>Поз&amp;начення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="153"/>
         <source>T&amp;ransport</source>
-        <translation type="unfinished">&amp;Керування</translation>
+        <translation>&amp;Керування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="157"/>
         <source>St&amp;ep</source>
-        <translation type="unfinished">&amp;Крок</translation>
+        <translation>&amp;Крок</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="183"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Довідка</translation>
+        <translation>&amp;Довідка</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="272"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>З&amp;берегти</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="275"/>
         <location filename="../qtractorAudioEditorForm.ui" line="278"/>
         <source>Save</source>
-        <translation type="unfinished">Зберегти</translation>
+        <translation>Зберегти</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="281"/>
         <source>Save current audio clip to existing file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти поточний кліп звукових даних до наявного файла</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="286"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished">Зберегти &amp;як…</translation>
+        <translation>Зберегти &amp;як…</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="289"/>
         <source>Save As</source>
-        <translation type="unfinished">Зберегти як</translation>
+        <translation>Зберегти як</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="292"/>
         <source>Save as</source>
-        <translation type="unfinished">Зберегти як</translation>
+        <translation>Зберегти як</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="295"/>
         <source>Save current audio clip with another file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберети поточний кліп звукових даних до файла з іншою назвою</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="303"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Вимкнути звук</translation>
+        <translation>&amp;Вимкнути звук</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="306"/>
         <location filename="../qtractorAudioEditorForm.ui" line="309"/>
         <source>Mute</source>
-        <translation type="unfinished">Вимкнути звук</translation>
+        <translation>Вимкнути звук</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="312"/>
         <source>Mute current audio clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути звуко у поточному кліп звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="317"/>
         <source>&amp;Inputs</source>
-        <translation type="unfinished">В&amp;ходи</translation>
+        <translation>В&amp;ходи</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="320"/>
         <source>Track Inputs</source>
-        <translation type="unfinished">Входи доріжки</translation>
+        <translation>Входи доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="323"/>
         <source>Track inputs</source>
-        <translation type="unfinished">Входи доріжки</translation>
+        <translation>Входи доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="326"/>
         <source>Show current audio clip/track input bus connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати з&apos;єднання вихідної шини поточного кліпу або доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="331"/>
         <source>&amp;Outputs</source>
-        <translation type="unfinished">В&amp;иходи</translation>
+        <translation>В&amp;иходи</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="334"/>
         <source>Track Outputs</source>
-        <translation type="unfinished">Виходи доріжки</translation>
+        <translation>Виходи доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="337"/>
         <source>Track outputs</source>
-        <translation type="unfinished">Виходи доріжки</translation>
+        <translation>Виходи доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="340"/>
         <source>Show current audio clip/track output bus connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати з&apos;єднання вихідної шини поточного кліпу або доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="348"/>
         <location filename="../qtractorAudioEditorForm.ui" line="368"/>
         <source>&amp;Properties...</source>
-        <translation type="unfinished">Вл&amp;астивості…</translation>
+        <translation>Вл&amp;астивості…</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="351"/>
         <source>Track Properties</source>
-        <translation type="unfinished">Властивості доріжки</translation>
+        <translation>Властивості доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="354"/>
         <source>Track properties</source>
-        <translation type="unfinished">Властивості доріжки</translation>
+        <translation>Властивості доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="357"/>
         <source>Edit current audio clip/track properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати властивості поточного кліпу або доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="360"/>
         <source>Shift+F2</source>
-        <translation type="unfinished">Shift+F2</translation>
+        <translation>Shift+F2</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="371"/>
         <location filename="../qtractorAudioEditorForm.ui" line="374"/>
         <source>Properties</source>
-        <translation type="unfinished">Властивості</translation>
+        <translation>Властивості</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="377"/>
         <source>Edit current audio clip properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати властивості поточного кліпу звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="380"/>
         <source>F4</source>
-        <translation type="unfinished">F4</translation>
+        <translation>F4</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="385"/>
         <source>&amp;Range Set</source>
-        <translation type="unfinished">Вста&amp;новити діапазон</translation>
+        <translation>Вста&amp;новити діапазон</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="388"/>
         <source>Clip Range</source>
-        <translation type="unfinished">Діапазон кліпу</translation>
+        <translation>Діапазон кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="391"/>
         <source>Clip range</source>
-        <translation type="unfinished">Діапазон кліпу</translation>
+        <translation>Діапазон кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="394"/>
         <source>Set edit-range from clip extents</source>
-        <translation type="unfinished">Встановити діапазон редагування за розміром кліпу</translation>
+        <translation>Встановити діапазон редагування за розміром кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="402"/>
         <source>&amp;Loop Set</source>
-        <translation type="unfinished">Встановити &amp;цикл</translation>
+        <translation>Встановити &amp;цикл</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="405"/>
         <source>Clip Loop</source>
-        <translation type="unfinished">Зациклити кліп</translation>
+        <translation>Зациклити кліп</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="408"/>
         <source>Clip loop</source>
-        <translation type="unfinished">Зациклити кліп</translation>
+        <translation>Зациклити кліп</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="411"/>
         <source>Set loop-range from clip extents</source>
-        <translation type="unfinished">Встановити діапазон циклу за розмірами кліпу</translation>
+        <translation>Встановити діапазон циклу за розмірами кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="416"/>
         <source>&amp;Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Е&amp;кспортувати…</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="419"/>
         <source>Clip Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати кліп</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="422"/>
         <source>Clip export</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати кліп</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="425"/>
         <source>Export current clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати позначене у поточному кліпі</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="430"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрити</translation>
+        <translation>&amp;Закрити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="433"/>
         <location filename="../qtractorAudioEditorForm.ui" line="436"/>
         <source>Close</source>
-        <translation type="unfinished">Закрити</translation>
+        <translation>Закрити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="439"/>
         <source>Close this audio clip editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити це редагування кліпу звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="447"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Вернути</translation>
+        <translation>&amp;Скасувати</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="450"/>
         <location filename="../qtractorAudioEditorForm.ui" line="453"/>
         <source>Undo</source>
-        <translation type="unfinished">Скасувати</translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="456"/>
         <source>Undo last edit operation</source>
-        <translation type="unfinished">Скасувати останню дію з редагування</translation>
+        <translation>Скасувати останню дію з редагування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="459"/>
         <source>Ctrl+Z</source>
-        <translation type="unfinished">Ctrl+Z</translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="467"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Повторити</translation>
+        <translation>&amp;Повторити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="470"/>
         <location filename="../qtractorAudioEditorForm.ui" line="473"/>
         <source>Redo</source>
-        <translation type="unfinished">Повторити</translation>
+        <translation>Повторити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="476"/>
         <source>Redo last edit operation</source>
-        <translation type="unfinished">Повторити останню дію з редагування</translation>
+        <translation>Повторити останню дію з редагування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="479"/>
         <source>Ctrl+Shift+Z</source>
-        <translation type="unfinished">Ctrl+Shift+Z</translation>
+        <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="487"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Виріза&amp;ти</translation>
+        <translation>Виріза&amp;ти</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="490"/>
         <location filename="../qtractorAudioEditorForm.ui" line="493"/>
         <source>Cut</source>
-        <translation type="unfinished">Вирізати</translation>
+        <translation>Вирізати</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="496"/>
         <source>Cut current selection into the local clipboard</source>
-        <translation type="unfinished">Вирізати поточний позначений фрагмент до локального буфера обміну</translation>
+        <translation>Вирізати поточний позначений фрагмент до локального буфера обміну</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="499"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="507"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Копіювати</translation>
+        <translation>&amp;Копіювати</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="510"/>
         <location filename="../qtractorAudioEditorForm.ui" line="513"/>
         <source>Copy</source>
-        <translation type="unfinished">Копіювати</translation>
+        <translation>Копіювати</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="516"/>
         <source>Copy current selection to the local clipboard</source>
-        <translation type="unfinished">Копіювати поточний позначений фрагмент до локального буфера</translation>
+        <translation>Копіювати поточний позначений фрагмент до локального буфера</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="519"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="527"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Вставити</translation>
+        <translation>&amp;Вставити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="530"/>
         <location filename="../qtractorAudioEditorForm.ui" line="533"/>
         <source>Paste</source>
-        <translation type="unfinished">Вставити</translation>
+        <translation>Вставити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="536"/>
         <source>Paste local clipboard contents into the current audio clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити вміст локального буфера обміну даними до поточного кліпу звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="539"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="544"/>
         <source>Past&amp;e Repeat...</source>
-        <translation type="unfinished">Вставити повто&amp;рення…</translation>
+        <translation>Вставити повто&amp;рення…</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="547"/>
         <source>Paste Repeat</source>
-        <translation type="unfinished">Вставити повторення</translation>
+        <translation>Вставити повторення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="550"/>
         <source>Paste repeat</source>
-        <translation type="unfinished">Вставити повторення</translation>
+        <translation>Вставити повторення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="553"/>
         <source>Paste/repeat local clipboard contents into the current audio clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити/Повторити вміст локального буфера обміну даними до поточного кліпу звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="556"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished">Ctrl+Shift+V</translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="564"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви&amp;лучити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="567"/>
         <location filename="../qtractorAudioEditorForm.ui" line="570"/>
         <source>Delete</source>
-        <translation type="unfinished">Вилучити</translation>
+        <translation>Вилучити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="573"/>
         <source>Delete current selection</source>
-        <translation type="unfinished">Вилучити поточне позначене</translation>
+        <translation>Вилучити поточне позначене</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="576"/>
         <source>Del</source>
-        <translation type="unfinished">Del</translation>
+        <translation>Del</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="581"/>
         <location filename="../qtractorAudioEditorForm.ui" line="851"/>
         <source>&amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Все</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="584"/>
         <source>Select All</source>
-        <translation type="unfinished">Позначити все</translation>
+        <translation>Позначити все</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="587"/>
         <location filename="../qtractorAudioEditorForm.ui" line="590"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначити все</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="593"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="598"/>
         <source>&amp;None</source>
-        <translation type="unfinished">&amp;Немає</translation>
+        <translation>&amp;Немає</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="601"/>
         <source>Select None</source>
-        <translation type="unfinished">Зняти позначення</translation>
+        <translation>Зняти позначення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="604"/>
         <location filename="../qtractorAudioEditorForm.ui" line="607"/>
         <source>Select none</source>
-        <translation type="unfinished"></translation>
+        <translation>Зняти позначення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="610"/>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished">Ctrl+Shift+A</translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="615"/>
         <source>&amp;Range</source>
-        <translation type="unfinished">Ді&amp;апазон</translation>
+        <translation>Ді&amp;апазон</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="618"/>
         <source>Select Range</source>
-        <translation type="unfinished">Вибір діапазону</translation>
+        <translation>Вибір діапазону</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="621"/>
         <source>Select range</source>
-        <translation type="unfinished">Позначення діапазону</translation>
+        <translation>Позначення діапазону</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="624"/>
         <source>Mark range as selected</source>
-        <translation type="unfinished">Позначити діапазон</translation>
+        <translation>Позначити діапазон</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="627"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished">Ctrl+R</translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="635"/>
         <source>&amp;Menubar</source>
-        <translation type="unfinished"></translation>
+        <translation>Па&amp;нель меню</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="638"/>
         <location filename="../qtractorAudioEditorForm.ui" line="641"/>
         <source>Menubar</source>
-        <translation type="unfinished">Панель меню</translation>
+        <translation>Панель меню</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="644"/>
         <source>Show/hide the menubar</source>
-        <translation type="unfinished">Показати або приховати смужку меню</translation>
+        <translation>Показати або приховати смужку меню</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="647"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished">Ctrl+M</translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="655"/>
         <source>&amp;Statusbar</source>
-        <translation type="unfinished">С&amp;мужка стану</translation>
+        <translation>С&amp;мужка стану</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="658"/>
         <location filename="../qtractorAudioEditorForm.ui" line="661"/>
         <source>Statusbar</source>
-        <translation type="unfinished">Смужка стану</translation>
+        <translation>Смужка стану</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="664"/>
         <source>Show/hide the statusbar</source>
-        <translation type="unfinished">Показати або приховати смужку стану</translation>
+        <translation>Показати або приховати смужку стану</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="678"/>
         <source>File Toolbar</source>
-        <translation type="unfinished">Панель інструментів файлів</translation>
+        <translation>Панель інструментів файлів</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="681"/>
         <source>File toolbar</source>
-        <translation type="unfinished">Панель інструментів файлів</translation>
+        <translation>Панель інструментів файлів</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="684"/>
         <source>Show/hide the file toolbar</source>
-        <translation type="unfinished">Показати або приховати панель інструментів файлів</translation>
+        <translation>Показати або приховати панель інструментів файлів</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="695"/>
         <source>Edit Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель редагування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="698"/>
         <source>Edit toolbar</source>
-        <translation type="unfinished">Панель редагування</translation>
+        <translation>Панель редагування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="701"/>
         <source>Show/hide the edit toolbar</source>
-        <translation type="unfinished">Показати або приховати панель інструментів редагування</translation>
+        <translation>Показати або приховати панель інструментів редагування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="709"/>
         <source>&amp;Transport</source>
-        <translation type="unfinished">П&amp;ередавання</translation>
+        <translation>П&amp;ередавання</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="712"/>
         <source>Transport Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель інструментів передавання</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="715"/>
         <source>Transport toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель інструментів передавання</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="718"/>
         <source>Show/hide the transport toolbar</source>
-        <translation type="unfinished">Показати/Приховати панель інструментів передавання</translation>
+        <translation>Показати/Приховати панель інструментів передавання</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="726"/>
         <source>T&amp;ime</source>
-        <translation type="unfinished">&amp;Час</translation>
+        <translation>&amp;Час</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="729"/>
         <source>Time Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель часу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="732"/>
         <source>Time toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель часу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="735"/>
         <source>Show/hide the time toolbar</source>
-        <translation type="unfinished">Показати/Приховати панель інструментів часу</translation>
+        <translation>Показати/Приховати панель інструментів часу</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="743"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished">За&amp;фіксувати панелі інструментів</translation>
+        <translation>За&amp;фіксувати панелі інструментів</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="746"/>
         <location filename="../qtractorAudioEditorForm.ui" line="749"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished">Зафіксувати позиції панелей інструментів</translation>
+        <translation>Зафіксувати позиції панелей інструментів</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="752"/>
         <source>Lock/unlock midi window toolbar positions</source>
-        <translation type="unfinished">Зафіксувати або розблокувати позиції панелей інструментів у головному вікні програми</translation>
+        <translation>Зафіксувати або розблокувати позиції панелей інструментів у головному вікні програми</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="760"/>
         <source>&amp;In</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Більше</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="763"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Збільшити</translation>
+        <translation>Збільшити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="766"/>
         <location filename="../qtractorAudioEditorForm.ui" line="769"/>
         <source>Zoom in</source>
-        <translation type="unfinished">Збільшити</translation>
+        <translation>Збільшити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="772"/>
         <source>Ctrl++</source>
-        <translation type="unfinished">Ctrl++</translation>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="780"/>
         <source>&amp;Out</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Менше</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="783"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Зменшити</translation>
+        <translation>Зменшити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="786"/>
         <location filename="../qtractorAudioEditorForm.ui" line="789"/>
         <source>Zoom out</source>
-        <translation type="unfinished">Зменшити</translation>
+        <translation>Зменшити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="792"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished">Ctrl+-</translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="797"/>
         <source>&amp;Reset</source>
-        <translation type="unfinished">&amp;Скинути</translation>
+        <translation>&amp;Скинути</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="800"/>
         <source>Zoom Reset</source>
-        <translation type="unfinished">Відновити початковий масштаб</translation>
+        <translation>Відновити початковий масштаб</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="803"/>
         <location filename="../qtractorAudioEditorForm.ui" line="806"/>
         <source>Zoom reset</source>
-        <translation type="unfinished">Відновити початковий масштаб</translation>
+        <translation>Відновити початковий масштаб</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="809"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished">Ctrl+1</translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="817"/>
         <source>&amp;Horizontal</source>
-        <translation type="unfinished">&amp;Горизонтально</translation>
+        <translation>&amp;Горизонтально</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="820"/>
         <source>Horizontal Zoom</source>
-        <translation type="unfinished">Масштабувати за горизонталлю</translation>
+        <translation>Масштабувати за горизонталлю</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="823"/>
         <source>Horizontal zoom</source>
-        <translation type="unfinished">Масштабувати за горизонталлю</translation>
+        <translation>Масштабувати за горизонталлю</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="826"/>
         <source>Horizontal zoom mode</source>
-        <translation type="unfinished">Режим масштабування за горизонталлю</translation>
+        <translation>Режим масштабування за горизонталлю</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="834"/>
         <source>&amp;Vertical</source>
-        <translation type="unfinished">&amp;Вертикально</translation>
+        <translation>&amp;Вертикально</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="837"/>
         <source>Vertical Zoom</source>
-        <translation type="unfinished">Вертикальне масштабування</translation>
+        <translation>Вертикальне масштабування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="840"/>
         <source>Vertical zoom</source>
-        <translation type="unfinished">Вертикальне масштабування</translation>
+        <translation>Вертикальне масштабування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="843"/>
         <source>Vertical zoom mode</source>
-        <translation type="unfinished">Режим вертикального масштабування</translation>
+        <translation>Режим вертикального масштабування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="854"/>
         <source>All Zoom</source>
-        <translation type="unfinished">Рівномірне масштабування</translation>
+        <translation>Рівномірне масштабування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="857"/>
         <source>All zoom</source>
-        <translation type="unfinished">Рівномірне масштабування</translation>
+        <translation>Рівномірне масштабування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="860"/>
         <source>All zoom mode</source>
-        <translation type="unfinished">Режим рівномірного масштабування</translation>
+        <translation>Режим рівномірного масштабування</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="868"/>
         <source>&amp;Zebra</source>
-        <translation type="unfinished">Зе&amp;бра</translation>
+        <translation>Зе&amp;бра</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="871"/>
         <location filename="../qtractorAudioEditorForm.ui" line="874"/>
         <source>Zebra</source>
-        <translation type="unfinished">Зебра</translation>
+        <translation>Зебра</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="877"/>
         <source>Bar zebra view mode</source>
-        <translation type="unfinished">Режим перегляду із зеброю стовпчиків</translation>
+        <translation>Режим перегляду із зеброю стовпчиків</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="885"/>
         <source>&amp;Grid</source>
-        <translation type="unfinished">&amp;Сітка</translation>
+        <translation>&amp;Сітка</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="888"/>
         <location filename="../qtractorAudioEditorForm.ui" line="891"/>
         <source>Grid</source>
-        <translation type="unfinished">Сітка</translation>
+        <translation>Сітка</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="894"/>
         <source>Snap grid view mode</source>
-        <translation type="unfinished">Режим перегляду із прилипанням до сітки</translation>
+        <translation>Режим перегляду із прилипанням до сітки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="902"/>
         <source>Too&amp;l Tips</source>
-        <translation type="unfinished">Під&amp;казки</translation>
+        <translation>Під&amp;казки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="905"/>
         <location filename="../qtractorAudioEditorForm.ui" line="908"/>
         <source>Tool tips</source>
-        <translation type="unfinished">Підказки</translation>
+        <translation>Підказки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="911"/>
         <source>Floating tool tips view mode</source>
-        <translation type="unfinished">Режим перегляду із рухомими підказками</translation>
+        <translation>Режим перегляду із рухомими підказками</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="919"/>
         <source>&amp;Fade In/Out</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Наростання/Спадання</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="922"/>
         <location filename="../qtractorAudioEditorForm.ui" line="925"/>
         <source>Fade in/out</source>
-        <translation type="unfinished"></translation>
+        <translation>Наростання/Спадання</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="928"/>
         <source>Fade in/out controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Керування наростанням/спаданням</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="933"/>
         <source>&amp;Refresh</source>
-        <translation type="unfinished">&amp;Оновити</translation>
+        <translation>&amp;Оновити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="936"/>
         <location filename="../qtractorAudioEditorForm.ui" line="939"/>
         <source>Refresh</source>
-        <translation type="unfinished">Оновити</translation>
+        <translation>Оновити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="942"/>
         <source>Refresh views</source>
-        <translation type="unfinished">Оновлення панелей перегляду</translation>
+        <translation>Оновлення панелей перегляду</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="945"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="953"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1036"/>
         <source>&amp;Backward</source>
-        <translation type="unfinished">&amp;Назад</translation>
+        <translation>&amp;Назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="956"/>
         <location filename="../qtractorAudioEditorForm.ui" line="959"/>
         <source>Backward</source>
-        <translation type="unfinished">Назад</translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="962"/>
         <source>Transport backward</source>
-        <translation type="unfinished">Перехід назад</translation>
+        <translation>Перехід назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="965"/>
         <source>Backspace</source>
-        <translation type="unfinished">Backspace</translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="976"/>
         <source>Re&amp;wind</source>
-        <translation type="unfinished">Пов&amp;ний назад</translation>
+        <translation>Пов&amp;ний назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="979"/>
         <location filename="../qtractorAudioEditorForm.ui" line="982"/>
         <source>Rewind</source>
-        <translation type="unfinished">Повний назад</translation>
+        <translation>Повний назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="985"/>
         <source>Transport rewind</source>
-        <translation type="unfinished">Перемотування назад</translation>
+        <translation>Перемотування назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="999"/>
         <source>F&amp;ast Forward</source>
-        <translation type="unfinished">П&amp;овний вперед</translation>
+        <translation>П&amp;овний вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1002"/>
         <source>Fast Forward</source>
-        <translation type="unfinished">Повний вперед</translation>
+        <translation>Повний вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1005"/>
         <source>Fast forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Повний вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1008"/>
         <source>Transport fast forward</source>
-        <translation type="unfinished">Швидкий перехід вперед</translation>
+        <translation>Швидкий перехід вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1019"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1050"/>
         <source>&amp;Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1022"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1025"/>
         <source>Forward</source>
-        <translation type="unfinished">Вперед</translation>
+        <translation>Вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1028"/>
         <source>Transport forward</source>
-        <translation type="unfinished">Перехід вперед</translation>
+        <translation>Перехід вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1039"/>
         <source>Step Backward</source>
-        <translation type="unfinished">Крок назад</translation>
+        <translation>Крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1042"/>
         <source>Step backward</source>
-        <translation type="unfinished">Крок назад</translation>
+        <translation>Крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1045"/>
         <source>Transport step backward</source>
-        <translation type="unfinished">Перейти на крок назад</translation>
+        <translation>Перейти на крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1053"/>
         <source>Step Forward</source>
-        <translation type="unfinished">Крок вперед</translation>
+        <translation>Крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1056"/>
         <source>Step forward</source>
-        <translation type="unfinished">Крок вперед</translation>
+        <translation>Крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1059"/>
         <source>Transport step forward</source>
-        <translation type="unfinished">Перейти на крок вперед</translation>
+        <translation>Перейти на крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1070"/>
         <source>&amp;Loop</source>
-        <translation type="unfinished">&amp;Зациклити</translation>
+        <translation>&amp;Зациклити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1073"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1076"/>
         <source>Loop</source>
-        <translation type="unfinished">Цикл</translation>
+        <translation>Цикл</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1079"/>
         <source>Transport loop</source>
-        <translation type="unfinished">Зациклення</translation>
+        <translation>Зациклення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1082"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished">Ctrl+Shift+L</translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1087"/>
         <source>Loop &amp;Set</source>
-        <translation type="unfinished">&amp;Встановити цикл</translation>
+        <translation>&amp;Встановити цикл</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1090"/>
         <source>Loop Set</source>
-        <translation type="unfinished">Встановити цикл</translation>
+        <translation>Встановити цикл</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1093"/>
         <source>Loop set</source>
-        <translation type="unfinished">Встановити цикл</translation>
+        <translation>Встановити цикл</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1096"/>
         <source>Transport loop set</source>
-        <translation type="unfinished">Зациклення</translation>
+        <translation>Зациклення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1099"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished">Ctrl+L</translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1107"/>
         <source>&amp;Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>З&amp;упинити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1110"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1113"/>
         <source>Stop</source>
-        <translation type="unfinished">Зупинити</translation>
+        <translation>Зупинити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1116"/>
         <source>Transport stop</source>
-        <translation type="unfinished">Зупинити перехід</translation>
+        <translation>Зупинити перехід</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1127"/>
         <source>&amp;Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Ві&amp;дтворити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1130"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1133"/>
         <source>Play</source>
-        <translation type="unfinished">Відтворити</translation>
+        <translation>Відтворити</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1136"/>
         <source>Transport play/pause</source>
-        <translation type="unfinished">Відтворити/Призупинити відтворення</translation>
+        <translation>Відтворити/Призупинити перехід</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1139"/>
         <source>Space</source>
-        <translation type="unfinished">Пробіл</translation>
+        <translation>Пробіл</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1150"/>
         <source>&amp;Record</source>
-        <translation type="unfinished">За&amp;пис</translation>
+        <translation>За&amp;пис</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1153"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1156"/>
         <source>Record</source>
-        <translation type="unfinished">Записати</translation>
+        <translation>Записати</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1159"/>
         <source>Transport record</source>
-        <translation type="unfinished">Запис</translation>
+        <translation>Запис перехід</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1173"/>
         <source>&amp;Punch</source>
-        <translation type="unfinished">В&amp;різка</translation>
+        <translation>В&amp;різка</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1176"/>
         <source>Punch</source>
-        <translation type="unfinished">Врізка</translation>
+        <translation>Врізка</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1179"/>
         <source>Punch in/out</source>
-        <translation type="unfinished">Вхід/Вихід врізки</translation>
+        <translation>Вхід/Вихід врізки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1182"/>
         <source>Transport punch in/out</source>
-        <translation type="unfinished">Вхід/Вихід врізки</translation>
+        <translation>Вхід/Вихід врізки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1185"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished">Ctrl+Shift+P</translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1190"/>
         <source>Punch Se&amp;t</source>
-        <translation type="unfinished">Вст&amp;ановити врізку</translation>
+        <translation>Вст&amp;ановити врізку</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1193"/>
         <source>Punch Set</source>
-        <translation type="unfinished">Встановити врізку</translation>
+        <translation>Встановити врізку</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1196"/>
         <source>Punch in/out set</source>
-        <translation type="unfinished">Встановити вхід/вихід врізки</translation>
+        <translation>Встановити вхід/вихід врізки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1199"/>
         <source>Transport punch in/out set</source>
-        <translation type="unfinished">Встановити вхід/вихід врізки</translation>
+        <translation>Встановити вхід/вихід врізки</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1202"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1213"/>
         <source>F&amp;ollow Playhead</source>
-        <translation type="unfinished">С&amp;лідувати за позицією відтворення</translation>
+        <translation>С&amp;лідувати за позицією відтворення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1216"/>
         <source>Follow Playhead</source>
-        <translation type="unfinished">Слідувати за позицією відтворення</translation>
+        <translation>Слідувати за позицією відтворення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1219"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1222"/>
         <source>Follow playhead</source>
-        <translation type="unfinished">Слідувати за позицією відтворення</translation>
+        <translation>Слідувати за позицією відтворення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1233"/>
         <source>&amp;Shortcuts...</source>
-        <translation type="unfinished">С&amp;корочення…</translation>
+        <translation>С&amp;корочення…</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1236"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1239"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Скорочення</translation>
+        <translation>Скорочення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1242"/>
         <source>Keyboard shortcuts</source>
-        <translation type="unfinished">Клавіатурні скорочення</translation>
+        <translation>Клавіатурні скорочення</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1250"/>
         <source>&amp;About...</source>
-        <translation type="unfinished">П&amp;ро програму…</translation>
+        <translation>П&amp;ро програму…</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1253"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1256"/>
         <source>About</source>
-        <translation type="unfinished">Про програму</translation>
+        <translation>Про програму</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1259"/>
         <source>Show information about this application program</source>
-        <translation type="unfinished">Показати відомості щодо цієї програми</translation>
+        <translation>Показати відомості щодо цієї програми</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1267"/>
         <source>About &amp;Qt...</source>
-        <translation type="unfinished"></translation>
+        <translation>Про &amp;Qt…</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1270"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1273"/>
         <source>About Qt</source>
-        <translation type="unfinished">Про Qt</translation>
+        <translation>Про Qt</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1276"/>
         <source>Show information about the Qt toolkit</source>
-        <translation type="unfinished">Показати відомості щодо набору інструментів Qt</translation>
+        <translation>Показати відомості щодо набору інструментів Qt</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="132"/>
         <source>Current time (play-head)</source>
-        <translation type="unfinished">Поточний час (позиція відтворення)</translation>
+        <translation>Поточний час (позиція відтворення)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="145"/>
         <source>Current tempo (BPM)</source>
-        <translation type="unfinished">Поточний ритм (біти за секунду)</translation>
+        <translation>Поточний ритм (біти за секунду)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="157"/>
         <source>Set current snap to %1</source>
-        <translation type="unfinished">Встановити для поточного прилипання %1</translation>
+        <translation>Встановити для поточного прилипання %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="187"/>
         <source>Snap/beat</source>
-        <translation type="unfinished"></translation>
+        <translation>Прилипання/Біт</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="198"/>
         <source>Audio clip name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва кліпу звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="206"/>
         <source>Audio file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва кліпу звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="211"/>
         <location filename="../qtractorAudioEditorForm.cpp" line="1922"/>
         <source>MOD</source>
-        <translation type="unfinished">МОД</translation>
+        <translation>МОД</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="214"/>
         <source>Audio modification state</source>
-        <translation type="unfinished"></translation>
+        <translation>Стан внесення змін до звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="219"/>
         <location filename="../qtractorAudioEditorForm.cpp" line="1928"/>
         <source>MUTE</source>
-        <translation type="unfinished">ВИМ</translation>
+        <translation>ВИМ</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="222"/>
         <source>Audio clip mute state</source>
-        <translation type="unfinished"></translation>
+        <translation>Стан вимикання звуку у кліпі звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="227"/>
         <source>00:00:00.000</source>
-        <translation type="unfinished">00:00:00.000</translation>
+        <translation>00:00:00.000</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="230"/>
         <source>Audio clip duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Тривалість кліпу звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="594"/>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="595"/>
@@ -2312,37 +2312,41 @@ Length:	%3</source>
 &quot;%1&quot;
 
 Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>До поточного кліпу звукових даних внесено зміни:
+
+«%1»
+
+Хочете зберегти ці зміни?</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="893"/>
         <source>Save Audio Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти кліп звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="951"/>
         <source>Export</source>
-        <translation type="unfinished">Експорт</translation>
+        <translation>Експорт</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="989"/>
         <source>Audio clip export: &quot;%1&quot; started...</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортування звукового кліпу: розпочато «%1»…</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1104"/>
         <source>Audio clip export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортування звукового кліпу: завершено «%1».</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1851"/>
         <source>Audio Editor Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Клавіатурні скорочення редактора звукових даних</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1915"/>
         <source>[modified]</source>
-        <translation type="unfinished">[змінено]</translation>
+        <translation>[змінено]</translation>
     </message>
 </context>
 <context>
@@ -3466,24 +3470,24 @@ Do you want to apply the changes?</source>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
-        <translation type="unfinished">Початок:	%1
+        <translation>Початок:	%1
 Кінець:	%2
 Тривалість:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorEditor.cpp" line="789"/>
         <source>clip %1</source>
-        <translation type="unfinished">кліп %1</translation>
+        <translation>кліп %1</translation>
     </message>
     <message>
         <location filename="../qtractorEditor.cpp" line="791"/>
         <source>fade-in</source>
-        <translation type="unfinished">наростання</translation>
+        <translation>наростання</translation>
     </message>
     <message>
         <location filename="../qtractorEditor.cpp" line="791"/>
         <source>fade-out</source>
-        <translation type="unfinished">згасання</translation>
+        <translation>згасання</translation>
     </message>
 </context>
 <context>
@@ -6478,22 +6482,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2350"/>
         <source>Session &amp;List</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2353"/>
         <source>Session List</source>
-        <translation type="unfinished"></translation>
+        <translation>Список сеансів</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2356"/>
         <source>Session list</source>
-        <translation type="unfinished"></translation>
+        <translation>Список сеансів</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2359"/>
         <source>Show/hide the session list window</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати або приховати вікно списку сеансів</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2370"/>
@@ -10874,7 +10878,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="556"/>
         <source>Edit current MIDI clip/track properties</source>
-        <translation>Редагувати влпстивості поточного кліпу або доріжки MIDI</translation>
+        <translation>Редагувати властивості поточного кліпу або доріжки MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="559"/>
@@ -11904,18 +11908,18 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1518"/>
         <source>&amp;Fade In/Out</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Наростання/Спадання</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1521"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1524"/>
         <source>Fade in/out</source>
-        <translation type="unfinished"></translation>
+        <translation>Наростання/Спадання</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1527"/>
         <source>Fade in/out controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Наростання/Спадання</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1532"/>
@@ -12467,7 +12471,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="2577"/>
         <source>MIDI Editor Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Клавіатурні скорочення редактора MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="2731"/>
@@ -16285,22 +16289,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1745"/>
         <source>Session</source>
-        <translation type="unfinished">Сеанс</translation>
+        <translation>Сеанс</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1864"/>
         <source>&amp;Inputs</source>
-        <translation type="unfinished">В&amp;ходи</translation>
+        <translation>В&amp;ходи</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1874"/>
         <source>&amp;Outputs</source>
-        <translation type="unfinished">В&amp;иходи</translation>
+        <translation>В&amp;иходи</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1880"/>
         <source>&amp;Buses...</source>
-        <translation type="unfinished">&amp;Шини...</translation>
+        <translation>&amp;Шини...</translation>
     </message>
 </context>
 <context>
@@ -16308,52 +16312,52 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1028"/>
         <source>Inputs</source>
-        <translation type="unfinished">Пристрої введення</translation>
+        <translation>Входи</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1041"/>
         <source>Tracks</source>
-        <translation type="unfinished">Доріжки</translation>
+        <translation>Доріжки</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1050"/>
         <source>Outputs</source>
-        <translation type="unfinished">Виходи</translation>
+        <translation>Виходи</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="149"/>
         <source>Audio</source>
-        <translation type="unfinished">Звук</translation>
+        <translation>Звук</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="152"/>
         <source>MIDI</source>
-        <translation type="unfinished">MIDI</translation>
+        <translation>MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1069"/>
         <source>track</source>
-        <translation type="unfinished"></translation>
+        <translation>доріжка</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1086"/>
         <source>clip</source>
-        <translation type="unfinished"></translation>
+        <translation>кліп</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1119"/>
         <source>bus</source>
-        <translation type="unfinished"></translation>
+        <translation>шина</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="825"/>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="826"/>
         <source>Detail</source>
-        <translation type="unfinished"></translation>
+        <translation>Подробиці</translation>
     </message>
 </context>
 <context>
@@ -16607,12 +16611,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
         <source>&amp;End:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Кінець:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="232"/>
         <source>Range end</source>
-        <translation type="unfinished"></translation>
+        <translation>Кінець діапазону</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="245"/>
