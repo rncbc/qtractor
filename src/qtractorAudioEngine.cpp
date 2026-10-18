@@ -1106,20 +1106,20 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 					pAudioMonitor->process_meter(
 						pInputBus->in(), nframes, pInputBus->channels());
 				}
-				// Monitor passthru/insert processing...
+				// Plugin-chain processing...
+				qtractorAudioBus *pOutputBus
+					= static_cast<qtractorAudioBus *> (pTrack->outputBus());
 				qtractorPluginList *pPluginList = pTrack->pluginList();
-				if (pSession->isTrackMonitor(pTrack)
-					|| pPluginList->isAudioInsertActivated()) {
-					// Plugin-chain processing...
-					qtractorAudioBus *pOutputBus
-						= static_cast<qtractorAudioBus *> (pTrack->outputBus());
-					if (pOutputBus) {
-						pOutputBus->buffer_prepare(nframes, pInputBus);
-						pPluginList->process(pOutputBus->buffer(), nframes);
-						pAudioMonitor->process(pOutputBus->buffer(), nframes);
-						pOutputBus->buffer_commit(nframes);
-						++iOutputBus;
-					}
+				if (pOutputBus && pPluginList) {
+					// Monitor passthru/insert processing...
+					if (!pSession->isTrackMonitor(pTrack)
+						&& !pPluginList->isAudioInsertActivated())
+						pInputBus = nullptr;
+					pOutputBus->buffer_prepare(nframes, pInputBus);
+					pPluginList->process(pOutputBus->buffer(), nframes);
+					pAudioMonitor->process(pOutputBus->buffer(), nframes);
+					pOutputBus->buffer_commit(nframes);
+					++iOutputBus;
 				}
 			}
 		}
