@@ -117,9 +117,10 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 	// When undoing, we just hot-swap back to the previous revision.
 	// The "previous" file always exists on disk – no rewrite needed.
 	if (!bRedo) {
-		m_pAudioClip->setFilenameEx(m_sPrevFilename, true);
+		m_pAudioClip->setFilenameEx(m_sPrevFilename, false);
 		m_pAudioClip->setClipLengthEx(m_iPrevLength);
 		m_pAudioClip->resetAudioPeakEx();
+		pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
 		return true;
 	}
 
@@ -209,11 +210,11 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 	// Hot-swap the clip to the new revision file.
 	pSession->files()->addClipItem(qtractorFileList::Audio, m_pAudioClip, true);
 
-	m_pAudioClip->setFilenameEx(m_sNextFilename, true);
+	m_pAudioClip->setFilenameEx(m_sNextFilename, false);
 	m_pAudioClip->setClipLengthEx(m_iNextLength);
 	m_pAudioClip->resetAudioPeakEx();
 
-	pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
+	//pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
 
 	// New file is supposed to get into the bill of materials...
 	if (++m_iRedoCount == 1) {
