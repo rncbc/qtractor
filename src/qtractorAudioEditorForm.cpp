@@ -322,6 +322,25 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectRange()));
 
+	QObject::connect(m_ui.toolsGainAction,
+		SIGNAL(triggered(bool)),
+		SLOT(toolsGain()));
+	QObject::connect(m_ui.toolsPanningAction,
+		SIGNAL(triggered(bool)),
+		SLOT(toolsPanning()));
+	QObject::connect(m_ui.toolsNormalizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(toolsNormalize()));
+	QObject::connect(m_ui.toolsTimeStretchAction,
+		SIGNAL(triggered(bool)),
+		SLOT(toolsTimeStretch()));
+	QObject::connect(m_ui.toolsPitchShiftAction,
+		SIGNAL(triggered(bool)),
+		SLOT(toolsPitchShift()));
+	QObject::connect(m_ui.toolsReverseAction,
+		SIGNAL(triggered(bool)),
+		SLOT(toolsReverse()));
+
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewMenubar(bool)));
@@ -811,21 +830,10 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 			const int x2 = pTimeScale->pixelFromFrame(iFrame);
 			const int cx = pEditView->contentsX();
 			const int cy = pEditView->contentsY();
-			// Then try to recenter vertically...
-			int y2 = cy;
-			int y1 = 0;
-			qtractorTrack *pTrackEx = pSession->tracks().first();
-			while (pTrackEx && pTrackEx != pTrack) {
-				y1 += pTrackEx->zoomHeight();
-				pTrackEx = pTrackEx->next();
-			}
-			y1 -= pTrackView->contentsY();
 			// Need recentering?...
-			if (x2 < cx || x2 > cx + w2 ||
-				y2 < cy || y2 > cy + h2) {
+			if (x2 < cx || x2 > cx + w2) {
 				pEditView->setContentsPos(
-					(x2 > w2 ? x2 - w2 : 0),
-					(y2 > h2 ? y2 - h2 : 0));
+					(x2 > w2 ? x2 - w2 : 0), cy);
 			}
 		}
 	}
@@ -1301,6 +1309,13 @@ void qtractorAudioEditorForm::editRedo (void)
 }
 
 
+// Open audio tools dialog.
+void qtractorAudioEditorForm::editTools (void)
+{
+	m_pAudioEditor->executeTool(0);
+}
+
+
 // Cut current selection to clipboard.
 void qtractorAudioEditorForm::editCut (void)
 {
@@ -1369,6 +1384,49 @@ void qtractorAudioEditorForm::editSelectAll (void)
 void qtractorAudioEditorForm::editSelectRange (void)
 {
 	m_pAudioEditor->selectRange(m_pAudioEditor->editView(), false, true);
+}
+
+
+
+// Gain tool.
+void qtractorAudioEditorForm::toolsGain (void)
+{
+	m_pAudioEditor->executeTool(qtractorAudioEditor::Gain);
+}
+
+
+// Panning tool.
+void qtractorAudioEditorForm::toolsPanning (void)
+{
+	m_pAudioEditor->executeTool(qtractorAudioEditor::Panning);
+}
+
+
+// Normalize tool.
+void qtractorAudioEditorForm::toolsNormalize (void)
+{
+	m_pAudioEditor->executeTool(qtractorAudioEditor::Normalize);
+}
+
+
+// Time-stretch tool.
+void qtractorAudioEditorForm::toolsTimeStretch (void)
+{
+	m_pAudioEditor->executeTool(qtractorAudioEditor::TimeStretch);
+}
+
+
+// Pitch-shift tool.
+void qtractorAudioEditorForm::toolsPitchShift (void)
+{
+	m_pAudioEditor->executeTool(qtractorAudioEditor::PitchShift);
+}
+
+
+// Reverse tool.
+void qtractorAudioEditorForm::toolsReverse (void)
+{
+	m_pAudioEditor->executeTool(qtractorAudioEditor::Reverse);
 }
 
 
@@ -1908,6 +1966,17 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
+
+#if 0
+	m_ui.toolsMenu->setEnabled(bSelected);
+#else
+	m_ui.toolsGainAction->setEnabled(bSelected);
+	m_ui.toolsPanningAction->setEnabled(bSelected);
+	m_ui.toolsNormalizeAction->setEnabled(bSelected);
+	m_ui.toolsTimeStretchAction->setEnabled(bSelected);
+	m_ui.toolsPitchShiftAction->setEnabled(bSelected);
+	m_ui.toolsReverseAction->setEnabled(bSelected);
+#endif
 
 	// Update the main window caption...
 	QString sTitle = QFileInfo(filename()).fileName() + ' ';
