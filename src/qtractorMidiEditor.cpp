@@ -1541,21 +1541,7 @@ void qtractorMidiEditor::zoomReset (void)
 }
 
 
-// Zoom step evaluator.
-int qtractorMidiEditor::zoomStep (void) const
-{
-	const Qt::KeyboardModifiers& modifiers
-		= QApplication::keyboardModifiers();
-
-	if (modifiers & Qt::ControlModifier)
-		return ZoomMax;
-	if (modifiers & Qt::ShiftModifier)
-		return ZoomBase >> 1;
-
-	return ZoomStep;
-}
-
-
+// Horizontal zoom view slots.
 void qtractorMidiEditor::horizontalZoomInSlot (void)
 {
 	ZoomCenter zc;
@@ -1575,6 +1561,21 @@ void qtractorMidiEditor::horizontalZoomOutSlot (void)
 }
 
 
+void qtractorMidiEditor::horizontalZoomResetSlot (void)
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
+	horizontalZoomStep(ZoomBase - pTimeScale->horizontalZoom());
+	zoomCenterPost(zc);
+}
+
+
+// Vertical zoom view slots.
 void qtractorMidiEditor::verticalZoomInSlot (void)
 {
 	ZoomCenter zc;
@@ -1593,19 +1594,6 @@ void qtractorMidiEditor::verticalZoomOutSlot (void)
 	zoomCenterPost(zc);
 }
 
-
-void qtractorMidiEditor::horizontalZoomResetSlot (void)
-{
-	qtractorTimeScale *pTimeScale = timeScale();
-	if (pTimeScale == nullptr)
-		return;
-
-	ZoomCenter zc;
-	zoomCenterPre(zc);
-
-	horizontalZoomStep(ZoomBase - pTimeScale->horizontalZoom());
-	zoomCenterPost(zc);
-}
 
 void qtractorMidiEditor::verticalZoomResetSlot (void)
 {
