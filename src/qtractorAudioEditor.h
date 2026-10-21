@@ -84,6 +84,19 @@ public:
 	// Update time-scale to master session.
 	void updateTimeScale();
 
+	// Tool indexes (mirrors qtractorMidiEditor::Tool).
+	enum Tool {
+		Gain        = 0,
+		Panning     = 1,
+		Normalize   = 2,
+		TimeStretch = 3,
+		PitchShift  = 4,
+		Reverse     = 5
+	};
+
+	// Open the audio tools dialog on the given tab and execute.
+	void executeTool(int iToolIndex);
+
 	// Command predicate status.
 	bool canUndo() const;
 	bool canRedo() const;

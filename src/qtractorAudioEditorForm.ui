@@ -123,6 +123,17 @@
     <addaction name="separator"/>
     <addaction name="viewRefreshAction"/>
    </widget>
+   <widget class="QMenu" name="toolsMenu">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="toolsGainAction"/>
+    <addaction name="toolsPanningAction"/>
+    <addaction name="toolsNormalizeAction"/>
+    <addaction name="toolsTimeStretchAction"/>
+    <addaction name="toolsPitchShiftAction"/>
+    <addaction name="toolsReverseAction"/>
+   </widget>
    <widget class="QMenu" name="editMenu">
     <property name="title">
      <string>&amp;Edit</string>
@@ -147,6 +158,8 @@
     <addaction name="editDeleteAction"/>
     <addaction name="separator"/>
     <addaction name="editSelectMenu"/>
+    <addaction name="separator"/>
+    <addaction name="toolsMenu"/>
    </widget>
    <widget class="QMenu" name="transportMenu">
     <property name="title">
@@ -190,6 +203,7 @@
    <addaction name="fileMenu"/>
    <addaction name="editMenu"/>
    <addaction name="viewMenu"/>
+   <addaction name="toolsMenu"/>
    <addaction name="transportMenu"/>
    <addaction name="helpMenu"/>
   </widget>
@@ -625,6 +639,90 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="toolsGainAction">
+   <property name="text">
+    <string>&amp;Gain...</string>
+   </property>
+   <property name="iconText">
+    <string>Gain</string>
+   </property>
+   <property name="toolTip">
+    <string>Gain</string>
+   </property>
+   <property name="statusTip">
+    <string>Gain selection</string>
+   </property>
+  </action>
+  <action name="toolsPanningAction">
+   <property name="text">
+    <string>P&amp;anning...</string>
+   </property>
+   <property name="iconText">
+    <string>Panning</string>
+   </property>
+   <property name="toolTip">
+    <string>Panning</string>
+   </property>
+   <property name="statusTip">
+    <string>Panning selection</string>
+   </property>
+  </action>
+  <action name="toolsNormalizeAction">
+   <property name="text">
+    <string>&amp;Normalize...</string>
+   </property>
+   <property name="iconText">
+    <string>Normalize</string>
+   </property>
+   <property name="toolTip">
+    <string>Normalize</string>
+   </property>
+   <property name="statusTip">
+    <string>Normalize selection</string>
+   </property>
+  </action>
+  <action name="toolsTimeStretchAction">
+   <property name="text">
+    <string>&amp;Time Stretch...</string>
+   </property>
+   <property name="iconText">
+    <string>Time Stretch</string>
+   </property>
+   <property name="toolTip">
+    <string>Time stretch</string>
+   </property>
+   <property name="statusTip">
+    <string>Time stretch selection</string>
+   </property>
+  </action>
+  <action name="toolsPitchShiftAction">
+   <property name="text">
+    <string>&amp;Pitch Shift...</string>
+   </property>
+   <property name="iconText">
+    <string>Pitch Shift</string>
+   </property>
+   <property name="toolTip">
+    <string>Pitch shift</string>
+   </property>
+   <property name="statusTip">
+    <string>Pitch shift selection</string>
+   </property>
+  </action>
+  <action name="toolsReverseAction">
+   <property name="text">
+    <string>&amp;Reverse...</string>
+   </property>
+   <property name="iconText">
+    <string>Reverse</string>
+   </property>
+   <property name="toolTip">
+    <string>Reverse</string>
+   </property>
+   <property name="statusTip">
+    <string>Reverse selection</string>
    </property>
   </action>
   <action name="viewMenubarAction">
