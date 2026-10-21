@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioEditor.h"
 #include "qtractorAudioEditCommand.h"
+#include "qtractorAudioToolsForm.h"
 
 #include "qtractorAudioEditTime.h"
 #include "qtractorAudioEditView.h"
@@ -520,6 +521,69 @@ void qtractorAudioEditor::redoCommand (void)
 }
 
 
+// Edit tools form page selector.
+void qtractorAudioEditor::executeTool ( int iToolIndex )
+{
+	if (m_pAudioClip == nullptr)
+		return;
+
+	if (!isSelected())
+		return;
+
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+	if (pTimeScale->sampleRate() < 1)
+		return;
+
+	qtractorAudioBuffer *pBuff = m_pAudioClip->buffer();
+	if (pBuff == nullptr)
+		return;
+
+	qtractorAudioFile *pFile = pBuff->file();
+	if (pFile == nullptr)
+		return;
+
+	const unsigned long f0 = offset();
+	const unsigned long iFrameStart = selectStart() - f0;
+	const unsigned long iFrameEnd = selectEnd() - f0;
+
+	const unsigned short iChannels    = pFile->channels();
+	const unsigned int   iSampleRate  = pFile->sampleRate();
+
+	if (iChannels < 1 || iSampleRate < 1)
+		return;
+
+	const float fRatio
+		= float(iSampleRate) / float(pTimeScale->sampleRate());
+
+	const unsigned long iStart
+		= ::lrintf(fRatio * float(m_pAudioClip->clipOffset() + iFrameStart));
+	const unsigned long iLength
+		= ::lrintf(fRatio * float(iFrameEnd - iFrameStart));
+
+	if (iStart + iLength > pFile->frames())
+		return;
+
+	if (!pFile->seek(iStart))
+		return;
+
+	qtractorAudioToolsForm toolsForm(this);
+	toolsForm.setToolIndex(iToolIndex);
+	if (toolsForm.exec()) {
+		qtractorAudioEditCommand *pAudioEditCommand
+			= toolsForm.audioEditCommand(m_pAudioClip, iStart, iLength);
+		if (pAudioEditCommand) {
+			clearSelect();
+			execute(pAudioEditCommand);
+		}
+	}
+
+	QWidget::activateWindow();
+	m_pEditView->setFocus();
+}
+
+
 // Whether there's any item on the clipboard.
 bool qtractorAudioEditor::isClipboard (void) const
 {
@@ -635,30 +699,23 @@ void qtractorAudioEditor::executeEditSelect ( EditCommand cmd )
 	if (pTimeScale->sampleRate() < 1)
 		return;
 
+	qtractorAudioBuffer *pBuff = m_pAudioClip->buffer();
+	if (pBuff == nullptr)
+		return;
+
+	qtractorAudioFile *pSrc = pBuff->file();
+	if (pSrc == nullptr)
+		return;
+
 	const unsigned long f0 = offset();
 	const unsigned long iFrameStart = selectStart() - f0;
 	const unsigned long iFrameEnd = selectEnd() - f0;
 
-	const QString& sSrcFilename = m_pAudioClip->filename();
+	const unsigned short iChannels   = pSrc->channels();
+	const unsigned int   iSampleRate = pSrc->sampleRate();
 
-	qtractorAudioFile *pSrc
-		= qtractorAudioFileFactory::createAudioFile(sSrcFilename);
-	if (pSrc == nullptr)
+	if (iChannels < 1 || iSampleRate < 1)
 		return;
-
-	if (!pSrc->open(sSrcFilename, qtractorAudioFile::Read)) {
-		delete pSrc;
-		return;
-	}
-
-	const unsigned short iChannels    = pSrc->channels();
-	const unsigned int   iSampleRate  = pSrc->sampleRate();
-
-	if (iChannels < 1 || iSampleRate < 1) {
-		pSrc->close();
-		delete pSrc;
-		return;
-	}
 
 	const float fRatio
 		= float(iSampleRate) / float(pTimeScale->sampleRate());
@@ -668,48 +725,37 @@ void qtractorAudioEditor::executeEditSelect ( EditCommand cmd )
 	const unsigned long iLength
 		= ::lrintf(fRatio * float(iFrameEnd - iFrameStart));
 
-	if (iStart + iLength > pSrc->frames()) {
-		pSrc->close();
-		delete pSrc;
+	if (iStart + iLength > pSrc->frames())
 		return;
-	}
 
-	if (!pSrc->seek(iStart)) {
-		pSrc->close();
-		delete pSrc;
+	if (!pSrc->seek(iStart))
 		return;
-	}
 
 	// Whether to reset the static clipboard descriptor...
 	if (cmd == Cut || cmd == Copy)
 		g_clipboard.reset();
 
 	// Whether to have a temporary file holding the current selection...
-	QString sDstFilename;
+	QString sFilename;
 
 	if (cmd == Cut || cmd == Copy || cmd == Move) {
 
 		// Write to a temp file in the default format.
 		const int iFileNo
 			= g_clipboard.filelist.count() + 1;
-		sDstFilename = QDir::tempPath()
+		sFilename = QDir::tempPath()
 			+ QString("/qtractor-%1.")
-				.arg(qHash(sSrcFilename) ^ qHash(iFileNo), 16)
+				.arg(qHash(sFilename) ^ qHash(iFileNo), 16)
 			+ qtractorAudioFileFactory::defaultExt();
 
 		qtractorAudioFile *pDst
 			= qtractorAudioFileFactory::createAudioFile(
-				sDstFilename, iChannels, iSampleRate, 4096);
-		if (pDst == nullptr) {
-			pSrc->close();
-			delete pSrc;
+				sFilename, iChannels, iSampleRate, 4096);
+		if (pDst == nullptr)
 			return;
-		}
 
-		if (!pDst->open(sDstFilename, qtractorAudioFile::Write)) {
+		if (!pDst->open(sFilename, qtractorAudioFile::Write)) {
 			delete pDst;
-			pSrc->close();
-			delete pSrc;
 			return;
 		}
 
@@ -741,37 +787,34 @@ void qtractorAudioEditor::executeEditSelect ( EditCommand cmd )
 		QApplication::restoreOverrideCursor();
 
 		// Fake it as clipboard file...
-		g_clipboard.filelist.append(sDstFilename);
+		g_clipboard.filelist.append(sFilename);
 	}
 
 	// Populate the static clipboard descriptor...
 	if (cmd == Cut || cmd == Copy) {
-		g_clipboard.filename   = sDstFilename;
+		g_clipboard.filename   = sFilename;
 		g_clipboard.channels   = iChannels;
 		g_clipboard.sampleRate = iSampleRate;
 		g_clipboard.frames     = iLength;
 	}
 
 	// Almost done.
-	pSrc->close();
-	delete pSrc;
-
-	qtractorAudioEditCommand *pEditCommand = nullptr;
 	QString sName;
+	qtractorAudioEditCommand *pAudioEditCommand = nullptr;
 
 	switch (cmd) {
 	case Cut:
-		pEditCommand = new qtractorAudioEditCommand(
+		pAudioEditCommand = new qtractorAudioEditCommand(
 			m_pAudioClip,
 			tr("cut audio"),
-			qtractorAudioEditCommand::DeleteRange,
+			qtractorAudioEditCommand::Delete,
 			iStart, iLength);
 		break;
 	case Delete:
-		pEditCommand = new qtractorAudioEditCommand(
+		pAudioEditCommand = new qtractorAudioEditCommand(
 			m_pAudioClip,
 			tr("delete audio"),
-			qtractorAudioEditCommand::DeleteRange,
+			qtractorAudioEditCommand::Delete,
 			iStart, iLength);
 		break;
 	case Move: {
@@ -780,12 +823,12 @@ void qtractorAudioEditor::executeEditSelect ( EditCommand cmd )
 			= pTimeScale->frameFromPixel(x0 + m_rectDrag.x()) - f0;
 		const unsigned long iAfter
 			= ::lrintf(fRatio * float(iFrameAfter));
-		pEditCommand = new qtractorAudioEditCommand(
+		pAudioEditCommand = new qtractorAudioEditCommand(
 			m_pAudioClip,
 			tr("move audio"),
-			qtractorAudioEditCommand::MoveRange,
+			qtractorAudioEditCommand::Move,
 			iStart, iLength, 1,
-			sDstFilename, iAfter);
+			sFilename, iAfter);
 	}	// Fall thru...
 	case Copy:
 		selectionChangeNotify();
@@ -794,9 +837,9 @@ void qtractorAudioEditor::executeEditSelect ( EditCommand cmd )
 		break;
 	}
 
-	if (pEditCommand) {
+	if (pAudioEditCommand) {
 		clearSelect();
-		execute(pEditCommand);
+		execute(pAudioEditCommand);
 	}
 }
 
@@ -1306,7 +1349,7 @@ void qtractorAudioEditor::executeDragPaste (
 		= new qtractorAudioEditCommand(
 			m_pAudioClip,
 			tr("paste audio"),
-			qtractorAudioEditCommand::InsertRange,
+			qtractorAudioEditCommand::Insert,
 			iStart, iLength, m_iPasteCount,
 			g_clipboard.filename);
 

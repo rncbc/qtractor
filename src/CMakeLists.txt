@@ -135,6 +135,7 @@ set (HEADERS
   qtractorZipFile.h
   qtractorWsolaTimeStretcher.h
   qtractorAudioEditorForm.h
+  qtractorAudioToolsForm.h
   qtractorAudioIOMatrixForm.h
   qtractorBusForm.h
   qtractorClipForm.h
@@ -277,6 +278,7 @@ set (SOURCES
   qtractorWsolaTimeStretcher.cpp
   qtractorZipFile.cpp
   qtractorAudioEditorForm.cpp
+  qtractorAudioToolsForm.cpp
   qtractorAudioIOMatrixForm.cpp
   qtractorBusForm.cpp
   qtractorClipForm.cpp
@@ -307,6 +309,7 @@ set (SOURCES
 
 set (FORMS
   qtractorAudioEditorForm.ui
+  qtractorAudioToolsForm.ui
   qtractorAudioIOMatrixForm.ui
   qtractorBusForm.ui
   qtractorClipForm.ui

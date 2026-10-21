@@ -4911,13 +4911,15 @@ void qtractorMidiEditor::executeTool ( int iToolIndex )
 		qtractorMidiEditCommand *pMidiEditCommand
 			= toolsForm.midiEditCommand(m_pMidiClip, &m_select,
 				pTimeScale->tickFromFrame(offset()));
-		qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
-			= toolsForm.timeScaleNodeCommand();
-		while (pTimeScaleNodeCommand) {
-			pMidiEditCommand->addTimeScaleNodeCommand(pTimeScaleNodeCommand);
-			pTimeScaleNodeCommand = toolsForm.timeScaleNodeCommand();
+		if (pMidiEditCommand) {
+			qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
+				= toolsForm.timeScaleNodeCommand();
+			while (pTimeScaleNodeCommand) {
+				pMidiEditCommand->addTimeScaleNodeCommand(pTimeScaleNodeCommand);
+				pTimeScaleNodeCommand = toolsForm.timeScaleNodeCommand();
+			}
+			execute(pMidiEditCommand);
 		}
-		execute(pMidiEditCommand);
 	}
 
 	QWidget::activateWindow();
