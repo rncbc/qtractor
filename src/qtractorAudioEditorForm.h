@@ -114,6 +114,7 @@ protected slots:
 
 	void editUndo();
 	void editRedo();
+	void editTools();
 	void editCut();
 	void editCopy();
 	void editPaste();
@@ -123,6 +124,13 @@ protected slots:
 	void editSelectNone();
 	void editSelectInvert();
 	void editSelectRange();
+
+	void toolsGain();
+	void toolsPanning();
+	void toolsNormalize();
+	void toolsTimeStretch();
+	void toolsPitchShift();
+	void toolsReverse();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);

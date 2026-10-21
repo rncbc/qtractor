@@ -567,15 +567,15 @@ void qtractorAudioClip::setDirtyEx ( bool bDirty )
 }
 
 
-// Reset all ref-counted clip audio-peaks.
-void qtractorAudioClip::resetAudioPeakEx (void)
+// Reset all ref-counted clip audio-clips.
+void qtractorAudioClip::resetAudioClipEx (void)
 {
 	if (m_pData == nullptr)
 		return;
 
 	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
 	while (iter.hasNext())
-		iter.next()->resetAudioPeak();
+		iter.next()->resetAudioClip();
 }
 
 
@@ -1126,8 +1126,8 @@ QString qtractorAudioClip::toolTip (void) const
 }
 
 
-// Special audio-peak reset method.
-void qtractorAudioClip::resetAudioPeak (void)
+// Special audio-clip reset method.
+void qtractorAudioClip::resetAudioClip (void)
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
@@ -1142,10 +1142,15 @@ void qtractorAudioClip::resetAudioPeak (void)
 	if (pPeakFactory == nullptr)
 		return;
 
+	const QString sFilename = filename();
+	qtractorAudioBuffer *pBuff = buffer();
+	if (pBuff)
+		pBuff->open(sFilename);
+
 	if (m_pPeak)
 		delete m_pPeak;
 
-	m_pPeak = pPeakFactory->createPeak(filename(), timeStretch());
+	m_pPeak = pPeakFactory->createPeak(sFilename, timeStretch());
 
 	if (m_pAudioEditorForm)
 		m_pAudioEditorForm->resetAudioPeak();

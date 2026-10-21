@@ -2454,7 +2454,7 @@ QStringList qtractorAudioEngine::cyclicAudioOutBuses (
 			qtractorPluginType *pType = pPlugin->type();
 			if (pType && pType->typeHint() != qtractorPluginType::AuxSend)
 				continue;
-			if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+			if (pType && pType->index() > 0) { // index == channels > 0 => Audio aux-send.
 				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
 					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
 				if (pAudioAuxSendPlugin &&
