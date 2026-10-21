@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -235,8 +235,8 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 			m_ui.TemporampToSpinBox->setBeatsPerBar(iBeatsPerBar1);
 			m_ui.TemporampToSpinBox->setBeatDivisor(iBeatDivisor1);
 		} else {
-			m_ui.Timeshift->setEnabled(false);
-			m_ui.Temporamp->setEnabled(false);
+			m_ui.TimeshiftTab->setEnabled(false);
+			m_ui.TemporampTab->setEnabled(false);
 		}
 	}
 
@@ -257,9 +257,6 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	loadPreset(g_sDefPreset);
 	timeshiftSpinBoxChanged(m_ui.TimeshiftSpinBox->value());
 	refreshPresets();
-
-	// Try to restore old window positioning.
-	// adjustSize();
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PresetNameComboBox,
@@ -516,6 +513,7 @@ void qtractorMidiToolsForm::setToolIndex ( int iToolIndex )
 {
 	// Set the proper tool page.
 	m_ui.ToolTabWidget->setCurrentIndex(iToolIndex);
+
 	switch (iToolIndex) {
 	case qtractorMidiEditor::Quantize:
 		m_ui.QuantizeCheckBox->setChecked(true);
@@ -562,139 +560,150 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 {
 	// An existing preset is about to be loaded...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions) {
-		QList<QVariant> vlist;
-		QSettings& settings = pOptions->settings();
-		// Get the preset entry...
-		settings.beginGroup("/MidiTools");
-		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
-			settings.beginGroup('/' + sPreset);
-		// Quantize tool...
-		vlist = settings.value("/Quantize").toList();
-		if (vlist.count() > 4) {
-		//	m_ui.QuantizeCheckBox->setChecked(vlist[0].toBool());
-			m_ui.QuantizeTimeCheckBox->setChecked(vlist[1].toBool());
-			m_ui.QuantizeTimeComboBox->setCurrentIndex(vlist[2].toInt());
-			m_ui.QuantizeDurationCheckBox->setChecked(vlist[3].toBool());
-			m_ui.QuantizeDurationComboBox->setCurrentIndex(vlist[4].toInt());
-		}
-		// Swing-quantize tool...
-		if (vlist.count() > 8) {
-			m_ui.QuantizeSwingCheckBox->setChecked(vlist[5].toBool());
-			m_ui.QuantizeSwingComboBox->setCurrentIndex(vlist[6].toInt());
-			m_ui.QuantizeSwingSpinBox->setValue(vlist[7].toDouble());
-			m_ui.QuantizeSwingTypeComboBox->setCurrentIndex(vlist[8].toInt());
-		}
-		// Percent-quantize tool...
-		if (vlist.count() > 10) {
-			m_ui.QuantizeTimeSpinBox->setValue(vlist[9].toDouble());
-			m_ui.QuantizeDurationSpinBox->setValue(vlist[10].toDouble());
-		}
-		// Scale-quantize tool...
-		if (vlist.count() > 13) {
-			m_ui.QuantizeScaleCheckBox->setChecked(vlist[11].toBool());
-			m_ui.QuantizeScaleKeyComboBox->setCurrentIndex(vlist[12].toInt());
-			m_ui.QuantizeScaleComboBox->setCurrentIndex(vlist[13].toInt());
-		}
-		// Transpose tool...
-		vlist = settings.value("/Transpose").toList();
-		if (vlist.count() > 4) {
-		//	m_ui.TransposeCheckBox->setChecked(vlist[0].toBool());
-			m_ui.TransposeNoteCheckBox->setChecked(vlist[1].toBool());
-			m_ui.TransposeNoteSpinBox->setValue(vlist[2].toInt());
-			m_ui.TransposeTimeCheckBox->setChecked(vlist[3].toBool());
-			m_ui.TransposeTimeSpinBox->setValue(vlist[4].toUInt());
-		}
-		// Transpose/reverse tool...
-		if (vlist.count() > 5)
-			m_ui.TransposeReverseCheckBox->setChecked(vlist[5].toBool());
-		// Normalize tool...
-		vlist = settings.value("/Normalize").toList();
-		if (vlist.count() > 4) {
-		//	m_ui.NormalizeCheckBox->setChecked(vlist[0].toBool());
-			m_ui.NormalizePercentCheckBox->setChecked(vlist[1].toBool());
-			m_ui.NormalizePercentSpinBox->setValue(vlist[2].toDouble());
-			m_ui.NormalizeValueCheckBox->setChecked(vlist[3].toBool());
-			m_ui.NormalizeValueSpinBox->setValue(vlist[4].toInt());
-		}
-		// Normalize/compress tool...
-		if (vlist.count() > 5)
-			m_ui.NormalizeCompressCheckBox->setChecked(vlist[5].toBool());
-		// Randomize tool...
-		vlist = settings.value("/Randomize").toList();
-		if (vlist.count() > 8) {
-		//	m_ui.RandomizeCheckBox->setChecked(vlist[0].toBool());
-			m_ui.RandomizeNoteCheckBox->setChecked(vlist[1].toBool());
-			m_ui.RandomizeNoteSpinBox->setValue(vlist[2].toDouble());
-			m_ui.RandomizeTimeCheckBox->setChecked(vlist[3].toBool());
-			m_ui.RandomizeTimeSpinBox->setValue(vlist[4].toDouble());
-			m_ui.RandomizeDurationCheckBox->setChecked(vlist[5].toBool());
-			m_ui.RandomizeDurationSpinBox->setValue(vlist[6].toDouble());
-			m_ui.RandomizeValueCheckBox->setChecked(vlist[7].toBool());
-			m_ui.RandomizeValueSpinBox->setValue(vlist[8].toDouble());
-		}
-		// Resize tool...
-		vlist = settings.value("/Resize").toList();
-		if (vlist.count() > 4) {
-		//	m_ui.ResizeCheckBox->setChecked(vlist[0].toBool());
-			m_ui.ResizeValueCheckBox->setChecked(vlist[1].toBool());
-			m_ui.ResizeValueSpinBox->setValue(vlist[2].toInt());
-			m_ui.ResizeDurationCheckBox->setChecked(vlist[3].toBool());
-			m_ui.ResizeDurationSpinBox->setValue(vlist[4].toUInt());
-		}
-		// Resize value mode tool...
-		if (vlist.count() > 6) {
-			m_ui.ResizeValue2ComboBox->setCurrentIndex(vlist[5].toInt());
-			m_ui.ResizeValue2SpinBox->setValue(vlist[6].toInt());
-		}
-		// Resize legato mode tool...
-		if (vlist.count() > 10) {
-			m_ui.ResizeLegatoCheckBox->setChecked(vlist[7].toBool());
-			m_ui.ResizeLegatoTypeComboBox->setCurrentIndex(vlist[8].toInt());
-			m_ui.ResizeLegatoLengthComboBox->setCurrentIndex(vlist[9].toInt());
-			m_ui.ResizeLegatoModeComboBox->setCurrentIndex(vlist[10].toInt());
-		}
-		// Resize join/split tool...
-		if (vlist.count() > 14) {
-			m_ui.ResizeJoinCheckBox->setChecked(vlist[11].toBool());
-			m_ui.ResizeSplitCheckBox->setChecked(vlist[12].toBool());
-			m_ui.ResizeSplitLengthComboBox->setCurrentIndex(vlist[13].toInt());
-			m_ui.ResizeSplitOffsetComboBox->setCurrentIndex(vlist[14].toInt());
-		}
-		// Rescale tool...
-		vlist = settings.value("/Rescale").toList();
-		if (vlist.count() > 6) {
-		//	m_ui.RescaleCheckBox->setChecked(vlist[0].toBool());
-			m_ui.RescaleTimeCheckBox->setChecked(vlist[1].toBool());
-			m_ui.RescaleTimeSpinBox->setValue(vlist[2].toDouble());
-			m_ui.RescaleDurationCheckBox->setChecked(vlist[3].toBool());
-			m_ui.RescaleDurationSpinBox->setValue(vlist[4].toDouble());
-			m_ui.RescaleValueCheckBox->setChecked(vlist[5].toBool());
-			m_ui.RescaleValueSpinBox->setValue(vlist[6].toDouble());
-		}
-		// Rescale/invert tool...
-		if (vlist.count() > 7)
-			m_ui.RescaleInvertCheckBox->setChecked(vlist[7].toBool());
-		// Timeshift tool...
-		vlist = settings.value("/Timeshift").toList();
-		if (vlist.count() > 2) {
-		//	m_ui.TimeshiftCheckBox->setChecked(vlist[0].toBool());
-			m_ui.TimeshiftSpinBox->setValue(vlist[1].toDouble());
-			m_ui.TimeshiftDurationCheckBox->setChecked(vlist[2].toBool());
-		}
-		// Temporamp tool...
-		vlist = settings.value("/Temporamp").toList();
-		if (vlist.count() > 3) {
-		//	m_ui.TemporampCheckBox->setChecked(vlist[0].toBool());
-		//	m_ui.TemporampFromSpinBox->setTempo(vlist[1].toDouble());
-			m_ui.TemporampToSpinBox->setTempo(float(vlist[2].toDouble()));
-			m_ui.TemporampDurationCheckBox->setChecked(float(vlist[3].toBool()));
-		}
-		// All loaded.
-		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
-			settings.endGroup();
-		settings.endGroup();
+	if (pOptions == nullptr)
+		return;
+
+	QList<QVariant> vlist;
+	QSettings& settings = pOptions->settings();
+
+	// Get the preset entry...
+	settings.beginGroup("/MidiTools");
+	if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
+		settings.beginGroup('/' + sPreset);
+
+	// Quantize tool...
+	vlist = settings.value("/Quantize").toList();
+	if (vlist.count() > 4) {
+	//	m_ui.QuantizeCheckBox->setChecked(vlist[0].toBool());
+		m_ui.QuantizeTimeCheckBox->setChecked(vlist[1].toBool());
+		m_ui.QuantizeTimeComboBox->setCurrentIndex(vlist[2].toInt());
+		m_ui.QuantizeDurationCheckBox->setChecked(vlist[3].toBool());
+		m_ui.QuantizeDurationComboBox->setCurrentIndex(vlist[4].toInt());
 	}
+	// Swing-quantize tool...
+	if (vlist.count() > 8) {
+		m_ui.QuantizeSwingCheckBox->setChecked(vlist[5].toBool());
+		m_ui.QuantizeSwingComboBox->setCurrentIndex(vlist[6].toInt());
+		m_ui.QuantizeSwingSpinBox->setValue(vlist[7].toDouble());
+		m_ui.QuantizeSwingTypeComboBox->setCurrentIndex(vlist[8].toInt());
+	}
+	// Percent-quantize tool...
+	if (vlist.count() > 10) {
+		m_ui.QuantizeTimeSpinBox->setValue(vlist[9].toDouble());
+		m_ui.QuantizeDurationSpinBox->setValue(vlist[10].toDouble());
+	}
+	// Scale-quantize tool...
+	if (vlist.count() > 13) {
+		m_ui.QuantizeScaleCheckBox->setChecked(vlist[11].toBool());
+		m_ui.QuantizeScaleKeyComboBox->setCurrentIndex(vlist[12].toInt());
+		m_ui.QuantizeScaleComboBox->setCurrentIndex(vlist[13].toInt());
+	}
+
+	// Transpose tool...
+	vlist = settings.value("/Transpose").toList();
+	if (vlist.count() > 4) {
+	//	m_ui.TransposeCheckBox->setChecked(vlist[0].toBool());
+		m_ui.TransposeNoteCheckBox->setChecked(vlist[1].toBool());
+		m_ui.TransposeNoteSpinBox->setValue(vlist[2].toInt());
+		m_ui.TransposeTimeCheckBox->setChecked(vlist[3].toBool());
+		m_ui.TransposeTimeSpinBox->setValue(vlist[4].toUInt());
+	}
+	// Transpose/reverse tool...
+	if (vlist.count() > 5)
+		m_ui.TransposeReverseCheckBox->setChecked(vlist[5].toBool());
+
+	// Normalize tool...
+	vlist = settings.value("/Normalize").toList();
+	if (vlist.count() > 4) {
+	//	m_ui.NormalizeCheckBox->setChecked(vlist[0].toBool());
+		m_ui.NormalizePercentCheckBox->setChecked(vlist[1].toBool());
+		m_ui.NormalizePercentSpinBox->setValue(vlist[2].toDouble());
+		m_ui.NormalizeValueCheckBox->setChecked(vlist[3].toBool());
+		m_ui.NormalizeValueSpinBox->setValue(vlist[4].toInt());
+	}
+	// Normalize/compress tool...
+	if (vlist.count() > 5)
+		m_ui.NormalizeCompressCheckBox->setChecked(vlist[5].toBool());
+
+	// Randomize tool...
+	vlist = settings.value("/Randomize").toList();
+	if (vlist.count() > 8) {
+	//	m_ui.RandomizeCheckBox->setChecked(vlist[0].toBool());
+		m_ui.RandomizeNoteCheckBox->setChecked(vlist[1].toBool());
+		m_ui.RandomizeNoteSpinBox->setValue(vlist[2].toDouble());
+		m_ui.RandomizeTimeCheckBox->setChecked(vlist[3].toBool());
+		m_ui.RandomizeTimeSpinBox->setValue(vlist[4].toDouble());
+		m_ui.RandomizeDurationCheckBox->setChecked(vlist[5].toBool());
+		m_ui.RandomizeDurationSpinBox->setValue(vlist[6].toDouble());
+		m_ui.RandomizeValueCheckBox->setChecked(vlist[7].toBool());
+		m_ui.RandomizeValueSpinBox->setValue(vlist[8].toDouble());
+	}
+
+	// Resize tool...
+	vlist = settings.value("/Resize").toList();
+	if (vlist.count() > 4) {
+	//	m_ui.ResizeCheckBox->setChecked(vlist[0].toBool());
+		m_ui.ResizeValueCheckBox->setChecked(vlist[1].toBool());
+		m_ui.ResizeValueSpinBox->setValue(vlist[2].toInt());
+		m_ui.ResizeDurationCheckBox->setChecked(vlist[3].toBool());
+		m_ui.ResizeDurationSpinBox->setValue(vlist[4].toUInt());
+	}
+	// Resize value mode tool...
+	if (vlist.count() > 6) {
+		m_ui.ResizeValue2ComboBox->setCurrentIndex(vlist[5].toInt());
+		m_ui.ResizeValue2SpinBox->setValue(vlist[6].toInt());
+	}
+	// Resize legato mode tool...
+	if (vlist.count() > 10) {
+		m_ui.ResizeLegatoCheckBox->setChecked(vlist[7].toBool());
+		m_ui.ResizeLegatoTypeComboBox->setCurrentIndex(vlist[8].toInt());
+		m_ui.ResizeLegatoLengthComboBox->setCurrentIndex(vlist[9].toInt());
+		m_ui.ResizeLegatoModeComboBox->setCurrentIndex(vlist[10].toInt());
+	}
+	// Resize join/split tool...
+	if (vlist.count() > 14) {
+		m_ui.ResizeJoinCheckBox->setChecked(vlist[11].toBool());
+		m_ui.ResizeSplitCheckBox->setChecked(vlist[12].toBool());
+		m_ui.ResizeSplitLengthComboBox->setCurrentIndex(vlist[13].toInt());
+		m_ui.ResizeSplitOffsetComboBox->setCurrentIndex(vlist[14].toInt());
+	}
+
+	// Rescale tool...
+	vlist = settings.value("/Rescale").toList();
+	if (vlist.count() > 6) {
+	//	m_ui.RescaleCheckBox->setChecked(vlist[0].toBool());
+		m_ui.RescaleTimeCheckBox->setChecked(vlist[1].toBool());
+		m_ui.RescaleTimeSpinBox->setValue(vlist[2].toDouble());
+		m_ui.RescaleDurationCheckBox->setChecked(vlist[3].toBool());
+		m_ui.RescaleDurationSpinBox->setValue(vlist[4].toDouble());
+		m_ui.RescaleValueCheckBox->setChecked(vlist[5].toBool());
+		m_ui.RescaleValueSpinBox->setValue(vlist[6].toDouble());
+	}
+	// Rescale/invert tool...
+	if (vlist.count() > 7)
+		m_ui.RescaleInvertCheckBox->setChecked(vlist[7].toBool());
+
+	// Timeshift tool...
+	vlist = settings.value("/Timeshift").toList();
+	if (vlist.count() > 2) {
+	//	m_ui.TimeshiftCheckBox->setChecked(vlist[0].toBool());
+		m_ui.TimeshiftSpinBox->setValue(vlist[1].toDouble());
+		m_ui.TimeshiftDurationCheckBox->setChecked(vlist[2].toBool());
+	}
+
+	// Temporamp tool...
+	vlist = settings.value("/Temporamp").toList();
+	if (vlist.count() > 3) {
+	//	m_ui.TemporampCheckBox->setChecked(vlist[0].toBool());
+	//	m_ui.TemporampFromSpinBox->setTempo(vlist[1].toDouble());
+		m_ui.TemporampToSpinBox->setTempo(float(vlist[2].toDouble()));
+		m_ui.TemporampDurationCheckBox->setChecked(float(vlist[3].toBool()));
+	}
+
+	// All loaded.
+	if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
+		settings.endGroup();
+	settings.endGroup();
 }
 
 
@@ -702,107 +711,118 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 {
 	// The current state preset is about to be saved...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions) {
-		QList<QVariant> vlist;
-		QSettings& settings = pOptions->settings();
-		// Set preset entry...
-		settings.beginGroup("/MidiTools");
-		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
-			settings.beginGroup('/' + sPreset);
-		// Quantize tool...
-		vlist.clear();
-		vlist.append(m_ui.QuantizeCheckBox->isChecked());
-		vlist.append(m_ui.QuantizeTimeCheckBox->isChecked());
-		vlist.append(m_ui.QuantizeTimeComboBox->currentIndex());
-		vlist.append(m_ui.QuantizeDurationCheckBox->isChecked());
-		vlist.append(m_ui.QuantizeDurationComboBox->currentIndex());
-		vlist.append(m_ui.QuantizeSwingCheckBox->isChecked());
-		vlist.append(m_ui.QuantizeSwingComboBox->currentIndex());
-		vlist.append(m_ui.QuantizeSwingSpinBox->value());
-		vlist.append(m_ui.QuantizeSwingTypeComboBox->currentIndex());
-		vlist.append(m_ui.QuantizeTimeSpinBox->value());
-		vlist.append(m_ui.QuantizeDurationSpinBox->value());
-		vlist.append(m_ui.QuantizeScaleCheckBox->isChecked());
-		vlist.append(m_ui.QuantizeScaleKeyComboBox->currentIndex());
-		vlist.append(m_ui.QuantizeScaleComboBox->currentIndex());
-		settings.setValue("/Quantize", vlist);
-		// Transpose tool...
-		vlist.clear();
-		vlist.append(m_ui.TransposeCheckBox->isChecked());
-		vlist.append(m_ui.TransposeNoteCheckBox->isChecked());
-		vlist.append(m_ui.TransposeNoteSpinBox->value());
-		vlist.append(m_ui.TransposeTimeCheckBox->isChecked());
-		vlist.append((unsigned int) m_ui.TransposeTimeSpinBox->value());
-		vlist.append(m_ui.TransposeReverseCheckBox->isChecked());
-		settings.setValue("/Transpose", vlist);
-		// Normalize tool...
-		vlist.clear();
-		vlist.append(m_ui.NormalizeCheckBox->isChecked());
-		vlist.append(m_ui.NormalizePercentCheckBox->isChecked());
-		vlist.append(m_ui.NormalizePercentSpinBox->value());
-		vlist.append(m_ui.NormalizeValueCheckBox->isChecked());
-		vlist.append(m_ui.NormalizeValueSpinBox->value());
-		vlist.append(m_ui.NormalizeCompressCheckBox->isChecked());
-		settings.setValue("/Normalize", vlist);
-		// Randomize tool...
-		vlist.clear();
-		vlist.append(m_ui.RandomizeCheckBox->isChecked());
-		vlist.append(m_ui.RandomizeNoteCheckBox->isChecked());
-		vlist.append(m_ui.RandomizeNoteSpinBox->value());
-		vlist.append(m_ui.RandomizeTimeCheckBox->isChecked());
-		vlist.append(m_ui.RandomizeTimeSpinBox->value());
-		vlist.append(m_ui.RandomizeDurationCheckBox->isChecked());
-		vlist.append(m_ui.RandomizeDurationSpinBox->value());
-		vlist.append(m_ui.RandomizeValueCheckBox->isChecked());
-		vlist.append(m_ui.RandomizeValueSpinBox->value());
-		settings.setValue("/Randomize", vlist);
-		// Resize tool...
-		vlist.clear();
-		vlist.append(m_ui.ResizeCheckBox->isChecked());
-		vlist.append(m_ui.ResizeValueCheckBox->isChecked());
-		vlist.append(m_ui.ResizeValueSpinBox->value());
-		vlist.append(m_ui.ResizeDurationCheckBox->isChecked());
-		vlist.append((unsigned int) m_ui.ResizeDurationSpinBox->value());
-		vlist.append(m_ui.ResizeValue2ComboBox->currentIndex());
-		vlist.append(m_ui.ResizeValue2SpinBox->value());
-		vlist.append(m_ui.ResizeLegatoCheckBox->isChecked());
-		vlist.append(m_ui.ResizeLegatoTypeComboBox->currentIndex());
-		vlist.append(m_ui.ResizeLegatoLengthComboBox->currentIndex());
-		vlist.append(m_ui.ResizeLegatoModeComboBox->currentIndex());
-		vlist.append(m_ui.ResizeJoinCheckBox->isChecked());
-		vlist.append(m_ui.ResizeSplitCheckBox->isChecked());
-		vlist.append(m_ui.ResizeSplitLengthComboBox->currentIndex());
-		vlist.append(m_ui.ResizeSplitOffsetComboBox->currentIndex());
-		settings.setValue("/Resize", vlist);
-		// Rescale tool...
-		vlist.clear();
-		vlist.append(m_ui.RescaleCheckBox->isChecked());
-		vlist.append(m_ui.RescaleTimeCheckBox->isChecked());
-		vlist.append(m_ui.RescaleTimeSpinBox->value());
-		vlist.append(m_ui.RescaleDurationCheckBox->isChecked());
-		vlist.append(m_ui.RescaleDurationSpinBox->value());
-		vlist.append(m_ui.RescaleValueCheckBox->isChecked());
-		vlist.append(m_ui.RescaleValueSpinBox->value());
-		vlist.append(m_ui.RescaleInvertCheckBox->isChecked());
-		settings.setValue("/Rescale", vlist);
-		// Timeshift tool...
-		vlist.clear();
-		vlist.append(m_ui.TimeshiftCheckBox->isChecked());
-		vlist.append(m_ui.TimeshiftSpinBox->value());
-		vlist.append(m_ui.TimeshiftDurationCheckBox->isChecked());
-		settings.setValue("/Timeshift", vlist);
-		// Temporamp tool...
-		vlist.clear();
-		vlist.append(m_ui.TemporampCheckBox->isChecked());
-		vlist.append(m_ui.TemporampFromSpinBox->tempo());
-		vlist.append(m_ui.TemporampToSpinBox->tempo());
-		vlist.append(m_ui.TemporampDurationCheckBox->isChecked());
-		settings.setValue("/Temporamp", vlist);
-		// All saved.
-		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
-			settings.endGroup();
+	if (pOptions == nullptr)
+		return;
+
+	QList<QVariant> vlist;
+	QSettings& settings = pOptions->settings();
+
+	// Set preset entry...
+	settings.beginGroup("/MidiTools");
+	if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
+		settings.beginGroup('/' + sPreset);
+
+	// Quantize tool...
+	vlist.clear();
+	vlist.append(m_ui.QuantizeCheckBox->isChecked());
+	vlist.append(m_ui.QuantizeTimeCheckBox->isChecked());
+	vlist.append(m_ui.QuantizeTimeComboBox->currentIndex());
+	vlist.append(m_ui.QuantizeDurationCheckBox->isChecked());
+	vlist.append(m_ui.QuantizeDurationComboBox->currentIndex());
+	vlist.append(m_ui.QuantizeSwingCheckBox->isChecked());
+	vlist.append(m_ui.QuantizeSwingComboBox->currentIndex());
+	vlist.append(m_ui.QuantizeSwingSpinBox->value());
+	vlist.append(m_ui.QuantizeSwingTypeComboBox->currentIndex());
+	vlist.append(m_ui.QuantizeTimeSpinBox->value());
+	vlist.append(m_ui.QuantizeDurationSpinBox->value());
+	vlist.append(m_ui.QuantizeScaleCheckBox->isChecked());
+	vlist.append(m_ui.QuantizeScaleKeyComboBox->currentIndex());
+	vlist.append(m_ui.QuantizeScaleComboBox->currentIndex());
+	settings.setValue("/Quantize", vlist);
+
+	// Transpose tool...
+	vlist.clear();
+	vlist.append(m_ui.TransposeCheckBox->isChecked());
+	vlist.append(m_ui.TransposeNoteCheckBox->isChecked());
+	vlist.append(m_ui.TransposeNoteSpinBox->value());
+	vlist.append(m_ui.TransposeTimeCheckBox->isChecked());
+	vlist.append((unsigned int) m_ui.TransposeTimeSpinBox->value());
+	vlist.append(m_ui.TransposeReverseCheckBox->isChecked());
+	settings.setValue("/Transpose", vlist);
+
+	// Normalize tool...
+	vlist.clear();
+	vlist.append(m_ui.NormalizeCheckBox->isChecked());
+	vlist.append(m_ui.NormalizePercentCheckBox->isChecked());
+	vlist.append(m_ui.NormalizePercentSpinBox->value());
+	vlist.append(m_ui.NormalizeValueCheckBox->isChecked());
+	vlist.append(m_ui.NormalizeValueSpinBox->value());
+	vlist.append(m_ui.NormalizeCompressCheckBox->isChecked());
+	settings.setValue("/Normalize", vlist);
+
+	// Randomize tool...
+	vlist.clear();
+	vlist.append(m_ui.RandomizeCheckBox->isChecked());
+	vlist.append(m_ui.RandomizeNoteCheckBox->isChecked());
+	vlist.append(m_ui.RandomizeNoteSpinBox->value());
+	vlist.append(m_ui.RandomizeTimeCheckBox->isChecked());
+	vlist.append(m_ui.RandomizeTimeSpinBox->value());
+	vlist.append(m_ui.RandomizeDurationCheckBox->isChecked());
+	vlist.append(m_ui.RandomizeDurationSpinBox->value());
+	vlist.append(m_ui.RandomizeValueCheckBox->isChecked());
+	vlist.append(m_ui.RandomizeValueSpinBox->value());
+	settings.setValue("/Randomize", vlist);
+
+	// Resize tool...
+	vlist.clear();
+	vlist.append(m_ui.ResizeCheckBox->isChecked());
+	vlist.append(m_ui.ResizeValueCheckBox->isChecked());
+	vlist.append(m_ui.ResizeValueSpinBox->value());
+	vlist.append(m_ui.ResizeDurationCheckBox->isChecked());
+	vlist.append((unsigned int) m_ui.ResizeDurationSpinBox->value());
+	vlist.append(m_ui.ResizeValue2ComboBox->currentIndex());
+	vlist.append(m_ui.ResizeValue2SpinBox->value());
+	vlist.append(m_ui.ResizeLegatoCheckBox->isChecked());
+	vlist.append(m_ui.ResizeLegatoTypeComboBox->currentIndex());
+	vlist.append(m_ui.ResizeLegatoLengthComboBox->currentIndex());
+	vlist.append(m_ui.ResizeLegatoModeComboBox->currentIndex());
+	vlist.append(m_ui.ResizeJoinCheckBox->isChecked());
+	vlist.append(m_ui.ResizeSplitCheckBox->isChecked());
+	vlist.append(m_ui.ResizeSplitLengthComboBox->currentIndex());
+	vlist.append(m_ui.ResizeSplitOffsetComboBox->currentIndex());
+	settings.setValue("/Resize", vlist);
+
+	// Rescale tool...
+	vlist.clear();
+	vlist.append(m_ui.RescaleCheckBox->isChecked());
+	vlist.append(m_ui.RescaleTimeCheckBox->isChecked());
+	vlist.append(m_ui.RescaleTimeSpinBox->value());
+	vlist.append(m_ui.RescaleDurationCheckBox->isChecked());
+	vlist.append(m_ui.RescaleDurationSpinBox->value());
+	vlist.append(m_ui.RescaleValueCheckBox->isChecked());
+	vlist.append(m_ui.RescaleValueSpinBox->value());
+	vlist.append(m_ui.RescaleInvertCheckBox->isChecked());
+	settings.setValue("/Rescale", vlist);
+
+	// Timeshift tool...
+	vlist.clear();
+	vlist.append(m_ui.TimeshiftCheckBox->isChecked());
+	vlist.append(m_ui.TimeshiftSpinBox->value());
+	vlist.append(m_ui.TimeshiftDurationCheckBox->isChecked());
+	settings.setValue("/Timeshift", vlist);
+
+	// Temporamp tool...
+	vlist.clear();
+	vlist.append(m_ui.TemporampCheckBox->isChecked());
+	vlist.append(m_ui.TemporampFromSpinBox->tempo());
+	vlist.append(m_ui.TemporampToSpinBox->tempo());
+	vlist.append(m_ui.TemporampDurationCheckBox->isChecked());
+	settings.setValue("/Temporamp", vlist);
+
+	// All saved.
+	if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
 		settings.endGroup();
-	}
+	settings.endGroup();
 }
 
 

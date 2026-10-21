@@ -36,19 +36,25 @@ class qtractorAudioFile;
 // class qtractorAudioEditCommand - declaration.
 //
 // Implements a single undoable/redoable edit on an audio clip file.
-// Two operation types are supported:
+// Operation types supported:
 //
-//   DeleteRange  – removes [iStart, iStart+iLength) from the source file
-//                  and writes the result to a new revision file.
+//   Delete  – removes [iStart, iStart+iLength) from the source
+//             file and writes the result to a new revision file.
 //
-//   InsertRange  – splices the frames stored in sFilename into the source
-//                  file at position iStart, writing the result to a new
-//                  revision file.
+//   Insert  – splices the frames stored in sFilename into the
+//             source file at position iStart, writing the result
+//             to a new revision file.
 //
-//   MoveRange    – removes [iStart, iStart+iLength) from the source file,
-//                  splices the frames stored in sFilename into the source
-//                  file at position iAfter and writes the result to a new
-//                  revision file.
+//   Move    – removes [iStart, iStart+iLength) from the source
+//             file, splices the frames stored in sFilename into
+//             the source file at position iAfter and writes the
+//             result to a new revision file.
+//
+//   Tool    – applies one or more DSP tools (gain, panniong,
+//             normalize, time-stretch, pitch-shift, reverse) to
+//             [iStart, iStart+iLength) and writes the result to
+//             a new revision file.  Regions outside the selection
+//             are copied verbatim.
 //
 // Both redo() and undo() call the shared execute(bool) helper which
 // streams the appropriate source → destination pair in 4096-frame chunks,
@@ -60,18 +66,44 @@ class qtractorAudioEditCommand : public qtractorCommand
 public:
 
 	// Operation types.
-	enum CommandType { DeleteRange, InsertRange, MoveRange };
+	enum CommandType { Insert, Delete, Move, Tool };
 
-	// Constructor.
+	// Parameters for the Tool command type.
+	struct ToolParams
+	{
+		// Gain/Pan
+		bool  bGain        = false;
+		float fGain        = 1.0f;  // linear amplitude (dBfs: pow(10, dB/20))
+
+		bool  bPanning     = false;
+		float fPanning     = 0.0f;  // −1.0 (full-left) .. +1.0 (full-right)
+
+		// Normalize
+		bool  bNormalize   = false;
+		float fNormalize   = 1.0f;  // linear peak target (≈ 0.0 dBfs)
+
+		// Time-stretch
+		bool  bTimeStretch = false;
+		float fTimeStretch = 1.0f;  // ratio: 1.5 = +50% longer (slower)
+
+		// Pitch-shift
+		bool  bPitchShift  = false;
+		float fPitchShift  = 1.0f;  // ratio: pow(2, semitones/12)
+
+		// Reverse
+		bool  bReverse     = false;
+	};
+
+	// Constructor (Delete / Insert / Move).
 	// iStart    – intra-file frame position of the selection start.
 	// iLength   – length in frames of the selection / region to insert.
-	// iCount    – number of regions to insert (only used for InsertRange;
+	// iCount    – number of regions to insert (only used for Insert;
 	//             otherwise ignored).
 	// sFilename – path to the audio file whose frames are to be inserted
-	//             (only used for InsertRange and MoveRange; ignored for
-	//             DeleteRange).
+	//             (only used for Insert and Move; ignored for Delete).
 	// iAfter    – intra-file frame position of the target region to move
-	//             (only used for MoveRange; otherwise ignored).
+	//             (only used for Move; otherwise ignored).
+	//
 	qtractorAudioEditCommand(
 		qtractorAudioClip *pAudioClip,
 		const QString& sName,
@@ -81,6 +113,17 @@ public:
 		unsigned short iCount = 1,
 		const QString& sFilename = QString(),
 		unsigned long iAfter = 0);
+
+	// Constructor (Tool).
+	// iStart  – intra-file frame position of the selection start.
+	// iLength – length in frames of the selection (must be > 0).
+	//
+	qtractorAudioEditCommand(
+		qtractorAudioClip *pAudioClip,
+		const QString& sName,
+		const ToolParams& params,
+		unsigned long iStart,
+		unsigned long iLength);
 
 	// Destructor.
 	~qtractorAudioEditCommand();
@@ -99,19 +142,24 @@ protected:
 	bool execute(bool bRedo);
 
 	// Operational helpers.
-	bool deleteFrames(float **ppFrames, unsigned int nframes,
-		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
-		unsigned long iStart, unsigned long iLength) const;
-
 	bool insertFrames(float **ppFrames, unsigned int nframes,
 		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
 		unsigned long iStart, unsigned long iLength,
 		unsigned short iCount) const;
 
+	bool deleteFrames(float **ppFrames, unsigned int nframes,
+		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
+		unsigned long iStart, unsigned long iLength) const;
+
 	bool moveFrames(float **ppFrames, unsigned int nframes,
 		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
 		unsigned long iStart, unsigned long iLength,
 		unsigned long iAfter) const;
+
+	bool toolFrames(float **ppFrames, unsigned int nframes,
+		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
+		unsigned long iStart, unsigned long iLength,
+		const ToolParams& params) const;
 
 	// Stream frames helper.
 	bool streamFrames(float **ppFrames, unsigned int nframes,
@@ -124,9 +172,10 @@ private:
 	CommandType        m_ctype;
 	unsigned long      m_iStart;    // intra-file selection start (frames)
 	unsigned long      m_iLength;   // selection / insertion length (frames)
-	unsigned short     m_iCount;    // number of regions to insert
-	QString            m_sFilename; // clipboard source for InsertRange
+	unsigned short     m_iCount;    // number of regions to Insert command.
+	QString            m_sFilename; // clipboard source for Insert and Move.
 	unsigned long      m_iAfter;    // intra-file move target (frames)
+	ToolParams         m_toolParams;// DSP parameters for Tool command.
 
 	// Revision file paths captured at construction / first redo.
 	QString m_sPrevFilename;  // file path before this command (undo target)
