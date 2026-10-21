@@ -24,6 +24,7 @@
 
 #include "qtractorAudioClip.h"
 #include "qtractorAudioFile.h"
+#include "qtractorTimeStretcher.h"
 
 #include "qtractorSession.h"
 #include "qtractorFileList.h"
@@ -31,6 +32,8 @@
 #include "qtractorMainForm.h"
 
 #include <QApplication>
+
+#include <cmath>
 
 
 //----------------------------------------------------------------------
@@ -55,13 +58,47 @@ qtractorAudioEditCommand::qtractorAudioEditCommand (
 	m_sNextFilename = m_pAudioClip->createFilePathRevision(true);
 
 	// Derive the expected clip length after the edit.
-	if (m_ctype == DeleteRange && m_iPrevLength > m_iLength)
+	if (m_ctype == Delete && m_iPrevLength > m_iLength)
 		m_iNextLength = m_iPrevLength - m_iLength;
 	else
-	if (m_ctype == InsertRange)
+	if (m_ctype == Insert)
 		m_iNextLength = m_iPrevLength + m_iLength * m_iCount;
 	else
 		m_iNextLength = m_iPrevLength;
+
+	// Commands in this editor always refresh the views.
+	setRefresh(true);
+}
+
+
+// Constructor (ApplyTool).
+qtractorAudioEditCommand::qtractorAudioEditCommand (
+	qtractorAudioClip *pAudioClip, const QString& sName,
+	const ToolParams& params,
+	unsigned long iStart, unsigned long iLength )
+	: qtractorCommand(sName), m_pAudioClip(pAudioClip), m_ctype(Tool),
+	  m_iStart(iStart), m_iLength(iLength), m_iCount(1),
+	  m_iAfter(0), m_toolParams(params),
+	  m_iPrevLength(0), m_iNextLength(0), m_iRedoCount(0)
+{
+	// Capture the current file path as the "before" state.
+	m_sPrevFilename = m_pAudioClip->filename();
+	m_iPrevLength   = m_pAudioClip->clipLength();
+
+	// Generate the new revision path that redo() will write to.
+	m_sNextFilename = m_pAudioClip->createFilePathRevision(true);
+
+	// Derive the expected clip length after the edit.
+	// Only TimeStretch changes the length of the processed region.
+	if (m_toolParams.bTimeStretch) {
+		const unsigned long iEnd = m_iStart + m_iLength;
+		m_iNextLength = m_iStart
+			+ ::lrintf(float(m_iLength) * m_toolParams.fTimeStretch);
+		if (m_iPrevLength  > iEnd)
+			m_iNextLength += (m_iPrevLength - iEnd);
+	} else {
+		m_iNextLength = m_iPrevLength;
+	}
 
 	// Commands in this editor always refresh the views.
 	setRefresh(true);
@@ -96,7 +133,7 @@ bool qtractorAudioEditCommand::undo (void)
 // bRedo == false : read m_sNextFilename, write m_sPrevFilename;
 //                  reverse the edit.
 //
-// For DeleteRange the reverse is an InsertRange using the deleted frames
+// For Delete the reverse is an Insert using the deleted frames
 // that were previously written into the "next" file gap position – but
 // since we store both full revision files we simply re-stream the
 // appropriate full source verbatim (the old file is the correct undo target).
@@ -117,9 +154,10 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 	// When undoing, we just hot-swap back to the previous revision.
 	// The "previous" file always exists on disk – no rewrite needed.
 	if (!bRedo) {
-		m_pAudioClip->setFilenameEx(m_sPrevFilename, true);
+		m_pAudioClip->setFilenameEx(m_sPrevFilename, false);
 		m_pAudioClip->setClipLengthEx(m_iPrevLength);
-		m_pAudioClip->resetAudioPeakEx();
+		m_pAudioClip->resetAudioClipEx();
+		pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
 		return true;
 	}
 
@@ -172,21 +210,27 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 
 	bool bOk = false;
 
-	// Intra-clip start is relative to file beginning (clipOffset already baked in).
+	// Intra-clip start is relative to file beginning
+	// (clipOffset already baked in)...
 	//
-	if (m_ctype == DeleteRange) {
+	if (m_ctype == Delete) {
 		bOk = deleteFrames(ppBuf, iBufSize,
 			pDst, pSrc, m_iStart, m_iLength);
 	}
 	else
-	if (m_ctype == InsertRange) {
+	if (m_ctype == Insert) {
 		bOk = insertFrames(ppBuf, iBufSize,
 			pDst, pSrc, m_iStart, m_iLength, m_iCount);
 	}
 	else
-	if (m_ctype == MoveRange) {
+	if (m_ctype == Move) {
 		bOk = moveFrames(ppBuf, iBufSize,
 			pDst, pSrc, m_iStart, m_iLength, m_iAfter);
+	}
+	else
+	if (m_ctype == Tool) {
+		bOk = toolFrames(ppBuf, iBufSize,
+			pDst, pSrc, m_iStart, m_iLength, m_toolParams);
 	}
 
 	// Release buffers.
@@ -209,11 +253,11 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 	// Hot-swap the clip to the new revision file.
 	pSession->files()->addClipItem(qtractorFileList::Audio, m_pAudioClip, true);
 
-	m_pAudioClip->setFilenameEx(m_sNextFilename, true);
+	m_pAudioClip->setFilenameEx(m_sNextFilename, false);
 	m_pAudioClip->setClipLengthEx(m_iNextLength);
-	m_pAudioClip->resetAudioPeakEx();
+	m_pAudioClip->resetAudioClipEx();
 
-	pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
+	//pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
 
 	// New file is supposed to get into the bill of materials...
 	if (++m_iRedoCount == 1) {
@@ -351,6 +395,259 @@ bool qtractorAudioEditCommand::moveFrames (
 	delete pTmp;
 
 	return bOk;
+}
+
+
+// toolFrames -- DSP processing pipeline for ApplyTool.
+//
+// Three-phase structure:
+//   Phase A: verbatim copy  [0, iStart]
+//   Phase B: DSP processing [iStart, iStart+iLength]
+//   Phase C: verbatim copy  [iStart+iLength, EoF]
+//
+// Phase A and C are zero-length (no-ops) when the selection
+// starts at 0 or extends to the end of file respectively.
+//
+bool qtractorAudioEditCommand::toolFrames (
+	float **ppFrames, unsigned int nframes,
+	qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
+	unsigned long iStart, unsigned long iLength,
+	const ToolParams& params ) const
+{
+	const unsigned short iChannels   = pSrc->channels();
+	const unsigned int   iSampleRate = pSrc->sampleRate();
+	const unsigned long  iFrames     = pSrc->frames();
+	const unsigned long  iEnd        = iStart + iLength;
+
+	// ── Phase A: verbatim copy before selection ──────────────────────
+	if (iStart > 0) {
+		if (!streamFrames(ppFrames, nframes, pDst, pSrc, 0, iStart))
+			return false;
+	}
+
+	// ── Phase B: DSP processing ──────────────────────────────────────
+
+	// 2-pass normalize: scan region for peak first...
+	float fScale = 1.0f;
+	if (params.bNormalize) {
+		if (!pSrc->seek(iStart))
+			return false;
+		float fPeak = 0.0f;
+		unsigned int iRemain = iLength;
+		while (iRemain > 0) {
+			const int nread
+				= pSrc->read(ppFrames, qMin(nframes, iRemain));
+			if (nread < 1)
+				break;
+			for (unsigned short i = 0; i < iChannels; ++i) {
+				for (int n = 0; n < nread; ++n) {
+					const float fAbs = ::fabsf(ppFrames[i][n]);
+					if (fPeak < fAbs)
+						fPeak = fAbs;
+				}
+			}
+			iRemain -= nread;
+		}
+		if (fPeak > 0.0f)
+			fScale = (params.fNormalize / fPeak);
+	}
+
+	// Compute per-channel gain multipliers (equal-power pan law)...
+	float afGains[iChannels];
+	for (unsigned short i = 0; i < iChannels; ++i)
+		afGains[i] = fScale;
+
+	if (params.bGain) {
+		for (unsigned short i = 0; i < iChannels; ++i)
+			afGains[i] *= params.fGain;
+	}
+
+	if (params.bPanning && iChannels >= 2) {
+		const float fPanning = params.fPanning;
+		afGains[0] *= ::cosf(float(M_PI_4) * (1.0f - fPanning));
+		afGains[1] *= ::cosf(float(M_PI_4) * (1.0f + fPanning));
+	}
+
+	// ── TimeStretch / PitchShift path (uses qtractorTimeStretcher) ───
+	if (params.bTimeStretch || params.bPitchShift) {
+		const float fTimeStretch
+			= params.bTimeStretch ? params.fTimeStretch : 1.0f;
+		const float fPitchShift
+			= params.bPitchShift ? params.fPitchShift : 1.0f;
+		const unsigned int iStretcherFlags =
+			m_pAudioClip->stretcherFlags();
+		// If Reverse is also requested, route the stretcher output to a
+		// temporary revision file and then copy it reversed into pDst...
+		QString sTmpFilename;
+		qtractorAudioFile *pTmp = nullptr;
+		if (params.bReverse) {
+			sTmpFilename = m_pAudioClip->createFilePathRevision(true);
+			pTmp = qtractorAudioFileFactory::createAudioFile(
+				sTmpFilename, iChannels, iSampleRate, nframes);
+			if (!pTmp || !pTmp->open(sTmpFilename, qtractorAudioFile::Write)) {
+				delete pTmp;
+				return false;
+			}
+		}
+		qtractorAudioFile *pDst2 = (pTmp ? pTmp : pDst);
+		qtractorTimeStretcher stretcher(iChannels, iSampleRate,
+			fTimeStretch, fPitchShift, iStretcherFlags, nframes);
+		if (!pSrc->seek(iStart)) {
+			if (pTmp) {
+				pTmp->close();
+				delete pTmp;
+			}
+			return false;
+		}
+		const unsigned long iLength2
+			= ::fabsf(fTimeStretch - 1.0f) > 0.001f
+			? ::lrintf(float(iLength) * fTimeStretch)
+			: iLength;
+		unsigned int iRemain  = iLength;
+		unsigned int iRemain2 = iLength2;
+		while (iRemain > 0 && iRemain2 > 0) {
+			const int nread
+				= pSrc->read(ppFrames, qMin(nframes, iRemain));
+			if (nread < 1)
+				break;
+			// Apply gain/pan/normalize before stretch...
+			for (unsigned short i = 0; i < iChannels; ++i) {
+				if (::fabsf(afGains[i] - 1.0f) > 0.001f) {
+					for (int n = 0; n < nread; ++n)
+						ppFrames[i][n] *= afGains[i];
+				}
+			}
+			stretcher.process(ppFrames, nread);
+			// Drain available output...
+			unsigned int navail = stretcher.available();
+			while (navail > 0 && iRemain2 > 0) {
+				const unsigned int nget = qMin(nframes, navail);
+				stretcher.retrieve(ppFrames, nget);
+				const int nwrite
+					= pDst2->write(ppFrames, qMin(nget, iRemain2));
+				if (nwrite < 1)
+					break;
+				iRemain2 -= nwrite;
+				navail = stretcher.available();
+			}
+			iRemain -= nread;
+		}
+		// Flush tail...
+		stretcher.flush();
+		unsigned int navail = stretcher.available();
+		while (navail > 0 && iRemain2 > 0) {
+			const unsigned int nget = qMin(nframes, navail);
+			stretcher.retrieve(ppFrames, nget);
+			const int nwrite
+				= pDst2->write(ppFrames, qMin(nget, iRemain2));
+			if (nwrite < 1)
+				break;
+			iRemain2 -= nwrite;
+			navail = stretcher.available();
+		}
+		// Close temp file, re-open for reading, copy reversed into pDst...
+		if (params.bReverse) {
+			pTmp->close();
+			delete pTmp;
+			pTmp = qtractorAudioFileFactory::createAudioFile(sTmpFilename);
+			if (!pTmp || !pTmp->open(sTmpFilename, qtractorAudioFile::Read)) {
+				delete pTmp;
+				return false;
+			}
+			const unsigned long iTmpFrames = pTmp->frames();
+			// Copy in reverse: read the last chunk first,
+			// walking backwards...
+			unsigned int iPos = iTmpFrames;
+			while (iPos > 0) {
+				const unsigned int iChunk = qMin(nframes, iPos);
+				iPos -= iChunk;
+				if (!pTmp->seek(iPos))
+					break;
+				const int nread2 = pTmp->read(ppFrames, iChunk);
+				if (nread2 < 1)
+					break;
+				// Reverse the chunk in place...
+				for (unsigned short i = 0; i < iChannels; ++i) {
+					float *pFrames = ppFrames[i];
+					int lo = 0, hi = nread2 - 1;
+					while (lo < hi) {
+						const float fTmp = pFrames[lo];
+						pFrames[lo++] = pFrames[hi];
+						pFrames[hi--] = fTmp;
+					}
+				}
+				pDst->write(ppFrames, nread2);
+			}
+			pTmp->close();
+			delete pTmp;
+			QFile::remove(sTmpFilename);
+		}
+	}
+	else
+	// ── Gain / Pan / Normalize only (no stretcher) ───────────────────
+	if (params.bGain || params.bPanning || params.bNormalize || params.bReverse) {
+		if (params.bReverse) {
+			// Reverse: read region backwards in chunks
+			// then reverse each in-place...
+			unsigned int iPos = iEnd;
+			while (iPos > iStart) {
+				const unsigned long iChunk = qMin(nframes, iPos - iStart);
+				iPos -= iChunk;
+				if (!pSrc->seek(iPos))
+					break;
+				const int nread = pSrc->read(ppFrames, iChunk);
+				if (nread < 1)
+					break;
+				for (unsigned short i = 0; i < iChannels; ++i) {
+					// Apply gain...
+					if (::fabsf(afGains[i] - 1.0f) > 0.001f) {
+						for (int n = 0; n < nread; ++n)
+							ppFrames[i][n] *= afGains[i];
+					}
+					// Reverse the chunk in place...
+					float *pFrames = ppFrames[i];
+					int lo = 0, hi = nread - 1;
+					while (lo < hi) {
+						const float fTmp = pFrames[lo];
+						pFrames[lo++] = pFrames[hi];
+						pFrames[hi--] = fTmp;
+					}
+				}
+				pDst->write(ppFrames, nread);
+			}
+		} else {
+			// Simple gain/pan/normalize pass...
+			if (!pSrc->seek(iStart))
+				return false;
+			unsigned int iRemain = iLength;
+			while (iRemain > 0) {
+				const int nread = pSrc->read(ppFrames, qMin(nframes, iRemain));
+				if (nread < 1)
+					break;
+				for (unsigned short i = 0; i < iChannels; ++i) {
+					// Apply gain...
+					if (::fabsf(afGains[i] - 1.0f) > 0.001f) {
+						for (int n = 0; n < nread; ++n)
+							ppFrames[i][n] *= afGains[i];
+					}
+				}
+				pDst->write(ppFrames, nread);
+				iRemain -= nread;
+			}
+		}
+	} else {
+		// No processing requested — verbatim copy of region...
+		if (!streamFrames(ppFrames, nframes, pDst, pSrc, iStart, iLength))
+			return false;
+	}
+
+	// ── Phase C: verbatim copy after selection ───────────────────────
+	if (iEnd < iFrames) {
+		if (!streamFrames(ppFrames, nframes, pDst, pSrc, iEnd, iFrames - iEnd))
+			return false;
+	}
+
+	return true;
 }
 
 
