@@ -573,9 +573,21 @@ void qtractorAudioClip::resetAudioClipEx (void)
 	if (m_pData == nullptr)
 		return;
 
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	pSession->lock();
+
 	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->resetAudioClip();
+
+	pSession->unlock();
 }
 
 
