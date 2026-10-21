@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -119,7 +119,10 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="Quantize">
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <!-- Tab 0: Quantize                                            -->
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <widget class="QWidget" name="QuantizeTab">
       <attribute name="title">
        <string>&amp;Quantize</string>
       </attribute>
@@ -384,7 +387,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Transpose">
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <!-- Tab 1: Transpose                                           -->
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <widget class="QWidget" name="TransposeTab">
       <attribute name="title">
        <string>&amp;Transpose</string>
       </attribute>
@@ -537,7 +543,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Normalize">
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <!-- Tab 2: Normalize                                           -->
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <widget class="QWidget" name="NormalizeTab">
       <attribute name="title">
        <string>&amp;Normalize</string>
       </attribute>
@@ -667,7 +676,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Randomize">
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <!-- Tab 3: Ramdomize                                           -->
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <widget class="QWidget" name="RandomizeTab">
       <attribute name="title">
        <string>&amp;Randomize</string>
       </attribute>
@@ -872,7 +884,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Resize">
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <!-- Tab 4: Resize                                              -->
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <widget class="QWidget" name="ResizeTab">
       <attribute name="title">
        <string>Resi&amp;ze</string>
       </attribute>
@@ -1181,7 +1196,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Rescale">
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <!-- Tab 5: Rescale                                             -->
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <widget class="QWidget" name="RescaleTab">
       <attribute name="title">
        <string>Re&amp;scale</string>
       </attribute>
@@ -1376,7 +1394,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Timeshift">
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <!-- Tab 6: Timeshift                                           -->
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <widget class="QWidget" name="TimeshiftTab">
       <attribute name="title">
        <string>T&amp;imeshift</string>
       </attribute>
@@ -1536,7 +1557,10 @@ Edit head/tail (blue) markers define the shift range.</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Temporamp">
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <!-- Tab 7: Temporamp                                           -->
+     <!-- ══════════════════════════════════════════════════════════ -->
+     <widget class="QWidget" name="TemporampTab">
       <attribute name="title">
        <string>T&amp;empo ramp</string>
       </attribute>

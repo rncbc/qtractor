@@ -132,8 +132,8 @@ public:
 	// Audio clip tool-tip.
 	QString toolTip() const;
 
-	// Special audio-peak reset methods.
-	void resetAudioPeak();
+	// Special audio-clip reset methods.
+	void resetAudioClip();
 
 	// Auto-save to (possible) new file revision.
 	bool saveCopyFile(const QString& sFilename, bool bUpdate);
@@ -239,8 +239,8 @@ public:
 	// Sync all ref-counted clip-dirtyness.
 	void setDirtyEx(bool bDirty);
 
-	// Reset all ref-counted clip audio-peaks.
-	void resetAudioPeakEx();
+	// Reset all ref-counted clip audio-clips.
+	void resetAudioClipEx();
 
 	// Manage local hash key.
 	void insertHashKey();
