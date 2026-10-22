@@ -89,6 +89,10 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 
 	m_ppRubberBand = nullptr;
 
+	// Pre-zoom-min/max.holders.
+	m_iOldHorizontalZoom = ZoomBase;
+	m_iOldVerticalZoom   = ZoomBase;
+
 	// Create child frame widgets...
 	QWidget *pHBoxMain  = new QWidget(this);
 	QWidget *pVBoxLeft  = new QWidget(this);
@@ -418,6 +422,55 @@ void qtractorAudioEditor::zoomReset (void)
 }
 
 
+void qtractorAudioEditor::zoomMaximize ( bool bOn )
+{
+	zoomStepEx(bOn, + ZoomMax);
+}
+
+
+void qtractorAudioEditor::zoomMinimize ( bool bOn )
+{
+	zoomStepEx(bOn, - ZoomMax);
+}
+
+
+// Zoom step actuator.
+void qtractorAudioEditor::zoomStepEx ( bool bOn, int iZoomStep )
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
+	if (zoomMode() & ZoomHorizontal) {
+		const int iHorizontalZoom
+			= pTimeScale->horizontalZoom();
+		if (bOn) {
+			horizontalZoomStep(iHorizontalZoom + iZoomStep);
+			m_iOldHorizontalZoom = iHorizontalZoom;
+		} else {
+			horizontalZoomStep(m_iOldHorizontalZoom - iHorizontalZoom);
+		}
+	}
+
+	if (zoomMode() & ZoomVertical) {
+		const int iVerticalZoom
+			= pTimeScale->verticalZoom();
+		if (bOn) {
+			verticalZoomStep(iVerticalZoom + iZoomStep);
+			m_iOldVerticalZoom = iVerticalZoom;
+		} else {
+			verticalZoomStep(m_iOldVerticalZoom - iVerticalZoom);
+		}
+	}
+
+	zoomCenterPost(zc);
+}
+
+
+// Horizontal zoom view slots.
 void qtractorAudioEditor::horizontalZoomInSlot (void)
 {
 	ZoomCenter zc;
@@ -438,6 +491,21 @@ void qtractorAudioEditor::horizontalZoomOutSlot (void)
 }
 
 
+void qtractorAudioEditor::horizontalZoomResetSlot (void)
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
+	horizontalZoomStep(ZoomBase - pTimeScale->horizontalZoom());
+	zoomCenterPost(zc);
+}
+
+
+// Vertical zoom view slots.
 void qtractorAudioEditor::verticalZoomInSlot (void)
 {
 	ZoomCenter zc;
@@ -458,20 +526,6 @@ void qtractorAudioEditor::verticalZoomOutSlot (void)
 }
 
 
-void qtractorAudioEditor::horizontalZoomResetSlot (void)
-{
-	qtractorTimeScale *pTimeScale = timeScale();
-	if (pTimeScale == nullptr)
-		return;
-
-	ZoomCenter zc;
-	zoomCenterPre(zc);
-
-	horizontalZoomStep(ZoomBase - pTimeScale->horizontalZoom());
-	zoomCenterPost(zc);
-}
-
-
 void qtractorAudioEditor::verticalZoomResetSlot (void)
 {
 	qtractorTimeScale *pTimeScale = timeScale();
@@ -484,8 +538,6 @@ void qtractorAudioEditor::verticalZoomResetSlot (void)
 	verticalZoomStep(ZoomBase - pTimeScale->verticalZoom());
 	zoomCenterPost(zc);
 }
-
-
 
 
 // Tell whether we can undo last command...

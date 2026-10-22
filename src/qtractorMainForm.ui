@@ -493,6 +493,9 @@
      <addaction name="separator"/>
      <addaction name="viewZoomResetAction"/>
      <addaction name="separator"/>
+     <addaction name="viewZoomMaximizeAction"/>
+     <addaction name="viewZoomMinimizeAction"/>
+     <addaction name="separator"/>
      <addaction name="viewZoomHorizontalAction"/>
      <addaction name="viewZoomVerticalAction"/>
      <addaction name="viewZoomAllAction"/>
@@ -2549,6 +2552,40 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="viewZoomMaximizeAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Ma&amp;ximize</string>
+   </property>
+   <property name="iconText">
+    <string>Zoom Maximize</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom maximize</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom maximize</string>
+   </property>
+  </action>
+  <action name="viewZoomMinimizeAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mi&amp;nimize</string>
+   </property>
+   <property name="iconText">
+    <string>Zoom Minimize</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom minimize</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom minimize</string>
    </property>
   </action>
   <action name="viewZoomHorizontalAction">
