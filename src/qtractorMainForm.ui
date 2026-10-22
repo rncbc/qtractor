@@ -337,14 +337,38 @@
      <property name="title">
       <string>T&amp;ools</string>
      </property>
-     <addaction name="clipToolsQuantizeAction"/>
-     <addaction name="clipToolsTransposeAction"/>
-     <addaction name="clipToolsNormalizeAction"/>
-     <addaction name="clipToolsRandomizeAction"/>
-     <addaction name="clipToolsResizeAction"/>
-     <addaction name="clipToolsRescaleAction"/>
-     <addaction name="clipToolsTimeshiftAction"/>
-     <addaction name="clipToolsTemporampAction"/>
+     <addaction name="clipAudioToolsMenu"/>
+     <addaction name="clipMidiToolsMenu"/>
+    </widget>
+    <widget class="QMenu" name="clipAudioToolsMenu">
+     <property name="title">
+      <string>&amp;Audio</string>
+     </property>
+     <property name="icon">
+      <iconset theme="trackAudio"/>
+     </property>
+     <addaction name="clipAudioToolsGainAction"/>
+     <addaction name="clipAudioToolsPanningAction"/>
+     <addaction name="clipAudioToolsNormalizeAction"/>
+     <addaction name="clipAudioToolsTimeStretchAction"/>
+     <addaction name="clipAudioToolsPitchShiftAction"/>
+     <addaction name="clipAudioToolsReverseAction"/>
+    </widget>
+    <widget class="QMenu" name="clipMidiToolsMenu">
+     <property name="title">
+      <string>&amp;MIDI</string>
+     </property>
+     <property name="icon">
+      <iconset theme="trackMidi"/>
+     </property>
+     <addaction name="clipMidiToolsQuantizeAction"/>
+     <addaction name="clipMidiToolsTransposeAction"/>
+     <addaction name="clipMidiToolsNormalizeAction"/>
+     <addaction name="clipMidiToolsRandomizeAction"/>
+     <addaction name="clipMidiToolsResizeAction"/>
+     <addaction name="clipMidiToolsRescaleAction"/>
+     <addaction name="clipMidiToolsTimeshiftAction"/>
+     <addaction name="clipMidiToolsTemporampAction"/>
     </widget>
     <widget class="QMenu" name="clipTakeMenu">
      <property name="title">
@@ -1889,7 +1913,91 @@
     <string>Normalize current clip (gain/volume)</string>
    </property>
   </action>
-  <action name="clipToolsQuantizeAction">
+  <action name="clipAudioToolsGainAction">
+   <property name="text">
+    <string>&amp;Gain...</string>
+   </property>
+   <property name="iconText">
+    <string>Gain Clip</string>
+   </property>
+   <property name="toolTip">
+    <string>Gain clip selection</string>
+   </property>
+   <property name="statusTip">
+    <string>Gain current audio clip selection</string>
+   </property>
+  </action>
+  <action name="clipAudioToolsPanningAction">
+   <property name="text">
+    <string>P&amp;anning...</string>
+   </property>
+   <property name="iconText">
+    <string>Panning Clip</string>
+   </property>
+   <property name="toolTip">
+    <string>Panning clip selection</string>
+   </property>
+   <property name="statusTip">
+    <string>Panning current audio clip selection</string>
+   </property>
+  </action>
+  <action name="clipAudioToolsNormalizeAction">
+   <property name="text">
+    <string>&amp;Normalize...</string>
+   </property>
+   <property name="iconText">
+    <string>Normalize Clip</string>
+   </property>
+   <property name="toolTip">
+    <string>Normalize clip selection</string>
+   </property>
+   <property name="statusTip">
+    <string>Normalize current audio clip selection</string>
+   </property>
+  </action>
+  <action name="clipAudioToolsTimeStretchAction">
+   <property name="text">
+    <string>&amp;Time Stretch...</string>
+   </property>
+   <property name="iconText">
+    <string>Time stretch Clip</string>
+   </property>
+   <property name="toolTip">
+    <string>Time stretch clip selection</string>
+   </property>
+   <property name="statusTip">
+    <string>Time stretch current audio clip selection</string>
+   </property>
+  </action>
+  <action name="clipAudioToolsPitchShiftAction">
+   <property name="text">
+    <string>&amp;Pitch Shift...</string>
+   </property>
+   <property name="iconText">
+    <string>Pitch Shift Clip</string>
+   </property>
+   <property name="toolTip">
+    <string>Pitch shift clip selection</string>
+   </property>
+   <property name="statusTip">
+    <string>Pitch shift current audio clip selection</string>
+   </property>
+  </action>
+  <action name="clipAudioToolsReverseAction">
+   <property name="text">
+    <string>&amp;Reverse...</string>
+   </property>
+   <property name="iconText">
+    <string>Reverse Clip</string>
+   </property>
+   <property name="toolTip">
+    <string>Reverse clip selection</string>
+   </property>
+   <property name="statusTip">
+    <string>Reverse current audio clip selection</string>
+   </property>
+  </action>
+  <action name="clipMidiToolsQuantizeAction">
    <property name="text">
     <string>&amp;Quantize...</string>
    </property>
@@ -1903,7 +2011,7 @@
     <string>Quantize current MIDI clip events</string>
    </property>
   </action>
-  <action name="clipToolsTransposeAction">
+  <action name="clipMidiToolsTransposeAction">
    <property name="text">
     <string>&amp;Transpose...</string>
    </property>
@@ -1917,7 +2025,7 @@
     <string>Transpose current MIDI clip events</string>
    </property>
   </action>
-  <action name="clipToolsNormalizeAction">
+  <action name="clipMidiToolsNormalizeAction">
    <property name="text">
     <string>&amp;Normalize...</string>
    </property>
@@ -1931,7 +2039,7 @@
     <string>Normalize current MIDI clip events</string>
    </property>
   </action>
-  <action name="clipToolsRandomizeAction">
+  <action name="clipMidiToolsRandomizeAction">
    <property name="text">
     <string>&amp;Randomize...</string>
    </property>
@@ -1945,7 +2053,7 @@
     <string>Randomize current MIDI clip events</string>
    </property>
   </action>
-  <action name="clipToolsResizeAction">
+  <action name="clipMidiToolsResizeAction">
    <property name="text">
     <string>Resi&amp;ze...</string>
    </property>
@@ -1959,7 +2067,7 @@
     <string>Resize current MIDI clip events</string>
    </property>
   </action>
-  <action name="clipToolsRescaleAction">
+  <action name="clipMidiToolsRescaleAction">
    <property name="text">
     <string>Re&amp;scale...</string>
    </property>
@@ -1973,7 +2081,7 @@
     <string>Rescale current MIDI clip events</string>
    </property>
   </action>
-  <action name="clipToolsTimeshiftAction">
+  <action name="clipMidiToolsTimeshiftAction">
    <property name="text">
     <string>T&amp;imeshift...</string>
    </property>
@@ -1987,7 +2095,7 @@
     <string>Timeshift current MIDI clip events</string>
    </property>
   </action>
-  <action name="clipToolsTemporampAction">
+  <action name="clipMidiToolsTemporampAction">
    <property name="text">
     <string>T&amp;empo ramp...</string>
    </property>

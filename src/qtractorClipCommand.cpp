@@ -33,7 +33,9 @@
 #include "qtractorTracks.h"
 #include "qtractorFiles.h"
 
+#include "qtractorAudioEditCommand.h"
 #include "qtractorMidiEditCommand.h"
+
 #include "qtractorTimeScaleCommand.h"
 #include "qtractorSessionCommand.h"
 #include "qtractorCurveCommand.h"
@@ -1260,6 +1262,9 @@ qtractorClipToolCommand::qtractorClipToolCommand ( const QString& sName )
 // Destructor.
 qtractorClipToolCommand::~qtractorClipToolCommand (void)
 {
+	qDeleteAll(m_audioEditCommands);
+	m_audioEditCommands.clear();
+
 	qDeleteAll(m_midiEditCommands);
 	m_midiEditCommands.clear();
 
@@ -1272,6 +1277,18 @@ qtractorClipToolCommand::~qtractorClipToolCommand (void)
 
 
 // Check if a clip is already part of the iting set.
+bool qtractorClipToolCommand::isLinkedAudioClip ( qtractorAudioClip *pAudioClip ) const
+{
+	QListIterator<qtractorAudioEditCommand *> iter(m_audioEditCommands);
+	while (iter.hasNext()) {
+		qtractorAudioClip *pAudioClipIter = iter.next()->audioClip();
+		if (pAudioClipIter && pAudioClipIter->isLinkedClip(pAudioClip))
+			return true;
+	}
+	return false;
+}
+
+
 bool qtractorClipToolCommand::isLinkedMidiClip ( qtractorMidiClip *pMidiClip ) const
 {
 	QListIterator<qtractorMidiEditCommand *> iter(m_midiEditCommands);
@@ -1285,6 +1302,13 @@ bool qtractorClipToolCommand::isLinkedMidiClip ( qtractorMidiClip *pMidiClip ) c
 
 
 // Composite command methods.
+void qtractorClipToolCommand::addAudioEditCommand (
+	qtractorAudioEditCommand *pAudioEditCommand )
+{
+	m_audioEditCommands.append(pAudioEditCommand);
+}
+
+
 void qtractorClipToolCommand::addMidiEditCommand (
 	qtractorMidiEditCommand *pMidiEditCommand )
 {
@@ -1303,7 +1327,7 @@ void qtractorClipToolCommand::addTimeScaleNodeCommand (
 // Composite predicate.
 bool qtractorClipToolCommand::isEmpty (void) const
 {
-	return m_midiEditCommands.isEmpty();
+	return m_audioEditCommands.isEmpty() && m_midiEditCommands.isEmpty();
 }
 
 
@@ -1314,9 +1338,21 @@ bool qtractorClipToolCommand::redo (void)
 
 	executeTimeScaleNodeCommands(true);
 
-	QListIterator<qtractorMidiEditCommand *> iter(m_midiEditCommands);
-	while (iter.hasNext()) {
-		qtractorMidiEditCommand *pMidiEditCommand = iter.next();
+	QListIterator<qtractorAudioEditCommand *> audio_iter(m_audioEditCommands);
+	while (audio_iter.hasNext()) {
+		qtractorAudioEditCommand *pAudioEditCommand = audio_iter.next();
+		if (pAudioEditCommand) {
+			qtractorAudioClip *pAudioClip = pAudioEditCommand->audioClip();
+			if (pAudioClip) {
+				// Redo as you told...
+				pAudioEditCommand->redo();
+			}
+		}
+	}
+
+	QListIterator<qtractorMidiEditCommand *> midi_iter(m_midiEditCommands);
+	while (midi_iter.hasNext()) {
+		qtractorMidiEditCommand *pMidiEditCommand = midi_iter.next();
 		if (pMidiEditCommand) {
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
@@ -1344,10 +1380,23 @@ bool qtractorClipToolCommand::undo (void)
 	if (m_pClipSaveFileCommand)
 		m_pClipSaveFileCommand->undo();
 
-	QListIterator<qtractorMidiEditCommand *> iter(m_midiEditCommands);
-	iter.toBack();
-	while (iter.hasPrevious()) {
-		qtractorMidiEditCommand *pMidiEditCommand = iter.previous();
+	QListIterator<qtractorAudioEditCommand *> audio_iter(m_audioEditCommands);
+	audio_iter.toBack();
+	while (audio_iter.hasPrevious()) {
+		qtractorAudioEditCommand *pAudioEditCommand = audio_iter.previous();
+		if (pAudioEditCommand) {
+			qtractorAudioClip *pAudioClip = pAudioEditCommand->audioClip();
+			if (pAudioClip) {
+				// Undo as you told...
+				pAudioEditCommand->undo();
+			}
+		}
+	}
+
+	QListIterator<qtractorMidiEditCommand *> midi_iter(m_midiEditCommands);
+	midi_iter.toBack();
+	while (midi_iter.hasPrevious()) {
+		qtractorMidiEditCommand *pMidiEditCommand = midi_iter.previous();
 		if (pMidiEditCommand) {
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
@@ -1382,9 +1431,11 @@ void qtractorClipToolCommand::executeTimeScaleNodeCommands ( bool bRedo )
 		++iTimeScaleUpdate;
 	}
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm && iTimeScaleUpdate > 0)
-		pMainForm->updateNotifySlot(qtractorCommand::ClearSelect);
+	if (iTimeScaleUpdate > 0) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->updateNotifySlot(qtractorCommand::ClearSelect);
+	}
 }
 
 
