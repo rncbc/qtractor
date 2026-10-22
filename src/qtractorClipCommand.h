@@ -34,7 +34,9 @@ class qtractorSessionCommand;
 class qtractorCurveEditCommand;
 class qtractorTimeScaleNodeCommand;
 class qtractorTimeScaleMarkerCommand;
+class qtractorAudioEditCommand;
 class qtractorMidiEditCommand;
+class qtractorAudioClip;
 class qtractorMidiClip;
 
 
@@ -344,9 +346,11 @@ public:
 	virtual ~qtractorClipToolCommand();
 
 	// Check if a clip is already part of the editing set.
+	bool isLinkedAudioClip(qtractorAudioClip *pAudioClip) const;
 	bool isLinkedMidiClip(qtractorMidiClip *pMidiClip) const;
 
 	// Composite command methods.
+	void addAudioEditCommand(qtractorAudioEditCommand *pAudioEditCommand);
 	void addMidiEditCommand(qtractorMidiEditCommand *pMidiEditCommand);
 
 	// When additional tempo-map/time-sig nodes are needed.
@@ -370,7 +374,8 @@ private:
 	int m_iRedoCount;
 
 	// Multi-clip command list.
-	QList<qtractorMidiEditCommand *> m_midiEditCommands;
+	QList<qtractorAudioEditCommand *> m_audioEditCommands;
+	QList<qtractorMidiEditCommand *>  m_midiEditCommands;
 
 	// When tempo-map node commands.
 	QList<qtractorTimeScaleNodeCommand *> m_timeScaleNodeCommands;
