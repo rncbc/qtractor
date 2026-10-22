@@ -1,7 +1,7 @@
 // qtractorTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@
 
 #include <stdlib.h>
 
-#include "qdebug.h"
+
 // Constructor.
 qtractorTimeStretcher::qtractorTimeStretcher (
 	unsigned short iChannels, unsigned int iSampleRate,
@@ -95,12 +95,13 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	#ifdef CONFIG_LIBRUBBERBAND_R3
 		m_iRubberBandLatency = m_pRubberBandStretcher->getStartDelay();
 		m_iRubberBandPadding = m_pRubberBandStretcher->getPreferredStartPad();
-		m_iRubberBandPadding += m_iRubberBandLatency;
-		m_iRubberBandFrames = qMax(m_iRubberBandLatency, m_iRubberBandPadding);
+		m_iRubberBandFrames  = m_iRubberBandPadding;
+		if (m_iRubberBandFrames  > m_iRubberBandLatency)
+			m_iRubberBandFrames -= m_iRubberBandLatency;
 	#else
 		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
-		m_iRubberBandPadding = m_iRubberBandLatency;
-		m_iRubberBandFrames = m_iRubberBandLatency;
+		m_iRubberBandPadding = 0;
+		m_iRubberBandFrames  = 0;
 	#endif
 		if (m_iRubberBandFrames > 0) {
 			m_ppRubberBandFrames = new float * [m_iRubberBandChannels];
@@ -155,9 +156,9 @@ void qtractorTimeStretcher::process (
 #ifdef CONFIG_LIBRUBBERBAND
 	if (m_pRubberBandStretcher) {
 		// Process the first dummy empty buffer...
-		if (m_iRubberBandPadding > 0) {
+		if (m_iRubberBandPadding > 0 && m_iRubberBandFrames > 0) {
 			m_pRubberBandStretcher->process(
-				m_ppRubberBandFrames, m_iRubberBandPadding, false);
+				m_ppRubberBandFrames, m_iRubberBandFrames, false);
 			m_iRubberBandPadding = 0;
 		}
 		m_pRubberBandStretcher->process(ppFrames, iFrames, false);
@@ -180,7 +181,7 @@ unsigned int qtractorTimeStretcher::retrieve (
 				m_iRubberBandLatency -= nread;
 				nread = 0;
 			} else {
-				unsigned int noffs = m_iRubberBandLatency;
+				const unsigned int noffs = m_iRubberBandLatency;
 				nread -= m_iRubberBandLatency;
 				m_iRubberBandLatency = 0;
 				for (unsigned int i = 0; i < m_iRubberBandChannels; ++i) {
@@ -243,18 +244,16 @@ void qtractorTimeStretcher::reset (void)
 	#ifdef CONFIG_LIBRUBBERBAND_R3
 		m_iRubberBandLatency = m_pRubberBandStretcher->getStartDelay();
 		m_iRubberBandPadding = m_pRubberBandStretcher->getPreferredStartPad();
-		m_iRubberBandFrames = qMax(m_iRubberBandLatency, m_iRubberBandPadding);
+		m_iRubberBandFrames  = m_iRubberBandPadding;
+		if (m_iRubberBandFrames  > m_iRubberBandLatency)
+			m_iRubberBandFrames -= m_iRubberBandLatency;
 	#else
 		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
-		m_iRubberBandPadding = m_iRubberBandLatency;
-		m_iRubberBandFrames = m_iRubberBandLatency;
+		m_iRubberBandPadding = 0;
+		m_iRubberBandFrames  = 0;
 	#endif
-		if (m_iRubberBandFrames > 0) {
-			if (m_ppRubberBandFrames) {
-				delete [] m_ppRubberBandFrames[0];
-			//	delete [] m_ppRubberBandFrames;
-			}
-		//	m_ppRubberBandFrames = new float * [m_iRubberBandChannels];
+		if (m_iRubberBandFrames > 0 && m_ppRubberBandFrames) {
+			delete [] m_ppRubberBandFrames[0];
 			m_ppRubberBandFrames[0] = new float [m_iRubberBandFrames];
 			::memset(m_ppRubberBandFrames[0], 0, m_iRubberBandFrames * sizeof(float));
 			for (unsigned short i = 1; i < m_iRubberBandChannels; ++i)
