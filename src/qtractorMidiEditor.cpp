@@ -801,6 +801,10 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Default minimum event width.
 	m_iMinEventWidth = QTRACTOR_MIN_EVENT_WIDTH;
 
+	// Pre-zoom-min/max.holders.
+	m_iOldHorizontalZoom = ZoomBase;
+	m_iOldVerticalZoom   = ZoomBase;
+
 	// The main widget splitters.
 	m_pHSplitter = new QSplitter(Qt::Horizontal, this);
 	m_pHSplitter->setObjectName("qtractorMidiEditor::HSplitter");
@@ -1536,6 +1540,54 @@ void qtractorMidiEditor::zoomReset (void)
 		horizontalZoomStep(ZoomBase - pTimeScale->horizontalZoom());
 	if (iZoomMode & ZoomVertical)
 		verticalZoomStep(ZoomBase - pTimeScale->verticalZoom());
+
+	zoomCenterPost(zc);
+}
+
+
+void qtractorMidiEditor::zoomMaximize ( bool bOn )
+{
+	zoomStepEx(bOn, + ZoomMax);
+}
+
+
+void qtractorMidiEditor::zoomMinimize ( bool bOn )
+{
+	zoomStepEx(bOn, - ZoomMax);
+}
+
+
+// Zoom step actuator.
+void qtractorMidiEditor::zoomStepEx ( bool bOn, int iZoomStep )
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
+	if (zoomMode() & ZoomHorizontal) {
+		const int iHorizontalZoom
+			= pTimeScale->horizontalZoom();
+		if (bOn) {
+			horizontalZoomStep(iHorizontalZoom + iZoomStep);
+			m_iOldHorizontalZoom = iHorizontalZoom;
+		} else {
+			horizontalZoomStep(m_iOldHorizontalZoom - iHorizontalZoom);
+		}
+	}
+
+	if (zoomMode() & ZoomVertical) {
+		const int iVerticalZoom
+			= pTimeScale->verticalZoom();
+		if (bOn) {
+			verticalZoomStep(iVerticalZoom + iZoomStep);
+			m_iOldVerticalZoom = iVerticalZoom;
+		} else {
+			verticalZoomStep(m_iOldVerticalZoom - iVerticalZoom);
+		}
+	}
 
 	zoomCenterPost(zc);
 }

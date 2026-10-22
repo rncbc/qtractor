@@ -368,6 +368,12 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.viewZoomResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomReset()));
+	QObject::connect(m_ui.viewZoomMaximizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomMaximize(bool)));
+	QObject::connect(m_ui.viewZoomMinimizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomMinimize(bool)));
 	QObject::connect(m_ui.viewZoomHorizontalAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomHorizontal()));
@@ -1503,6 +1509,32 @@ void qtractorAudioEditorForm::viewZoomOut (void)
 void qtractorAudioEditorForm::viewZoomReset (void)
 {
 	m_pAudioEditor->zoomReset();
+}
+
+
+// Set/reset zoom level to/from maximum.
+void qtractorAudioEditorForm::viewZoomMaximize ( bool bOn )
+{
+	const bool bBlockSignals
+		= m_ui.viewZoomMinimizeAction->blockSignals(true);
+	if (bOn && m_ui.viewZoomMinimizeAction->isChecked())
+		m_ui.viewZoomMinimizeAction->setChecked(false);
+	m_ui.viewZoomMinimizeAction->blockSignals(bBlockSignals);
+
+	m_pAudioEditor->zoomMaximize(bOn);
+}
+
+
+// Set/reset zoom level to/from minimum.
+void qtractorAudioEditorForm::viewZoomMinimize ( bool bOn )
+{
+	const bool bBlockSignals
+		= m_ui.viewZoomMaximizeAction->blockSignals(true);
+	if (bOn && m_ui.viewZoomMaximizeAction->isChecked())
+		m_ui.viewZoomMaximizeAction->setChecked(false);
+	m_ui.viewZoomMaximizeAction->blockSignals(bBlockSignals);
+
+	m_pAudioEditor->zoomMinimize(bOn);
 }
 
 

@@ -89,6 +89,10 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 
 	m_ppRubberBand = nullptr;
 
+	// Pre-zoom-min/max.holders.
+	m_iOldHorizontalZoom = ZoomBase;
+	m_iOldVerticalZoom   = ZoomBase;
+
 	// Create child frame widgets...
 	QWidget *pHBoxMain  = new QWidget(this);
 	QWidget *pVBoxLeft  = new QWidget(this);
@@ -413,6 +417,54 @@ void qtractorAudioEditor::zoomReset (void)
 		horizontalZoomStep(ZoomBase - pTimeScale->horizontalZoom());
 	if (iZoomMode & ZoomVertical)
 		verticalZoomStep(ZoomBase - pTimeScale->verticalZoom());
+
+	zoomCenterPost(zc);
+}
+
+
+void qtractorAudioEditor::zoomMaximize ( bool bOn )
+{
+	zoomStepEx(bOn, + ZoomMax);
+}
+
+
+void qtractorAudioEditor::zoomMinimize ( bool bOn )
+{
+	zoomStepEx(bOn, - ZoomMax);
+}
+
+
+// Zoom step actuator.
+void qtractorAudioEditor::zoomStepEx ( bool bOn, int iZoomStep )
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
+	if (zoomMode() & ZoomHorizontal) {
+		const int iHorizontalZoom
+			= pTimeScale->horizontalZoom();
+		if (bOn) {
+			horizontalZoomStep(iHorizontalZoom + iZoomStep);
+			m_iOldHorizontalZoom = iHorizontalZoom;
+		} else {
+			horizontalZoomStep(m_iOldHorizontalZoom - iHorizontalZoom);
+		}
+	}
+
+	if (zoomMode() & ZoomVertical) {
+		const int iVerticalZoom
+			= pTimeScale->verticalZoom();
+		if (bOn) {
+			verticalZoomStep(iVerticalZoom + iZoomStep);
+			m_iOldVerticalZoom = iVerticalZoom;
+		} else {
+			verticalZoomStep(m_iOldVerticalZoom - iVerticalZoom);
+		}
+	}
 
 	zoomCenterPost(zc);
 }
