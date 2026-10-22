@@ -587,6 +587,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewZoomResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomReset()));
+	QObject::connect(m_ui.viewZoomMaximizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomMaximize(bool)));
+	QObject::connect(m_ui.viewZoomMinimizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomMinimize(bool)));
 	QObject::connect(m_ui.viewZoomHorizontalAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomHorizontal()));
@@ -1985,6 +1991,32 @@ void qtractorMidiEditorForm::viewZoomOut (void)
 void qtractorMidiEditorForm::viewZoomReset (void)
 {
 	m_pMidiEditor->zoomReset();
+}
+
+
+// Set/reset zoom level to/from maximum.
+void qtractorMidiEditorForm::viewZoomMaximize ( bool bOn )
+{
+	const bool bBlockSignals
+		= m_ui.viewZoomMinimizeAction->blockSignals(true);
+	if (bOn && m_ui.viewZoomMinimizeAction->isChecked())
+		m_ui.viewZoomMinimizeAction->setChecked(false);
+	m_ui.viewZoomMinimizeAction->blockSignals(bBlockSignals);
+
+	m_pMidiEditor->zoomMaximize(bOn);
+}
+
+
+// Set/reset zoom level to/from minimum.
+void qtractorMidiEditorForm::viewZoomMinimize ( bool bOn )
+{
+	const bool bBlockSignals
+		= m_ui.viewZoomMaximizeAction->blockSignals(true);
+	if (bOn && m_ui.viewZoomMaximizeAction->isChecked())
+		m_ui.viewZoomMaximizeAction->setChecked(false);
+	m_ui.viewZoomMaximizeAction->blockSignals(bBlockSignals);
+
+	m_pMidiEditor->zoomMinimize(bOn);
 }
 
 

@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- View/Zoom/Maximize, Minimize introduced to all main windows.
+
 - Audio track's plugin chain are now always processed regardless
   of their input monitoring state. (EXPERIMENTAL)
 
