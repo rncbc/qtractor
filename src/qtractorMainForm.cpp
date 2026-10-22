@@ -1025,30 +1025,48 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipExportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipExport()));
-	QObject::connect(m_ui.clipToolsQuantizeAction,
+	QObject::connect(m_ui.clipAudioToolsGainAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipToolsQuantize()));
-	QObject::connect(m_ui.clipToolsTransposeAction,
+		SLOT(clipAudioToolsGain()));
+	QObject::connect(m_ui.clipAudioToolsPanningAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipToolsTranspose()));
-	QObject::connect(m_ui.clipToolsNormalizeAction,
+		SLOT(clipAudioToolsPanning()));
+	QObject::connect(m_ui.clipAudioToolsNormalizeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipToolsNormalize()));
-	QObject::connect(m_ui.clipToolsRandomizeAction,
+		SLOT(clipAudioToolsNormalize()));
+	QObject::connect(m_ui.clipAudioToolsTimeStretchAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipToolsRandomize()));
-	QObject::connect(m_ui.clipToolsResizeAction,
+		SLOT(clipAudioToolsTimeStretch()));
+	QObject::connect(m_ui.clipAudioToolsPitchShiftAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipToolsResize()));
-	QObject::connect(m_ui.clipToolsRescaleAction,
+		SLOT(clipAudioToolsPitchShift()));
+	QObject::connect(m_ui.clipAudioToolsReverseAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipToolsRescale()));
-	QObject::connect(m_ui.clipToolsTimeshiftAction,
+		SLOT(clipAudioToolsReverse()));
+	QObject::connect(m_ui.clipMidiToolsQuantizeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipToolsTimeshift()));
-	QObject::connect(m_ui.clipToolsTemporampAction,
+		SLOT(clipMidiToolsQuantize()));
+	QObject::connect(m_ui.clipMidiToolsTransposeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(clipToolsTemporamp()));
+		SLOT(clipMidiToolsTranspose()));
+	QObject::connect(m_ui.clipMidiToolsNormalizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipMidiToolsNormalize()));
+	QObject::connect(m_ui.clipMidiToolsRandomizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipMidiToolsRandomize()));
+	QObject::connect(m_ui.clipMidiToolsResizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipMidiToolsResize()));
+	QObject::connect(m_ui.clipMidiToolsRescaleAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipMidiToolsRescale()));
+	QObject::connect(m_ui.clipMidiToolsTimeshiftAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipMidiToolsTimeshift()));
+	QObject::connect(m_ui.clipMidiToolsTemporampAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipMidiToolsTemporamp()));
 	QObject::connect(m_ui.clipTakeSelectMenu,
 		SIGNAL(triggered(QAction *)),
 		SLOT(clipTakeSelect(QAction *)));
@@ -4963,107 +4981,185 @@ void qtractorMainForm::clipExport (void)
 }
 
 
-// Quantize current clip.
-void qtractorMainForm::clipToolsQuantize (void)
+// Gain current clip.
+void qtractorMainForm::clipAudioToolsGain (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipToolsQuantize()");
+	qDebug("qtractorMainForm::clipAudioToolsGain()");
 #endif
 
-	// Quantize current clip events, if any...
+	// Gain current clip selection, if any...
 	if (m_pTracks)
-		m_pTracks->executeClipTool(qtractorMidiEditor::Quantize);
+		m_pTracks->executeAudioClipTool(qtractorAudioEditor::Gain);
 }
 
 
-// Transpose current clip.
-void qtractorMainForm::clipToolsTranspose (void)
+// Panning current clip.
+void qtractorMainForm::clipAudioToolsPanning (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipToolsTranspose()");
+	qDebug("qtractorMainForm::clipAudioToolsPanning()");
 #endif
 
-	// Tranpose current clip events, if any...
+	// Panning current clip selection, if any...
 	if (m_pTracks)
-		m_pTracks->executeClipTool(qtractorMidiEditor::Transpose);
+		m_pTracks->executeAudioClipTool(qtractorAudioEditor::Panning);
 }
 
 
 // Normalize current clip.
-void qtractorMainForm::clipToolsNormalize (void)
+void qtractorMainForm::clipAudioToolsNormalize (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipToolsNormalize()");
+	qDebug("qtractorMainForm::clipAudioToolsNormalize()");
+#endif
+
+	// Normalize current clip selection, if any...
+	if (m_pTracks)
+		m_pTracks->executeAudioClipTool(qtractorAudioEditor::Normalize);
+}
+
+
+// Time-stretch current clip.
+void qtractorMainForm::clipAudioToolsTimeStretch (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipAudioToolsTimeStretch()");
+#endif
+
+	// Time-stretch current clip selection, if any...
+	if (m_pTracks)
+		m_pTracks->executeAudioClipTool(qtractorAudioEditor::TimeStretch);
+}
+
+
+// Pitch-shift current clip.
+void qtractorMainForm::clipAudioToolsPitchShift (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipAudioToolsPitchShift()");
+#endif
+
+	// Pitch-shift current clip selection, if any...
+	if (m_pTracks)
+		m_pTracks->executeAudioClipTool(qtractorAudioEditor::PitchShift);
+}
+
+
+// Reverse current clip.
+void qtractorMainForm::clipAudioToolsReverse (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipAudioToolsReverse()");
+#endif
+
+	// Reverse current clip selection, if any...
+	if (m_pTracks)
+		m_pTracks->executeAudioClipTool(qtractorAudioEditor::Reverse);
+}
+
+
+// Quantize current clip.
+void qtractorMainForm::clipMidiToolsQuantize (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipMidiToolsQuantize()");
+#endif
+
+	// Quantize current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeMidiClipTool(qtractorMidiEditor::Quantize);
+}
+
+
+// Transpose current clip.
+void qtractorMainForm::clipMidiToolsTranspose (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipMidiToolsTranspose()");
+#endif
+
+	// Tranpose current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeMidiClipTool(qtractorMidiEditor::Transpose);
+}
+
+
+// Normalize current clip.
+void qtractorMainForm::clipMidiToolsNormalize (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipMidiToolsNormalize()");
 #endif
 
 	// Normalize current clip events, if any...
 	if (m_pTracks)
-		m_pTracks->executeClipTool(qtractorMidiEditor::Normalize);
+		m_pTracks->executeMidiClipTool(qtractorMidiEditor::Normalize);
 }
 
 
 // Randomize current clip.
-void qtractorMainForm::clipToolsRandomize (void)
+void qtractorMainForm::clipMidiToolsRandomize (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipToolsRandomize()");
+	qDebug("qtractorMainForm::clipMidiToolsRandomize()");
 #endif
 
 	// Randomize current clip events, if any...
 	if (m_pTracks)
-		m_pTracks->executeClipTool(qtractorMidiEditor::Randomize);
+		m_pTracks->executeMidiClipTool(qtractorMidiEditor::Randomize);
 }
 
 
 // Resize current clip.
-void qtractorMainForm::clipToolsResize (void)
+void qtractorMainForm::clipMidiToolsResize (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipToolsResize()");
+	qDebug("qtractorMainForm::clipMidiToolsResize()");
 #endif
 
 	// Resize current clip events, if any...
 	if (m_pTracks)
-		m_pTracks->executeClipTool(qtractorMidiEditor::Resize);
+		m_pTracks->executeMidiClipTool(qtractorMidiEditor::Resize);
 }
 
 
 // Rescale current clip.
-void qtractorMainForm::clipToolsRescale (void)
+void qtractorMainForm::clipMidiToolsRescale (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipToolsRescale()");
+	qDebug("qtractorMainForm::clipMidiToolsRescale()");
 #endif
 
 	// Rescale  current clip events, if any...
 	if (m_pTracks)
-		m_pTracks->executeClipTool(qtractorMidiEditor::Rescale);
+		m_pTracks->executeMidiClipTool(qtractorMidiEditor::Rescale);
 }
 
 
 // Timeshift current clip.
-void qtractorMainForm::clipToolsTimeshift (void)
+void qtractorMainForm::clipMidiToolsTimeshift (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipToolsTimeshift()");
+	qDebug("qtractorMainForm::clipMidiToolsTimeshift()");
 #endif
 
 	// Timeshift current clip events, if any...
 	if (m_pTracks)
-		m_pTracks->executeClipTool(qtractorMidiEditor::Timeshift);
+		m_pTracks->executeMidiClipTool(qtractorMidiEditor::Timeshift);
 }
 
 
 // Temporamp current clip.
-void qtractorMainForm::clipToolsTemporamp (void)
+void qtractorMainForm::clipMidiToolsTemporamp (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::clipToolsTemporamp()");
+	qDebug("qtractorMainForm::clipMidiToolsTemporamp()");
 #endif
 
 	// Temporamp current clip events, if any...
 	if (m_pTracks)
-		m_pTracks->executeClipTool(qtractorMidiEditor::Temporamp);
+		m_pTracks->executeMidiClipTool(qtractorMidiEditor::Temporamp);
 }
 
 
@@ -8131,12 +8227,16 @@ void qtractorMainForm::updateClipMenu (void)
 //	m_ui.clipImportAction->setEnabled(bTracks);
 	m_ui.clipExportAction->setEnabled(bSingleTrackSelected);
 
-	const bool bClipToolsEnabled = bClipSelected
+	const bool bAudioToolsEnabled = bClipSelected
+		&& pTrack && pTrack->trackType() == qtractorTrack::Audio;
+	const bool bMidiToolsEnabled = bClipSelected
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi;
-	m_ui.clipToolsMenu->setEnabled(bClipToolsEnabled);
-	if (bClipToolsEnabled) {
-		m_ui.clipToolsTimeshiftAction->setEnabled(bClipSelectable);
-		m_ui.clipToolsTemporampAction->setEnabled(bClipSelectable);
+	m_ui.clipToolsMenu->setEnabled(bAudioToolsEnabled || bMidiToolsEnabled);
+	m_ui.clipAudioToolsMenu->setEnabled(bAudioToolsEnabled);
+	m_ui.clipMidiToolsMenu->setEnabled(bMidiToolsEnabled);
+	if (bMidiToolsEnabled) {
+		m_ui.clipMidiToolsTimeshiftAction->setEnabled(bClipSelectable);
+		m_ui.clipMidiToolsTemporampAction->setEnabled(bClipSelectable);
 	}
 
 	m_ui.clipTakeMenu->setEnabled(pClip != nullptr);
