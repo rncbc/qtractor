@@ -573,9 +573,21 @@ void qtractorAudioClip::resetAudioClipEx (void)
 	if (m_pData == nullptr)
 		return;
 
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	pSession->lock();
+
 	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->resetAudioClip();
+
+	pSession->unlock();
 }
 
 
@@ -683,6 +695,25 @@ void qtractorAudioClip::relinkHashData (void)
 bool qtractorAudioClip::isHashLinked (void) const
 {
 	return (m_pData && m_pData->count() > 1);
+}
+
+
+// Check whether an audio clip is hash-linked to another.
+bool qtractorAudioClip::isLinkedClip ( qtractorAudioClip *pAudioClip ) const
+{
+	return (m_pData ? m_pData->clips().contains(pAudioClip) : false);
+}
+
+
+// Get all hash-linked clips (including self).
+QList<qtractorAudioClip *> qtractorAudioClip::linkedClips (void) const
+{
+	QList<qtractorAudioClip *> clips;
+
+	if (m_pData)
+		clips = m_pData->clips();
+
+	return clips;
 }
 
 

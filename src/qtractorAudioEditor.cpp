@@ -597,8 +597,8 @@ void qtractorAudioEditor::executeTool ( int iToolIndex )
 		return;
 
 	const unsigned long f0 = offset();
-	const unsigned long iFrameStart = selectStart() - f0;
-	const unsigned long iFrameEnd = selectEnd() - f0;
+	const unsigned long iFrameStart  = selectStart() - f0;
+	const unsigned long iFrameLength = selectEnd() - f0 - iFrameStart;
 
 	const unsigned short iChannels    = pFile->channels();
 	const unsigned int   iSampleRate  = pFile->sampleRate();
@@ -611,11 +611,10 @@ void qtractorAudioEditor::executeTool ( int iToolIndex )
 
 	const unsigned long iStart
 		= ::lrintf(fRatio * float(m_pAudioClip->clipOffset() + iFrameStart));
-	const unsigned long iLength
-		= ::lrintf(fRatio * float(iFrameEnd - iFrameStart));
-
-	if (iStart + iLength > pFile->frames())
-		return;
+	const unsigned long iFrames = pFile->frames();
+	unsigned long iLength = ::lrintf(fRatio * float(iFrameLength));
+	if (iStart + iLength > iFrames)
+		iLength = iFrames - iStart;
 
 	if (!pFile->seek(iStart))
 		return;
