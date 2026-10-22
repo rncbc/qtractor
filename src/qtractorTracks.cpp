@@ -97,6 +97,10 @@ qtractorTracks::qtractorTracks ( QWidget *pParent )
 	// Zoom mode flag.
 	m_iZoomMode = ZoomAll;
 
+	// Pre-zoom-min/max.holders.
+	m_iOldHorizontalZoom = ZoomBase;
+	m_iOldVerticalZoom   = ZoomBase;
+
 	// Create child box layouts...
 	QVBoxLayout *pVBoxLayout = new QVBoxLayout(pVBox);
 	pVBoxLayout->setContentsMargins(0, 0, 0, 0);
@@ -265,6 +269,54 @@ void qtractorTracks::zoomReset (void)
 		horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
 	if (m_iZoomMode & ZoomVertical)
 		verticalZoomStep(ZoomBase - pSession->verticalZoom());
+
+	zoomCenterPost(zc);
+}
+
+
+void qtractorTracks::zoomMaximize ( bool bOn )
+{
+	zoomStepEx(bOn, + ZoomMax);
+}
+
+
+void qtractorTracks::zoomMinimize ( bool bOn )
+{
+	zoomStepEx(bOn, - ZoomMax);
+}
+
+
+// Zoom step actuator.
+void qtractorTracks::zoomStepEx ( bool bOn, int iZoomStep )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	ZoomCenter zc;
+	zoomCenterPre(zc);
+
+	if (m_iZoomMode & ZoomHorizontal) {
+		const int iHorizontalZoom
+			= pSession->horizontalZoom();
+		if (bOn) {
+			horizontalZoomStep(iHorizontalZoom + iZoomStep);
+			m_iOldHorizontalZoom = iHorizontalZoom;
+		} else {
+			horizontalZoomStep(m_iOldHorizontalZoom - iHorizontalZoom);
+		}
+	}
+
+	if (m_iZoomMode & ZoomVertical) {
+		const int iVerticalZoom
+			= pSession->verticalZoom();
+		if (bOn) {
+			verticalZoomStep(iVerticalZoom + iZoomStep);
+			m_iOldVerticalZoom = iVerticalZoom;
+		} else {
+			verticalZoomStep(m_iOldVerticalZoom - iVerticalZoom);
+		}
+	}
 
 	zoomCenterPost(zc);
 }

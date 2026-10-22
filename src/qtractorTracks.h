@@ -196,6 +196,9 @@ public:
 	void zoomOut();
 	void zoomReset();
 
+	void zoomMaximize(bool bOn);
+	void zoomMinimize(bool bOn);
+
 	// Track-list update (current track only).
 	void updateTrackList(qtractorTrack *pTrack = nullptr);
 
@@ -209,6 +212,9 @@ protected:
 
 	// Zoom step evaluator.
 	int zoomStep() const;
+
+	// Zoom step actuator.
+	void zoomStepEx(bool bOn, int iZoomStep);
 
 	// Common zoom factor settlers.
 	void horizontalZoomStep(int iZoomStep);
@@ -274,6 +280,10 @@ private:
 
 	// Zoom mode flag.
 	int m_iZoomMode;
+
+	// Pre-zoom-min/max.holders.
+	int m_iOldHorizontalZoom;
+	int m_iOldVerticalZoom;
 };
 
 

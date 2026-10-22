@@ -275,6 +275,8 @@ public slots:
 	void viewZoomIn();
 	void viewZoomOut();
 	void viewZoomReset();
+	void viewZoomMaximize(bool bOn);
+	void viewZoomMinimize(bool bOn);
 	void viewZoomHorizontal();
 	void viewZoomVertical();
 	void viewZoomAll();
