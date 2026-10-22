@@ -195,7 +195,7 @@ option (CONFIG_STACKTRACE "Enable debugger stack-trace (default=no)" 0)
 option (CONFIG_WAYLAND "Enable Wayland support (NOT RECOMMENDED) (default=no)" 0)
 
 # Enable audio clip editor option.
-option (CONFIG_AUDIO_EDITOR "Enable audio clip editor (EXPERIMENTAL) (default=no)" 0)
+option (CONFIG_AUDIO_EDITOR "Enable audio clip editor (EXPERIMENTAL) (default=yes)" 1)
 
 # Enable Qt6 build preference.
 option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
