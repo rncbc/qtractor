@@ -118,7 +118,8 @@ public:
 	bool loopClip(qtractorClip *pClip = nullptr);
 	bool tempoClip(qtractorClip *pClip = nullptr);
 	bool crossFadeClip(qtractorClip *pClip = nullptr);
-	bool executeClipTool(int iTool, qtractorClip *pClip = nullptr);
+	bool executeAudioClipTool(int iTool, qtractorClip *pClip = nullptr);
+	bool executeMidiClipTool(int iTool, qtractorClip *pClip = nullptr);
 	bool importClips(QStringList files, unsigned long iClipStart = 0);
 	bool exportClips();
 	bool mergeClips();

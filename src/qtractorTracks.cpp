@@ -59,6 +59,7 @@
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditor.h"
 
+#include "qtractorAudioToolsForm.h"
 #include "qtractorMidiToolsForm.h"
 #include "qtractorMidiEditSelect.h"
 
@@ -941,7 +942,22 @@ bool qtractorTracks::normalizeClipCommand (
 
 
 // Execute tool on a given(current) MIDI clip.
-bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
+bool qtractorTracks::executeAudioClipTool ( int iTool, qtractorClip *pClip )
+{
+	qtractorAudioToolsForm toolsForm(this);
+	toolsForm.setToolIndex(iTool);
+	if (!toolsForm.exec())
+		return false;
+
+	// TODO: ?...
+	//
+
+	return true;
+}
+
+
+// Execute tool on a given(current) MIDI clip.
+bool qtractorTracks::executeMidiClipTool ( int iTool, qtractorClip *pClip )
 {
 	qtractorMidiToolsForm toolsForm(this);
 	toolsForm.setToolIndex(iTool);
