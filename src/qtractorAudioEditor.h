@@ -210,7 +210,13 @@ public slots:
 	void zoomOut();
 	void zoomReset();
 
+	void zoomMaximize(bool bOn);
+	void zoomMinimize(bool bOn);
+
 protected:
+
+	// Zoom step actuator.
+	void zoomStepEx(bool bOn, int iZoomStep);
 
 	// Audio-peak life-cycle methods.
 	void createAudioPeak();
@@ -325,6 +331,10 @@ private:
 	qtractorAudioEditView *m_pEditView;
 	qtractorAudioEditViewScale *m_pEditViewScale;
 	QFrame *m_pEditViewHeader;
+
+	// Pre-zoom-min/max.holders.
+	int m_iOldHorizontalZoom;
+	int m_iOldVerticalZoom;
 
 	// Common drag state.
 	enum DragState {
