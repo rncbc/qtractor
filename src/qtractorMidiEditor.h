@@ -357,7 +357,13 @@ public slots:
 	void zoomOut();
 	void zoomReset();
 
+	void zoomMaximize(bool bOn);
+	void zoomMinimize(bool bOn);
+
 protected:
+
+	// Zoom step actuator.
+	void zoomStepEx(bool bOn, int iZoomStep);
 
 	// Update instrument default note names (nb. drum key names).
 	void updateDefaultDrumNoteNames();
@@ -367,9 +373,6 @@ protected:
 
 	// Zoom factor constants.
 	enum { ZoomMin = 10, ZoomBase = 100, ZoomMax = 1000, ZoomStep = 10 };
-
-	// Zoom step evaluator.
-	int zoomStep() const;
 
 	// Common zoom factor settlers.
 	void horizontalZoomStep(int iZoomStep);
@@ -525,6 +528,10 @@ private:
 	QFrame *m_pEditEventFrame;
 
 	qtractorMidiThumbView *m_pThumbView;
+
+	// Pre-zoom-min/max.holders.
+	int m_iOldHorizontalZoom;
+	int m_iOldVerticalZoom;
 
 	// Event cursors (main time-line).
 	qtractorMidiCursor m_cursor;
