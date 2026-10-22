@@ -254,6 +254,12 @@ public:
 	// Whether local hash is being shared.
 	bool isHashLinked() const;
 
+	// Check whether an audio clip is hash-linked to another.
+	bool isLinkedClip (qtractorAudioClip *pAudioClip) const;
+
+	// Get all hash-linked clips (including self).
+	QList<qtractorAudioClip *> linkedClips() const;
+
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
 

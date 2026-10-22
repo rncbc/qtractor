@@ -34,6 +34,9 @@ class qtractorClipCommand;
 class qtractorClipRangeCommand;
 class qtractorClipToolCommand;
 class qtractorImportTrackCommand;
+class qtractorAudioClip;
+class qtractorMidiClip;
+class qtractorAudioToolsForm;
 class qtractorMidiToolsForm;
 class qtractorMidiManager;
 
@@ -118,7 +121,8 @@ public:
 	bool loopClip(qtractorClip *pClip = nullptr);
 	bool tempoClip(qtractorClip *pClip = nullptr);
 	bool crossFadeClip(qtractorClip *pClip = nullptr);
-	bool executeClipTool(int iTool, qtractorClip *pClip = nullptr);
+	bool executeAudioClipTool(int iTool, qtractorClip *pClip = nullptr);
+	bool executeMidiClipTool(int iTool, qtractorClip *pClip = nullptr);
 	bool importClips(QStringList files, unsigned long iClipStart = 0);
 	bool exportClips();
 	bool mergeClips();
@@ -230,9 +234,13 @@ protected:
 	// Multi-clip command builders.
 	bool normalizeClipCommand(
 		qtractorClipCommand *pClipCommand, qtractorClip *pClip);
-	bool addClipToolCommand(
-		qtractorClipToolCommand *pClipToolCommand, qtractorClip *pClip,
-		qtractorMidiToolsForm *pMidiToolsForm);
+
+	bool addAudioClipToolCommand(
+		qtractorClipToolCommand *pClipToolCommand,
+		qtractorClip *pClip, qtractorAudioToolsForm *pAudioToolsForm);
+	bool addMidiClipToolCommand(
+		qtractorClipToolCommand *pClipToolCommand,
+		qtractorClip *pClip, qtractorMidiToolsForm *pMidiToolsForm);
 
 	// Common clip-export/merge methods.
 	bool mergeExportClips(qtractorClipCommand *pClipCommand);
