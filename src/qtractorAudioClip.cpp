@@ -698,6 +698,25 @@ bool qtractorAudioClip::isHashLinked (void) const
 }
 
 
+// Check whether an audio clip is hash-linked to another.
+bool qtractorAudioClip::isLinkedClip ( qtractorAudioClip *pAudioClip ) const
+{
+	return (m_pData ? m_pData->clips().contains(pAudioClip) : false);
+}
+
+
+// Get all hash-linked clips (including self).
+QList<qtractorAudioClip *> qtractorAudioClip::linkedClips (void) const
+{
+	QList<qtractorAudioClip *> clips;
+
+	if (m_pData)
+		clips = m_pData->clips();
+
+	return clips;
+}
+
+
 // Make sure the clip hash-table gets reset.
 void qtractorAudioClip::clearHashTable (void)
 {

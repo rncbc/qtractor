@@ -32,6 +32,7 @@
 #include "qtractorTrackCommand.h"
 #include "qtractorClipCommand.h"
 #include "qtractorCurveCommand.h"
+#include "qtractorAudioEditCommand.h"
 #include "qtractorMidiEditCommand.h"
 #include "qtractorTimeScaleCommand.h"
 
@@ -56,7 +57,7 @@
 
 #include "qtractorEditRangeForm.h"
 
-#include "qtractorMidiEditorForm.h"
+#include "qtractorAudioEditor.h"
 #include "qtractorMidiEditor.h"
 
 #include "qtractorAudioToolsForm.h"
@@ -949,9 +950,127 @@ bool qtractorTracks::executeAudioClipTool ( int iTool, qtractorClip *pClip )
 	if (!toolsForm.exec())
 		return false;
 
-	// TODO: ?...
-	//
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return false;
 
+	// Make it as an undoable named command...
+	QString sTool;
+	switch (iTool) {
+	case qtractorAudioEditor::Gain:        sTool = tr("gain");         break;
+	case qtractorAudioEditor::Panning:     sTool = tr("panning");      break;
+	case qtractorAudioEditor::Normalize:   sTool = tr("normalize");    break;
+	case qtractorAudioEditor::TimeStretch: sTool = tr("time-stretch"); break;
+	case qtractorAudioEditor::PitchShift:  sTool = tr("pitch-shift");  break;
+	case qtractorAudioEditor::Reverse:     sTool = tr("reverse");      break;
+	}
+
+	qtractorClipToolCommand *pClipToolCommand
+		= new qtractorClipToolCommand(sTool);
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Multiple clip selection...
+	if (isClipSelected()) {
+		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+		const qtractorClipSelect::ItemList& items = pClipSelect->items();
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			// Make sure it's legal selection...
+			qtractorClip *pClip = iter.key();
+			if (pClip->track() && pClip->isClipSelected())
+				addAudioClipToolCommand(pClipToolCommand, pClip, &toolsForm);
+		}
+	}	// Single, current clip instead?
+	else addAudioClipToolCommand(pClipToolCommand, pClip, &toolsForm);
+
+	QApplication::restoreOverrideCursor();
+
+	// Check if valid...
+	if (pClipToolCommand->isEmpty()) {
+		delete pClipToolCommand;
+		return false;
+	}
+
+	return pSession->execute(pClipToolCommand);
+}
+
+
+bool qtractorTracks::addAudioClipToolCommand (
+	qtractorClipToolCommand *pClipToolCommand, qtractorClip *pClip,
+	qtractorAudioToolsForm *pAudioToolsForm )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return false;
+
+	if (pClip == nullptr)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == nullptr)
+		return false;
+
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == nullptr)
+		return false;
+	if (pTrack->trackType() != qtractorTrack::Audio)
+		return false;
+
+	qtractorAudioClip *pAudioClip = static_cast<qtractorAudioClip *> (pClip);
+	if (pAudioClip == nullptr)
+		return false;
+
+	if (pClipToolCommand->isLinkedAudioClip(pAudioClip))
+		return false;
+
+	unsigned long iFrameStart  = 0;
+	unsigned long iFrameLength = pClip->clipLength();
+
+	if (pClip->isClipSelected()) {
+		iFrameStart  = pClip->clipSelectStart() - pClip->clipStart();
+		iFrameLength = pClip->clipSelectEnd() - pClip->clipSelectStart();
+	}
+
+	iFrameStart += pClip->clipOffset();
+
+	if (pSession->sampleRate() < 1)
+		return false;
+
+	qtractorAudioBuffer *pBuff = pAudioClip->buffer();
+	if (pBuff == nullptr)
+		return false;
+
+	qtractorAudioFile *pFile = pBuff->file();
+	if (pFile == nullptr)
+		return false;
+
+	const unsigned short iChannels    = pFile->channels();
+	const unsigned int   iSampleRate  = pFile->sampleRate();
+
+	if (iChannels < 1 || iSampleRate < 1)
+		return false;
+
+	const float fRatio
+		= float(iSampleRate) / float(pSession->sampleRate());
+
+	const unsigned long iStart
+		= ::lrintf(fRatio * float(iFrameStart));
+	const unsigned long iFrames = pFile->frames();
+	unsigned long iLength = ::lrintf(fRatio * float(iFrameLength));
+	if (iStart + iLength > iFrames)
+		iLength = iFrames - iStart;
+
+	if (!pFile->seek(iStart))
+		return false;
+
+	// Add new edit command from tool...
+	pClipToolCommand->addAudioEditCommand(
+		pAudioToolsForm->audioEditCommand(pAudioClip, iStart, iLength));
+
+	// Must be brand new revision...
+	pAudioClip->setRevision(0);
+
+	// That's it...
 	return true;
 }
 
@@ -996,10 +1115,10 @@ bool qtractorTracks::executeMidiClipTool ( int iTool, qtractorClip *pClip )
 			// Make sure it's legal selection...
 			qtractorClip *pClip = iter.key();
 			if (pClip->track() && pClip->isClipSelected())
-				addClipToolCommand(pClipToolCommand, pClip, &toolsForm);
+				addMidiClipToolCommand(pClipToolCommand, pClip, &toolsForm);
 		}
 	}	// Single, current clip instead?
-	else addClipToolCommand(pClipToolCommand, pClip, &toolsForm);
+	else addMidiClipToolCommand(pClipToolCommand, pClip, &toolsForm);
 
 	QApplication::restoreOverrideCursor();
 
@@ -1021,7 +1140,7 @@ bool qtractorTracks::executeMidiClipTool ( int iTool, qtractorClip *pClip )
 }
 
 
-bool qtractorTracks::addClipToolCommand (
+bool qtractorTracks::addMidiClipToolCommand (
 	qtractorClipToolCommand *pClipToolCommand, qtractorClip *pClip,
 	qtractorMidiToolsForm *pMidiToolsForm )
 {

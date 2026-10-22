@@ -34,6 +34,9 @@ class qtractorClipCommand;
 class qtractorClipRangeCommand;
 class qtractorClipToolCommand;
 class qtractorImportTrackCommand;
+class qtractorAudioClip;
+class qtractorMidiClip;
+class qtractorAudioToolsForm;
 class qtractorMidiToolsForm;
 class qtractorMidiManager;
 
@@ -231,9 +234,13 @@ protected:
 	// Multi-clip command builders.
 	bool normalizeClipCommand(
 		qtractorClipCommand *pClipCommand, qtractorClip *pClip);
-	bool addClipToolCommand(
-		qtractorClipToolCommand *pClipToolCommand, qtractorClip *pClip,
-		qtractorMidiToolsForm *pMidiToolsForm);
+
+	bool addAudioClipToolCommand(
+		qtractorClipToolCommand *pClipToolCommand,
+		qtractorClip *pClip, qtractorAudioToolsForm *pAudioToolsForm);
+	bool addMidiClipToolCommand(
+		qtractorClipToolCommand *pClipToolCommand,
+		qtractorClip *pClip, qtractorMidiToolsForm *pMidiToolsForm);
 
 	// Common clip-export/merge methods.
 	bool mergeExportClips(qtractorClipCommand *pClipCommand);
