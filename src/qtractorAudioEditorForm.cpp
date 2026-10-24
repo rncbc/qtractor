@@ -801,10 +801,8 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 	#endif
 	}
 
-	// Whether we're a initial setup or a second coming...
-	const bool bAudioClip = (pAudioClip == nullptr);
-	if (bAudioClip)
-		pAudioClip = audioClip();
+	// Regardless we're a initial setup or a second coming...
+	pAudioClip = audioClip();
 
 	// Reset local dirty flag.
 	resetDirtyCount();
@@ -815,7 +813,7 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 	// (Re)try to reposition the editor in the same relative
 	// position in track-view, only if clip is not empty/new...
 	qtractorTrack *pTrack = nullptr;
-	if (bAudioClip)
+	if (pAudioClip)
 		pTrack = pAudioClip->track();
 	if (pTrack) {
 		const int h1 = pTrack->zoomHeight();
@@ -831,8 +829,7 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 				iFrame = 0;
 			}
 			qtractorAudioEditView *pEditView = m_pAudioEditor->editView();
-			const int w2 = (pEditView->width()  >> 1);
-			const int h2 = (pEditView->height() >> 1);
+			const int w2 = (pEditView->width() >> 1);
 			const int x2 = pTimeScale->pixelFromFrame(iFrame);
 			const int cx = pEditView->contentsX();
 			const int cy = pEditView->contentsY();
