@@ -1302,8 +1302,8 @@ Tamanho:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="397"/>
-        <source>F4</source>
-        <translation type="unfinished">F4</translation>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="402"/>
@@ -11082,11 +11082,6 @@ Valor:	%3</translation>
 <context>
     <name>qtractorMidiEditorForm</name>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
-        <source>F4</source>
-        <translation>F4</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1581"/>
         <source>F5</source>
         <translation>F5</translation>
@@ -11453,6 +11448,11 @@ Valor:	%3</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="514"/>
         <source>Record current MIDI clip (overdub)</source>
         <translation>Gravar sequência MIDI selecionada (overdub)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="735"/>

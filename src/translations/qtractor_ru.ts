@@ -1297,8 +1297,8 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="397"/>
-        <source>F4</source>
-        <translation type="unfinished">F4</translation>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="402"/>
@@ -11401,11 +11401,6 @@ Do you want to save the changes?</source>
         <translation>Изменить свойства активного клипа MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
-        <source>F4</source>
-        <translation>F4</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="587"/>
         <source>&amp;Range Set</source>
         <translation>Установить &amp;диапазон</translation>
@@ -11754,6 +11749,11 @@ Do you want to save the changes?</source>
         <location filename="../qtractorMidiEditorForm.ui" line="480"/>
         <source>Mute current MIDI clip</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="835"/>

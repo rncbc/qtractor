@@ -1300,7 +1300,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="397"/>
-        <source>F4</source>
+        <source>F2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11349,11 +11349,6 @@ Data: </source>
         <translation>現在のMIDIクリップのプロパティを編集します</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
-        <source>F4</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="587"/>
         <source>&amp;Range Set</source>
         <translation>レンジの設定(&amp;R)</translation>
@@ -12231,6 +12226,11 @@ Data: </source>
         <location filename="../qtractorMidiEditorForm.ui" line="1362"/>
         <source>&amp;In</source>
         <translation>イン(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
+        <source>F2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1365"/>

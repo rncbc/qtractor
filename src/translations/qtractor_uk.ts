@@ -1301,8 +1301,8 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="397"/>
-        <source>F4</source>
-        <translation>F4</translation>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="402"/>
@@ -11393,8 +11393,8 @@ Data: </source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="582"/>
-        <source>F4</source>
-        <translation>F4</translation>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="587"/>

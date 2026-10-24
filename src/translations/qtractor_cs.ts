@@ -1301,8 +1301,8 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="397"/>
-        <source>F4</source>
-        <translation>F4</translation>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="402"/>
@@ -11458,11 +11458,6 @@ Chcete uložit změny?</translation>
         <translation>Upravit vlastnosti nynějšího záběru MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
-        <source>F4</source>
-        <translation>F4</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="618"/>
         <source>&amp;Close</source>
         <translation>&amp;Zavřít</translation>
@@ -11935,6 +11930,11 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="514"/>
         <source>Record current MIDI clip (overdub)</source>
         <translation>Nahrávat nynější záběr MIDI (overdub)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="587"/>

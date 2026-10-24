@@ -1300,8 +1300,8 @@ Longueur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="397"/>
-        <source>F4</source>
-        <translation type="unfinished">F4</translation>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="402"/>
@@ -11380,11 +11380,6 @@ Données :</translation>
         <translation>Éditer les propriétés du clip MIDI courant</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
-        <source>F4</source>
-        <translation>F4</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="587"/>
         <source>&amp;Range Set</source>
         <translation>&amp;Réglage plage</translation>
@@ -12262,6 +12257,11 @@ Données :</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="1362"/>
         <source>&amp;In</source>
         <translation>&amp;Entrée</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1365"/>

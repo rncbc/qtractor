@@ -1301,8 +1301,8 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="397"/>
-        <source>F4</source>
-        <translation type="unfinished">F4</translation>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="402"/>
@@ -11374,11 +11374,6 @@ Data: </source>
         <translation>编辑当前 MIDI 剪辑属性</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
-        <source>F4</source>
-        <translation>F4</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEditorForm.ui" line="587"/>
         <source>&amp;Range Set</source>
         <translation>设置范围(&amp;R)</translation>
@@ -12256,6 +12251,11 @@ Data: </source>
         <location filename="../qtractorMidiEditorForm.ui" line="1362"/>
         <source>&amp;In</source>
         <translation>放大(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEditorForm.ui" line="582"/>
+        <source>F2</source>
+        <translation type="unfinished">F2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1365"/>
