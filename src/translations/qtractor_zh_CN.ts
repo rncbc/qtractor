@@ -3807,17 +3807,17 @@ Length:	%3</source>
 长度：	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="789"/>
+        <location filename="../qtractorEditor.cpp" line="788"/>
         <source>clip %1</source>
         <translation type="unfinished">剪辑 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="791"/>
+        <location filename="../qtractorEditor.cpp" line="790"/>
         <source>fade-in</source>
         <translation type="unfinished">淡入</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="791"/>
+        <location filename="../qtractorEditor.cpp" line="790"/>
         <source>fade-out</source>
         <translation type="unfinished">淡出</translation>
     </message>

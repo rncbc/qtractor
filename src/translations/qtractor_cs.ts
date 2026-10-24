@@ -3817,17 +3817,17 @@ Konec:	%2
 Délka:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="789"/>
+        <location filename="../qtractorEditor.cpp" line="788"/>
         <source>clip %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="791"/>
+        <location filename="../qtractorEditor.cpp" line="790"/>
         <source>fade-in</source>
         <translation>Postupné zesílení signálu</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="791"/>
+        <location filename="../qtractorEditor.cpp" line="790"/>
         <source>fade-out</source>
         <translation>Postupné zeslabení signálu</translation>
     </message>

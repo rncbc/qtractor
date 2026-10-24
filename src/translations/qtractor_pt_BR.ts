@@ -3806,17 +3806,17 @@ Final:	%2
 Tamanho:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="789"/>
+        <location filename="../qtractorEditor.cpp" line="788"/>
         <source>clip %1</source>
         <translation type="unfinished">sequência %1</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="791"/>
+        <location filename="../qtractorEditor.cpp" line="790"/>
         <source>fade-in</source>
         <translation type="unfinished">fade de entrada</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="791"/>
+        <location filename="../qtractorEditor.cpp" line="790"/>
         <source>fade-out</source>
         <translation type="unfinished">fade de saída</translation>
     </message>

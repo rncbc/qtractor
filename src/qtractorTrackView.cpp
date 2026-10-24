@@ -3558,12 +3558,6 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 		return;
 
 	// Always change horizontally wise...
-	int dx = pos.x() - m_posDrag.x();
-	if (m_rectHandle.left() + dx < m_rectDrag.left())
-		dx = m_rectDrag.left() - m_rectHandle.left();
-	else if (m_rectHandle.right() + dx > m_rectDrag.right())
-		dx = m_rectDrag.right() - m_rectHandle.right();
-
 	int x0 = 0;
 	if (m_dragState == DragClipFadeIn)
 		x0 = m_rectHandle.left();
@@ -3571,9 +3565,15 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 	if (m_dragState == DragClipFadeOut)
 		x0 = m_rectHandle.right();
 
-	dx += x0;
+	int dx = pos.x() - m_posDrag.x() + x0;
+	dx = (dx >= 0 ? pixelSnap(dx) : -pixelSnap(-dx)) - x0;
+	if (m_rectHandle.left() + dx < m_rectDrag.left())
+		dx = m_rectDrag.left() - m_rectHandle.left();
+	else
+	if (m_rectHandle.right() + dx > m_rectDrag.right())
+		dx = m_rectDrag.right() - m_rectHandle.right();
 
-	m_iDragClipX = (dx >= 0 ? pixelSnap(dx) : -pixelSnap(-dx)) - x0;
+	m_iDragClipX = dx;
 
 	moveRubberBand(&m_pRubberBand, m_rectHandle, 1);
 	ensureVisible(pos.x(), m_rectHandle.top() + 1, 24, 0);

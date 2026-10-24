@@ -735,13 +735,6 @@ void qtractorEditor::dragFadeInOutMove (
 		return;
 
 	// Always change horizontally wise...
-	int dx = pos.x() - m_posFadeStart.x();
-	if (m_rectFadeHandle.left() + dx < m_rectFadeClip.left())
-		dx = m_rectFadeClip.left() - m_rectFadeHandle.left();
-	else
-	if (m_rectFadeHandle.right() + dx > m_rectFadeClip.right())
-		dx = m_rectFadeClip.right() - m_rectFadeHandle.right();
-
 	int x0 = 0;
 	if (m_dragFadeState == DragFadeIn)
 		x0 = m_rectFadeHandle.left();
@@ -749,9 +742,15 @@ void qtractorEditor::dragFadeInOutMove (
 	if (m_dragFadeState == DragFadeOut)
 		x0 = m_rectFadeHandle.right();
 
-	dx += x0;
+	int dx = pos.x() - m_posFadeStart.x() + x0;
+	dx = (dx >= 0 ? pixelSnap(dx) : -pixelSnap(-dx)) - x0;
+	if (m_rectFadeHandle.left() + dx < m_rectFadeClip.left())
+		dx = m_rectFadeClip.left() - m_rectFadeHandle.left();
+	else
+	if (m_rectFadeHandle.right() + dx > m_rectFadeClip.right())
+		dx = m_rectFadeClip.right() - m_rectFadeHandle.right();
 
-	m_iDragFadeX = (dx >= 0 ? pixelSnap(dx) : -pixelSnap(-dx)) - x0;
+	m_iDragFadeX = dx;
 
 	moveRubberBand(pScrollView, m_rectFadeHandle);
 	pScrollView->ensureVisible(pos.x(), m_rectFadeHandle.top() + 1, 24, 0);
