@@ -3807,17 +3807,17 @@ Length:	%3</source>
 长度：	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="788"/>
+        <location filename="../qtractorEditor.cpp" line="836"/>
         <source>clip %1</source>
         <translation type="unfinished">剪辑 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="790"/>
+        <location filename="../qtractorEditor.cpp" line="838"/>
         <source>fade-in</source>
         <translation type="unfinished">淡入</translation>
     </message>
     <message>
-        <location filename="../qtractorEditor.cpp" line="790"/>
+        <location filename="../qtractorEditor.cpp" line="838"/>
         <source>fade-out</source>
         <translation type="unfinished">淡出</translation>
     </message>
@@ -18073,12 +18073,12 @@ Length:	%3</source>
         <translation>重置缩放</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="1694"/>
+        <location filename="../qtractorTrackView.cpp" line="1716"/>
         <source>add clip</source>
         <translation>添加剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3308"/>
+        <location filename="../qtractorTrackView.cpp" line="3330"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -18087,80 +18087,80 @@ Length:	%3</source>
 长度：	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3609"/>
+        <location filename="../qtractorTrackView.cpp" line="3635"/>
         <source>clip %1</source>
         <translation>剪辑 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3610"/>
+        <location filename="../qtractorTrackView.cpp" line="3636"/>
         <source>fade-in</source>
         <translation>淡入</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3610"/>
+        <location filename="../qtractorTrackView.cpp" line="3636"/>
         <source>fade-out</source>
         <translation>淡出</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3740"/>
+        <location filename="../qtractorTrackView.cpp" line="3766"/>
         <source>clip stretch</source>
         <translation>剪辑拉伸</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3740"/>
+        <location filename="../qtractorTrackView.cpp" line="3766"/>
         <source>clip resize</source>
         <translation>剪辑调整</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3825"/>
-        <location filename="../qtractorTrackView.cpp" line="3933"/>
+        <location filename="../qtractorTrackView.cpp" line="3851"/>
+        <location filename="../qtractorTrackView.cpp" line="3959"/>
         <source>clip repeat</source>
         <translation>剪辑重复</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4848"/>
+        <location filename="../qtractorTrackView.cpp" line="4874"/>
         <source>%1 automation</source>
         <translation>%1 自动化</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4921"/>
+        <location filename="../qtractorTrackView.cpp" line="4947"/>
         <source>%1 clip</source>
         <translation>%1 剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5571"/>
+        <location filename="../qtractorTrackView.cpp" line="5597"/>
         <source>move automation</source>
         <translation>移动自动化</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5658"/>
+        <location filename="../qtractorTrackView.cpp" line="5684"/>
         <source>paste automation</source>
         <translation>粘贴自动化</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4852"/>
-        <location filename="../qtractorTrackView.cpp" line="4925"/>
+        <location filename="../qtractorTrackView.cpp" line="4878"/>
+        <location filename="../qtractorTrackView.cpp" line="4951"/>
         <source>cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4855"/>
-        <location filename="../qtractorTrackView.cpp" line="4928"/>
+        <location filename="../qtractorTrackView.cpp" line="4881"/>
+        <location filename="../qtractorTrackView.cpp" line="4954"/>
         <source>delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4931"/>
+        <location filename="../qtractorTrackView.cpp" line="4957"/>
         <source>split</source>
         <translation>分割</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5293"/>
+        <location filename="../qtractorTrackView.cpp" line="5319"/>
         <source>move clip</source>
         <translation>移动剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5428"/>
+        <location filename="../qtractorTrackView.cpp" line="5454"/>
         <source>paste clip</source>
         <translation>粘贴剪辑</translation>
     </message>
