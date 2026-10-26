@@ -650,7 +650,7 @@ void qtractorEditor::paintDragState (
 		rgbFade.setAlpha(bDark ? 120 :  80);
 	#else
 		QColor rgbFade = foreground();
-		rgbFade.setAlpha(30);
+		rgbFade.setAlpha(40);
 		painter.setBrush(rgbFade);
 	#endif
 		QPen pen(Qt::DotLine);

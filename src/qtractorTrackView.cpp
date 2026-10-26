@@ -828,38 +828,37 @@ void qtractorTrackView::drawContents ( QPainter& painter, const QRect& rect )
 		// Draw envelope line...
 		QPoint vpos; int w;
 		QColor rgbFade = m_pClipDrag->track()->foreground();
-		rgbFade.setAlpha(60);
+		rgbFade.setAlpha(80);
 		painter.setBrush(rgbFade);
 		QPen pen(Qt::DotLine);
 		pen.setColor(Qt::blue);
 		painter.setPen(pen);
-		const int y = rectHandle.top();
 		const int h = m_rectDrag.height();
 		if (m_dragState == DragClipFadeIn) {
-		#if 1//--Old clip fade-in slope...
+		#if 0//--Old clip fade-in slope...
 			vpos = contentsToViewport(m_rectDrag.bottomLeft());
 			painter.drawLine(
-				vpos.x(), vpos.y(), rectHandle.left(), y);
+				vpos.x(), vpos.y(), rectHandle.left(), rectHandle.top());
 		#else
 			vpos = contentsToViewport(m_rectDrag.topLeft());
 			w = rectHandle.left() - vpos.x();
 			m_pClipDrag->drawFadeInOut(painter,
 				qtractorClip::FadeIn,
-				QRect(rectHandle.left() - w, y, w, h));
+				QRect(rectHandle.left() - w, vpos.y(), w, h));
 		#endif
 		}
 		else 
 		if (m_dragState == DragClipFadeOut) {
-		#if 1//-- Old clip fade-out slope...
+		#if 0//-- Old clip fade-out slope...
 			vpos = contentsToViewport(m_rectDrag.bottomRight());
 			painter.drawLine(
-				rectHandle.right(), y, vpos.x(), vpos.y());
+				rectHandle.right(), rectHandle.top(), vpos.x(), vpos.y());
 		#else
 			vpos = contentsToViewport(m_rectDrag.topRight());
 			w = vpos.x() - rectHandle.right();
 			m_pClipDrag->drawFadeInOut(painter,
 				qtractorClip::FadeOut,
-				QRect(rectHandle.right() + w, y, w, h));
+				QRect(rectHandle.right() + w, vpos.y(), w, h));
 		#endif
 		}
 	}
