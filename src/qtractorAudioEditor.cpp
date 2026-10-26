@@ -249,7 +249,12 @@ unsigned short qtractorAudioEditor::channels (void) const
 // Zoom ratio accessors.
 void qtractorAudioEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
 {
+	const float z1 = float(horizontalZoom());
 	qtractorEditor::setHorizontalZoom(iHorizontalZoom);
+	const float r1 = float(horizontalZoom()) / z1;
+
+	m_rectSelect.setLeft(int(r1 * float(m_rectSelect.left())));
+	m_rectSelect.setRight(int(r1 * float(m_rectSelect.right())));
 
 	if (m_pAudioClip)
 		m_pAudioClip->setEditorHorizontalZoom(iHorizontalZoom);

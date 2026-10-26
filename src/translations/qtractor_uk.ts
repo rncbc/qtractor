@@ -1081,22 +1081,22 @@ Length:	%3</source>
         <translation>Редактор звукових даних</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="869"/>
+        <location filename="../qtractorAudioEditor.cpp" line="874"/>
         <source>cut audio</source>
         <translation>обрізати звук</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="876"/>
+        <location filename="../qtractorAudioEditor.cpp" line="881"/>
         <source>delete audio</source>
         <translation>вилучити звук</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="888"/>
+        <location filename="../qtractorAudioEditor.cpp" line="893"/>
         <source>move audio</source>
         <translation>пересунути звук</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="1411"/>
+        <location filename="../qtractorAudioEditor.cpp" line="1416"/>
         <source>paste audio</source>
         <translation>вставити звук</translation>
     </message>
