@@ -1215,53 +1215,66 @@ bool qtractorAudioClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
 
 	const unsigned short iChannels   = pSrc->channels();
 	const unsigned int   iSampleRate = pSrc->sampleRate();
-	// Copy from file beginning through the end of the clip region.
-	const unsigned long  iFrames     = clipOffset() + clipLength();
 
-	if (iChannels < 1) {
-		pSrc->close(); delete pSrc;
+	if (iChannels < 1 || iSampleRate < 1) {
+		pSrc->close();
+		delete pSrc;
 		return false;
 	}
 
 	// Create the destination revision file with the same format.
 	qtractorAudioFile *pDst
 		= qtractorAudioFileFactory::createAudioFile(
-			sFilename, iChannels, iSampleRate, 4096, -1);
+			sFilename, iChannels, iSampleRate, 4096);
 	if (pDst == nullptr) {
-		pSrc->close(); delete pSrc;
+		pSrc->close();
+		delete pSrc;
 		return false;
 	}
+
 	if (!pDst->open(sFilename, qtractorAudioFile::Write)) {
 		delete pDst;
-		pSrc->close(); delete pSrc;
+		pSrc->close();
+		delete pSrc;
 		return false;
 	}
+
+	// Copy from file beginning through the end of the clip region.
+	const unsigned long iFrames
+		= clipOffset() + clipLength();
 
 	pSrc->seek(0);
 
 	const unsigned int iBufSize = 4096;
-	float **ppBuf = new float *[iChannels];
-	for (unsigned short c = 0; c < iChannels; ++c)
-		ppBuf[c] = new float[iBufSize];
+	float **ppBuf = new float * [iChannels];
+	for (unsigned short i = 0; i < iChannels; ++i)
+		ppBuf[i] = new float [iBufSize];
 
 	unsigned long iPos = 0;
 	while (iPos < iFrames) {
-		const unsigned int n = (unsigned int) qMin((unsigned long)iBufSize, iFrames - iPos);
-		const int r = pSrc->read(ppBuf, n);
-		if (r <= 0) break;
-		pDst->write(ppBuf, (unsigned int)r);
-		iPos += (unsigned long)r;
+		const unsigned int nframes
+			= qMin((unsigned long) iBufSize, iFrames - iPos);
+		const int nread = pSrc->read(ppBuf, nframes);
+		if (nread < 1)
+			break;
+		pDst->write(ppBuf, nread);
+		iPos += nread;
 	}
 
-	for (unsigned short c = 0; c < iChannels; ++c)
-		delete[] ppBuf[c];
-	delete[] ppBuf;
+	for (unsigned short i = 0; i < iChannels; ++i)
+		delete [] ppBuf[i];
+	delete [] ppBuf;
 
-	pSrc->close(); delete pSrc;
-	pDst->close(); delete pDst;
+	pSrc->close();
+	delete pSrc;
 
-	if (bUpdate)
+	pDst->close();
+	delete pDst;
+
+	if (bUpdate) {
 		setFilenameEx(sFilename, true);
+		resetAudioClipEx();
+	}
 
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

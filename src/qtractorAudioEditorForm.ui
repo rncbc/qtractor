@@ -394,7 +394,7 @@
     <string>Edit current audio clip properties</string>
    </property>
    <property name="shortcut">
-    <string>F4</string>
+    <string>F2</string>
    </property>
   </action>
   <action name="fileRangeSetAction">
