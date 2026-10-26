@@ -1590,6 +1590,15 @@ void qtractorMidiEditor::zoomStepEx ( bool bOn, int iZoomStep )
 	}
 
 	zoomCenterPost(zc);
+
+	if (bOn) { // Make play-head position visible if following it...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bMidiFollow) {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession)
+				ensureVisibleFrame(m_pEditView, pSession->playHead());
+		}
+	}
 }
 
 
