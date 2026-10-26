@@ -35,7 +35,7 @@ Zvuk:	%1 kanály, %2 Hz</translation>
 	(posunutí výšky tónu v půltónech %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1270"/>
+        <location filename="../qtractorAudioClip.cpp" line="1283"/>
         <source>Audio file save: &quot;%1&quot;.</source>
         <translation>Uložení zvukového souboru: „%1“.</translation>
     </message>
@@ -2411,7 +2411,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="211"/>
-        <location filename="../qtractorAudioEditorForm.cpp" line="2020"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="2056"/>
         <source>MOD</source>
         <translation>ÚPR</translation>
     </message>
@@ -2422,7 +2422,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="219"/>
-        <location filename="../qtractorAudioEditorForm.cpp" line="2026"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="2062"/>
         <source>MUTE</source>
         <translation>ZTLUMIT</translation>
     </message>
@@ -2460,32 +2460,37 @@ Do you want to save the changes?</source>
 Chcete uložit změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="904"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="914"/>
         <source>Save Audio Clip</source>
         <translation>Uložit zvukový záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="962"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="917"/>
+        <source>All files (*.*)</source>
+        <translation type="unfinished">Všechny soubory (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorAudioEditorForm.cpp" line="999"/>
         <source>Export</source>
         <translation>Vyvést</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="1000"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="1037"/>
         <source>Audio clip export: &quot;%1&quot; started...</source>
         <translation>Vyvedení zvukového záběru: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="1115"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="1152"/>
         <source>Audio clip export: &quot;%1&quot; complete.</source>
         <translation>Vyvedení zvukového záběru: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="1938"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="1975"/>
         <source>Audio Editor Shortcuts</source>
         <translation>Zkratky editoru zvuku</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="2013"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="2049"/>
         <source>[modified]</source>
         <translation>(upraveno)</translation>
     </message>

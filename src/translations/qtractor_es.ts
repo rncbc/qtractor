@@ -35,7 +35,7 @@ Audio:	%1 canales, %2 Hz</translation>
 	(%1  tranponer semitonos)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1270"/>
+        <location filename="../qtractorAudioClip.cpp" line="1283"/>
         <source>Audio file save: &quot;%1&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2411,7 +2411,7 @@ Duración:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="211"/>
-        <location filename="../qtractorAudioEditorForm.cpp" line="2020"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="2056"/>
         <source>MOD</source>
         <translation type="unfinished">MOD</translation>
     </message>
@@ -2422,7 +2422,7 @@ Duración:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="219"/>
-        <location filename="../qtractorAudioEditorForm.cpp" line="2026"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="2062"/>
         <source>MUTE</source>
         <translation type="unfinished">MUTE</translation>
     </message>
@@ -2456,32 +2456,37 @@ Do you want to save the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="904"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="914"/>
         <source>Save Audio Clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="962"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="917"/>
+        <source>All files (*.*)</source>
+        <translation type="unfinished">Todos los archivos (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorAudioEditorForm.cpp" line="999"/>
         <source>Export</source>
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="1000"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="1037"/>
         <source>Audio clip export: &quot;%1&quot; started...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="1115"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="1152"/>
         <source>Audio clip export: &quot;%1&quot; complete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="1938"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="1975"/>
         <source>Audio Editor Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.cpp" line="2013"/>
+        <location filename="../qtractorAudioEditorForm.cpp" line="2049"/>
         <source>[modified]</source>
         <translation type="unfinished">[modificado]</translation>
     </message>
