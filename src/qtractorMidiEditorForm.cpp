@@ -1190,10 +1190,8 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	#endif
 	}
 
-	// Whether we're a initial setup or a second coming...
-	const bool bMidiClip = (pMidiClip == nullptr);
-	if (bMidiClip)
-		pMidiClip = midiClip();
+	// Regardless we're a initial setup or a second coming...
+	pMidiClip = midiClip();
 
 	// Setup for secondary time-signature, if any...
 	if (pMidiClip) {
@@ -1217,7 +1215,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	qtractorTrack *pTrack = nullptr;
 	if (pMidiClip) {
 		qtractorMidiSequence *pSeq = pMidiClip->sequence();
-		if (bMidiClip || (pSeq && pSeq->events().count() > 0))
+		if (pSeq && pSeq->events().count() > 0)
 			pTrack = pMidiClip->track();
 	}
 	if (pTrack) {
