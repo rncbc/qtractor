@@ -818,27 +818,48 @@ void qtractorTrackView::drawContents ( QPainter& painter, const QRect& rect )
 	}
 
 	// Show/hide a moving clip fade in/out slope lines...
-	if (m_dragState == DragClipFadeIn || m_dragState == DragClipFadeOut) {
+	if (m_pClipDrag && m_pClipDrag->track()
+		&& (m_dragState == DragClipFadeIn || m_dragState == DragClipFadeOut)) {
 		QRect rectHandle(m_rectHandle);
 		// Horizontal adjust...
 		rectHandle.translate(m_iDragClipX, 0);
 		// Convert rectangle into view coordinates...
 		rectHandle.moveTopLeft(contentsToViewport(rectHandle.topLeft()));
 		// Draw envelope line...
-		QPoint vpos;
+		QPoint vpos; int w;
+		QColor rgbFade = m_pClipDrag->track()->foreground();
+		rgbFade.setAlpha(80);
+		painter.setBrush(rgbFade);
 		QPen pen(Qt::DotLine);
 		pen.setColor(Qt::blue);
 		painter.setPen(pen);
+		const int h = m_rectDrag.height();
 		if (m_dragState == DragClipFadeIn) {
+		#if 0//--Old clip fade-in slope...
 			vpos = contentsToViewport(m_rectDrag.bottomLeft());
 			painter.drawLine(
 				vpos.x(), vpos.y(), rectHandle.left(), rectHandle.top());
-		} 
+		#else
+			vpos = contentsToViewport(m_rectDrag.topLeft());
+			w = rectHandle.left() - vpos.x();
+			m_pClipDrag->drawFadeInOut(painter,
+				qtractorClip::FadeIn,
+				QRect(rectHandle.left() - w, vpos.y(), w, h));
+		#endif
+		}
 		else 
 		if (m_dragState == DragClipFadeOut) {
+		#if 0//-- Old clip fade-out slope...
 			vpos = contentsToViewport(m_rectDrag.bottomRight());
 			painter.drawLine(
 				rectHandle.right(), rectHandle.top(), vpos.x(), vpos.y());
+		#else
+			vpos = contentsToViewport(m_rectDrag.topRight());
+			w = vpos.x() - rectHandle.right();
+			m_pClipDrag->drawFadeInOut(painter,
+				qtractorClip::FadeOut,
+				QRect(rectHandle.right() + w, vpos.y(), w, h));
+		#endif
 		}
 	}
 }
@@ -3490,22 +3511,26 @@ bool qtractorTrackView::dragClipStartEx (
 	if (pSession == nullptr)
 		return false;
 
+	QRect rectHandle;
+
 	// Fade-in handle check...
-	m_rectHandle.setRect(rectClip.left()
+	rectHandle.setRect(rectClip.left()
 		+ pSession->pixelFromFrame(pClip->fadeInLength()),
 			rectClip.top() + 1, 8, 8);
-	if (m_rectHandle.contains(pos)) {
+	if (rectHandle.contains(pos)) {
 		m_dragCursor = DragClipFadeIn;
+		m_rectHandle = rectHandle;
 		setEditCursor(QCursor(Qt::PointingHandCursor));
 		return true;
 	}
 
 	// Fade-out handle check...
-	m_rectHandle.setRect(rectClip.right() - 8
+	rectHandle.setRect(rectClip.right() - 8
 		- pSession->pixelFromFrame(pClip->fadeOutLength()),
 			rectClip.top() + 1, 8, 8);
-	if (m_rectHandle.contains(pos)) {
+	if (rectHandle.contains(pos)) {
 		m_dragCursor = DragClipFadeOut;
+		m_rectHandle = rectHandle;
 		setEditCursor(QCursor(Qt::PointingHandCursor));
 		return true;
 	}
@@ -3558,12 +3583,6 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 		return;
 
 	// Always change horizontally wise...
-	int dx = pos.x() - m_posDrag.x();
-	if (m_rectHandle.left() + dx < m_rectDrag.left())
-		dx = m_rectDrag.left() - m_rectHandle.left();
-	else if (m_rectHandle.right() + dx > m_rectDrag.right())
-		dx = m_rectDrag.right() - m_rectHandle.right();
-
 	int x0 = 0;
 	if (m_dragState == DragClipFadeIn)
 		x0 = m_rectHandle.left();
@@ -3571,9 +3590,15 @@ void qtractorTrackView::dragClipFadeMove ( const QPoint& pos )
 	if (m_dragState == DragClipFadeOut)
 		x0 = m_rectHandle.right();
 
-	dx += x0;
+	int dx = pos.x() - m_posDrag.x() + x0;
+	dx = (dx >= 0 ? pixelSnap(dx) : -pixelSnap(-dx)) - x0;
+	if (m_rectHandle.left() + dx < m_rectDrag.left())
+		dx = m_rectDrag.left() - m_rectHandle.left();
+	else
+	if (m_rectHandle.right() + dx > m_rectDrag.right())
+		dx = m_rectDrag.right() - m_rectHandle.right();
 
-	m_iDragClipX = (dx >= 0 ? pixelSnap(dx) : -pixelSnap(-dx)) - x0;
+	m_iDragClipX = dx;
 
 	moveRubberBand(&m_pRubberBand, m_rectHandle, 1);
 	ensureVisible(pos.x(), m_rectHandle.top() + 1, 24, 0);
