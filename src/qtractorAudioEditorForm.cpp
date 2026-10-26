@@ -583,7 +583,7 @@ qtractorAudioEditorForm::~qtractorAudioEditorForm (void)
 bool qtractorAudioEditorForm::queryClose (void)
 {
 	bool bQueryClose = true;
-#if 0//--TODO: m_iDirtyCount > 0
+#if 0//-- HACK: audio clip editor doesn't make the file dirty...
 	// Are we dirty enough to prompt it?
 	if (m_iDirtyCount > 0) {
 		if (isVisible()) {
@@ -801,10 +801,8 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 	#endif
 	}
 
-	// Whether we're a initial setup or a second coming...
-	const bool bAudioClip = (pAudioClip == nullptr);
-	if (bAudioClip)
-		pAudioClip = audioClip();
+	// Regardless we're a initial setup or a second coming...
+	pAudioClip = audioClip();
 
 	// Reset local dirty flag.
 	resetDirtyCount();
@@ -815,7 +813,7 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 	// (Re)try to reposition the editor in the same relative
 	// position in track-view, only if clip is not empty/new...
 	qtractorTrack *pTrack = nullptr;
-	if (bAudioClip)
+	if (pAudioClip)
 		pTrack = pAudioClip->track();
 	if (pTrack) {
 		const int h1 = pTrack->zoomHeight();
@@ -831,8 +829,7 @@ void qtractorAudioEditorForm::setup ( qtractorAudioClip *pAudioClip )
 				iFrame = 0;
 			}
 			qtractorAudioEditView *pEditView = m_pAudioEditor->editView();
-			const int w2 = (pEditView->width()  >> 1);
-			const int h2 = (pEditView->height() >> 1);
+			const int w2 = (pEditView->width() >> 1);
 			const int x2 = pTimeScale->pixelFromFrame(iFrame);
 			const int cx = pEditView->contentsX();
 			const int cy = pEditView->contentsY();
@@ -894,25 +891,63 @@ bool qtractorAudioEditorForm::saveClipFile ( bool bPrompt )
 	if (pSession == nullptr)
 		return false;
 
+	// HACK: audio clip editor doesn't make the file dirty;
+	// when not explicitly asking for a brand new filename,
+	// we'll just make the audio clip file not dirty!...
+	if (!bPrompt) {
+		pAudioClip->setDirty(false);
+		m_iDirtyCount = 0;
+		return true;
+	}
+
 	// Suggest a brand new filename, if there's none...
-	QString sFilename = pAudioClip->filename();
+	QString sFilename = pAudioClip->createFilePathRevision(true);
 
 	// Ask for the file to save...
 	if (sFilename.isEmpty())
 		bPrompt = true;
 
-	int iFormat = -1; // alias qtractorAudioFileFactory::defaultFormat();
 	if (bPrompt) {
-		qtractorExportClipForm exportForm(this);
-		exportForm.setExportTitle(tr("Save Audio Clip"));
-		exportForm.setExportType(qtractorTrack::Audio);
-		const QString& sExt = exportForm.exportExt();
-		QString sFilename = pSession->createFilePath(pTrack->shortTrackName(), sExt);
-		exportForm.setExportPath(sFilename);
-		if (!exportForm.exec())
-			return false;
-		sFilename = exportForm.exportPath();
-		iFormat = exportForm.audioExportFormat();
+		// If none is given, assume default directory.
+		const QString sExt = qtractorAudioFileFactory::defaultExt();
+		const QString& sTitle
+			= tr("Save Audio Clip");
+		QStringList filters;
+		filters.append(qtractorAudioFileFactory::filters());
+		filters.append(tr("All files (*.*)"));
+		const QString& sFilter = filters.join(";;");
+		QWidget *pParentWidget = nullptr;
+		QFileDialog::Options options;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bDontUseNativeDialogs) {
+			options |= QFileDialog::DontUseNativeDialog;
+			pParentWidget = QWidget::window();
+		}
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
+		// Ask for the filenames to open...
+		sFilename = QFileDialog::getSaveFileName(pParentWidget,
+			sTitle, sFilename, sFilter, nullptr, options);
+#else
+		// Construct open-files dialog...
+		QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);
+		// Set proper open-file modes...
+		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+		fileDialog.setFileMode(QFileDialog::AnyFile);
+		fileDialog.setDefaultSuffix(sExt);
+		// Stuff sidebar...
+		if (pOptions) {
+			QList<QUrl> urls(fileDialog.sidebarUrls());
+			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+			urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
+			fileDialog.setSidebarUrls(urls);
+		}
+		fileDialog.setOptions(options);
+		// Show dialog...
+		if (fileDialog.exec())
+			sFilename = fileDialog.selectedFiles().first();
+		else
+			sFilename.clear();
+#endif
 		// Have we cancelled it?
 		if (sFilename.isEmpty() || sFilename.at(0) == '.')
 			return false;
@@ -922,9 +957,8 @@ bool qtractorAudioEditorForm::saveClipFile ( bool bPrompt )
 	}
 
 	// Save it right away...
-	// TODO: ?...
-	//
-	bool bResult = false;
+	const bool bResult
+		= pAudioClip->saveCopyFile(sFilename, true);
 
 	// Have we done it right?
 	if (bResult) {
@@ -1971,8 +2005,7 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	if (pAudioClip)
 		pTrack = pAudioClip->track();
 
-	m_ui.fileSaveAction->setEnabled(false);   //--TODO: m_iDirtyCount > 0
-	m_ui.fileSaveAsAction->setEnabled(false); //--
+	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
 	m_ui.fileMuteAction->setEnabled(pAudioClip != nullptr);
 	m_ui.fileMuteAction->setChecked(pAudioClip && pAudioClip->isClipMute());
 

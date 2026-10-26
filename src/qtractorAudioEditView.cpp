@@ -495,8 +495,9 @@ void qtractorAudioEditView::drawAudioPeak (
 	if (pPeak == nullptr)
 		return;
 
-	const int w = qtractorScrollView::viewport()->width();
-	const int h = qtractorScrollView::viewport()->height();
+	QWidget *pViewport = qtractorScrollView::viewport();
+	const int w = pViewport->width();
+	const int h = pViewport->height() & ~1; // always even.
 
 	const unsigned long iFrameStart = pTimeScale->frameFromPixel(dx);
 	const unsigned long iFrameEnd = pTimeScale->frameFromPixel(dx + w);

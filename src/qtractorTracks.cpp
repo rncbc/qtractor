@@ -321,6 +321,12 @@ void qtractorTracks::zoomStepEx ( bool bOn, int iZoomStep )
 	}
 
 	zoomCenterPost(zc);
+
+	if (bOn) { // Make play-head position visible if following it...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bFollowPlayhead)
+			m_pTrackView->ensureVisibleFrame(pSession->playHead());
+	}
 }
 
 
