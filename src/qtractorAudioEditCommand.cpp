@@ -340,6 +340,11 @@ bool qtractorAudioEditCommand::moveFrames (
 	unsigned long iStart, unsigned long iLength,
 	unsigned long iAfter ) const
 {
+	// g3n { // Nothing to move, return.
+	if (iAfter == iStart)
+		return true;
+	// }
+
 	// Open the clipboard/temp. source file.
 	if (m_sFilename.isEmpty())
 		return false;
@@ -359,8 +364,10 @@ bool qtractorAudioEditCommand::moveFrames (
 	// Phase 1: frames before insert/delete point.
 	if (iAfter < iStart)
 		bOk = streamFrames(ppFrames, nframes, pDst, pSrc, 0, iAfter);
-	else
+	else {
+		iAfter += iLength; // g3n: Offset compensation.
 		bOk = streamFrames(ppFrames, nframes, pDst, pSrc, 0, iStart);
+	}
 
 	const unsigned long iAfter2	= iStart + iLength;
 	if (bOk && iAfter > iAfter2) {
