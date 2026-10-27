@@ -1076,7 +1076,7 @@ Length:	%3</source>
 <context>
     <name>qtractorAudioEditor</name>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="134"/>
+        <location filename="../qtractorAudioEditor.cpp" line="137"/>
         <source>Audio Editor</source>
         <translation>Редактор звукових даних</translation>
     </message>
@@ -1096,7 +1096,7 @@ Length:	%3</source>
         <translation>пересунути звук</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="1416"/>
+        <location filename="../qtractorAudioEditor.cpp" line="1422"/>
         <source>paste audio</source>
         <translation>вставити звук</translation>
     </message>

@@ -1074,7 +1074,7 @@ Length:	%3</source>
 <context>
     <name>qtractorAudioEditor</name>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="134"/>
+        <location filename="../qtractorAudioEditor.cpp" line="137"/>
         <source>Audio Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1094,7 +1094,7 @@ Length:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="1416"/>
+        <location filename="../qtractorAudioEditor.cpp" line="1422"/>
         <source>paste audio</source>
         <translation type="unfinished"></translation>
     </message>

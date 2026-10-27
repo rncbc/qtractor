@@ -1076,7 +1076,7 @@ Délka:	%3</translation>
 <context>
     <name>qtractorAudioEditor</name>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="134"/>
+        <location filename="../qtractorAudioEditor.cpp" line="137"/>
         <source>Audio Editor</source>
         <translation>Editor zvuku</translation>
     </message>
@@ -1096,7 +1096,7 @@ Délka:	%3</translation>
         <translation>Přesunout zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="1416"/>
+        <location filename="../qtractorAudioEditor.cpp" line="1422"/>
         <source>paste audio</source>
         <translation>Vložit zvuk</translation>
     </message>
