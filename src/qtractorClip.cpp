@@ -529,6 +529,15 @@ void qtractorClip::drawClipRecord (
 }
 
 
+// Show clip properties dialog.
+bool qtractorClip::clipProperties ( QWidget *pParent )
+{
+	qtractorClipForm clipForm(pParent);
+	clipForm.setClip(this);
+	return clipForm.exec();
+}
+
+
 // Clip tool-tip.
 QString qtractorClip::toolTip (void) const
 {

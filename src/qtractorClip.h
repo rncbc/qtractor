@@ -222,6 +222,9 @@ public:
 	virtual void updateEditorTimeScale() = 0;
 	virtual bool queryEditor() = 0;
 
+	// Show clip properties dialog.
+	bool clipProperties(QWidget *pParent = nullptr);
+
 	// Clip tool-tip.
 	virtual QString toolTip() const;
 

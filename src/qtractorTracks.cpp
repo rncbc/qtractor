@@ -604,11 +604,14 @@ bool qtractorTracks::newClip (void)
 			pClipCommand->addClip(pClip, pTrack);
 			pSession->execute(pClipCommand);
 		}
+		// Just start the clip editor on it...
+		if (pClip->startEditor(pMainForm))
+			return true;
+	} else {
+		// Make sure the regular clip-form is started modal...
+		if (pClip->clipProperties(pMainForm))
+			return true;
 	}
-
-	// Just start the clip editor on it...
-	if (pClip->startEditor(pMainForm))
-		return true;
 
 	// Otherwise get rid of it...
 	delete pClip;
