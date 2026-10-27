@@ -540,24 +540,24 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Výrobek: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="560"/>
+        <location filename="../qtractorClapPlugin.cpp" line="578"/>
         <location filename="../qtractorVst2Plugin.cpp" line="663"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1672"/>
         <source>Vendor: </source>
         <translation>Prodejce: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="573"/>
+        <location filename="../qtractorClapPlugin.cpp" line="591"/>
         <source>Manual: </source>
         <translation>Příručka:</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="579"/>
+        <location filename="../qtractorClapPlugin.cpp" line="597"/>
         <source>Support: </source>
         <translation>Podpora:</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="544"/>
+        <location filename="../qtractorClapPlugin.cpp" line="562"/>
         <location filename="../qtractorVst2Plugin.cpp" line="671"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1645"/>
         <source>Version: </source>
@@ -952,7 +952,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1:Soubor s automatizací/křivkou nenalezen.</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="538"/>
+        <location filename="../qtractorClapPlugin.cpp" line="556"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1639"/>
         <source>Name: </source>
         <translation>Název: </translation>

@@ -1,7 +1,7 @@
 // qtractorClapPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,7 +30,13 @@
 #include "qtractorMidiManager.h"
 #include "qtractorCurve.h"
 
+#include "qtractorOptions.h"
+
+#include "qtractorMainForm.h"
+
 #include <clap/clap.h>
+
+#include <atomic>
 
 #include <QFileInfo>
 #include <QWidget>
@@ -38,6 +44,7 @@
 
 #include <QTimer>
 #include <QTimerEvent>
+#include <QObject>
 
 #include <QSocketNotifier>
 
@@ -46,15 +53,6 @@
 #include <QCloseEvent>
 
 #include <QRegularExpression>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-#include <QCoreApplication>
-#endif
-
-#include "qtractorOptions.h"
-
-#include "qtractorMainForm.h"
-
 
 //-----------------------------------------------------------------------------
 // class qtractorClapPluginHost -- CLAP plugin host (singleton) decl.
@@ -314,17 +312,23 @@ bool qtractorClapPluginType::Impl::open ( unsigned long iIndex )
 
 	const QByteArray aFilename
 		= m_pFile->filename().toUtf8();
-	m_entry->init(aFilename.constData());
+	if (!m_entry->init(aFilename.constData())) {
+		m_entry = nullptr;
+		return false;
+	}
 
 	m_factory = static_cast<const clap_plugin_factory *> (
 		m_entry->get_factory(CLAP_PLUGIN_FACTORY_ID));
-	if (!m_factory)
+	if (!m_factory) {
+		close();
 		return false;
+	}
 
 	auto count = m_factory->get_plugin_count(m_factory);
 	if (iIndex >= count) {
 		qDebug("qtractorClapPluginType::Impl[%p]::open(%lu)"
 			" *** Bad plug-in index.", this, iIndex);
+		close();
 		return false;
 	}
 
@@ -332,6 +336,7 @@ bool qtractorClapPluginType::Impl::open ( unsigned long iIndex )
 	if (!m_descriptor) {
 		qDebug("qtractorClapPluginType::Impl[%p]::open(%lu)"
 			" *** No plug-in descriptor.", this, iIndex);
+		close();
 		return false;
 	}
 
@@ -345,6 +350,7 @@ bool qtractorClapPluginType::Impl::open ( unsigned long iIndex )
 			CLAP_VERSION.major,
 			CLAP_VERSION.minor,
 			CLAP_VERSION.revision);
+		close();
 		return false;
 	}
 
@@ -396,7 +402,8 @@ void qtractorClapPluginType::Impl::close (void)
 qtractorClapPluginType::qtractorClapPluginType (
 	qtractorPluginFile *pFile, unsigned long iIndex )
 	: qtractorPluginType(pFile, iIndex, Clap), m_pImpl(new Impl(pFile)),
-		m_iMidiDialectIns(0), m_iMidiDialectOuts(0)
+		m_iMidiDialectIns(0), m_iMidiDialectOuts(0),
+		m_iMidiPortIn(-1), m_iMidiPortOut(-1)
 {
 }
 
@@ -440,6 +447,7 @@ bool qtractorClapPluginType::open (void)
 
 	m_iAudioIns = 0;
 	m_iAudioOuts = 0;
+
 	const clap_plugin_audio_ports *audio_ports
 		= static_cast<const clap_plugin_audio_ports *> (
 			plugin->get_extension(plugin, CLAP_EXT_AUDIO_PORTS));
@@ -467,6 +475,9 @@ bool qtractorClapPluginType::open (void)
 	m_iMidiOuts = 0;
 	m_iMidiDialectIns = 0;
 	m_iMidiDialectOuts = 0;
+	m_iMidiPortIn = -1;
+	m_iMidiPortOut = -1;
+
 	const clap_plugin_note_ports *note_ports
 		= static_cast<const clap_plugin_note_ports *> (
 			plugin->get_extension(plugin, CLAP_EXT_NOTE_PORTS));
@@ -476,8 +487,11 @@ bool qtractorClapPluginType::open (void)
 		for (uint32_t i = 0; i < nins; ++i) {
 			::memset(&info, 0, sizeof(info));
 			if (note_ports->get(plugin, i, true, &info)) {
-				if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI)
+				if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI) {
+					if (m_iMidiPortIn < 0)
+						m_iMidiPortIn = int(i);
 					++m_iMidiDialectIns;
+				}
 				++m_iMidiIns;
 			}
 		}
@@ -485,8 +499,11 @@ bool qtractorClapPluginType::open (void)
 		for (uint32_t i = 0; i < nouts; ++i) {
 			::memset(&info, 0, sizeof(info));
 			if (note_ports->get(plugin, i, false, &info)) {
-				if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI)
+				if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI) {
+					if (m_iMidiPortOut < 0)
+						m_iMidiPortOut = int(i);
 					++m_iMidiDialectOuts;
+				}
 				++m_iMidiOuts;
 			}
 		}
@@ -494,6 +511,7 @@ bool qtractorClapPluginType::open (void)
 
 	m_iControlIns = 0;
 	m_iControlOuts = 0;
+
 	const clap_plugin_params *params
 		= static_cast<const clap_plugin_params *> (
 			plugin->get_extension(plugin, CLAP_EXT_PARAMS));
@@ -586,8 +604,10 @@ bool qtractorClapPluginType::open (void)
 		m_sAboutText += sText;
 	}
 	QStringList features;
-	for (int i = 0; descriptor->features[i]; ++i)
-		features << QString::fromUtf8(descriptor->features[i]);
+	if (descriptor->features) {
+		for (int i = 0; descriptor->features[i]; ++i)
+			features << QString::fromUtf8(descriptor->features[i]);
+	}
 	sText = features.join(' ');
 	if (!sText.isEmpty()) {
 		m_sAboutText += '\n';
@@ -761,12 +781,27 @@ public:
 				m_eheap = new uint8_t [m_nsize];
 				m_ehead = m_eheap;
 				m_etail = m_ehead;
-				if (old_etail > old_ehead) {
+				if (old_eheap && old_etail > old_ehead) {
 					const uint32_t ntail
 						= old_etail - old_ehead;
 					::memcpy(m_ehead, old_ehead, ntail);
 					m_etail += ntail;
+					// Rebase unread event offsets to the compacted buffer
+					// and discard indices for events already popped.
+					const uint32_t nhead = old_ehead - old_eheap;
+					const uint32_t nunread
+						= uint32_t(m_elist.size()) - m_ihead;
+					for (uint32_t i = 0; i < nunread; ++i)
+						m_elist[i] = m_elist[i + m_ihead] - nhead;
+					m_elist.resize(nunread);
+					m_ihead = 0;
+				} else {
+					m_elist.clear();
+					m_ihead = 0;
 				}
+			} else {
+				m_elist.clear();
+				m_ihead = 0;
 			}
 			if (old_eheap)
 				delete [] old_eheap;
@@ -810,11 +845,86 @@ public:
 		clap_output_events m_outs;
 	};
 
+	// Single-producer (audio thread), single-consumer (GUI thread) queue
+	// for parameter events that are forwarded to the plugin editor.
+	class ParamEventQueue
+	{
+	public:
+
+		struct Event {
+			uint16_t type;
+			clap_id param_id;
+			double value;
+		};
+
+		static constexpr uint32_t Capacity = 1024;
+
+		ParamEventQueue ()
+			: m_head(0), m_tail(0), m_overflow(false) {}
+
+		bool push ( const clap_event_header *eh )
+		{
+			Event event;
+			event.type = eh->type;
+			event.value = 0.0;
+
+			if (eh->type == CLAP_EVENT_PARAM_VALUE) {
+				const clap_event_param_value *ev
+					= reinterpret_cast<const clap_event_param_value *> (eh);
+				event.param_id = ev->param_id;
+				event.value = ev->value;
+			} else {
+				const clap_event_param_gesture *ev
+					= reinterpret_cast<const clap_event_param_gesture *> (eh);
+				event.param_id = ev->param_id;
+			}
+
+			const uint32_t head
+				= m_head.load(std::memory_order_relaxed);
+			const uint32_t tail
+				= m_tail.load(std::memory_order_acquire);
+			if (head - tail >= Capacity) {
+				m_overflow.store(true, std::memory_order_release);
+				return false;
+			}
+
+			m_events[head % Capacity] = event;
+			m_head.store(head + 1, std::memory_order_release);
+			return true;
+		}
+
+		bool pop ( Event& event )
+		{
+			const uint32_t tail
+				= m_tail.load(std::memory_order_relaxed);
+			if (tail == m_head.load(std::memory_order_acquire))
+				return false;
+
+			event = m_events[tail % Capacity];
+			m_tail.store(tail + 1, std::memory_order_release);
+			return true;
+		}
+
+		bool takeOverflow ()
+			{ return m_overflow.exchange(false, std::memory_order_acq_rel); }
+
+		void discardPending ()
+			{ m_tail.store(m_head.load(std::memory_order_acquire),
+				std::memory_order_release); }
+
+	private:
+
+		Event m_events[Capacity];
+		std::atomic<uint32_t> m_head;
+		std::atomic<uint32_t> m_tail;
+		std::atomic_bool m_overflow;
+	};
+
 	// Event buffer accessors.
 	EventList& events_in  () { return m_events_in;  }
 	EventList& events_out () { return m_events_out; }
 
-	EventList& params_out () { return m_params_out; }
+	ParamEventQueue& params_out () { return m_params_out; }
 
 	// Plugin preset/state snapshot accessors.
 	bool setState (const QByteArray& data);
@@ -871,6 +981,8 @@ protected:
 //	void plugin_request_restart ();
 	void plugin_request_process ();
 	void plugin_request_callback ();
+	void plugin_queue_restart ();
+	void plugin_service_restart ();
 
 	// Host LOG callbacks...
 	//
@@ -1055,12 +1167,12 @@ private:
 
 	const clap_plugin_note_name *m_note_names;
 
-	volatile bool m_params_flush;
+	std::atomic_bool m_params_flush;
 
-	volatile bool m_activated;
-	volatile bool m_sleeping;
-	volatile bool m_processing;
-	volatile bool m_restarting;
+	std::atomic_bool m_activated;
+	std::atomic_bool m_sleeping;
+	std::atomic_bool m_processing;
+	std::atomic_bool m_restarting;
 
 	clap_host m_host;
 
@@ -1078,13 +1190,16 @@ private:
 	EventList m_events_out;
 
 	// Parameters processor queue.
-	EventList m_params_out;
+	ParamEventQueue m_params_out;
 
 	// Process context.
 	clap_process m_process;
 
 	// Working state stream buffer.
 	QByteArray m_state_data;
+
+	// Local context for callbacks.
+	QObject m_callback_context;
 };
 
 
@@ -1236,6 +1351,9 @@ void qtractorClapPluginHost::clear ( const clap_host *host )
 	foreach (const Key& key, keys)
 		m_timers.remove(key);
 	qDeleteAll(timers);
+	if (m_timers.isEmpty())
+		m_pTimer->stop();
+	m_timer_ids.remove(host);
 
 	keys.clear();
 	QList<PosixFdItem *> posix_fds;
@@ -1273,19 +1391,28 @@ void qtractorClapPluginHost::clear (void)
 
 void qtractorClapPluginHost::process_timers (void)
 {
+	QList<Key> due_timers;
+	const uint32_t elapsed = uint32_t(timerInterval());
+
 	QHash<Key, TimerItem *>::ConstIterator iter = m_timers.constBegin();
 	const QHash<Key, TimerItem *>::ConstIterator& iter_end = m_timers.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		TimerItem *timer = iter.value();
-		timer->counter += timerInterval();
+		timer->counter += elapsed;
 		if (timer->counter >= timer->interval) {
-			const Key& key = iter.key();
-			qtractorClapPlugin::Impl *host_data
-				= static_cast<qtractorClapPlugin::Impl *> (key.host->host_data);
-			if (host_data)
-				host_data->plugin_on_timer(key.id);
 			timer->counter = 0;
+			due_timers.append(iter.key());
 		}
+	}
+
+	for (const Key& key : due_timers) {
+		if (!m_timers.contains(key))
+			continue;
+
+		qtractorClapPlugin::Impl *host_data
+			= static_cast<qtractorClapPlugin::Impl *> (key.host->host_data);
+		if (host_data)
+			host_data->plugin_on_timer(key.id);
 	}
 }
 
@@ -1452,12 +1579,10 @@ void qtractorClapPlugin::Impl::activate (void)
 	if (!m_plugin)
 		return;
 
-	if (m_sleeping) {
-		m_sleeping = false;
+	if (m_sleeping.exchange(false, std::memory_order_acq_rel))
 		return;
-	}
 
-	if (m_activated)
+	if (m_activated.load(std::memory_order_acquire))
 		return;
 
 	if (m_srate < 2 || m_nframes < 2 || m_nframes_max < 2)
@@ -1468,7 +1593,7 @@ void qtractorClapPlugin::Impl::activate (void)
 	if (!m_plugin->activate(m_plugin, double(m_srate), m_nframes, m_nframes_max))
 		return;
 
-	m_activated = true;
+	m_activated.store(true, std::memory_order_release);
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorClapPlugin::Impl[%p]::activate() processing=%d", this, int(m_processing));
@@ -1481,15 +1606,15 @@ void qtractorClapPlugin::Impl::deactivate ( bool force )
 	if (!m_plugin)
 		return;
 
-	if (!m_activated)
+	if (!m_activated.load(std::memory_order_acquire))
 		return;
 
-	if (!m_sleeping && !force) {
-		m_sleeping = true;
+	if (!m_sleeping.load(std::memory_order_acquire) && !force) {
+		m_sleeping.store(true, std::memory_order_release);
 		return;
 	}
 
-	m_activated = false;
+	m_activated.store(false, std::memory_order_release);
 
 	m_plugin->deactivate(m_plugin);
 
@@ -1596,7 +1721,9 @@ void qtractorClapPlugin::Impl::process_midi_in (
 		if (status == 0x90) {
 			clap_event_note ev;
 			ev.header.space_id = CLAP_CORE_EVENT_SPACE_ID;
-			ev.header.type = CLAP_EVENT_NOTE_ON;
+			// MIDI 1.0 uses note-on with velocity zero as note-off.
+			ev.header.type = (value == 0
+				? CLAP_EVENT_NOTE_OFF : CLAP_EVENT_NOTE_ON);
 			ev.header.time = offset;
 			ev.header.flags = 0;
 			ev.header.size = sizeof(ev);
@@ -1651,34 +1778,49 @@ void qtractorClapPlugin::Impl::process (
 	if (!m_plugin)
 		return;
 
-	if (!m_activated)
+	if (!m_activated.load(std::memory_order_acquire))
 		return;
 
-	if (!m_processing && !m_sleeping) {
+	if (!m_processing.load(std::memory_order_acquire)
+		&& !m_sleeping.load(std::memory_order_acquire)
+		&& !m_restarting.load(std::memory_order_acquire)) {
 		plugin_params_flush();
-		g_host.transportAddRef();
-		m_processing = m_plugin->start_processing(m_plugin);
+		if (m_plugin->start_processing(m_plugin)) {
+			g_host.transportAddRef();
+			m_processing.store(true, std::memory_order_release);
+		}
 	}
-	else
-	if (m_processing && (m_sleeping || m_restarting)) {
+	else if (m_processing.load(std::memory_order_acquire)
+		&& (m_sleeping.load(std::memory_order_acquire) ||
+			m_restarting.load(std::memory_order_acquire))) {
 		m_plugin->stop_processing(m_plugin);
-		m_processing = false;
+		m_processing.store(false, std::memory_order_release);
 		g_host.transportReleaseRef();
-		if (m_plugin->reset && !m_restarting)
+		if (m_plugin->reset &&
+			!m_restarting.load(std::memory_order_acquire))
 			m_plugin->reset(m_plugin);
+		if (m_restarting.load(std::memory_order_acquire))
+			plugin_queue_restart();
 	}
 
-	if (m_processing) {
+	if (m_processing.load(std::memory_order_acquire)) {
 		// Run main processing...
 		m_audio_ins.data32 = ins;
 		m_audio_outs.data32 = outs;
 		m_events_out.clear();
 		m_process.frames_count = nframes;
-		m_plugin->process(m_plugin, &m_process);
+		const clap_process_status status
+			= m_plugin->process(m_plugin, &m_process);
 		m_process.steady_time += nframes;
 		m_events_in.clear();
-		// Transfer parameter changes...
-		process_params_out();
+		if (status == CLAP_PROCESS_ERROR) {
+			for (uint32_t i = 0; i < m_audio_outs.channel_count; ++i)
+				::memset(outs[i], 0, nframes * sizeof(float));
+			m_events_out.clear();
+		} else {
+			// Transfer parameter changes...
+			process_params_out();
+		}
 	}
 }
 
@@ -1848,10 +1990,9 @@ void qtractorClapPlugin::Impl::plugin_params_flush (void)
 	if (!m_plugin)
 		return;
 
-	if (!m_params_flush || m_processing)
+	if (m_processing.load(std::memory_order_acquire) ||
+		!m_params_flush.exchange(false, std::memory_order_acq_rel))
 		return;
-
-	m_params_flush = false;
 
 	m_events_in.clear();
 	m_events_out.clear();
@@ -1950,16 +2091,26 @@ void qtractorClapPlugin::Impl::host_request_callback ( const clap_host *host )
 //
 void qtractorClapPlugin::Impl::plugin_request_restart (void)
 {
-	if (m_restarting || qtractorAudioEngine::isProcessing())
+	m_restarting.store(true, std::memory_order_release);
+	plugin_queue_restart();
+}
+
+
+void qtractorClapPlugin::Impl::plugin_queue_restart (void)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+	QTimer::singleShot(0, &m_callback_context, [this] {
+		plugin_service_restart();
+	});
+#endif
+}
+
+
+void qtractorClapPlugin::Impl::plugin_service_restart (void)
+{
+	if (!m_restarting.load(std::memory_order_acquire)
+		|| m_processing.load(std::memory_order_acquire))
 		return;
-
-	m_restarting = true;
-
-	while (m_processing) {
-		qtractorSession::stabilize();
-	}
-
-	m_restarting = false;
 
 	deactivate(true);
 
@@ -1967,22 +2118,30 @@ void qtractorClapPlugin::Impl::plugin_request_restart (void)
 		m_pPlugin->restart();
 
 	activate();
+
+	m_restarting.store(false, std::memory_order_release);
 }
 
 
 void qtractorClapPlugin::Impl::plugin_request_process (void)
 {
-	// TODO: ?...
-	//
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+	QTimer::singleShot(0, &m_callback_context, [this] {
+		if (m_pPlugin)
+			m_pPlugin->activate();
+	});
+#endif
 }
 
 
 void qtractorClapPlugin::Impl::plugin_request_callback (void)
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-	QMetaObject::invokeMethod(QCoreApplication::instance(),
-		[this]{	m_plugin->on_main_thread(m_plugin); },
-		Qt::QueuedConnection);
+	QTimer::singleShot(0, &m_callback_context, [this] {
+		const clap_plugin *pPlugin = m_plugin;
+		if (pPlugin && pPlugin->on_main_thread)
+			pPlugin->on_main_thread(pPlugin);
+	});
 #endif
 }
 
@@ -2210,23 +2369,42 @@ void qtractorClapPlugin::Impl::plugin_params_clear (
 	if (!flags || param_id == CLAP_INVALID_ID)
 		return;
 
-	// Clear all automation curves, if any...
-	qtractorSubject::resetQueue();
-
-	// Clear any automation curves and direct access
-	// references to the plugin parameter (param_id)...
 	qtractorPlugin::Param *pParam = m_pPlugin->findParamId(int(param_id));
-	if (pParam)
-		m_pPlugin->clearParam(pParam);
+	if (!pParam)
+		return;
 
-	// And mark it dirty, of course...
-	m_pPlugin->updateDirtyCount();
+	if (flags & CLAP_PARAM_CLEAR_ALL) {
+		// Clear automation curves and all other host references.
+		qtractorSubject::resetQueue();
+		m_pPlugin->clearParam(pParam);
+		m_pPlugin->updateDirtyCount();
+		return;
+	}
+
+	if (flags & CLAP_PARAM_CLEAR_AUTOMATIONS) {
+		qtractorSubject::resetQueue();
+		qtractorSubject *pSubject = pParam->subject();
+		if (pSubject) {
+			qtractorCurve *pCurve = pSubject->curve();
+			if (pCurve) {
+				qtractorCurveList *pCurveList = pCurve->list();
+				if (pCurveList)
+					pCurveList->removeCurve(pCurve);
+				pSubject->setCurve(nullptr);
+				delete pCurve;
+				m_pPlugin->updateDirtyCount();
+			}
+		}
+	}
+
+	// CLAP_PARAM_CLEAR_MODULATIONS is a no-op: Qtractor does not
+	// currently retain CLAP parameter modulation references.
 }
 
 
 void qtractorClapPlugin::Impl::plugin_params_request_flush (void)
 {
-	m_params_flush = true;
+	m_params_flush.store(true, std::memory_order_release);
 
 //	plugin_params_flush();
 }
@@ -3203,35 +3381,36 @@ void qtractorClapPlugin::idleEditor (void)
 {
 	int nupdate = 0;
 
-	Impl::EventList& params_out = m_pImpl->params_out();
-	const clap_event_header *eh = params_out.pop();
-	for ( ; eh; eh = params_out.pop()) {
+	Impl::ParamEventQueue& params_out = m_pImpl->params_out();
+	if (params_out.takeOverflow()) {
+		params_out.discardPending();
+		m_paramValues.clear();
+		updateParamValues(false);
+		return;
+	}
+
+	Impl::ParamEventQueue::Event event;
+	while (params_out.pop(event)) {
 		int param_id = -1;
 		double value = 0.0;
 		// Check if we're not middle of a gesture...
-		if (eh->type == CLAP_EVENT_PARAM_GESTURE_BEGIN) {
-			const clap_event_param_gesture *ev
-				= reinterpret_cast<const clap_event_param_gesture *> (eh);
-			if (ev && ev->param_id != CLAP_INVALID_ID)
-				m_paramValues.insert(int(ev->param_id), 0.0);
+		if (event.type == CLAP_EVENT_PARAM_GESTURE_BEGIN) {
+			if (event.param_id != CLAP_INVALID_ID)
+				m_paramValues.insert(int(event.param_id), 0.0);
 		}
 		else
-		if (eh->type == CLAP_EVENT_PARAM_GESTURE_END) {
-			const clap_event_param_gesture *ev
-				= reinterpret_cast<const clap_event_param_gesture *> (eh);
-			if (ev && ev->param_id != CLAP_INVALID_ID) {
-				param_id = int(ev->param_id);
+		if (event.type == CLAP_EVENT_PARAM_GESTURE_END) {
+			if (event.param_id != CLAP_INVALID_ID) {
+				param_id = int(event.param_id);
 				value = m_paramValues.value(param_id, 0.0);
 				m_paramValues.remove(param_id);
 			}
 		}
 		else
-		if (eh->type == CLAP_EVENT_PARAM_VALUE) {
-			const clap_event_param_value *ev
-				= reinterpret_cast<const clap_event_param_value *> (eh);
-			if (ev && ev->param_id != CLAP_INVALID_ID) {
-				param_id = int(ev->param_id);
-				value = ev->value;
+		if (event.type == CLAP_EVENT_PARAM_VALUE) {
+			if (event.param_id != CLAP_INVALID_ID) {
+				param_id = int(event.param_id);
+				value = event.value;
 				if (m_paramValues.contains(param_id)) {
 					m_paramValues.insert(param_id, value);
 					param_id = -1;
@@ -3247,8 +3426,6 @@ void qtractorClapPlugin::idleEditor (void)
 			}
 		}
 	}
-	params_out.clear();
-
 	if (nupdate > 0)
 		updateDirtyCount();
 }
@@ -3353,11 +3530,15 @@ void qtractorClapPlugin::process (
 	qtractorMidiManager *pMidiManager = nullptr;
 	const unsigned short iMidiIns  = midiIns();
 	const unsigned short iMidiOuts = midiOuts();
+	qtractorClapPluginType *pType
+		= static_cast<qtractorClapPluginType *> (type());
+	const int iMidiPortIn = (pType ? pType->midiPortIn() : -1);
+	const int iMidiPortOut = (pType ? pType->midiPortOut() : -1);
 	if (iMidiIns > 0 || iMidiOuts > 0)
 		pMidiManager = list()->midiManager();
 
 	// Process MIDI input stream, if any...
-	if (pMidiManager && m_pMidiParser) {
+	if (pMidiManager && m_pMidiParser && iMidiPortIn >= 0) {
 		qtractorMidiBuffer *pMidiBuffer = pMidiManager->buffer_in();
 		const unsigned int iEventCount = pMidiBuffer->count();
 		for (unsigned int i = 0; i < iEventCount; ++i) {
@@ -3369,7 +3550,8 @@ void qtractorClapPlugin::process (
 				pMidiData, iMidiData, pEv);
 			if (iMidiData < 0)
 				break;
-			m_pImpl->process_midi_in(pMidiData, iMidiData, pEv->time.tick, 0);
+			m_pImpl->process_midi_in(pMidiData, iMidiData,
+				pEv->time.tick, static_cast<unsigned short>(iMidiPortIn));
 		}
 	}
 
@@ -3407,7 +3589,7 @@ void qtractorClapPlugin::process (
 
 	// Process MIDI output stream, if any...
 	if (pMidiManager) {
-		if (iMidiOuts > 0) {
+		if (iMidiPortOut >= 0) {
 			qtractorMidiBuffer *pMidiBuffer = pMidiManager->buffer_out();
 			Impl::EventList& events_out = m_pImpl->events_out();
 			const uint32_t nevents = events_out.size();
@@ -3421,29 +3603,31 @@ void qtractorClapPlugin::process (
 					case CLAP_EVENT_NOTE_ON: {
 						const clap_event_note *en
 							= reinterpret_cast<const clap_event_note *> (eh);
-						if (en) {
+						if (en && en->port_index == iMidiPortOut) {
 							ev.type = SND_SEQ_EVENT_NOTEON;
 							ev.data.note.channel  = en->channel;
 							ev.data.note.note     = en->key;
-							ev.data.note.velocity = en->velocity;
+							ev.data.note.velocity = static_cast<unsigned char>(
+								qRound(127.0 * qBound(0.0, en->velocity, 1.0)));
 						}
 						break;
 					}
 					case CLAP_EVENT_NOTE_OFF: {
 						const clap_event_note *en
 							= reinterpret_cast<const clap_event_note *> (eh);
-						if (en) {
+						if (en && en->port_index == iMidiPortOut) {
 							ev.type = SND_SEQ_EVENT_NOTEOFF;
 							ev.data.note.channel  = en->channel;
 							ev.data.note.note     = en->key;
-							ev.data.note.velocity = en->velocity;
+							ev.data.note.velocity = static_cast<unsigned char>(
+								qRound(127.0 * qBound(0.0, en->velocity, 1.0)));
 						}
 						break;
 					}
 					case CLAP_EVENT_MIDI: {
 						const clap_event_midi *em
 							= reinterpret_cast<const clap_event_midi *> (eh);
-						if (em) {
+						if (em && em->port_index == iMidiPortOut) {
 							unsigned char *pMidiData = (unsigned char *) &em->data[0];
 							long iMidiData = sizeof(em->data);
 							iMidiData = snd_midi_event_encode(m_pMidiParser,
