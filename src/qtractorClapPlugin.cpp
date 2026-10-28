@@ -443,7 +443,7 @@ bool qtractorClapPluginType::open (void)
 
 	m_sName = QString::fromUtf8(descriptor->name);
 	m_sLabel = m_sName.simplified().replace(QRegularExpression("[\\s|\\.|\\-]+"), "_");
-	m_iUniqueID = qHash(descriptor->id);
+	m_iUniqueID = qHash(QString(descriptor->id));
 
 	m_iAudioIns = 0;
 	m_iAudioOuts = 0;

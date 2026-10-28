@@ -532,7 +532,7 @@ MIDI:	</translation>
         <translation>Envoi aux : %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2509"/>
+        <location filename="../qtractorPlugin.cpp" line="2512"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
