@@ -873,6 +873,7 @@ bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 	QFile file(sFilename);
 	if (!file.open(QIODevice::ReadOnly))
 		return false;
+
 	// Parse it a-la-DOM :-)
 	QDomDocument doc("qtractorPlugin");
 	if (!doc.setContent(&file)) {
@@ -885,6 +886,7 @@ bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 	QDomElement ePreset = doc.documentElement();
 	if (ePreset.tagName() != "preset")
 		return false;
+
 	// Check if it's on the correct plugin preset...
 	if (ePreset.attribute("type") != presetPrefix())
 		return false;
@@ -956,6 +958,7 @@ bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 	QFile file(sFilename);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
 		return false;
+
 	QTextStream ts(&file);
 	ts << doc.toString() << endl;
 	file.close();

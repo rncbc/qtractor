@@ -32,10 +32,6 @@
 #include "qtractorSession.h"
 #include "qtractorFileList.h"
 
-#if !defined(CONFIG_AUDIO_EDITOR)
-#include "qtractorClipForm.h"
-#endif
-
 #include "qtractorAudioEditor.h"
 #include "qtractorAudioEditorForm.h"
 
@@ -993,10 +989,7 @@ void qtractorAudioClip::draw (
 bool qtractorAudioClip::startEditor ( QWidget *pParent )
 {
 #if !defined(CONFIG_AUDIO_EDITOR)
-	// Make sure the regular clip-form is started modal...
-	qtractorClipForm clipForm(pParent);
-	clipForm.setClip(this);
-	return clipForm.exec();
+	return clipProperties(pParent);
 #else
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
