@@ -4,14 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.6.5  2026-10-31  A Halloween'26 Release.
 
 - CLAP and VST3 Plug-ins: several minor fixes and improvements.
 
 - View/Zoom/Maximize, Minimize introduced to all main windows.
 
 - Audio track's plugin chain are now always processed regardless
-  of their input monitoring state. (EXPERIMENTAL)
+  of their input monitoring state.
 
 - A Session overview is now integrated as a dockable-widget on
   the main application window (cf. main menu View / Window /
@@ -19,10 +19,10 @@ GIT HEAD
 
 - VST3 Plug-ins: make sure process context is actually updated
   with transport info requirements; resize-view constraints re-
-  visited. (EXPERIMENTAL)
+  visited.
 
 - Update any existing LV2 Time designated ports/parameters, when
-  inserting a LV2 Plug-in. (EXPERIMENTAL)
+  inserting a LV2 Plug-in.
 
 
 1.6.4  2026-09-06  A Late-Summer'26 Hotfix Release.
