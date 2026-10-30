@@ -107,7 +107,7 @@ public:
 
 	// Whether there's any items currently selected.
 	bool isSelected() const
-		{ return (m_rectSelect.width() > 1); }
+		{ return (m_iSelectStart < m_iSelectEnd); }
 
 	// Whether there's any items on the clipboard.
 	bool isClipboard() const;
@@ -200,8 +200,8 @@ public:
 	qtractorCommandList *commands() const;
 
 	// Current selection sccessors (in frames)
-	unsigned long selectStart() const;
-	unsigned long selectEnd() const;
+	unsigned long selectStart() const { return m_iSelectStart; }
+	unsigned long selectEnd() const   { return m_iSelectEnd; }
 
 public slots:
 
@@ -256,6 +256,10 @@ protected:
 	bool dragResizeStart(qtractorScrollView *pScrollView, const QPoint& pos);
 	void dragResizeUpdate(qtractorScrollView *pScrollView, const QPoint& pos);
 	void dragResizeCommit(qtractorScrollView *pScrollView, const QPoint& pos);
+
+	// Current selection settler (pixels to frames and vice-versa)
+	void updateSelectRange();
+	void updateSelectRect();
 
 	//----------------------------------------------------------------------------
 	// Static clipboard for audio sample data.
@@ -355,6 +359,9 @@ private:
 
 	// Current selection (in pixels).
 	QRect m_rectSelect;
+
+	unsigned long m_iSelectStart;
+	unsigned long m_iSelectEnd;
 
 	// Paste/move interim parameters.
 	unsigned short m_iPasteCount;

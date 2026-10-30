@@ -1,7 +1,7 @@
 // qtractorClapPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -71,6 +71,10 @@ public:
 		{ return m_iMidiDialectIns; }
 	int midiDialectOuts() const
 		{ return m_iMidiDialectOuts; }
+	int midiPortIn() const
+		{ return m_iMidiPortIn; }
+	int midiPortOut() const
+		{ return m_iMidiPortOut; }
 
 	// Forward decls.
 	class Impl;
@@ -89,6 +93,9 @@ private:
 
 	int m_iMidiDialectIns;
 	int m_iMidiDialectOuts;
+
+	int m_iMidiPortIn;
+	int m_iMidiPortOut;
 };
 
 

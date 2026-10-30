@@ -84,6 +84,9 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 
 	m_rectSelect.setRect(0, 0, 0, 0);
 
+	m_iSelectStart = 0;
+	m_iSelectEnd   = 0;
+
 	// Paste interim stuff.
 	m_iPasteCount  = 0;
 
@@ -250,6 +253,8 @@ unsigned short qtractorAudioEditor::channels (void) const
 void qtractorAudioEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
 {
 	qtractorEditor::setHorizontalZoom(iHorizontalZoom);
+
+	updateSelectRect();
 
 	if (m_pAudioClip)
 		m_pAudioClip->setEditorHorizontalZoom(iHorizontalZoom);
@@ -998,6 +1003,8 @@ void qtractorAudioEditor::updateDragSelect (
 		m_rectSelect.setRight(x2);
 	}
 
+	updateSelectRange();
+
 	rectUpdate = rectUpdate.united(m_rectSelect);
 	pScrollView->viewport()->update(QRect(
 		pScrollView->contentsToViewport(rectUpdate.topLeft()),
@@ -1012,6 +1019,8 @@ void qtractorAudioEditor::clearSelect (void)
 
 	m_rectSelect.setLeft(0);
 	m_rectSelect.setWidth(0);
+
+	m_iSelectStart = m_iSelectEnd = 0;
 
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdate.topLeft()),
@@ -1236,7 +1245,7 @@ bool qtractorAudioEditor::dragMoveCommit (
 bool qtractorAudioEditor::dragResizeStart (
 	qtractorScrollView *pScrollView, const QPoint& pos )
 {
-	if (!isSelected())
+	if (m_rectSelect.width() < 2)
 		return false;
 
 	if (qAbs(pos.x() - m_rectSelect.left()) < 4) {
@@ -1297,6 +1306,8 @@ void qtractorAudioEditor::dragResizeUpdate (
 	default:
 		break;
 	}
+
+	updateSelectRange();
 
 	rectUpdate = rectUpdate.united(m_rectSelect);
 	pScrollView->viewport()->update(QRect(
@@ -1500,7 +1511,7 @@ void qtractorAudioEditor::paintDragState (
 {
 	qtractorEditor::paintDragState(pScrollView, painter);
 
-	if (isSelected()) {
+	if (m_rectSelect.width() > 1) {
 		QWidget *pViewport = pScrollView->viewport();
 		const int w  = pViewport->width();
 		const int h  = pViewport->height();
@@ -1767,33 +1778,40 @@ bool qtractorAudioEditor::keyStep ( qtractorScrollView *pScrollView,
 }
 
 
-// Current selection sccessors (in frames)
+// Current selection settler (pixels to frames and vice-versa)
 //
-unsigned long qtractorAudioEditor::selectStart (void) const
+void qtractorAudioEditor::updateSelectRange (void)
 {
-	if (!isSelected())
-		return 0;
-
 	qtractorTimeScale *pTimeScale = timeScale();
 	if (pTimeScale == nullptr)
-		return 0;
+		return;
 
-	const int x0 = pTimeScale->pixelFromFrame(offset());
-	return frameSnap(pTimeScale->frameFromPixel(x0 + m_rectSelect.left()));
+	if (m_rectSelect.width() > 1) {
+		const int x0 = pTimeScale->pixelFromFrame(offset());
+		m_iSelectStart = frameSnap(
+			pTimeScale->frameFromPixel(x0 + m_rectSelect.left()));
+		m_iSelectEnd = frameSnap(
+			pTimeScale->frameFromPixel(x0 + m_rectSelect.right()));
+	} else {
+		m_iSelectStart = m_iSelectEnd = 0;
+	}
 }
 
 
-unsigned long qtractorAudioEditor::selectEnd (void) const
+void qtractorAudioEditor::updateSelectRect (void)
 {
-	if (!isSelected())
-		return 0;
-
 	qtractorTimeScale *pTimeScale = timeScale();
 	if (pTimeScale == nullptr)
-		return 0;
+		return;
 
-	const int x0 = pTimeScale->pixelFromFrame(offset());
-	return frameSnap(pTimeScale->frameFromPixel(x0 + m_rectSelect.right()));
+	if (m_iSelectStart < m_iSelectEnd) {
+		const int x0 = pTimeScale->pixelFromFrame(offset());
+		m_rectSelect.setLeft(pTimeScale->pixelFromFrame(m_iSelectStart) - x0);
+		m_rectSelect.setRight(pTimeScale->pixelFromFrame(m_iSelectEnd) - x0);
+	} else {
+		m_rectSelect.setLeft(0);
+		m_rectSelect.setWidth(0);
+	}
 }
 
 
