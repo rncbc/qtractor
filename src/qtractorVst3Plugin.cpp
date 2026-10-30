@@ -66,6 +66,7 @@
 
 #include <QRegularExpression>
 
+#include <limits>
 #include <time.h>
 
 #ifdef CONFIG_VST3_XCB
@@ -347,8 +348,16 @@ public:
 	// Destructor.
 	~Attribute ()
 	{
-		if (m_size)
+		switch (m_type) {
+		case kString:
+			delete [] m_v.stringValue;
+			break;
+		case kBinary:
 			delete [] m_v.binaryValue;
+			break;
+		default:
+			break;
+		}
 	}
 
 	// Accessors.
@@ -425,7 +434,7 @@ public:
 	tresult PLUGIN_API getInt (AttrID aid, int64& value) override
 	{
 		Attribute *attr = m_list.value(aid, nullptr);
-		if (attr) {
+		if (attr && attr->getType() == Attribute::kInteger) {
 			value = attr->intValue();
 			return kResultTrue;
 		}
@@ -442,7 +451,7 @@ public:
 	tresult PLUGIN_API getFloat (AttrID aid, double& value) override
 	{
 		Attribute *attr = m_list.value(aid, nullptr);
-		if (attr) {
+		if (attr && attr->getType() == Attribute::kFloat) {
 			value = attr->floatValue();
 			return kResultTrue;
 		}
@@ -452,17 +461,21 @@ public:
 	tresult PLUGIN_API setString (AttrID aid, const Vst::TChar *string) override
 	{
 		removeAttrID(aid);
-		m_list.insert(aid, new Attribute(string, fromTChar(string).length()));
+		m_list.insert(aid, new Attribute(string, fromTChar(string).length() + 1));
 		return kResultTrue;
 	}
 
 	tresult PLUGIN_API getString (AttrID aid, Vst::TChar *string, uint32 size) override
 	{
 		Attribute *attr = m_list.value(aid, nullptr);
-		if (attr) {
+		if (attr && attr->getType() == Attribute::kString) {
 			uint32 size2 = 0;
 			const Vst::TChar *string2 = attr->stringValue(size2);
-			::memcpy(string, string2, qMin(size, size2) * sizeof(Vst::TChar));
+			if (size > 0) {
+				const uint32 n = qMin(size - 1, size2);
+				::memcpy(string, string2, n * sizeof(Vst::TChar));
+				string[n] = 0;
+			}
 			return kResultTrue;
 		}
 		return kResultFalse;
@@ -478,7 +491,7 @@ public:
 	tresult PLUGIN_API getBinary (AttrID aid, const void*& data, uint32& size) override
 	{
 		Attribute *attr = m_list.value(aid, nullptr);
-		if (attr) {
+		if (attr && attr->getType() == Attribute::kBinary) {
 			data = attr->binaryValue(size);
 			return kResultTrue;
 		}
@@ -1076,7 +1089,7 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 	timeout.tv_sec  = 0;
 	timeout.tv_usec = 1000 * timerInterval();
 
-	const int result = ::select(nfds + 1, &rfds, &wfds, nullptr, &timeout);
+	const int result = ::select(nfds + 1, &rfds, &wfds, &efds, &timeout);
 	if (result > 0)	{
 		iter = m_eventHandlers.constBegin();
 		for ( ; iter != m_eventHandlers.constEnd(); ++iter) {
@@ -1436,8 +1449,9 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 						qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
 							" *** Failed to initialize plug-in controller.", this,
 							m_pFile->filename().toUtf8().constData(), iIndex);
-						controller = nullptr;
 					#endif
+						controller->release();
+						controller = nullptr;
 					}
 				}
 			}
@@ -1955,7 +1969,7 @@ public:
 
 	tresult PLUGIN_API getEvent (int32 index, Vst::Event& event) override
 	{
-		if (index < 0 || index >= m_nsize)
+		if (index < 0 || index >= m_ncount)
 			return kInvalidArgument;
 
 		event = m_events[index];
@@ -2383,41 +2397,44 @@ public:
 	//
 	tresult PLUGIN_API read (void *buffer, int32 nbytes, int32 *nread) override
 	{
-		if (m_pos + nbytes > m_data.size()) {
-			const int32 nsize = int32(m_data.size() - m_pos);
-			if (nsize > 0) {
-				nbytes = nsize;
-			} else {
-				nbytes = 0;
-				m_pos = int64(m_data.size());
-			}
-		}
+		if (nread)
+			*nread = 0;
+		if (nbytes < 0 || (nbytes > 0 && buffer == nullptr))
+			return kInvalidArgument;
 
-		if (nbytes > 0) {
-			::memcpy(buffer, m_data.data() + m_pos, nbytes);
-			m_pos += nbytes;
+		const int32 nsize = int32(qMin<int64>(
+			nbytes, m_data.size() - m_pos));
+
+		if (nsize > 0) {
+			::memcpy(buffer, m_data.data() + m_pos, nsize);
+			m_pos += nsize;
 		}
 
 		if (nread)
-			*nread = nbytes;
+			*nread = nsize;
 
 		return kResultOk;
 	}
 
 	tresult PLUGIN_API write (void *buffer, int32 nbytes, int32 *nwrite) override
 	{
-		if (buffer == nullptr)
+		if (nwrite)
+			*nwrite = 0;
+		if (nbytes < 0 || (nbytes > 0 && buffer == nullptr))
 			return kInvalidArgument;
 
-		const int32 nsize = m_pos + nbytes;
+		const int64 end = m_pos + int64(nbytes);
+		if (end > std::numeric_limits<int32>::max())
+			return kOutOfMemory;
+
+		const int32 nsize = int32(end);
 		if (nsize > m_data.size())
 			m_data.resize(nsize);
 
-		if (m_pos >= 0 && nbytes > 0) {
+		if (nbytes > 0) {
 			::memcpy(m_data.data() + m_pos, buffer, nbytes);
 			m_pos += nbytes;
 		}
-		else nbytes = 0;
 
 		if (nwrite)
 			*nwrite = nbytes;
@@ -2427,20 +2444,30 @@ public:
 
 	tresult PLUGIN_API seek (int64 pos, int32 mode, int64 *npos) override
 	{
-		if (mode == kIBSeekSet)
-			m_pos = pos;
-		else
-		if (mode == kIBSeekCur)
-			m_pos += pos;
-		else
-		if (mode == kIBSeekEnd)
-			m_pos = m_data.size() - pos;
+		const int64 size = m_data.size();
 
-		if (m_pos < 0)
-			m_pos = 0;
+		if (mode == kIBSeekSet) {
+			m_pos = (pos < 0 ? 0 : qMin(pos, size));
+		}
 		else
-		if (m_pos > m_data.size())
-			m_pos = m_data.size();
+		if (mode == kIBSeekCur) {
+			if (pos > 0 && pos > size - m_pos)
+				m_pos = size;
+			else
+			if (pos < 0 && pos < -m_pos)
+				m_pos = 0;
+			else
+				m_pos += pos;
+		}
+		else
+		if (mode == kIBSeekEnd) {
+			if (pos < 0)
+				m_pos = size;
+			else
+				m_pos = (pos > size ? 0 : size - pos);
+		} else {
+			return kInvalidArgument;
+		}
 
 		if (npos)
 			*npos = m_pos;
@@ -3089,34 +3116,32 @@ bool qtractorVst3Plugin::Impl::setState ( const QByteArray& data )
 		return false;
 
 	Vst::IEditController *controller = pType->impl()->controller();
-	if (!controller)
-		return false;
 
 	Stream state(data);
 
-	if (component->setState(&state) == kResultOk) {
-		return true;
-	} else {
+	const bool bComponentResult
+		= (component->setState(&state) == kResultOk);
+	if (!bComponentResult) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3Plugin::Impl[%p]::setState()"
 			" IComponent::setState() FAILED!", this);
 	#endif
 	}
 
-	// Rewind the stream so the controller can also read it.
+	// Rewind the stream so the controller can synchronize its state too.
 	int64 pos = 0;
 	state.seek(0, IBStream::kIBSeekSet, &pos);
 
-	if (controller->setComponentState(&state) == kResultOk) {
-		return true;
-	} else {
+	const bool bControllerResult = controller &&
+		(controller->setComponentState(&state) == kResultOk);
+	if (controller && !bControllerResult) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3Plugin::Impl[%p]::setState()"
 			" IEditController::setComponentState() FAILED!", this);
 	#endif
 	}
 
-	return false;
+	return (bComponentResult || bControllerResult);
 }
 
 
@@ -3892,19 +3917,22 @@ void qtractorVst3Plugin::process (
 						ev.type = SND_SEQ_EVENT_NOTEON;
 						ev.data.note.channel  = event.noteOn.channel;
 						ev.data.note.note     = event.noteOn.pitch;
-						ev.data.note.velocity = event.noteOn.velocity;
+						ev.data.note.velocity = int(qBound(0.0,
+							double(event.noteOn.velocity), 1.0) * 127.0 + 0.5);
 						break;
 					case Vst::Event::kNoteOffEvent:
 						ev.type = SND_SEQ_EVENT_NOTEOFF;
 						ev.data.note.channel  = event.noteOff.channel;
 						ev.data.note.note     = event.noteOff.pitch;
-						ev.data.note.velocity = event.noteOff.velocity;
+						ev.data.note.velocity = int(qBound(0.0,
+							double(event.noteOff.velocity), 1.0) * 127.0 + 0.5);
 						break;
 					case Vst::Event::kPolyPressureEvent:
 						ev.type = SND_SEQ_EVENT_KEYPRESS;
 						ev.data.note.channel  = event.polyPressure.channel;
 						ev.data.note.note     = event.polyPressure.pitch;
-						ev.data.note.velocity = event.polyPressure.pressure;
+						ev.data.note.velocity = int(qBound(0.0,
+							double(event.polyPressure.pressure), 1.0) * 127.0 + 0.5);
 						break;
 					}
 					if (ev.type != SND_SEQ_EVENT_NONE)
