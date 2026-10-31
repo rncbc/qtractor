@@ -632,6 +632,19 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 }
 
 
+// Edit given(current) clip properties.
+bool qtractorTracks::editClipProperties ( qtractorClip *pClip )
+{
+	if (pClip == nullptr)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == nullptr)
+		return false;
+
+	// Assume all else hasn't failed...
+	return pClip->clipProperties(qtractorMainForm::getInstance());
+}
+
+
 // Mute given(current) clip.
 bool qtractorTracks::muteClip ( qtractorClip *pClip )
 {

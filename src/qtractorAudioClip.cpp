@@ -988,9 +988,6 @@ void qtractorAudioClip::draw (
 // Clip editor method.
 bool qtractorAudioClip::startEditor ( QWidget *pParent )
 {
-#if !defined(CONFIG_AUDIO_EDITOR)
-	return clipProperties(pParent);
-#else
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
 		return false;
@@ -1003,7 +1000,7 @@ bool qtractorAudioClip::startEditor ( QWidget *pParent )
 		if (pOptions && pOptions->bKeepEditorsOnTop) {
 			wflags |= Qt::Tool;
 		//	wflags |= Qt::WindowStaysOnTopHint;
-		#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
+		#if 0//QTRACTOR_AUDIO_EDITOR_TOOL_PARENT
 			// Make sure it has a parent...
 			if (pParent == nullptr)
 				pParent = qtractorMainForm::getInstance();
@@ -1027,7 +1024,6 @@ bool qtractorAudioClip::startEditor ( QWidget *pParent )
 	m_pAudioEditorForm->activateWindow();
 
 	return true;
-#endif // CONFIG_AUDIO_EDITOR
 }
 
 

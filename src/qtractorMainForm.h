@@ -227,6 +227,7 @@ public slots:
 
 	void clipNew();
 	void clipEdit();
+	void clipProperties();
 	void clipMute();
 	void clipUnlink();
 	void clipRecordEx(bool bOn);
