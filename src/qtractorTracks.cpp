@@ -687,12 +687,7 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 	if (pClip == nullptr)
 		return false;
 
-	qtractorMidiClip *pMidiClip
-		= static_cast<qtractorMidiClip *> (pClip);
-	if (pMidiClip == nullptr)
-		return false;
-
-	if (!pMidiClip->isHashLinked())
+	if (!pClip->isHashLinked())
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -701,7 +696,7 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 
 	qtractorClipUnlinkCommand *pClipUnlinkCommand
 		= new qtractorClipUnlinkCommand();
-	pClipUnlinkCommand->addMidiClipContext(pMidiClip);
+	pClipUnlinkCommand->addClipContext(pClip);
 
 	return pSession->execute(pClipUnlinkCommand);
 }

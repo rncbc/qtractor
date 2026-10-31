@@ -179,7 +179,6 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 
 	m_iTrackChannel = 0;
 	m_bSessionFlag = false;
-	m_iRevision = 0;
 
 	m_pMidiEditorForm = nullptr;
 
@@ -218,8 +217,9 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 
 	setTrackChannel(clip.trackChannel());
 
+	setRevision(clip.revision());
+
 	m_bSessionFlag = false;
-	m_iRevision = clip.revision();
 
 	m_pMidiEditorForm = nullptr;
 
@@ -584,14 +584,14 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 		return sFilename;
 
 	// Check file-hash reference...
-	if (m_iRevision > 0 && m_pKey) {
+	if (revision() > 0 && m_pKey) {
 		FileKey fkey(m_pKey);
 		FileHash::ConstIterator fiter = g_hashFiles.constFind(fkey);
 		if (fiter != g_hashFiles.constEnd() && fiter.value() > 1)
-			m_iRevision = 0;
+			setRevision(0);
 	}
 
-	if (m_iRevision == 0 || bForce) {
+	if (revision() == 0 || bForce) {
 		const QFileInfo info(sFilename);
 		QString sExt = info.suffix();
 		if (sExt.isEmpty())
@@ -599,12 +599,12 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 		sFilename = pSession->createFilePathEx(info.completeBaseName(), sExt);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorMidiClip::createFilePathRevision(%d): \"%s\" (%d)",
-			int(bForce), sFilename.toUtf8().constData(), m_iRevision);
+			int(bForce), sFilename.toUtf8().constData(), revision());
 	#endif
-		m_iRevision = 0;
+		setRevision(0);
 	}
 
-	++m_iRevision;
+	setRevision(revision() + 1);
 
 	return sFilename;
 }
@@ -626,16 +626,21 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename, bool bUpdate )
 
 	removeHashKey();
 
-	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
-		qtractorMidiClip *pMidiClip = iter.next();
-		pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
-		pMidiClip->setFilename(sFilename);
-		pMidiClip->updateHashKey();
-		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
-		if (bUpdate) {
-			pMidiClip->setDirty(false);
-			pMidiClip->updateEditor(true);
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (iter.next());
+		if (pMidiClip) {
+			pSession->files()->removeClipItem(
+				qtractorFileList::Midi, pMidiClip);
+			pMidiClip->setFilename(sFilename);
+			pMidiClip->updateHashKey();
+			pSession->files()->addClipItem(
+				qtractorFileList::Midi, pMidiClip, true);
+			if (bUpdate) {
+				pMidiClip->setDirty(false);
+				pMidiClip->updateEditor(true);
+			}
 		}
 	}
 
@@ -651,11 +656,14 @@ void qtractorMidiClip::setClipLengthEx ( unsigned long iClipLength )
 
 	removeHashKey();
 
-	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
-		qtractorMidiClip *pMidiClip = iter.next();
-		pMidiClip->setClipLength(iClipLength);
-		pMidiClip->updateHashKey();
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (iter.next());
+		if (pMidiClip) {
+			pMidiClip->setClipLength(iClipLength);
+			pMidiClip->updateHashKey();
+		}
 	}
 
 	insertHashKey();
@@ -668,7 +676,7 @@ void qtractorMidiClip::updateEditorEx ( bool bSelectClear )
 	if (m_pData == nullptr)
 		return;
 
-	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->updateEditor(bSelectClear);
 }
@@ -680,7 +688,7 @@ void qtractorMidiClip::setDirtyEx ( bool bDirty )
 	if (m_pData == nullptr)
 		return;
 
-	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->setDirty(bDirty);
 }
@@ -797,16 +805,17 @@ bool qtractorMidiClip::isHashLinked (void) const
 
 
 // Check whether a MIDI clip is hash-linked to another.
-bool qtractorMidiClip::isLinkedClip ( qtractorMidiClip *pMidiClip ) const
+bool qtractorMidiClip::isLinkedClip ( qtractorClip *pClip ) const
 {
+	qtractorMidiClip *pMidiClip = static_cast<qtractorMidiClip *> (pClip);
 	return (m_pData ? m_pData->clips().contains(pMidiClip) : false);
 }
 
 
 // Get all hash-linked clips (including self).
-QList<qtractorMidiClip *> qtractorMidiClip::linkedClips (void) const
+QList<qtractorClip *> qtractorMidiClip::linkedClips (void) const
 {
-	QList<qtractorMidiClip *> clips;
+	QList<qtractorClip *> clips;
 
 	if (m_pData)
 		clips = m_pData->clips();

@@ -8213,13 +8213,12 @@ void qtractorMainForm::updateClipMenu (void)
 
 	m_ui.clipMuteAction->setEnabled(bClipSelected);
 	m_ui.clipMuteAction->setChecked(pClip && pClip->isClipMute());
+	m_ui.clipUnlinkAction->setEnabled(pClip && pClip->isHashLinked());
 
-	// Special unlink (MIDI) clip...
+	// Special record/overdubbing (MIDI) clip...
 	qtractorMidiClip *pMidiClip = nullptr;
 	if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
 		pMidiClip = static_cast<qtractorMidiClip *> (pClip);
-	m_ui.clipUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
-
 	m_ui.clipRecordExAction->setEnabled(pMidiClip != nullptr);
 	m_ui.clipRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx()
 		&& static_cast<qtractorMidiClip *> (pTrack->clipRecord()) == pMidiClip);

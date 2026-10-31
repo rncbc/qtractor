@@ -486,33 +486,29 @@ void qtractorTrackView::drawContents ( QPainter& painter, const QRect& rect )
 		rectClip = rectClip.intersected(rectView);
 		if (!rectClip.isEmpty())
 			painter.drawRect(rectClip);
-		// Highlight all hash-linked MIDI clips...
-		if (pCurrentClip->track()->trackType() == qtractorTrack::Midi) {
-			qtractorMidiClip *pCurrentMidiClip
-				= static_cast<qtractorMidiClip *> (pCurrentClip);
-			if (pCurrentMidiClip && pCurrentMidiClip->isHashLinked()) {
-				pen.setStyle(Qt::DotLine);
-				pen.setWidth(3);
-				painter.setPen(pen);
-				const QList<qtractorMidiClip *>& list
-					= pCurrentMidiClip->linkedClips();
-				QListIterator<qtractorMidiClip *> iter(list);
-				while (iter.hasNext()) {
-					qtractorMidiClip *pLinkedMidiClip = iter.next();
-					if (!pLinkedMidiClip->isActive() ||
-						pCurrentMidiClip == pLinkedMidiClip)
-						continue;
-					if (pCurrentTrack != pLinkedMidiClip->track()) {
-						pCurrentTrack  = pLinkedMidiClip->track();
-						trackInfo(pCurrentTrack, &tvi);
-					}
-					clipInfo(pLinkedMidiClip, &rectClip, &tvi);
-					rectClip.moveTopLeft(
-						qtractorScrollView::contentsToViewport(rectClip.topLeft()));
-					rectClip = rectClip.intersected(rectView);
-					if (!rectClip.isEmpty())
-						painter.drawRect(rectClip.adjusted(+2, +2, -2, -2));
+		// Highlight all hash-linked clips...
+		if (pCurrentClip && pCurrentClip->isHashLinked()) {
+			pen.setStyle(Qt::DotLine);
+			pen.setWidth(3);
+			painter.setPen(pen);
+			const QList<qtractorClip *>& list
+				= pCurrentClip->linkedClips();
+			QListIterator<qtractorClip *> iter(list);
+			while (iter.hasNext()) {
+				qtractorClip *pLinkedClip = iter.next();
+				if (!pLinkedClip->isActive() ||
+					pCurrentClip == pLinkedClip)
+					continue;
+				if (pCurrentTrack != pLinkedClip->track()) {
+					pCurrentTrack  = pLinkedClip->track();
+					trackInfo(pCurrentTrack, &tvi);
 				}
+				clipInfo(pLinkedClip, &rectClip, &tvi);
+				rectClip.moveTopLeft(
+					qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+				rectClip = rectClip.intersected(rectView);
+				if (!rectClip.isEmpty())
+					painter.drawRect(rectClip.adjusted(+2, +2, -2, -2));
 			}
 		}
 		// Restore previous drawing pen...

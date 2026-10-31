@@ -204,7 +204,7 @@ public:
 		unsigned short count() const
 			{ return m_clips.count(); }
 
-		const QList<qtractorAudioClip *>& clips() const
+		const QList<qtractorClip *>& clips() const
 			{ return m_clips; }
 
 		void clear()
@@ -222,7 +222,7 @@ public:
 		qtractorCommandList *m_pCommands;
 
 		// Ref-counting related stuff.
-		QList<qtractorAudioClip *> m_clips;
+		QList<qtractorClip *> m_clips;
 	};
 
 	typedef QHash<Key, Data *> Hash;
@@ -255,19 +255,13 @@ public:
 	bool isHashLinked() const;
 
 	// Check whether an audio clip is hash-linked to another.
-	bool isLinkedClip (qtractorAudioClip *pAudioClip) const;
+	bool isLinkedClip (qtractorClip *pClip) const;
 
 	// Get all hash-linked clips (including self).
-	QList<qtractorAudioClip *> linkedClips() const;
+	QList<qtractorClip *> linkedClips() const;
 
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
-
-	// Revisionist accessors.
-	void setRevision(unsigned short iRevision)
-		{ m_iRevision = iRevision; }
-	unsigned short revision() const
-		{ return m_iRevision; }
 
 	// Revisionist method.
 	QString createFilePathRevision(bool bForce = false);
@@ -314,9 +308,6 @@ private:
 
 	// Audio file hash key.
 	static FileHash g_hashFiles;
-
-	// Revisionist count.
-	unsigned short m_iRevision;
 
 	// This clip editor form widget.
 	qtractorAudioEditorForm *m_pAudioEditorForm;

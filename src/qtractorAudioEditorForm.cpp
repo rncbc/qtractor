@@ -266,6 +266,9 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.fileMuteAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileMute()));
+	QObject::connect(m_ui.fileUnlinkAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileUnlink()));
 	QObject::connect(m_ui.filePropertiesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileProperties()));
@@ -1186,6 +1189,18 @@ void qtractorAudioEditorForm::fileMute (void)
 		qtractorTracks *pTracks = pMainForm->tracks();
 		if (pTracks)
 			pTracks->muteClip(m_pAudioEditor->audioClip());
+	}
+}
+
+
+// Unlink current clip.
+void qtractorAudioEditorForm::fileUnlink (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->unlinkClip(m_pAudioEditor->audioClip());
 	}
 }
 
