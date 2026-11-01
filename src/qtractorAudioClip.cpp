@@ -63,6 +63,7 @@ public:
 	// Key settler.
 	void update(qtractorAudioClip *pAudioClip)
 	{
+		m_pTrack       = pAudioClip->track();
 		m_sFilename    = pAudioClip->filename();;
 		m_iClipOffset  = pAudioClip->clipOffset() & ~3; // 4-frame alignment.
 		m_iClipLength  = pAudioClip->clipLength() & ~3; // idem.
@@ -73,6 +74,8 @@ public:
 	}
 
 	// Key accessors.
+	qtractorTrack *track() const
+		{ return m_pTrack; }
 	const QString& filename() const
 		{ return m_sFilename; }
 	unsigned long clipOffset() const
@@ -91,7 +94,8 @@ public:
 	// Match descriminator.
 	bool operator== (const Key& other) const
 	{
-		return m_sFilename    == other.filename()
+		return m_pTrack       == other.track()
+			&& m_sFilename    == other.filename()
 			&& m_iClipOffset  == other.clipOffset()
 			&& m_iClipLength  == other.clipLength()
 			&& m_fClipGain    == other.clipGain()
@@ -103,6 +107,7 @@ public:
 private:
 
 	// Interesting variables.
+	qtractorTrack *m_pTrack;
 	QString        m_sFilename;
 	unsigned long  m_iClipOffset;
 	unsigned long  m_iClipLength;
@@ -115,7 +120,8 @@ private:
 
 uint qHash ( const qtractorAudioClip::Key& key )
 {
-	return qHash(key.filename())
+	return qHash(key.track())
+		 ^ qHash(key.filename())
 		 ^ qHash(key.clipOffset())
 		 ^ qHash(key.clipLength())
 		 ^ qHash(long(1000.0f * key.clipGain()))
