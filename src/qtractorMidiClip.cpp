@@ -70,11 +70,11 @@ public:
 	void update(qtractorMidiClip *pMidiClip)
 	{
 		qtractorTrack *pTrack = pMidiClip->track();
-		m_sFilename = pMidiClip->filename();
-		m_iClipOffset = pMidiClip->clipOffsetTime();
-		m_iClipLength = pMidiClip->clipLengthTime();
+		m_sFilename     = pMidiClip->filename();
+		m_iClipOffset   = pMidiClip->clipOffset() & ~3; // 4-frame alignment.
+		m_iClipLength   = pMidiClip->clipLength() & ~3; // idem.
 		m_iTrackChannel = pMidiClip->trackChannel();
-		m_iMidiChannel = (pTrack ? pTrack->midiChannel() : 0);
+		m_iMidiChannel  = (pTrack ? pTrack->midiChannel() : 0);
 	}
 
 	// Key accessors.
@@ -178,6 +178,7 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_pData = nullptr;
 
 	m_iTrackChannel = 0;
+
 	m_bSessionFlag = false;
 
 	m_pMidiEditorForm = nullptr;

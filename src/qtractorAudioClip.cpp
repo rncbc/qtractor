@@ -63,13 +63,13 @@ public:
 	// Key settler.
 	void update(qtractorAudioClip *pAudioClip)
 	{
-		m_sFilename = pAudioClip->filename();;
-		m_iClipOffset = pAudioClip->clipOffset();
-		m_iClipLength = pAudioClip->clipLength();
-		m_fClipGain = pAudioClip->clipGain();
+		m_sFilename    = pAudioClip->filename();;
+		m_iClipOffset  = pAudioClip->clipOffset() & ~3; // 4-frame alignment.
+		m_iClipLength  = pAudioClip->clipLength() & ~3; // idem.
+		m_fClipGain    = pAudioClip->clipGain();
 		m_fClipPanning = pAudioClip->clipPanning();
 		m_fTimeStretch = pAudioClip->timeStretch();
-		m_fPitchShift = pAudioClip->pitchShift();
+		m_fPitchShift  = pAudioClip->pitchShift();
 	}
 
 	// Key accessors.
