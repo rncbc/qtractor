@@ -63,7 +63,6 @@ public:
 	// Key settler.
 	void update(qtractorAudioClip *pAudioClip)
 	{
-		m_pTrack = pAudioClip->track();
 		m_sFilename = pAudioClip->filename();;
 		m_iClipOffset = pAudioClip->clipOffset();
 		m_iClipLength = pAudioClip->clipLength();
@@ -71,12 +70,9 @@ public:
 		m_fClipPanning = pAudioClip->clipPanning();
 		m_fTimeStretch = pAudioClip->timeStretch();
 		m_fPitchShift = pAudioClip->pitchShift();
-		m_iOverlap = pAudioClip->overlap();
 	}
 
 	// Key accessors.
-	qtractorTrack *track() const
-		{ return m_pTrack; }
 	const QString& filename() const
 		{ return m_sFilename; }
 	unsigned long clipOffset() const
@@ -91,27 +87,22 @@ public:
 		{ return m_fTimeStretch; }
 	float pitchShift() const
 		{ return m_fPitchShift; }
-	unsigned int overlap() const
-		{ return m_iOverlap; }
 
 	// Match descriminator.
 	bool operator== (const Key& other) const
 	{
-		return m_pTrack       == other.track()
-			&& m_sFilename    == other.filename()
+		return m_sFilename    == other.filename()
 			&& m_iClipOffset  == other.clipOffset()
 			&& m_iClipLength  == other.clipLength()
 			&& m_fClipGain    == other.clipGain()
 			&& m_fClipPanning == other.clipPanning()
 			&& m_fTimeStretch == other.timeStretch()
-			&& m_fPitchShift  == other.pitchShift()
-			&& m_iOverlap     == other.overlap();
+			&& m_fPitchShift  == other.pitchShift();
 	}
 
 private:
 
 	// Interesting variables.
-	qtractorTrack *m_pTrack;
 	QString        m_sFilename;
 	unsigned long  m_iClipOffset;
 	unsigned long  m_iClipLength;
@@ -119,21 +110,18 @@ private:
 	float          m_fClipPanning;
 	float          m_fTimeStretch;
 	float          m_fPitchShift;
-	unsigned int   m_iOverlap;
 };
 
 
 uint qHash ( const qtractorAudioClip::Key& key )
 {
-	return qHash(key.track())
-		 ^ qHash(key.filename())
+	return qHash(key.filename())
 		 ^ qHash(key.clipOffset())
 		 ^ qHash(key.clipLength())
 		 ^ qHash(long(1000.0f * key.clipGain()))
 		 ^ qHash(long(1000.0f * key.clipPanning()))
 		 ^ qHash(long(1000.0f * key.timeStretch()))
-		 ^ qHash(long(1000.0f * key.pitchShift()))
-		 ^ qHash(key.overlap());
+		 ^ qHash(long(1000.0f * key.pitchShift()));
 }
 
 
@@ -194,9 +182,10 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 
 	m_iStretcherFlags = qtractorAudioBuffer::defaultStretcherFlags();
 
-	m_iOverlap = 0;
-
 	m_pFractGains = nullptr;
+
+	m_pBuff = nullptr;
+	m_bBuff = false;
 
 	m_pAudioEditorForm = nullptr;
 }
@@ -214,9 +203,10 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 
 	m_iStretcherFlags = clip.stretcherFlags();
 
-	m_iOverlap = clip.overlap();
-
 	m_pFractGains = nullptr;
+
+	m_pBuff = nullptr;
+	m_bBuff = false;
 
 	m_pAudioEditorForm = nullptr;
 
@@ -254,18 +244,24 @@ bool qtractorAudioClip::isOverlap ( unsigned int iOverlapSize ) const
 	if (m_pData == nullptr)
 		return false;
 
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return false;
+
 	const unsigned long iClipStart = clipStart();
 	const unsigned long iClipEnd = iClipStart + clipLength() + iOverlapSize;
 
 	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
 		qtractorClip *pClip = iter.next();
-		const unsigned long iClipStart2 = pClip->clipStart();
-		const unsigned long iClipEnd2
-			= iClipStart2 + pClip->clipLength() + iOverlapSize;
-		if ((iClipStart >= iClipStart2 && iClipEnd2 >  iClipStart) ||
-			(iClipEnd   >  iClipStart2 && iClipEnd2 >= iClipEnd))
-			return true;
+		if (pClip->track() == pTrack) {
+			const unsigned long iClipStart2 = pClip->clipStart();
+			const unsigned long iClipEnd2
+				= iClipStart2 + pClip->clipLength() + iOverlapSize;
+			if ((iClipStart >= iClipStart2 && iClipEnd2 >  iClipStart) ||
+				(iClipEnd   >  iClipStart2 && iClipEnd2 >= iClipEnd))
+				return true;
+		}
 	}
 
 	return false;
@@ -321,38 +317,50 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pKey  = new Key(this);
 		m_pData = g_hashTable.value(*m_pKey, nullptr);
 		if (m_pData) {
-			// Check if current clip overlaps any other...
+			// First check if current clip overlaps any other...
 			const unsigned int iOverlapSize
 				= pSession->audioEngine()->bufferSize() << 2;
-			bool bOverlap = isOverlap(iOverlapSize);
-			while (bOverlap) {
-				++m_iOverlap;
-				m_pKey->update(this);
-				m_pData = g_hashTable.value(*m_pKey, nullptr);
-				bOverlap = isOverlap(iOverlapSize);
-			}
-			// Only if it doesn't overlap any...
-			if (m_pData && !bOverlap) {
-				m_pData->attach(this);
-				// Peak files should also be created on-the-fly...
-				qtractorAudioBuffer *pBuff = m_pData->buffer();
-				if (m_pPeak == nullptr || bFilenameChanged) {
-					qtractorAudioPeakFactory *pPeakFactory
-						= pSession->audioPeakFactory();
-					if (pPeakFactory) {
-						if (m_pPeak)
-							delete m_pPeak;
-						m_pPeak = pPeakFactory->createPeak(
-							sFilename, pBuff->timeStretch());
-					}
+			if (isOverlap(iOverlapSize)) {
+				qtractorAudioBuffer *pBuff
+					= new qtractorAudioBuffer(pTrack->syncThread(), iChannels);
+				pBuff->setOffset(clipOffset());
+				pBuff->setLength(clipLength());
+				pBuff->setGain(clipGain());
+				pBuff->setPanning(clipPanning());
+				pBuff->setTimeStretch(m_fTimeStretch);
+				pBuff->setPitchShift(m_fPitchShift);
+				pBuff->setStretcherFlags(m_iStretcherFlags);
+				if (!pBuff->open(sFilename, iMode)) {
+					delete pBuff;
+					delete m_pKey;
+					m_pKey = nullptr;
+					m_pData = nullptr;
+					return false;
 				}
-				// Gain/panning fractionalizer(tm)...
-				updateFractGains(pBuff);
-				// Clip name should be clear about it all.
-				if (clipName().isEmpty())
-					setClipName(shortClipName(QFileInfo(filename()).baseName()));
-				return true;
+				m_pBuff = pBuff;
+				m_bBuff = true;
+			} else {
+				m_pBuff = m_pData->buffer();
+				m_bBuff = false;
 			}
+			m_pData->attach(this);
+			// Peak files should also be created on-the-fly...
+			if (m_pPeak == nullptr || bFilenameChanged) {
+				qtractorAudioPeakFactory *pPeakFactory
+					= pSession->audioPeakFactory();
+				if (pPeakFactory) {
+					if (m_pPeak)
+						delete m_pPeak;
+					m_pPeak = pPeakFactory->createPeak(
+						sFilename, m_pBuff->timeStretch());
+				}
+			}
+			// Gain/panning fractionalizer(tm)...
+			updateFractGains(m_pBuff);
+			// Clip name should be clear about it all.
+			if (clipName().isEmpty())
+				setClipName(shortClipName(QFileInfo(filename()).baseName()));
+			return true;
 		}
 	}
 
@@ -373,12 +381,12 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	if (!pBuff->open(sFilename, iMode)) {
 		delete m_pData;
 		m_pData = nullptr;
-		if (m_pFractGains) {
-			delete [] m_pFractGains;
-			m_pFractGains = nullptr;
-		}
 		return false;
 	}
+
+	// Assign the audio buffer...
+	m_pBuff = pBuff;
+	m_bBuff = false;
 
 	// Gain/panning fractionalizer(tm)...
 	updateFractGains(pBuff);
@@ -441,6 +449,12 @@ void qtractorAudioClip::closeAudioFile (void)
 	if (m_pFractGains) {
 		delete [] m_pFractGains;
 		m_pFractGains = nullptr;
+	}
+
+	if (m_pBuff && m_bBuff) {
+		delete m_pBuff;
+		m_pBuff = nullptr;
+		m_bBuff = false;
 	}
 }
 
@@ -641,21 +655,21 @@ void qtractorAudioClip::removeHashKey (void)
 // Unlink (clone) local hash data.
 void qtractorAudioClip::unlinkHashData (void)
 {
+	if (m_pBuff == nullptr)
+		return;
 	if (m_pData == nullptr)
 		return;
 	if (m_pData->count() < 2)
 		return;
 
-	qtractorAudioBuffer *pBuff = m_pData->buffer();
-
-	Data *pNewData = new Data(track(), pBuff->channels());
+	Data *pNewData = new Data(track(), m_pBuff->channels());
 
 	qtractorAudioBuffer *pNewBuff = pNewData->buffer();
 
-	pNewBuff->setOffset(pBuff->offset());
-	pNewBuff->setLength(pBuff->length());
-	pNewBuff->setTimeStretch(pBuff->timeStretch());
-	pNewBuff->setPitchShift(pBuff->pitchShift());
+	pNewBuff->setOffset(m_pBuff->offset());
+	pNewBuff->setLength(m_pBuff->length());
+	pNewBuff->setTimeStretch(m_pBuff->timeStretch());
+	pNewBuff->setPitchShift(m_pBuff->pitchShift());
 
 	if (pNewBuff->open(filename())) {
 		m_pData->detach(this);
@@ -665,6 +679,12 @@ void qtractorAudioClip::unlinkHashData (void)
 			m_pKey = nullptr;
 		}
 		m_pData->attach(this);
+		if (m_bBuff) {
+			delete m_pBuff;
+			m_pBuff = nullptr;
+			m_bBuff = false;
+		}
+		m_pBuff = pNewBuff;
 	} else {
 		delete pNewData;
 	}
@@ -759,21 +779,21 @@ void qtractorAudioClip::updateFractGains ( qtractorAudioBuffer *pBuff )
 void qtractorAudioClip::write ( float **ppBuffer,
 	unsigned int iFrames, unsigned short iChannels, unsigned int iOffset )
 {
-	if (m_pData) m_pData->write(ppBuffer, iFrames, iChannels, iOffset);
+	if (m_pBuff) m_pBuff->write(ppBuffer, iFrames, iChannels, iOffset);
 }
 
 
 // Intra-clip frame positioning.
 void qtractorAudioClip::seek ( unsigned long iFrame )
 {
-	if (m_pData) m_pData->seek(iFrame);
+	if (m_pBuff) m_pBuff->seek(iFrame);
 }
 
 
 // Reset clip state.
 void qtractorAudioClip::reset ( bool bLooping )
 {
-	if (m_pData) m_pData->reset(bLooping);
+	if (m_pBuff) m_pBuff->reset(bLooping);
 }
 
 
@@ -781,10 +801,7 @@ void qtractorAudioClip::reset ( bool bLooping )
 void qtractorAudioClip::setLoop (
 	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
-	if (m_pData == nullptr)
-		return;
-
-	qtractorAudioBuffer *pBuff = m_pData->buffer();
+	qtractorAudioBuffer *pBuff = buffer();
 	if (pBuff == nullptr)
 		return;
 
@@ -794,18 +811,7 @@ void qtractorAudioClip::setLoop (
 	if (iLoopStart == pBuff->loopStart() && iLoopEnd == pBuff->loopEnd())
 		return;
 
-	// Check if buffer data has been hash-linked,
-	// unlink (clone) it for proper loop isolation...
-	if (iLoopStart < iLoopEnd) {
-		// Unlink (clone) buffer data...
-		unlinkHashData();
-	} else {
-		// Relink buffer data...
-		relinkHashData();
-	}
-
 	// A brand new one is up!
-	pBuff = m_pData->buffer();
 	pBuff->setLoop(iLoopStart, iLoopEnd);
 }
 
@@ -904,7 +910,7 @@ void qtractorAudioClip::process_export (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
 	// Direct sync method.
-	if (m_pData) m_pData->syncExport();
+	if (m_pBuff) m_pBuff->syncExport();
 
 	// Normal clip processing...
 	process(iFrameStart, iFrameEnd);

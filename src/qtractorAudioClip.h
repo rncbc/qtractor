@@ -78,10 +78,6 @@ public:
 	bool isStretcherFlag (unsigned int iStretcherFlag) const
 		{ return (m_iStretcherFlags & iStretcherFlag); }
 
-	// Alternating overlap tag.
-	unsigned int overlap() const
-		 { return m_iOverlap; }
-
 	// Clip (re)open method.
 	void open();
 
@@ -91,7 +87,7 @@ public:
 
 	// Audio properties accessors.
 	qtractorAudioBuffer *buffer() const
-		{ return (m_pData ? m_pData->buffer() : nullptr); }
+		{ return m_pBuff; }
 
 	// Direct write method.
 	void write(float **ppBuffer, unsigned int iFrames,
@@ -172,27 +168,6 @@ public:
 		// Buffer accessor.
 		qtractorAudioBuffer *buffer() const
 			{ return m_pBuff; }
-
-		// Direct write method.
-		void write (float **ppBuffer, unsigned int iFrames,
-			unsigned short iChannels, unsigned int iOffset)
-			{ m_pBuff->write(ppBuffer, iFrames, iChannels, iOffset); }
-
-		// Direct sync method.
-		void syncExport()
-			{ m_pBuff->syncExport(); }
-
-		// Intra-clip frame positioning.
-		void seek(unsigned long iFrame)
-			{ m_pBuff->seek(iFrame); }
-
-		// Reset buffer state.
-		void reset(bool bLooping)
-			{ m_pBuff->reset(bLooping); }
-
-		// Loop positioning.
-		void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd)
-			{ m_pBuff->setLoop(iLoopStart, iLoopEnd); }
 
 		// Ref-counting related methods.
 		void attach(qtractorAudioClip *pAudioClip)
@@ -295,10 +270,10 @@ private:
 
 	unsigned int m_iStretcherFlags;
 
-	// Alternate overlap tag.
-	unsigned int m_iOverlap;
-
 	FractGain *m_pFractGains;
+
+	qtractorAudioBuffer *m_pBuff;
+	bool                 m_bBuff;
 
 	// Most interesting key/data (ref-counted?)...
 	Key  *m_pKey;
