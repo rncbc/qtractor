@@ -1145,11 +1145,11 @@ void qtractorClipContextCommand::addClipContext (
 		return;
 	}
 
-	ClipCtx& mctx = m_clipCtxs[pClip];
-	mctx.ctype = ctype;
-	mctx.filename = pClip->filename();
-	mctx.offset = pClip->clipOffset();
-	mctx.length = pClip->clipLength();
+	ClipCtx& ctx = m_clipCtxs[pClip];
+	ctx.ctype = ctype;
+	ctx.filename = pClip->filename();
+	ctx.offset = pClip->clipOffset();
+	ctx.length = pClip->clipLength();
 }
 
 

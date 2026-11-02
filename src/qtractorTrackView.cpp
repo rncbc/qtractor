@@ -1405,51 +1405,16 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 			const int x0 = m_posDrag.x();
 			qtractorTimeScale::Cursor cursor(pSession->timeScale());
 			qtractorTimeScale::Node *pNode = cursor.seekPixel(x0);
-			unsigned long t1, t0 = pNode->tickFromPixel(x0);
-			qtractorMidiFile file;
-			if (file.open(pDropItem->path)) {
-				const unsigned short p = pSession->ticksPerBeat();
-				const unsigned short q = file.ticksPerBeat();
-				if (pDropItem->channel < 0) {
-					t1 = t0;
-					const int iTracks = (file.format() == 1 ? file.tracks() : 16);
-					for (int iTrackChannel = 0;
-							iTrackChannel < iTracks; ++iTrackChannel) {
-						const unsigned long iTrackDuration
-							= file.readTrackDuration(iTrackChannel);
-						if (iTrackDuration > 0) {
-							const unsigned long duration
-								= uint64_t(iTrackDuration * p) / q;
-							const unsigned long t2 = t0 + duration;
-							if (t1 < t2)
-								t1 = t2;
-						}
-					}
-					pNode = cursor.seekTick(t1);
-					m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
-					pDropItem->rect = m_rectDrag;
-					m_rectDrag.translate(0, m_rectDrag.height() + 4);
-					if (m_dropType == qtractorTrack::None)
-						m_dropType = qtractorTrack::Midi;
-				} else {
-					const unsigned long iTrackDuration
-						= file.readTrackDuration(pDropItem->channel);
-					if (iTrackDuration > 0) {
-						const unsigned long duration
-							= uint64_t(iTrackDuration * p) / q;
-						t1 = t0 + duration;
-						pNode = cursor.seekTick(t1);
-						m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
-						pDropItem->rect = m_rectDrag;
-						m_rectDrag.translate(0, m_rectDrag.height() + 4);
-						if (m_dropType == qtractorTrack::None)
-							m_dropType = qtractorTrack::Midi;
-					} else /*if (m_dropType == qtractorTrack::Midi)*/ {
-						iter.remove();
-						delete pDropItem;
-					}
-				}
-				file.close();
+			const unsigned long t0 = pNode->tickFromPixel(x0);
+			const unsigned long t1 = t0 + pSession->midiFileDuration(
+				pDropItem->path, pDropItem->channel);
+			if (t1 > t0) {
+				pNode = cursor.seekTick(t1);
+				m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
+				pDropItem->rect = m_rectDrag;
+				m_rectDrag.translate(0, m_rectDrag.height() + 4);
+				if (m_dropType == qtractorTrack::None)
+					m_dropType = qtractorTrack::Midi;
 				continue;
 			} else if (m_dropType == qtractorTrack::Midi) {
 				iter.remove();
@@ -1459,27 +1424,14 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 		// Then as an Audio file ?
 		if (m_dropType == qtractorTrack::None
 			|| m_dropType == qtractorTrack::Audio) {
-			qtractorAudioFile *pFile
-				= qtractorAudioFileFactory::createAudioFile(pDropItem->path);
-			if (pFile) {
-				if (pFile->open(pDropItem->path)) {
-					unsigned long iFrames = pFile->frames();
-					if (pFile->sampleRate() > 0
-						&& pFile->sampleRate() != pSession->sampleRate()) {
-						iFrames = (unsigned long) (iFrames
-							* float(pSession->sampleRate())
-							/ float(pFile->sampleRate()));
-					}
-					m_rectDrag.setWidth(pSession->pixelFromFrame(iFrames));
-					pDropItem->rect = m_rectDrag;
-					m_rectDrag.translate(0, m_rectDrag.height() + 4);
-					if (m_dropType == qtractorTrack::None)
-						m_dropType = qtractorTrack::Audio;
-				} else if (m_dropType == qtractorTrack::Audio) {
-					iter.remove();
-					delete pDropItem;
-				}
-				delete pFile;
+			const unsigned long iFrames
+				= pSession->audioFileLength(pDropItem->path);
+			if (iFrames > 0) {
+				m_rectDrag.setWidth(pSession->pixelFromFrame(iFrames));
+				pDropItem->rect = m_rectDrag;
+				m_rectDrag.translate(0, m_rectDrag.height() + 4);
+				if (m_dropType == qtractorTrack::None)
+					m_dropType = qtractorTrack::Audio;
 				continue;
 			} else if (m_dropType == qtractorTrack::Audio) {
 				iter.remove();
@@ -1735,7 +1687,13 @@ bool qtractorTrackView::dropClip (
 			qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 			if (pAudioClip) {
 				pAudioClip->setFilename(pDropItem->path);
+				const unsigned long t1
+					= pSession->tickFromFrame(iClipStart)
+					+ pSession->tickFromFrame(
+						pSession->audioFileLength(pDropItem->path));
 				pAudioClip->setClipStart(iClipStart);
+				pAudioClip->setClipLength(
+					pSession->frameFromTick(t1) - iClipStart);
 				pClipCommand->addClip(pAudioClip, pTrack);
 				clips.append(pAudioClip);
 				// Don't forget to add this one to local repository.
@@ -1749,7 +1707,14 @@ bool qtractorTrackView::dropClip (
 			if (pMidiClip) {
 				pMidiClip->setFilename(pDropItem->path);
 				pMidiClip->setTrackChannel(pDropItem->channel);
+				const unsigned long t1
+					= pSession->tickFromFrame(iClipStart)
+					+ pSession->midiFileDuration(
+						pDropItem->path, pDropItem->channel);
 				pMidiClip->setClipStart(iClipStart);
+				pMidiClip->setClipLength(
+					pSession->frameFromTick(t1) - iClipStart);
+				pMidiClip->updateClipTime();
 				pClipCommand->addClip(pMidiClip, pTrack);
 				clips.append(pMidiClip);
 				// Don't forget to add this one to local repository.

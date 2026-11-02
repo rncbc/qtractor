@@ -1269,14 +1269,15 @@ bool qtractorTracks::importClips (
 			// Add the audio clip at once...
 			qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 			pAudioClip->setFilename(sPath);
+			const unsigned long t1
+				= pSession->tickFromFrame(iClipStart)
+				+ pSession->tickFromFrame(
+					pSession->audioFileLength(sPath));
 			pAudioClip->setClipStart(iClipStart);
-			// Redundant but necessary for multi-clip
-			// concatenation, as we only know the actual
-			// audio clip length after opening it...
-			if (iter.hasNext()) {
-				pAudioClip->open();
+			pAudioClip->setClipLength(
+				pSession->frameFromTick(t1) - iClipStart);
+			if (iter.hasNext())
 				iClipStart += pAudioClip->clipLength();
-			}
 			// Will add the new clip into session on command execute...
 			pImportClipCommand->addClip(pAudioClip, pTrack);
 			// Don't forget to add this one to local repository.
@@ -1304,14 +1305,15 @@ bool qtractorTracks::importClips (
 				qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 				pMidiClip->setFilename(sPath);
 				pMidiClip->setTrackChannel(iTrackChannel);
+				const unsigned long t1
+					= pSession->tickFromFrame(iClipStart)
+					+ pSession->midiFileDuration(sPath, iTrackChannel);
 				pMidiClip->setClipStart(iClipStart);
-				// Redundant but necessary for multi-clip
-				// concatenation, as we only know the actual
-				// MIDI clip length after opening it...
-				if (iter.hasNext()) {
-					pMidiClip->open();
+				pMidiClip->setClipLength(
+					pSession->frameFromTick(t1) - iClipStart);
+				pMidiClip->updateClipTime();
+				if (iter.hasNext())
 					iClipStart += pMidiClip->clipLength();
-				}
 				// Will add the new clip into session on command execute...
 				pImportClipCommand->addClip(pMidiClip, pTrack);
 				// Don't forget to add this one to local repository.
