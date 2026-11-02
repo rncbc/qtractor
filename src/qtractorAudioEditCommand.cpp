@@ -557,7 +557,7 @@ bool qtractorAudioEditCommand::toolFrames (
 			const unsigned long iTmpFrames = pTmp->frames();
 			// Copy in reverse: read the last chunk first,
 			// walking backwards...
-			unsigned int iPos = iTmpFrames;
+			unsigned long iPos = iTmpFrames;
 			while (iPos > 0) {
 				const unsigned int iChunk = qMin(nframes, iPos);
 				iPos -= iChunk;
@@ -577,6 +577,7 @@ bool qtractorAudioEditCommand::toolFrames (
 					}
 				}
 				pDst->write(ppFrames, nread2);
+				iPos += (iChunk - nread2);
 			}
 			pTmp->close();
 			delete pTmp;
@@ -589,7 +590,7 @@ bool qtractorAudioEditCommand::toolFrames (
 		if (params.bReverse) {
 			// Reverse: read region backwards in chunks
 			// then reverse each in-place...
-			unsigned int iPos = iEnd;
+			unsigned long iPos = iEnd;
 			while (iPos > iStart) {
 				const unsigned long iChunk = qMin(nframes, iPos - iStart);
 				iPos -= iChunk;
@@ -614,6 +615,7 @@ bool qtractorAudioEditCommand::toolFrames (
 					}
 				}
 				pDst->write(ppFrames, nread);
+				iPos += (iChunk - nread);
 			}
 		} else {
 			// Simple gain/pan/normalize pass...
