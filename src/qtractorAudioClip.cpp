@@ -451,8 +451,9 @@ void qtractorAudioClip::closeAudioFile (void)
 		m_pFractGains = nullptr;
 	}
 
-	if (m_pBuff && m_bBuff) {
-		delete m_pBuff;
+	if (m_pBuff) {
+		if (m_bBuff)
+			delete m_pBuff;
 		m_pBuff = nullptr;
 		m_bBuff = false;
 	}
@@ -694,6 +695,8 @@ void qtractorAudioClip::unlinkHashData (void)
 // Relink local hash data.
 void qtractorAudioClip::relinkHashData (void)
 {
+	if (m_pBuff == nullptr)
+		return;
 	if (m_pData == nullptr)
 		return;
 	if (m_pData->count() > 1)
@@ -704,13 +707,33 @@ void qtractorAudioClip::relinkHashData (void)
 
 	Data *pNewData = g_hashTable.value(*m_pKey, nullptr);
 	if (pNewData == nullptr) {
-		delete m_pKey;
-		m_pKey = nullptr;
+		pNewData = new Data(track(), m_pBuff->channels());
+		qtractorAudioBuffer *pNewBuff = pNewData->buffer();
+		pNewBuff->setOffset(m_pBuff->offset());
+		pNewBuff->setLength(m_pBuff->length());
+		pNewBuff->setTimeStretch(m_pBuff->timeStretch());
+		pNewBuff->setPitchShift(m_pBuff->pitchShift());
+		if (pNewBuff->open(filename())) {
+			m_pData = pNewData;
+			if (m_pKey) {
+				delete m_pKey;
+				m_pKey = nullptr;
+			}
+			m_pData->attach(this);
+			if (m_bBuff)
+				delete m_pBuff;
+			m_pBuff = pNewBuff;
+			m_bBuff = false;
+		}
 	} else {
 		m_pData->detach(this);
 		delete m_pData;
 		m_pData = pNewData;
 		m_pData->attach(this);
+		if (m_bBuff)
+			delete m_pBuff;
+		m_pBuff = m_pData->buffer();
+		m_bBuff = false;
 	}
 
 	insertHashKey();
