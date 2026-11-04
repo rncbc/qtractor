@@ -1332,10 +1332,6 @@ bool qtractorMidiClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
 	if (pSession == nullptr)
 		return false;
 
-	// Do nothing if session is yet untitled...
-	if (pSession->sessionName().isEmpty())
-		return false;
-
 	// Save/replace the clip track...
 	if (!qtractorMidiFile::saveCopyFile(sFilename,
 			filename(), trackChannel(), format(), sequence(),

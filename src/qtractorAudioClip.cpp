@@ -1232,10 +1232,6 @@ bool qtractorAudioClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
 	if (pSession == nullptr)
 		return false;
 
-	// Do nothing if session is yet untitled...
-	if (pSession->sessionName().isEmpty())
-		return false;
-
 	// Open the source file independently (not through the ring-buffer).
 	qtractorAudioFile *pSrc
 		= qtractorAudioFileFactory::createAudioFile(filename());
