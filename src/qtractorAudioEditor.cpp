@@ -1342,7 +1342,7 @@ void qtractorAudioEditor::updateDragMove (
 	const int x1 = qBound(0, (int)pixelSnap(x0 + pos.x()) - x0, w2);
 
 	const int wm = (m_rectDrag.width() >> 1);
-	pScrollView->ensureVisible(x1 + wm, 0, wm, 0);
+	pScrollView->ensureVisible(x1, 0, wm, 0);
 
 	m_rectDrag.moveTopLeft(QPoint(x1, 0));
 
