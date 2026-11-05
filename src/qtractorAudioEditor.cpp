@@ -988,8 +988,11 @@ void qtractorAudioEditor::updateDragSelect (
 		m_rectSelect.setRight(0);
 	}
 
-	const int x0 = pTimeScale->pixelFromFrame(offset());
-	const int w2 = pTimeScale->pixelFromFrame(offset() + length()) - x0;
+
+	const unsigned long f0 = offset();
+	const unsigned long f2 = qMin(length(), fileLength());
+	const int x0 = pTimeScale->pixelFromFrame(f0);
+	const int w2 = pTimeScale->pixelFromFrame(f0 + f2) - x0;
 	const int x1 = qMax(0,  (int)pixelSnap(x0 + rectSelect.left())  - x0);
 	const int x2 = qMin(w2, (int)pixelSnap(x0 + rectSelect.right()) - x0);
 
@@ -1031,9 +1034,6 @@ void qtractorAudioEditor::clearSelect (void)
 // Update all selection rectangular areas.
 void qtractorAudioEditor::updateSelect ( bool bSelectReset )
 {
-	// TODO: ?...
-	//
-
 	if (bSelectReset) {
 		m_posDrag = m_rectSelect.topLeft();
 		resetDragState(nullptr);
@@ -1281,8 +1281,10 @@ void qtractorAudioEditor::dragResizeUpdate (
 
 	QRect rectUpdate(m_rectSelect);
 
-	const int x0 = pTimeScale->pixelFromFrame(offset());
-	const int w2 = pTimeScale->pixelFromFrame(offset() + length()) - x0;
+	const unsigned long f0 = offset();
+	const unsigned long f2 = qMin(length(), fileLength());
+	const int x0 = pTimeScale->pixelFromFrame(f0);
+	const int w2 = pTimeScale->pixelFromFrame(f0 + f2) - x0;
 	const int x1 = qBound(0, (int)pixelSnap(x0 + pos.x()) - x0, w2);
 	switch (m_dragState) {
 	case DragResizeLeft:
@@ -1333,13 +1335,14 @@ void qtractorAudioEditor::updateDragMove (
 	if (pTimeScale == nullptr)
 		return;
 
-	const int wm = (m_rectDrag.width() >> 1);
-	pScrollView->ensureVisible(pos.x() + wm, 0, wm, 0);
+	const unsigned long f0 = offset();
+	const unsigned long f2 = qMin(length(), fileLength());
+	const int x0 = pTimeScale->pixelFromFrame(f0);
+	const int w2 = pTimeScale->pixelFromFrame(f0 + f2) - x0;
+	const int x1 = qBound(0, (int)pixelSnap(x0 + pos.x()) - x0, w2);
 
-	const int dx = pos.x() - m_rectDrag.x();
-	const int x0 = pTimeScale->pixelFromFrame(offset());
-	const int w2 = pTimeScale->pixelFromFrame(offset() + length()) - x0;
-	const int x1 = qBound(0, (int)pixelSnap(x0 + m_rectDrag.x() + dx) - x0, w2);
+	const int wm = (m_rectDrag.width() >> 1);
+	pScrollView->ensureVisible(x1 + wm, 0, wm, 0);
 
 	m_rectDrag.moveTopLeft(QPoint(x1, 0));
 
@@ -1379,8 +1382,6 @@ void qtractorAudioEditor::executeDragMove (
 
 	updateDragMove(pScrollView, pos + m_posStep);
 
-	// TODO: ?...
-	//
 	executeEditSelect(Move);
 }
 
@@ -1729,8 +1730,10 @@ bool qtractorAudioEditor::keyStep ( qtractorScrollView *pScrollView,
 	if (m_rectDrag.width() < 2)
 		return false;
 
-	const int x0 = pTimeScale->pixelFromFrame(offset());
-	const int w2 = pTimeScale->pixelFromFrame(offset() + length()) - x0;
+	const unsigned long f0 = offset();
+	const unsigned long f2 = qMin(length(), fileLength());
+	const int x0 = pTimeScale->pixelFromFrame(f0);
+	const int w2 = pTimeScale->pixelFromFrame(f0 + f2) - x0;
 
 	int iHorizontalStep = 0;
 	int x1 = x0 + m_posStep.x();
@@ -1812,6 +1815,34 @@ void qtractorAudioEditor::updateSelectRect (void)
 		m_rectSelect.setLeft(0);
 		m_rectSelect.setWidth(0);
 	}
+}
+
+
+// Current audio file length (in frames).
+unsigned long qtractorAudioEditor::fileLength (void) const
+{
+	qtractorTimeScale *pTimeScale = timeScale();
+	if (pTimeScale == nullptr)
+		return 0;
+	if (pTimeScale->sampleRate() < 1)
+		return 0;
+
+	qtractorAudioBuffer *pBuff = m_pAudioClip->buffer();
+	if (pBuff == nullptr)
+		return 0;
+
+	qtractorAudioFile *pFile = pBuff->file();
+	if (pFile == nullptr)
+		return 0;
+
+	const unsigned int iSampleRate = pFile->sampleRate();
+	if (iSampleRate < 1)
+		return 0;
+
+	const float fRatio
+		= float(pTimeScale->sampleRate()) / float(iSampleRate);
+
+	return ::lrintf(fRatio * float(pFile->frames()));
 }
 
 

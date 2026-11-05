@@ -261,6 +261,9 @@ protected:
 	void updateSelectRange();
 	void updateSelectRect();
 
+	// Return the actual audio file length (in frames).
+	unsigned long fileLength() const;
+
 	//----------------------------------------------------------------------------
 	// Static clipboard for audio sample data.
 	//
