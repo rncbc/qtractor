@@ -2023,6 +2023,7 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
 	m_ui.fileMuteAction->setEnabled(pAudioClip != nullptr);
 	m_ui.fileMuteAction->setChecked(pAudioClip && pAudioClip->isClipMute());
+	m_ui.fileUnlinkAction->setEnabled(pAudioClip && pAudioClip->isHashLinked());
 
 	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != nullptr);
 	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != nullptr);

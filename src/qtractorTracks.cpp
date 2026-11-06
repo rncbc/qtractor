@@ -694,6 +694,15 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 	if (pSession == nullptr)
 		return false;
 
+	// Unlink clip: we must have a session name...
+	if (pSession->sessionName().isEmpty()) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm == nullptr)
+			return false;
+		if (!pMainForm->editSession())
+			return false;
+	}
+
 	qtractorClipUnlinkCommand *pClipUnlinkCommand
 		= new qtractorClipUnlinkCommand();
 	pClipUnlinkCommand->addClipContext(pClip);

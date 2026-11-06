@@ -157,7 +157,7 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 		m_pAudioClip->setFilenameEx(m_sPrevFilename, false);
 		m_pAudioClip->setClipLengthEx(m_iPrevLength);
 		m_pAudioClip->resetAudioClipEx();
-		pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
+		pSession->files()->removeFileItem(qtractorFileList::Audio, m_sPrevFilename);
 		return true;
 	}
 
@@ -251,13 +251,11 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 		return false;
 
 	// Hot-swap the clip to the new revision file.
-	pSession->files()->addClipItem(qtractorFileList::Audio, m_pAudioClip, true);
+	pSession->files()->addFileItem(qtractorFileList::Audio, m_sNextFilename, true);
 
 	m_pAudioClip->setFilenameEx(m_sNextFilename, false);
 	m_pAudioClip->setClipLengthEx(m_iNextLength);
 	m_pAudioClip->resetAudioClipEx();
-
-	//pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
 
 	// New file is supposed to get into the bill of materials...
 	if (++m_iRedoCount == 1) {
