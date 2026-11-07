@@ -1031,6 +1031,20 @@ void qtractorAudioClip::draw (
 		delete pPolyMax[k];
 	}
 
+	// Show that we may have hard clip limits...
+	const unsigned long iClipLength = clipOffset() + clipLength();
+	const unsigned long iFileLength = fileLength();
+	if (iClipLength > iFileLength) {
+		x = clipRect.x();
+		if (iFileLength > iClipOffset)
+			x += pSession->pixelFromFrame(iFileLength - iClipOffset);
+		if (x < clipRect.right()) {
+			QRect rect(clipRect);
+			rect.setLeft(x);
+			painter.fillRect(rect, QBrush(fg, Qt::BDiagPattern));
+		}
+	}
+
 	// Done on polygons.
 	delete [] pPolyRms;
 	delete [] pPolyMax;
@@ -1512,6 +1526,18 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	delete pBuff;
 
 	return true;
+}
+
+
+// Return the actual audio file length (bar offset, in frames).
+unsigned long qtractorAudioClip::fileLength (void) const
+{
+	if (m_pBuff == nullptr)
+		return 0;
+
+	const unsigned long iClipOffset	= clipOffset();
+	const unsigned long iFileOffset = m_pBuff->frames();
+	return (iFileOffset > iClipOffset ? iFileOffset - iClipOffset : 0);
 }
 
 

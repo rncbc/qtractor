@@ -1818,31 +1818,10 @@ void qtractorAudioEditor::updateSelectRect (void)
 }
 
 
-// Current audio file length (in frames).
+// Return the actual audio file length (bar offset, in frames).
 unsigned long qtractorAudioEditor::fileLength (void) const
 {
-	qtractorTimeScale *pTimeScale = timeScale();
-	if (pTimeScale == nullptr)
-		return 0;
-	if (pTimeScale->sampleRate() < 1)
-		return 0;
-
-	qtractorAudioBuffer *pBuff = m_pAudioClip->buffer();
-	if (pBuff == nullptr)
-		return 0;
-
-	qtractorAudioFile *pFile = pBuff->file();
-	if (pFile == nullptr)
-		return 0;
-
-	const unsigned int iSampleRate = pFile->sampleRate();
-	if (iSampleRate < 1)
-		return 0;
-
-	const float fRatio
-		= float(pTimeScale->sampleRate()) / float(iSampleRate);
-
-	return ::lrintf(fRatio * float(pFile->frames()));
+	return (m_pAudioClip ? m_pAudioClip->fileLength() : 0);
 }
 
 

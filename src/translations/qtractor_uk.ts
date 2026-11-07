@@ -4,38 +4,38 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1177"/>
+        <location filename="../qtractorAudioClip.cpp" line="1191"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 Звук:	%1 каналів, %2 Гц</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1182"/>
+        <location filename="../qtractorAudioClip.cpp" line="1196"/>
         <source> (%1 dB)</source>
         <translation> (%1 дБ)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1186"/>
+        <location filename="../qtractorAudioClip.cpp" line="1200"/>
         <source> (%1 pan)</source>
         <translation> (панорамування %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1189"/>
+        <location filename="../qtractorAudioClip.cpp" line="1203"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% розтягування часу)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1192"/>
+        <location filename="../qtractorAudioClip.cpp" line="1206"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
 	(зсування тону півтонів %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1320"/>
+        <location filename="../qtractorAudioClip.cpp" line="1334"/>
         <source>Audio file save: &quot;%1&quot;.</source>
         <translation>Збереження файла звукових даних: «%1».</translation>
     </message>

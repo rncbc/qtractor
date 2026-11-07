@@ -245,6 +245,9 @@ public:
 	qtractorCommandList *commands() const
 		{ return (m_pData ? m_pData->commands() : nullptr); }
 
+	// Return the actual audio file length (bar offset, in frames).
+	unsigned long fileLength() const;
+
 protected:
 
 	// Virtual document element methods.
