@@ -383,6 +383,7 @@ void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 		= m_clips.constFind(pClip);
 	if (iter == m_clips.constEnd())
 		m_clips.insert(pClip, bClose);
+
 //	setClearSelect(true);
 }
 

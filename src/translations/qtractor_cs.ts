@@ -4,38 +4,38 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1169"/>
+        <location filename="../qtractorAudioClip.cpp" line="1177"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 Zvuk:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1174"/>
+        <location filename="../qtractorAudioClip.cpp" line="1182"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1178"/>
+        <location filename="../qtractorAudioClip.cpp" line="1186"/>
         <source> (%1 pan)</source>
         <translation> (%1 Vyvážení (Pan)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1181"/>
+        <location filename="../qtractorAudioClip.cpp" line="1189"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% protažení času)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1184"/>
+        <location filename="../qtractorAudioClip.cpp" line="1192"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
 	(posunutí výšky tónu v půltónech %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1312"/>
+        <location filename="../qtractorAudioClip.cpp" line="1320"/>
         <source>Audio file save: &quot;%1&quot;.</source>
         <translation>Uložení zvukového souboru: „%1“.</translation>
     </message>
@@ -163,36 +163,36 @@ Konec:	%3	Délka:	%4</translation>
         <translation>%1 - Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1302"/>
+        <location filename="../qtractorMidiClip.cpp" line="1310"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formát %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1304"/>
+        <location filename="../qtractorMidiClip.cpp" line="1312"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1306"/>
+        <location filename="../qtractorMidiClip.cpp" line="1314"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1309"/>
+        <location filename="../qtractorMidiClip.cpp" line="1317"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 stopy, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1316"/>
+        <location filename="../qtractorMidiClip.cpp" line="1324"/>
         <source> (%1% vol)</source>
         <translation> (%1% hlasitost)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1348"/>
+        <location filename="../qtractorMidiClip.cpp" line="1356"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Uložení souboru MIDI: &quot;%1&quot;, stopa-kanál: %2.</translation>
     </message>
@@ -740,12 +740,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit ovladač znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1834"/>
+        <location filename="../qtractorMidiClip.cpp" line="1842"/>
         <source>step input</source>
         <translation>krokový vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1834"/>
+        <location filename="../qtractorMidiClip.cpp" line="1842"/>
         <source>overdub</source>
         <translation>nahrávat (v overdub režimu)</translation>
     </message>
@@ -834,32 +834,32 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="929"/>
+        <location filename="../qtractorClipCommand.cpp" line="930"/>
         <source>take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="931"/>
+        <location filename="../qtractorClipCommand.cpp" line="932"/>
         <source>reset takes</source>
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1222"/>
+        <location filename="../qtractorClipCommand.cpp" line="1223"/>
         <source>clip save</source>
         <translation>Uložení záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1263"/>
+        <location filename="../qtractorClipCommand.cpp" line="1264"/>
         <source>clip unlink</source>
         <translation>Odpojení záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1313"/>
+        <location filename="../qtractorClipCommand.cpp" line="1314"/>
         <source>clip tool %1</source>
         <translation>Nástroj na záběry %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1506"/>
+        <location filename="../qtractorClipCommand.cpp" line="1507"/>
         <source>clip record</source>
         <translation>Nahrávání záběru</translation>
     </message>

@@ -846,7 +846,7 @@ void qtractorAudioClip::setLoop (
 // Clip close-commit (record specific)
 void qtractorAudioClip::close (void)
 {
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG//_0
 	qDebug("qtractorAudioClip[%p]::close()", this);
 #endif
 
@@ -881,7 +881,15 @@ void qtractorAudioClip::close (void)
 void qtractorAudioClip::open (void)
 {
 	const QString sFilename(filename());
-	openAudioFile(sFilename);
+	if (openAudioFile(sFilename)) {
+		// Sure update the audio clip editor, if any...
+		if (m_pAudioEditorForm) {
+			qtractorAudioEditor *pAudioEditor
+				= m_pAudioEditorForm->audioEditor();
+			if (pAudioEditor)
+				pAudioEditor->setAudioClip(this);
+		}
+	}
 }
 
 

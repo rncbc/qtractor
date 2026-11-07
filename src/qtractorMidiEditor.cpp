@@ -1002,8 +1002,8 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 		qtractorCommandList *pCommands = pMidiClip->commands();
 		if (pCommands) {
 			QObject::connect(pCommands,
-				 SIGNAL(updateNotifySignal(unsigned int)),
-				 SLOT(updateNotifySlot(unsigned int)));
+				SIGNAL(updateNotifySignal(unsigned int)),
+				SLOT(updateNotifySlot(unsigned int)));
 		}
 		// Got clip!
 	} else {

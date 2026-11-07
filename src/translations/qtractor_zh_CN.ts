@@ -4,38 +4,38 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1169"/>
+        <location filename="../qtractorAudioClip.cpp" line="1177"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 音频：	%1 声道，%2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1174"/>
+        <location filename="../qtractorAudioClip.cpp" line="1182"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1178"/>
+        <location filename="../qtractorAudioClip.cpp" line="1186"/>
         <source> (%1 pan)</source>
         <translation> (%1 声像)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1181"/>
+        <location filename="../qtractorAudioClip.cpp" line="1189"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% 时间拉伸)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1184"/>
+        <location filename="../qtractorAudioClip.cpp" line="1192"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
 	(%1 半音 移调)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1312"/>
+        <location filename="../qtractorAudioClip.cpp" line="1320"/>
         <source>Audio file save: &quot;%1&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -124,32 +124,32 @@ End:	%3	Length:	%4</source>
         <translation>文件：	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="929"/>
+        <location filename="../qtractorClipCommand.cpp" line="930"/>
         <source>take %1</source>
         <translation>片段 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="931"/>
+        <location filename="../qtractorClipCommand.cpp" line="932"/>
         <source>reset takes</source>
         <translation>重置片段</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1222"/>
+        <location filename="../qtractorClipCommand.cpp" line="1223"/>
         <source>clip save</source>
         <translation>保存剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1263"/>
+        <location filename="../qtractorClipCommand.cpp" line="1264"/>
         <source>clip unlink</source>
         <translation>取消链接剪辑</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1313"/>
+        <location filename="../qtractorClipCommand.cpp" line="1314"/>
         <source>clip tool %1</source>
         <translation>剪辑工具 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1506"/>
+        <location filename="../qtractorClipCommand.cpp" line="1507"/>
         <source>clip record</source>
         <translation>录制剪辑</translation>
     </message>
@@ -355,36 +355,36 @@ End:	%3	Length:	%4</source>
         <translation>%1 - 音色库 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1302"/>
+        <location filename="../qtractorMidiClip.cpp" line="1310"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(格式 %1)
 MIDI：	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1304"/>
+        <location filename="../qtractorMidiClip.cpp" line="1312"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>通道 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1306"/>
+        <location filename="../qtractorMidiClip.cpp" line="1314"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>轨道 %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1309"/>
+        <location filename="../qtractorMidiClip.cpp" line="1317"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>，%1 轨道，%2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1316"/>
+        <location filename="../qtractorMidiClip.cpp" line="1324"/>
         <source> (%1% vol)</source>
         <translation> (%1% 音量)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1348"/>
+        <location filename="../qtractorMidiClip.cpp" line="1356"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation>MIDI 文件保存：&quot;%1&quot;，轨道-通道：%2。</translation>
     </message>
@@ -698,12 +698,12 @@ MIDI：	</translation>
         <translation>更改拍号</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1834"/>
+        <location filename="../qtractorMidiClip.cpp" line="1842"/>
         <source>step input</source>
         <translation>步进输入</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1834"/>
+        <location filename="../qtractorMidiClip.cpp" line="1842"/>
         <source>overdub</source>
         <translation>叠加录音</translation>
     </message>

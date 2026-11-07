@@ -945,7 +945,15 @@ void qtractorMidiClip::close (void)
 void qtractorMidiClip::open (void)
 {
 	const QString sFilename(filename());
-	openMidiFile(sFilename, m_iTrackChannel);
+	if (openMidiFile(sFilename, m_iTrackChannel)) {
+		// Sure update the MIDI clip editor, if any...
+		if (m_pMidiEditorForm) {
+			qtractorMidiEditor *pMidiEditor
+				= m_pMidiEditorForm->midiEditor();
+			if (pMidiEditor)
+				pMidiEditor->setMidiClip(this);
+		}
+	}
 }
 
 
