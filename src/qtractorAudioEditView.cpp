@@ -421,12 +421,23 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 	}
 
 	// Show that we may have clip limits...
-	if (m_pEditor->length() > 0) {
-		int x1 = pTimeScale->pixelFromFrame(m_pEditor->length()) - cx;
+	const unsigned long iClipLength = m_pEditor->length();
+	if (iClipLength > 0) {
+		int x1 = pTimeScale->pixelFromFrame(iClipLength) - cx;
 		if (x1 < 0)
 			x1 = 0;
 		if (x1 < w)
 			painter.fillRect(x1, 0, w - x1, h, QColor(0, 0, 0, 80));
+		const unsigned long iFileLength = m_pEditor->fileLength();
+		if (iClipLength > iFileLength) {
+			int x2 = pTimeScale->pixelFromFrame(iFileLength) - cx;
+			if (x2 < 0)
+				x2 = 0;
+			if (x2 < w) {
+				painter.fillRect(x2, 0, x1 - x2, h,
+					QBrush(rgbLine.lighter(), Qt::BDiagPattern));
+			}
+		}
 	}
 
 	// Draw loop boundaries, if applicable...

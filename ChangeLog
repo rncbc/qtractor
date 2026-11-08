@@ -4,6 +4,15 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Audio clips may also be unlinked. (EXPERIMENTAL)
+
+- Featuring brand new but basic audio clip editor (Clip/Edit...);
+  new Clip/Properties... on the main menu for the old common clip
+  properties dialog. (EXPERIMENTAL)
+ 
+
 1.6.5  2026-10-31  A Halloween'26 Release.
 
 - CLAP and VST3 Plug-ins: several minor fixes and improvements.

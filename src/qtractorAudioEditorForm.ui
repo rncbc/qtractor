@@ -62,6 +62,7 @@
     <addaction name="fileSaveAsAction"/>
     <addaction name="separator"/>
     <addaction name="fileMuteAction"/>
+    <addaction name="fileUnlinkAction"/>
     <addaction name="separator"/>
     <addaction name="filePropertiesAction"/>
     <addaction name="separator"/>
@@ -327,6 +328,20 @@
    </property>
    <property name="statusTip">
     <string>Mute current audio clip</string>
+   </property>
+  </action>
+  <action name="fileUnlinkAction">
+   <property name="text">
+    <string>&amp;Unlink</string>
+   </property>
+   <property name="iconText">
+    <string>Unlink</string>
+   </property>
+   <property name="toolTip">
+    <string>Unlink</string>
+   </property>
+   <property name="statusTip">
+    <string>Unlink current audio clip</string>
    </property>
   </action>
   <action name="fileTrackInputsAction">
