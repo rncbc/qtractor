@@ -203,6 +203,9 @@ public:
 	unsigned long selectStart() const { return m_iSelectStart; }
 	unsigned long selectEnd() const   { return m_iSelectEnd; }
 
+	// Return the actual audio file length (bar offset; in frames).
+	unsigned long fileLength() const;
+
 public slots:
 
 	// Zoom view slots.

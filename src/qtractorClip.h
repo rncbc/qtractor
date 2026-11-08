@@ -267,6 +267,27 @@ public:
 	static void setDefaultFadeOutType(FadeType fadeType);
 	static FadeType defaultFadeOutType();
 
+	// Whether local hash is being shared.
+	virtual bool isHashLinked() const = 0;
+
+	// Check whether a MIDI clip is hash-linked to another.
+	virtual bool isLinkedClip (qtractorClip *pClip) const = 0;
+
+	// Get all hash-linked clips (including self).
+	virtual QList<qtractorClip *> linkedClips() const = 0;
+
+	// Revisionist accessors.
+	void setRevision(unsigned short iRevision)
+		{ m_iRevision = iRevision; }
+	unsigned short revision() const
+		{ return m_iRevision; }
+
+	// Revisionist method.
+	virtual QString createFilePathRevision(bool bForce = false) = 0;
+
+	// Auto-save to (possible) new file revision.
+	virtual bool saveCopyFile(const QString& sFilename, bool bUpdate) = 0;
+
 	// Take(record) descriptor.
 	//
 	class TakeInfo
@@ -465,6 +486,9 @@ private:
 	float m_fPanning;                   // Clip panning;
 
 	bool m_bMute;                       // Clip mute(ness);
+
+	// Revisionist count.
+	unsigned short m_iRevision;
 
 	// Take(record) descriptor.
 	TakeInfo *m_pTakeInfo;

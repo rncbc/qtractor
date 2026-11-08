@@ -103,6 +103,8 @@ public:
 	QString sessionName(const QString& sFilename) const;
 	QString untitledName(void) const;
 
+	bool editSession();
+
 	void clearFilename();
 
 	void updateTransportTime(unsigned long iPlayHead);
@@ -229,6 +231,7 @@ public slots:
 
 	void clipNew();
 	void clipEdit();
+	void clipProperties();
 	void clipMute();
 	void clipUnlink();
 	void clipRecordEx(bool bOn);
@@ -418,7 +421,6 @@ protected:
 	bool newSession();
 	bool openSession();
 	bool saveSession(bool bPrompt);
-	bool editSession();
 	bool closeSession();
 
 	bool loadSessionFile(const QString& sFilename);

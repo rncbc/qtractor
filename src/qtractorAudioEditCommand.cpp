@@ -157,7 +157,7 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 		m_pAudioClip->setFilenameEx(m_sPrevFilename, false);
 		m_pAudioClip->setClipLengthEx(m_iPrevLength);
 		m_pAudioClip->resetAudioClipEx();
-		pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
+		pSession->files()->removeFileItem(qtractorFileList::Audio, m_sPrevFilename);
 		return true;
 	}
 
@@ -251,13 +251,11 @@ bool qtractorAudioEditCommand::execute ( bool bRedo )
 		return false;
 
 	// Hot-swap the clip to the new revision file.
-	pSession->files()->addClipItem(qtractorFileList::Audio, m_pAudioClip, true);
+	pSession->files()->addFileItem(qtractorFileList::Audio, m_sNextFilename, true);
 
 	m_pAudioClip->setFilenameEx(m_sNextFilename, false);
 	m_pAudioClip->setClipLengthEx(m_iNextLength);
 	m_pAudioClip->resetAudioClipEx();
-
-	//pSession->files()->removeClipItem(qtractorFileList::Audio, m_pAudioClip);
 
 	// New file is supposed to get into the bill of materials...
 	if (++m_iRedoCount == 1) {
@@ -554,30 +552,10 @@ bool qtractorAudioEditCommand::toolFrames (
 				delete pTmp;
 				return false;
 			}
-			const unsigned long iTmpFrames = pTmp->frames();
 			// Copy in reverse: read the last chunk first,
 			// walking backwards...
-			unsigned int iPos = iTmpFrames;
-			while (iPos > 0) {
-				const unsigned int iChunk = qMin(nframes, iPos);
-				iPos -= iChunk;
-				if (!pTmp->seek(iPos))
-					break;
-				const int nread2 = pTmp->read(ppFrames, iChunk);
-				if (nread2 < 1)
-					break;
-				// Reverse the chunk in place...
-				for (unsigned short i = 0; i < iChannels; ++i) {
-					float *pFrames = ppFrames[i];
-					int lo = 0, hi = nread2 - 1;
-					while (lo < hi) {
-						const float fTmp = pFrames[lo];
-						pFrames[lo++] = pFrames[hi];
-						pFrames[hi--] = fTmp;
-					}
-				}
-				pDst->write(ppFrames, nread2);
-			}
+			reverseFrames(ppFrames, nframes, pDst, pTmp, 0, pTmp->frames());
+			// Reverse done.
 			pTmp->close();
 			delete pTmp;
 			QFile::remove(sTmpFilename);
@@ -589,32 +567,8 @@ bool qtractorAudioEditCommand::toolFrames (
 		if (params.bReverse) {
 			// Reverse: read region backwards in chunks
 			// then reverse each in-place...
-			unsigned int iPos = iEnd;
-			while (iPos > iStart) {
-				const unsigned long iChunk = qMin(nframes, iPos - iStart);
-				iPos -= iChunk;
-				if (!pSrc->seek(iPos))
-					break;
-				const int nread = pSrc->read(ppFrames, iChunk);
-				if (nread < 1)
-					break;
-				for (unsigned short i = 0; i < iChannels; ++i) {
-					// Apply gain...
-					if (::fabsf(afGains[i] - 1.0f) > 0.001f) {
-						for (int n = 0; n < nread; ++n)
-							ppFrames[i][n] *= afGains[i];
-					}
-					// Reverse the chunk in place...
-					float *pFrames = ppFrames[i];
-					int lo = 0, hi = nread - 1;
-					while (lo < hi) {
-						const float fTmp = pFrames[lo];
-						pFrames[lo++] = pFrames[hi];
-						pFrames[hi--] = fTmp;
-					}
-				}
-				pDst->write(ppFrames, nread);
-			}
+			reverseFrames(ppFrames, nframes, pDst, pSrc, iStart, iLength, afGains);
+			// Reverse done.
 		} else {
 			// Simple gain/pan/normalize pass...
 			if (!pSrc->seek(iStart))
@@ -645,6 +599,62 @@ bool qtractorAudioEditCommand::toolFrames (
 	if (iEnd < iFrames) {
 		if (!streamFrames(ppFrames, nframes, pDst, pSrc, iEnd, iFrames - iEnd))
 			return false;
+	}
+
+	return true;
+}
+
+
+// Reverse frames helper.
+bool qtractorAudioEditCommand::reverseFrames (
+	float **ppFrames, unsigned int nframes,
+	qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
+	unsigned long iStart, unsigned long iLength, float *pfGains ) const
+{
+	if (iLength < 1)
+		return true;
+
+	const unsigned short iChannels = pSrc->channels();
+
+	float *ppFrames2[iChannels];
+
+	unsigned long iPos = iStart + iLength;
+	while (iPos > iStart) {
+		const unsigned long iChunk = qMin(nframes, iPos - iStart);
+		iPos -= iChunk;
+		if (!pSrc->seek(iPos))
+			break;
+		unsigned int nread2 = 0;
+		for (unsigned short i = 0; i < iChannels; ++i)
+			ppFrames2[i] = ppFrames[i];
+		unsigned int iRemain = iChunk;
+		while (iRemain > 0) {
+			const int nread = pSrc->read(ppFrames2, qMin(iChunk, iRemain));
+			if (nread < 1)
+				break;
+			iRemain -= nread;
+			for (unsigned short i = 0; i < iChannels; ++i)
+				ppFrames2[i] += nread;
+			nread2 += nread;
+		}
+		if (nread2 > 0) {
+			for (unsigned short i = 0; i < iChannels; ++i) {
+				// Apply gain...
+				if (pfGains) if (::fabsf(pfGains[i] - 1.0f) > 0.001f) {
+					for (int n = 0; n < nread2; ++n)
+						ppFrames[i][n] *= pfGains[i];
+				}
+				// Reverse the chunk in place...
+				float *pFrames = ppFrames[i];
+				int lo = 0, hi = nread2 - 1;
+				while (lo < hi) {
+					const float fTmp = pFrames[lo];
+					pFrames[lo++] = pFrames[hi];
+					pFrames[hi--] = fTmp;
+				}
+			}
+			pDst->write(ppFrames, nread2);
+		}
 	}
 
 	return true;

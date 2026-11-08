@@ -520,6 +520,13 @@ public:
 	unsigned long timeq ( unsigned long time ) const
 		{ return m_props.timeScale()->timeq(time); }
 
+	// Get audio/MIDI file length/duration (in frames/ticks).
+	unsigned long audioFileLength(
+		const QString& sFilename) const;
+	unsigned long midiFileDuration(
+		const QString& sFilename,
+		int iTrackChannel = -1) const;
+
 	// Pseudo-singleton instance accessor.
 	static qtractorSession *getInstance();
 
