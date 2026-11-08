@@ -195,9 +195,8 @@ public:
 	// Audio frame process synchronization predicate method.
 	bool inSync(unsigned long iFrameStart, unsigned long iFrameEnd);
 
-	// Export-mode sync executives.
+	// Export-mode sync executive.
 	void syncExport();
-	void syncExportEx();
 
 	// Internal peak descriptor accessors.
 	void setPeakFile(qtractorAudioPeakFile *pPeakFile);

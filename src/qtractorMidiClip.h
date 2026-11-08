@@ -78,12 +78,6 @@ public:
 	bool isSessionFlag() const
 		{ return m_bSessionFlag; }
 
-	// Revisionist accessors.
-	void setRevision(unsigned short iRevision)
-		{ m_iRevision = iRevision; }
-	unsigned short revision() const
-		{ return m_iRevision; }
-
 	// Revisionist method.
 	QString createFilePathRevision(bool bForce = false);
 
@@ -205,7 +199,7 @@ public:
 		unsigned short count() const
 			{ return m_clips.count(); }
 
-		const QList<qtractorMidiClip *>& clips() const
+		const QList<qtractorClip *>& clips() const
 			{ return m_clips; }
 
 		void clear()
@@ -221,7 +215,7 @@ public:
 		qtractorCommandList *m_pCommands;
 
 		// Ref-counting related stuff.
-		QList<qtractorMidiClip *> m_clips;
+		QList<qtractorClip *> m_clips;
 	};
 
 	typedef QHash<Key, Data *> Hash;
@@ -251,10 +245,10 @@ public:
 	bool isHashLinked() const;
 
 	// Check whether a MIDI clip is hash-linked to another.
-	bool isLinkedClip (qtractorMidiClip *pMidiClip) const;
+	bool isLinkedClip (qtractorClip *pClip) const;
 
 	// Get all hash-linked clips (including self).
-	QList<qtractorMidiClip *> linkedClips() const;
+	QList<qtractorClip *> linkedClips() const;
 
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
@@ -344,9 +338,6 @@ private:
 	unsigned short m_iTrackChannel;
 
 	bool m_bSessionFlag;
-
-	// Revisionist count.
-	unsigned short m_iRevision;
 
 	// Most interesting key/data (ref-counted?)...
 	Key  *m_pKey;

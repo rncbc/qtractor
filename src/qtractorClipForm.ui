@@ -37,7 +37,7 @@
    <string>Clip</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="clipEdit" />
+   <iconset theme="clipProperties" />
   </property>
   <layout class="QGridLayout">
    <item row="0" column="0" colspan="10">

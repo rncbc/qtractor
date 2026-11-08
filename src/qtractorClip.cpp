@@ -94,6 +94,8 @@ void qtractorClip::clear (void)
 
 	m_bMute = false;
 
+	m_iRevision = 0;
+
 	m_iFadeInLength   = 0;
 	m_iFadeOutLength  = 0;
 

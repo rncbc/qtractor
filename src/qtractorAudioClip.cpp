@@ -63,15 +63,14 @@ public:
 	// Key settler.
 	void update(qtractorAudioClip *pAudioClip)
 	{
-		m_pTrack = pAudioClip->track();
-		m_sFilename = pAudioClip->filename();;
-		m_iClipOffset = pAudioClip->clipOffset();
-		m_iClipLength = pAudioClip->clipLength();
-		m_fClipGain = pAudioClip->clipGain();
+		m_pTrack       = pAudioClip->track();
+		m_sFilename    = pAudioClip->filename();;
+		m_iClipOffset  = pAudioClip->clipOffset() & ~3; // 4-frame alignment.
+		m_iClipLength  = pAudioClip->clipLength() & ~3; // idem.
+		m_fClipGain    = pAudioClip->clipGain();
 		m_fClipPanning = pAudioClip->clipPanning();
 		m_fTimeStretch = pAudioClip->timeStretch();
-		m_fPitchShift = pAudioClip->pitchShift();
-		m_iOverlap = pAudioClip->overlap();
+		m_fPitchShift  = pAudioClip->pitchShift();
 	}
 
 	// Key accessors.
@@ -91,8 +90,6 @@ public:
 		{ return m_fTimeStretch; }
 	float pitchShift() const
 		{ return m_fPitchShift; }
-	unsigned int overlap() const
-		{ return m_iOverlap; }
 
 	// Match descriminator.
 	bool operator== (const Key& other) const
@@ -104,8 +101,7 @@ public:
 			&& m_fClipGain    == other.clipGain()
 			&& m_fClipPanning == other.clipPanning()
 			&& m_fTimeStretch == other.timeStretch()
-			&& m_fPitchShift  == other.pitchShift()
-			&& m_iOverlap     == other.overlap();
+			&& m_fPitchShift  == other.pitchShift();
 	}
 
 private:
@@ -119,7 +115,6 @@ private:
 	float          m_fClipPanning;
 	float          m_fTimeStretch;
 	float          m_fPitchShift;
-	unsigned int   m_iOverlap;
 };
 
 
@@ -132,8 +127,7 @@ uint qHash ( const qtractorAudioClip::Key& key )
 		 ^ qHash(long(1000.0f * key.clipGain()))
 		 ^ qHash(long(1000.0f * key.clipPanning()))
 		 ^ qHash(long(1000.0f * key.timeStretch()))
-		 ^ qHash(long(1000.0f * key.pitchShift()))
-		 ^ qHash(key.overlap());
+		 ^ qHash(long(1000.0f * key.pitchShift()));
 }
 
 
@@ -194,11 +188,10 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 
 	m_iStretcherFlags = qtractorAudioBuffer::defaultStretcherFlags();
 
-	m_iOverlap = 0;
-
 	m_pFractGains = nullptr;
 
-	m_iRevision = 0;
+	m_pBuff = nullptr;
+	m_bBuff = false;
 
 	m_pAudioEditorForm = nullptr;
 }
@@ -216,11 +209,10 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 
 	m_iStretcherFlags = clip.stretcherFlags();
 
-	m_iOverlap = clip.overlap();
-
 	m_pFractGains = nullptr;
 
-	m_iRevision = clip.revision();
+	m_pBuff = nullptr;
+	m_bBuff = false;
 
 	m_pAudioEditorForm = nullptr;
 
@@ -233,6 +225,8 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 
 	setFadeInType(clip.fadeInType());
 	setFadeOutType(clip.fadeOutType());
+
+	setRevision(clip.revision());
 
 	// Clone the audio peak, if any...
 	if (clip.m_pPeak)
@@ -259,9 +253,9 @@ bool qtractorAudioClip::isOverlap ( unsigned int iOverlapSize ) const
 	const unsigned long iClipStart = clipStart();
 	const unsigned long iClipEnd = iClipStart + clipLength() + iOverlapSize;
 
-	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
-		qtractorAudioClip *pClip = iter.next();
+		qtractorClip *pClip = iter.next();
 		const unsigned long iClipStart2 = pClip->clipStart();
 		const unsigned long iClipEnd2
 			= iClipStart2 + pClip->clipLength() + iOverlapSize;
@@ -323,38 +317,50 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pKey  = new Key(this);
 		m_pData = g_hashTable.value(*m_pKey, nullptr);
 		if (m_pData) {
-			// Check if current clip overlaps any other...
+			// First check if current clip overlaps any other...
 			const unsigned int iOverlapSize
-				= pSession->audioEngine()->bufferSize() << 2;
-			bool bOverlap = isOverlap(iOverlapSize);
-			while (bOverlap) {
-				++m_iOverlap;
-				m_pKey->update(this);
-				m_pData = g_hashTable.value(*m_pKey, nullptr);
-				bOverlap = isOverlap(iOverlapSize);
-			}
-			// Only if it doesn't overlap any...
-			if (m_pData && !bOverlap) {
-				m_pData->attach(this);
-				// Peak files should also be created on-the-fly...
-				qtractorAudioBuffer *pBuff = m_pData->buffer();
-				if (m_pPeak == nullptr || bFilenameChanged) {
-					qtractorAudioPeakFactory *pPeakFactory
-						= pSession->audioPeakFactory();
-					if (pPeakFactory) {
-						if (m_pPeak)
-							delete m_pPeak;
-						m_pPeak = pPeakFactory->createPeak(
-							sFilename, pBuff->timeStretch());
-					}
+				= pSession->audioEngine()->bufferSize() << 1;
+			if (isOverlap(iOverlapSize)) {
+				qtractorAudioBuffer *pBuff
+					= new qtractorAudioBuffer(pTrack->syncThread(), iChannels);
+				pBuff->setOffset(clipOffset());
+				pBuff->setLength(clipLength());
+				pBuff->setGain(clipGain());
+				pBuff->setPanning(clipPanning());
+				pBuff->setTimeStretch(m_fTimeStretch);
+				pBuff->setPitchShift(m_fPitchShift);
+				pBuff->setStretcherFlags(m_iStretcherFlags);
+				if (!pBuff->open(sFilename)) {
+					delete pBuff;
+					delete m_pKey;
+					m_pKey = nullptr;
+					m_pData = nullptr;
+					return false;
 				}
-				// Gain/panning fractionalizer(tm)...
-				updateFractGains(pBuff);
-				// Clip name should be clear about it all.
-				if (clipName().isEmpty())
-					setClipName(shortClipName(QFileInfo(filename()).baseName()));
-				return true;
+				m_pBuff = pBuff;
+				m_bBuff = true;
+			} else {
+				m_pBuff = m_pData->buffer();
+				m_bBuff = false;
 			}
+			m_pData->attach(this);
+			// Peak files should also be created on-the-fly...
+			if (m_pPeak == nullptr || bFilenameChanged) {
+				qtractorAudioPeakFactory *pPeakFactory
+					= pSession->audioPeakFactory();
+				if (pPeakFactory) {
+					if (m_pPeak)
+						delete m_pPeak;
+					m_pPeak = pPeakFactory->createPeak(
+						sFilename, m_pBuff->timeStretch());
+				}
+			}
+			// Gain/panning fractionalizer(tm)...
+			updateFractGains(m_pBuff);
+			// Clip name should be clear about it all.
+			if (clipName().isEmpty())
+				setClipName(shortClipName(QFileInfo(filename()).baseName()));
+			return true;
 		}
 	}
 
@@ -375,12 +381,12 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	if (!pBuff->open(sFilename, iMode)) {
 		delete m_pData;
 		m_pData = nullptr;
-		if (m_pFractGains) {
-			delete [] m_pFractGains;
-			m_pFractGains = nullptr;
-		}
 		return false;
 	}
+
+	// Assign the audio buffer...
+	m_pBuff = pBuff;
+	m_bBuff = false;
 
 	// Gain/panning fractionalizer(tm)...
 	updateFractGains(pBuff);
@@ -444,6 +450,13 @@ void qtractorAudioClip::closeAudioFile (void)
 		delete [] m_pFractGains;
 		m_pFractGains = nullptr;
 	}
+
+	if (m_pBuff) {
+		if (m_bBuff)
+			delete m_pBuff;
+		m_pBuff = nullptr;
+		m_bBuff = false;
+	}
 }
 
 
@@ -461,14 +474,14 @@ QString qtractorAudioClip::createFilePathRevision ( bool bForce )
 		return sFilename;
 
 	// Check file-hash reference...
-	if (m_iRevision > 0 && m_pKey) {
+	if (revision() > 0 && m_pKey) {
 		FileKey fkey(m_pKey);
 		FileHash::ConstIterator fiter = g_hashFiles.constFind(fkey);
 		if (fiter != g_hashFiles.constEnd() && fiter.value() > 1)
-			m_iRevision = 0;
+			setRevision(0);
 	}
 
-	if (m_iRevision == 0 || bForce) {
+	if (revision() == 0 || bForce) {
 		const QFileInfo info(sFilename);
 		QString sExt = info.suffix();
 		if (sExt.isEmpty())
@@ -476,12 +489,12 @@ QString qtractorAudioClip::createFilePathRevision ( bool bForce )
 		sFilename = pSession->createFilePathEx(info.completeBaseName(), sExt);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorAudioClip::createFilePathRevision(%d): \"%s\" (%d)",
-			int(bForce), sFilename.toUtf8().constData(), m_iRevision);
+			int(bForce), sFilename.toUtf8().constData(), revision());
 	#endif
-		m_iRevision = 0;
+		setRevision(0);
 	}
 
-	++m_iRevision;
+	setRevision(revision() + 1);
 
 	return sFilename;
 }
@@ -503,16 +516,21 @@ void qtractorAudioClip::setFilenameEx ( const QString& sFilename, bool bUpdate )
 
 	removeHashKey();
 
-	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
-		qtractorAudioClip *pAudioClip = iter.next();
-		pSession->files()->removeClipItem(qtractorFileList::Audio, pAudioClip);
-		pAudioClip->setFilename(sFilename);
-		pAudioClip->updateHashKey();
-		pSession->files()->addClipItem(qtractorFileList::Audio, pAudioClip, true);
-		if (bUpdate) {
-			pAudioClip->setDirty(false);
-			pAudioClip->updateEditor(true);
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (iter.next());
+		if (pAudioClip) {
+			pSession->files()->removeClipItem(
+				qtractorFileList::Audio, pAudioClip);
+			pAudioClip->setFilename(sFilename);
+			pAudioClip->updateHashKey();
+			pSession->files()->addClipItem(
+				qtractorFileList::Audio, pAudioClip, true);
+			if (bUpdate) {
+				pAudioClip->setDirty(false);
+				pAudioClip->updateEditor(true);
+			}
 		}
 	}
 
@@ -528,11 +546,14 @@ void qtractorAudioClip::setClipLengthEx ( unsigned long iClipLength )
 
 	removeHashKey();
 
-	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext()) {
-		qtractorAudioClip *pAudioClip = iter.next();
-		pAudioClip->setClipLength(iClipLength);
-		pAudioClip->updateHashKey();
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (iter.next());
+		if (pAudioClip) {
+			pAudioClip->setClipLength(iClipLength);
+			pAudioClip->updateHashKey();
+		}
 	}
 
 	insertHashKey();
@@ -545,7 +566,7 @@ void qtractorAudioClip::updateEditorEx ( bool bSelectClear )
 	if (m_pData == nullptr)
 		return;
 
-	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->updateEditor(bSelectClear);
 }
@@ -557,7 +578,7 @@ void qtractorAudioClip::setDirtyEx ( bool bDirty )
 	if (m_pData == nullptr)
 		return;
 
-	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
+	QListIterator<qtractorClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->setDirty(bDirty);
 }
@@ -579,9 +600,13 @@ void qtractorAudioClip::resetAudioClipEx (void)
 
 	pSession->lock();
 
-	QListIterator<qtractorAudioClip *> iter(m_pData->clips());
-	while (iter.hasNext())
-		iter.next()->resetAudioClip();
+	QListIterator<qtractorClip *> iter(m_pData->clips());
+	while (iter.hasNext()) {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (iter.next());
+		if (pAudioClip)
+			pAudioClip->resetAudioClip();
+	}
 
 	pSession->unlock();
 }
@@ -631,21 +656,21 @@ void qtractorAudioClip::removeHashKey (void)
 // Unlink (clone) local hash data.
 void qtractorAudioClip::unlinkHashData (void)
 {
+	if (m_pBuff == nullptr)
+		return;
 	if (m_pData == nullptr)
 		return;
 	if (m_pData->count() < 2)
 		return;
 
-	qtractorAudioBuffer *pBuff = m_pData->buffer();
-
-	Data *pNewData = new Data(track(), pBuff->channels());
+	Data *pNewData = new Data(track(), m_pBuff->channels());
 
 	qtractorAudioBuffer *pNewBuff = pNewData->buffer();
 
-	pNewBuff->setOffset(pBuff->offset());
-	pNewBuff->setLength(pBuff->length());
-	pNewBuff->setTimeStretch(pBuff->timeStretch());
-	pNewBuff->setPitchShift(pBuff->pitchShift());
+	pNewBuff->setOffset(m_pBuff->offset());
+	pNewBuff->setLength(m_pBuff->length());
+	pNewBuff->setTimeStretch(m_pBuff->timeStretch());
+	pNewBuff->setPitchShift(m_pBuff->pitchShift());
 
 	if (pNewBuff->open(filename())) {
 		m_pData->detach(this);
@@ -655,6 +680,12 @@ void qtractorAudioClip::unlinkHashData (void)
 			m_pKey = nullptr;
 		}
 		m_pData->attach(this);
+		if (m_bBuff) {
+			delete m_pBuff;
+			m_pBuff = nullptr;
+			m_bBuff = false;
+		}
+		m_pBuff = pNewBuff;
 	} else {
 		delete pNewData;
 	}
@@ -664,6 +695,8 @@ void qtractorAudioClip::unlinkHashData (void)
 // Relink local hash data.
 void qtractorAudioClip::relinkHashData (void)
 {
+	if (m_pBuff == nullptr)
+		return;
 	if (m_pData == nullptr)
 		return;
 	if (m_pData->count() > 1)
@@ -674,13 +707,37 @@ void qtractorAudioClip::relinkHashData (void)
 
 	Data *pNewData = g_hashTable.value(*m_pKey, nullptr);
 	if (pNewData == nullptr) {
-		delete m_pKey;
-		m_pKey = nullptr;
+		pNewData = new Data(track(), m_pBuff->channels());
+		m_pData = pNewData;
+		if (m_pKey) {
+			delete m_pKey;
+			m_pKey = nullptr;
+		}
+		m_pData->attach(this);
+		qtractorAudioBuffer *pNewBuff = pNewData->buffer();
+		pNewBuff->setOffset(m_pBuff->offset());
+		pNewBuff->setLength(m_pBuff->length());
+		pNewBuff->setTimeStretch(m_pBuff->timeStretch());
+		pNewBuff->setPitchShift(m_pBuff->pitchShift());
+		if (m_bBuff) {
+			delete m_pBuff;
+			m_bBuff = false;
+		}
+		if (pNewBuff->open(filename())) {
+			m_pBuff = pNewBuff;
+		} else {
+			m_pBuff = nullptr;
+		}
 	} else {
 		m_pData->detach(this);
 		delete m_pData;
 		m_pData = pNewData;
 		m_pData->attach(this);
+		if (m_bBuff) {
+			delete m_pBuff;
+			m_bBuff = false;
+		}
+		m_pBuff = m_pData->buffer();
 	}
 
 	insertHashKey();
@@ -695,16 +752,17 @@ bool qtractorAudioClip::isHashLinked (void) const
 
 
 // Check whether an audio clip is hash-linked to another.
-bool qtractorAudioClip::isLinkedClip ( qtractorAudioClip *pAudioClip ) const
+bool qtractorAudioClip::isLinkedClip ( qtractorClip *pClip ) const
 {
+	qtractorAudioClip *pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 	return (m_pData ? m_pData->clips().contains(pAudioClip) : false);
 }
 
 
 // Get all hash-linked clips (including self).
-QList<qtractorAudioClip *> qtractorAudioClip::linkedClips (void) const
+QList<qtractorClip *> qtractorAudioClip::linkedClips (void) const
 {
-	QList<qtractorAudioClip *> clips;
+	QList<qtractorClip *> clips;
 
 	if (m_pData)
 		clips = m_pData->clips();
@@ -748,21 +806,21 @@ void qtractorAudioClip::updateFractGains ( qtractorAudioBuffer *pBuff )
 void qtractorAudioClip::write ( float **ppBuffer,
 	unsigned int iFrames, unsigned short iChannels, unsigned int iOffset )
 {
-	if (m_pData) m_pData->write(ppBuffer, iFrames, iChannels, iOffset);
+	if (m_pBuff) m_pBuff->write(ppBuffer, iFrames, iChannels, iOffset);
 }
 
 
 // Intra-clip frame positioning.
 void qtractorAudioClip::seek ( unsigned long iFrame )
 {
-	if (m_pData) m_pData->seek(iFrame);
+	if (m_pBuff) m_pBuff->seek(iFrame);
 }
 
 
 // Reset clip state.
 void qtractorAudioClip::reset ( bool bLooping )
 {
-	if (m_pData) m_pData->reset(bLooping);
+	if (m_pBuff) m_pBuff->reset(bLooping);
 }
 
 
@@ -770,10 +828,7 @@ void qtractorAudioClip::reset ( bool bLooping )
 void qtractorAudioClip::setLoop (
 	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
-	if (m_pData == nullptr)
-		return;
-
-	qtractorAudioBuffer *pBuff = m_pData->buffer();
+	qtractorAudioBuffer *pBuff = buffer();
 	if (pBuff == nullptr)
 		return;
 
@@ -783,18 +838,7 @@ void qtractorAudioClip::setLoop (
 	if (iLoopStart == pBuff->loopStart() && iLoopEnd == pBuff->loopEnd())
 		return;
 
-	// Check if buffer data has been hash-linked,
-	// unlink (clone) it for proper loop isolation...
-	if (iLoopStart < iLoopEnd) {
-		// Unlink (clone) buffer data...
-		unlinkHashData();
-	} else {
-		// Relink buffer data...
-		relinkHashData();
-	}
-
 	// A brand new one is up!
-	pBuff = m_pData->buffer();
 	pBuff->setLoop(iLoopStart, iLoopEnd);
 }
 
@@ -802,7 +846,7 @@ void qtractorAudioClip::setLoop (
 // Clip close-commit (record specific)
 void qtractorAudioClip::close (void)
 {
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG//_0
 	qDebug("qtractorAudioClip[%p]::close()", this);
 #endif
 
@@ -837,7 +881,15 @@ void qtractorAudioClip::close (void)
 void qtractorAudioClip::open (void)
 {
 	const QString sFilename(filename());
-	openAudioFile(sFilename);
+	if (openAudioFile(sFilename)) {
+		// Sure update the audio clip editor, if any...
+		if (m_pAudioEditorForm) {
+			qtractorAudioEditor *pAudioEditor
+				= m_pAudioEditorForm->audioEditor();
+			if (pAudioEditor)
+				pAudioEditor->setAudioClip(this);
+		}
+	}
 }
 
 
@@ -893,7 +945,7 @@ void qtractorAudioClip::process_export (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
 	// Direct sync method.
-	if (m_pData) m_pData->syncExport();
+	if (m_pBuff) m_pBuff->syncExport();
 
 	// Normal clip processing...
 	process(iFrameStart, iFrameEnd);
@@ -979,6 +1031,20 @@ void qtractorAudioClip::draw (
 		delete pPolyMax[k];
 	}
 
+	// Show that we may have hard clip limits...
+	const unsigned long iClipLength = clipOffset() + clipLength();
+	const unsigned long iFileLength = fileLength();
+	if (iClipLength > iFileLength) {
+		x = clipRect.x();
+		if (iFileLength > iClipOffset)
+			x += pSession->pixelFromFrame(iFileLength - iClipOffset);
+		if (x < clipRect.right()) {
+			QRect rect(clipRect);
+			rect.setLeft(x);
+			painter.fillRect(rect, QBrush(fg, Qt::BDiagPattern));
+		}
+	}
+
 	// Done on polygons.
 	delete [] pPolyRms;
 	delete [] pPolyMax;
@@ -988,9 +1054,6 @@ void qtractorAudioClip::draw (
 // Clip editor method.
 bool qtractorAudioClip::startEditor ( QWidget *pParent )
 {
-#if !defined(CONFIG_AUDIO_EDITOR)
-	return clipProperties(pParent);
-#else
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
 		return false;
@@ -1003,7 +1066,7 @@ bool qtractorAudioClip::startEditor ( QWidget *pParent )
 		if (pOptions && pOptions->bKeepEditorsOnTop) {
 			wflags |= Qt::Tool;
 		//	wflags |= Qt::WindowStaysOnTopHint;
-		#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
+		#if 0//QTRACTOR_AUDIO_EDITOR_TOOL_PARENT
 			// Make sure it has a parent...
 			if (pParent == nullptr)
 				pParent = qtractorMainForm::getInstance();
@@ -1027,7 +1090,6 @@ bool qtractorAudioClip::startEditor ( QWidget *pParent )
 	m_pAudioEditorForm->activateWindow();
 
 	return true;
-#endif // CONFIG_AUDIO_EDITOR
 }
 
 
@@ -1190,10 +1252,6 @@ bool qtractorAudioClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
 
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == nullptr)
-		return false;
-
-	// Do nothing if session is yet untitled...
-	if (pSession->sessionName().isEmpty())
 		return false;
 
 	// Open the source file independently (not through the ring-buffer).
@@ -1451,7 +1509,7 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	const float fGain = clipGain();
 	unsigned long iFrameStart = 0;
 	while (iFrameStart < iLength) {
-		pBuff->syncExportEx();
+		pBuff->syncExport();
 		if (pBuff->inSync(iFrameStart, iFrameStart + iFrames)) {
 			const int nread
 				= pBuff->readMux(ppFrames, iFrames, iChannels, 0, fGain);
@@ -1468,6 +1526,18 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	delete pBuff;
 
 	return true;
+}
+
+
+// Return the actual audio file length (bar offset, in frames).
+unsigned long qtractorAudioClip::fileLength (void) const
+{
+	if (m_pBuff == nullptr)
+		return 0;
+
+	const unsigned long iClipOffset	= clipOffset();
+	const unsigned long iFileOffset = m_pBuff->frames();
+	return (iFileOffset > iClipOffset ? iFileOffset - iClipOffset : 0);
 }
 
 

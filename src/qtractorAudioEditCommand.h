@@ -161,6 +161,12 @@ protected:
 		unsigned long iStart, unsigned long iLength,
 		const ToolParams& params) const;
 
+	// Reverse frames helper.
+	bool reverseFrames(float **ppFrames, unsigned int nframes,
+		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,
+		unsigned long iStart, unsigned long iLength,
+		float *pfGains = nullptr) const;
+
 	// Stream frames helper.
 	bool streamFrames(float **ppFrames, unsigned int nframes,
 		qtractorAudioFile *pDst, qtractorAudioFile *pSrc,

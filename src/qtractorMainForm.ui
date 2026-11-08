@@ -80,7 +80,7 @@
    <addaction name="editDeleteAction"/>
    <addaction name="separator"/>
    <addaction name="clipNewAction"/>
-   <addaction name="clipEditAction"/>
+   <addaction name="clipPropertiesAction"/>
   </widget>
   <widget class="QToolBar" name="trackToolbar">
    <property name="orientation">
@@ -390,6 +390,7 @@
     </widget>
     <addaction name="clipNewAction"/>
     <addaction name="clipEditAction"/>
+    <addaction name="clipPropertiesAction"/>
     <addaction name="separator"/>
     <addaction name="clipTakeMenu"/>
     <addaction name="separator"/>
@@ -1789,6 +1790,23 @@
    </property>
    <property name="shortcut">
     <string>F4</string>
+   </property>
+  </action>
+  <action name="clipPropertiesAction">
+   <property name="icon">
+    <iconset theme="clipProperties" />
+   </property>
+   <property name="text">
+    <string>&amp;Properties...</string>
+   </property>
+   <property name="iconText">
+    <string>Clip Properties</string>
+   </property>
+   <property name="toolTip">
+    <string>Clip properties</string>
+   </property>
+   <property name="statusTip">
+    <string>Edit current clip properties</string>
    </property>
   </action>
   <action name="clipMuteAction">
