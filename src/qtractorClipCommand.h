@@ -260,7 +260,7 @@ public:
 	virtual ~qtractorClipContextCommand();
 
 	// Composite command methods.
-	void addMidiClipContext(qtractorMidiClip *pMidiClip);
+	void addClipContext(qtractorClip *pClip);
 
 	// Composite predicate.
 	bool isEmpty() const;
@@ -275,22 +275,23 @@ protected:
 	bool execute(bool bRedo);
 
 	// Virtual executive method.
-	struct MidiClipCtx {
+	struct ClipCtx {
+		int ctype;
 		QString filename;
 		unsigned long offset;
 		unsigned long length;
 	};
 
-	virtual bool executeMidiClipContext(
-		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo) = 0;
+	virtual bool executeClipContext(
+		qtractorClip *pClip, const ClipCtx& ctx, bool bRedo) = 0;
 
 private:
 
 	int m_iRedoCount;
 
-	typedef QHash<qtractorMidiClip *, MidiClipCtx> MidiClipCtxs;
+	typedef QHash<qtractorClip *, ClipCtx> ClipCtxs;
 
-	MidiClipCtxs m_midiClipCtxs;
+	ClipCtxs m_clipCtxs;
 };
 
 
@@ -308,8 +309,8 @@ public:
 protected:
 
 	// Context (visitor) executive method.
-	bool executeMidiClipContext(
-		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo);
+	bool executeClipContext(
+		qtractorClip *pClip, const ClipCtx& ctx, bool bRedo);
 };
 
 
@@ -327,8 +328,8 @@ public:
 protected:
 
 	// Context (visitor) executive method.
-	bool executeMidiClipContext(
-		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo);
+	bool executeClipContext(
+		qtractorClip *pClip, const ClipCtx& ctx, bool bRedo);
 };
 
 

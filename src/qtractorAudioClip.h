@@ -78,10 +78,6 @@ public:
 	bool isStretcherFlag (unsigned int iStretcherFlag) const
 		{ return (m_iStretcherFlags & iStretcherFlag); }
 
-	// Alternating overlap tag.
-	unsigned int overlap() const
-		 { return m_iOverlap; }
-
 	// Clip (re)open method.
 	void open();
 
@@ -91,7 +87,7 @@ public:
 
 	// Audio properties accessors.
 	qtractorAudioBuffer *buffer() const
-		{ return (m_pData ? m_pData->buffer() : nullptr); }
+		{ return m_pBuff; }
 
 	// Direct write method.
 	void write(float **ppBuffer, unsigned int iFrames,
@@ -173,27 +169,6 @@ public:
 		qtractorAudioBuffer *buffer() const
 			{ return m_pBuff; }
 
-		// Direct write method.
-		void write (float **ppBuffer, unsigned int iFrames,
-			unsigned short iChannels, unsigned int iOffset)
-			{ m_pBuff->write(ppBuffer, iFrames, iChannels, iOffset); }
-
-		// Direct sync method.
-		void syncExport()
-			{ m_pBuff->syncExport(); }
-
-		// Intra-clip frame positioning.
-		void seek(unsigned long iFrame)
-			{ m_pBuff->seek(iFrame); }
-
-		// Reset buffer state.
-		void reset(bool bLooping)
-			{ m_pBuff->reset(bLooping); }
-
-		// Loop positioning.
-		void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd)
-			{ m_pBuff->setLoop(iLoopStart, iLoopEnd); }
-
 		// Ref-counting related methods.
 		void attach(qtractorAudioClip *pAudioClip)
 			{ m_clips.append(pAudioClip); }
@@ -204,7 +179,7 @@ public:
 		unsigned short count() const
 			{ return m_clips.count(); }
 
-		const QList<qtractorAudioClip *>& clips() const
+		const QList<qtractorClip *>& clips() const
 			{ return m_clips; }
 
 		void clear()
@@ -222,7 +197,7 @@ public:
 		qtractorCommandList *m_pCommands;
 
 		// Ref-counting related stuff.
-		QList<qtractorAudioClip *> m_clips;
+		QList<qtractorClip *> m_clips;
 	};
 
 	typedef QHash<Key, Data *> Hash;
@@ -255,19 +230,13 @@ public:
 	bool isHashLinked() const;
 
 	// Check whether an audio clip is hash-linked to another.
-	bool isLinkedClip (qtractorAudioClip *pAudioClip) const;
+	bool isLinkedClip (qtractorClip *pClip) const;
 
 	// Get all hash-linked clips (including self).
-	QList<qtractorAudioClip *> linkedClips() const;
+	QList<qtractorClip *> linkedClips() const;
 
 	// Make sure the clip hash-table gets reset.
 	static void clearHashTable();
-
-	// Revisionist accessors.
-	void setRevision(unsigned short iRevision)
-		{ m_iRevision = iRevision; }
-	unsigned short revision() const
-		{ return m_iRevision; }
 
 	// Revisionist method.
 	QString createFilePathRevision(bool bForce = false);
@@ -275,6 +244,9 @@ public:
 	// Local command-list (undo/redo) accessor.
 	qtractorCommandList *commands() const
 		{ return (m_pData ? m_pData->commands() : nullptr); }
+
+	// Return the actual audio file length (bar offset, in frames).
+	unsigned long fileLength() const;
 
 protected:
 
@@ -301,10 +273,10 @@ private:
 
 	unsigned int m_iStretcherFlags;
 
-	// Alternate overlap tag.
-	unsigned int m_iOverlap;
-
 	FractGain *m_pFractGains;
+
+	qtractorAudioBuffer *m_pBuff;
+	bool                 m_bBuff;
 
 	// Most interesting key/data (ref-counted?)...
 	Key  *m_pKey;
@@ -314,9 +286,6 @@ private:
 
 	// Audio file hash key.
 	static FileHash g_hashFiles;
-
-	// Revisionist count.
-	unsigned short m_iRevision;
 
 	// This clip editor form widget.
 	qtractorAudioEditorForm *m_pAudioEditorForm;

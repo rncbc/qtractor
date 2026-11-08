@@ -2329,6 +2329,67 @@ void qtractorSession::renameSession (
 }
 
 
+// Get audio file duration (in frames).
+unsigned long qtractorSession::audioFileLength (
+	const QString& sFilename ) const
+{
+	unsigned long iFileLength = 0;
+
+	qtractorAudioFile *pAudioFile
+		= qtractorAudioFileFactory::createAudioFile(sFilename);
+	if (pAudioFile) {
+		if (pAudioFile->open(sFilename)) {
+			iFileLength = pAudioFile->frames();
+			if (pAudioFile->sampleRate() > 0
+				&& pAudioFile->sampleRate() != sampleRate()) {
+				iFileLength = ::lrintf(float(iFileLength)
+					* float(sampleRate())
+					/ float(pAudioFile->sampleRate()));
+			}
+		}
+		delete pAudioFile;
+	}
+
+	return iFileLength;
+}
+
+
+// Get MIDI file duration (in ticks).
+unsigned long qtractorSession::midiFileDuration (
+	const QString& sFilename, int iTrackChannel ) const
+{
+	unsigned long iFileDuration = 0;
+
+	qtractorMidiFile file;
+	if (file.open(sFilename)) {
+		const unsigned short p = ticksPerBeat();
+		const unsigned short q = file.ticksPerBeat();
+		const int iTracks = (file.format() == 1 ? file.tracks() : 16);
+		if (iTrackChannel < 0) {
+			for (int i = 0; i < iTracks; ++i) {
+				const unsigned long iTrackDuration
+					= file.readTrackDuration(i);
+				if (iTrackDuration > 0) {
+					const unsigned long duration
+						= uint64_t(iTrackDuration * p) / q;
+					if (iFileDuration < duration)
+						iFileDuration = duration;
+				}
+			}
+		}
+		else
+		if (iTrackChannel < iTracks) {
+			const unsigned long iTrackDuration
+				= file.readTrackDuration(iTrackChannel);
+			if (iTrackDuration > 0)
+				iFileDuration = uint64_t(iTrackDuration * p) / q;
+		}
+	}
+
+	return iFileDuration;
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorSession::Document -- Session file import/export helper class.
 //
