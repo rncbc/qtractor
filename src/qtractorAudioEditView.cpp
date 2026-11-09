@@ -277,7 +277,7 @@ void qtractorAudioEditView::resizeEvent ( QResizeEvent *pResizeEvent )
 }
 
 
-// (Re)create the complete view pixmap.
+// (Re)create the complete v - 2iew pixmap.
 void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
@@ -316,6 +316,7 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 	painter.setPen(rgbLight);
 	const int hn = (h / iChannels);
 	const int dy = (hn >> 3);
+
 	int y2 = hn;
 	int y = 4;
 	for (unsigned short i = 0; i < iChannels; ++i) {
@@ -403,7 +404,7 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 		painter.drawLine(0, y0 - 1, w, y0 - 1);
 		painter.setPen(rgbLine);
 		painter.drawLine(0, y0, w, y0);
-		y0 += hn - 4;
+		y0 += hn;
 	}
 
 	//
@@ -413,7 +414,7 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 	const int w1 = pTimeScale->pixelFromFrame(f0 + m_pEditor->length()) - dx;
 	const int w2 = qMin(w, w1);
 	if (w2 > 0) {
-		const QRect clipRect(0, 0, w2, h);
+		const QRect clipRect(0, 2, w2, h);
 		painter.setRenderHint(QPainter::Antialiasing, true);
 		drawAudioPeak(painter, dx, clipRect);
 		m_pEditor->drawFadeInOut(painter, dx, clipRect);
@@ -434,8 +435,10 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 			if (x2 < 0)
 				x2 = 0;
 			if (x2 < w) {
-				painter.fillRect(x2, 0, x1 - x2, h,
-					QBrush(rgbLine.lighter(), Qt::BDiagPattern));
+				const bool bDark = (rgbBase.value() < 0x7f);
+				painter.fillRect(x2, 0, x1 - x2, h, QBrush(
+					bDark ? rgbLight.lighter() : rgbLight.darker(),
+					Qt::BDiagPattern));
 			}
 		}
 	}
@@ -506,9 +509,8 @@ void qtractorAudioEditView::drawAudioPeak (
 	if (pPeak == nullptr)
 		return;
 
-	QWidget *pViewport = qtractorScrollView::viewport();
-	const int w = pViewport->width();
-	const int h = pViewport->height() & ~1; // always even.
+	const int w = clipRect.width();
+	const int h = clipRect.height();
 
 	const unsigned long iFrameStart = pTimeScale->frameFromPixel(dx);
 	const unsigned long iFrameEnd = pTimeScale->frameFromPixel(dx + w);
@@ -553,8 +555,8 @@ void qtractorAudioEditView::drawAudioPeak (
 	// Build polygonal vertexes...
 	const int n2 = int(iPeakLength);
 	for (int n = 0; n < n2; ++n) {
-		x = (n * w2) / n2;
-		y = h2;
+		x = clipRect.x() + (n * w2) / n2;
+		y = clipRect.y() + h2;
 		for (k = 0; k < iChannels; ++k) {
 			const qtractorAudioClip::FractGain& fractGain = pFractGains[k];
 			const int h2gain = (h2 * fractGain.num);
