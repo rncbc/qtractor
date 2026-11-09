@@ -394,7 +394,7 @@
   </action>
   <action name="filePropertiesAction">
    <property name="icon">
-    <iconset theme="clipEdit" />
+    <iconset theme="clipProperties" />
    </property>
    <property name="text">
     <string>&amp;Properties...</string>

@@ -4,40 +4,40 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1191"/>
+        <location filename="../qtractorAudioClip.cpp" line="1197"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 音频：	%1 声道，%2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1196"/>
+        <location filename="../qtractorAudioClip.cpp" line="1202"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1200"/>
+        <location filename="../qtractorAudioClip.cpp" line="1206"/>
         <source> (%1 pan)</source>
         <translation> (%1 声像)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1203"/>
+        <location filename="../qtractorAudioClip.cpp" line="1209"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% 时间拉伸)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1206"/>
+        <location filename="../qtractorAudioClip.cpp" line="1212"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
 	(%1 半音 移调)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="1334"/>
+        <location filename="../qtractorAudioClip.cpp" line="1340"/>
         <source>Audio file save: &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>音频文件保存：“%1”。</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2874"/>
@@ -876,7 +876,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3441"/>
         <source>Select plug-in&apos;s editor (GUI) type:</source>
-        <translation type="unfinished"></translation>
+        <translation>选择插件的编辑器 (GUI) 类型：</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3453"/>
@@ -927,7 +927,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3507"/>
         <source>Reset plug-in&apos;s editor (GUI) type ?</source>
-        <translation type="unfinished"></translation>
+        <translation>重置插件的编辑器 (GUI) 类型 ?</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3903"/>
@@ -1005,7 +1005,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.cpp" line="1042"/>
         <source>clip tempo</source>
-        <translation type="unfinished"></translation>
+        <translation>剪辑速度</translation>
     </message>
 </context>
 <context>
@@ -1078,27 +1078,27 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="137"/>
         <source>Audio Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>音频编辑器</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="874"/>
         <source>cut audio</source>
-        <translation type="unfinished"></translation>
+        <translation>剪切音频</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="881"/>
         <source>delete audio</source>
-        <translation type="unfinished"></translation>
+        <translation>删除音频</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="893"/>
         <source>move audio</source>
-        <translation type="unfinished"></translation>
+        <translation>移动音频</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditor.cpp" line="1423"/>
         <source>paste audio</source>
-        <translation type="unfinished"></translation>
+        <translation>粘贴音频</translation>
     </message>
 </context>
 <context>
@@ -1106,7 +1106,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="34"/>
         <source>Audio Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>音频编辑器</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="50"/>
@@ -1184,7 +1184,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="299"/>
         <source>Save current audio clip to existing file name</source>
-        <translation type="unfinished"></translation>
+        <translation>将当前音频剪辑保存到现有文件名</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="304"/>
@@ -1204,7 +1204,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="313"/>
         <source>Save current audio clip with another file name</source>
-        <translation type="unfinished"></translation>
+        <translation>使用另一个文件名保存当前音频剪辑</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="321"/>
@@ -1220,7 +1220,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="330"/>
         <source>Mute current audio clip</source>
-        <translation type="unfinished"></translation>
+        <translation>将当前音频剪辑静音</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="335"/>
@@ -1236,7 +1236,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="344"/>
         <source>Unlink current audio clip</source>
-        <translation type="unfinished"></translation>
+        <translation>取消当前音频片段的链接</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="349"/>
@@ -1256,7 +1256,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="358"/>
         <source>Show current audio clip/track input bus connections</source>
-        <translation type="unfinished"></translation>
+        <translation>显示当前音频剪辑/轨道输入总线连接</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="363"/>
@@ -1276,7 +1276,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="372"/>
         <source>Show current audio clip/track output bus connections</source>
-        <translation type="unfinished"></translation>
+        <translation>显示当前音频剪辑/轨道输出总线连接</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="380"/>
@@ -1297,7 +1297,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="389"/>
         <source>Edit current audio clip/track properties</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑当前音频剪辑/轨道属性</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="392"/>
@@ -1313,7 +1313,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="409"/>
         <source>Edit current audio clip properties</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑当前音频剪辑属性</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="412"/>
@@ -1363,22 +1363,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="448"/>
         <source>&amp;Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>导出...(&amp;E)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="451"/>
         <source>Clip Export</source>
-        <translation type="unfinished"></translation>
+        <translation>片段导出</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="454"/>
         <source>Clip export</source>
-        <translation type="unfinished"></translation>
+        <translation>片段导出</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="457"/>
         <source>Export current clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>导出当前所选剪辑</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="462"/>
@@ -1394,7 +1394,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="471"/>
         <source>Close this audio clip editor</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭此音频剪辑编辑器</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="479"/>
@@ -1494,7 +1494,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="568"/>
         <source>Paste local clipboard contents into the current audio clip</source>
-        <translation type="unfinished"></translation>
+        <translation>将本地剪贴板内容粘贴到当前音频剪辑中</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="571"/>
@@ -1519,7 +1519,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="585"/>
         <source>Paste/repeat local clipboard contents into the current audio clip</source>
-        <translation type="unfinished"></translation>
+        <translation>将本地剪贴板内容粘贴/重复到当前音频剪辑中</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="588"/>
@@ -1618,34 +1618,34 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="664"/>
         <source>&amp;Gain...</source>
-        <translation type="unfinished"></translation>
+        <translation>增益...(&amp;G)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="667"/>
         <location filename="../qtractorAudioEditorForm.ui" line="670"/>
         <source>Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>增益</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="673"/>
         <source>Gain selection</source>
-        <translation type="unfinished"></translation>
+        <translation>为所选剪辑应用增益</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="678"/>
         <source>P&amp;anning...</source>
-        <translation type="unfinished"></translation>
+        <translation>声像...(&amp;A)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="681"/>
         <location filename="../qtractorAudioEditorForm.ui" line="684"/>
         <source>Panning</source>
-        <translation type="unfinished"></translation>
+        <translation>声像</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="687"/>
         <source>Panning selection</source>
-        <translation type="unfinished"></translation>
+        <translation>为所选剪辑设置声像</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="692"/>
@@ -1666,58 +1666,58 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="706"/>
         <source>&amp;Time Stretch...</source>
-        <translation type="unfinished"></translation>
+        <translation>时间拉伸...(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="709"/>
         <source>Time Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="712"/>
         <source>Time stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="715"/>
         <source>Time stretch selection</source>
-        <translation type="unfinished"></translation>
+        <translation>对所选剪辑进行时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="720"/>
         <source>&amp;Pitch Shift...</source>
-        <translation type="unfinished"></translation>
+        <translation>变调...(&amp;P)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="723"/>
         <source>Pitch Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>变调</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="726"/>
         <source>Pitch shift</source>
-        <translation type="unfinished"></translation>
+        <translation>变调</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="729"/>
         <source>Pitch shift selection</source>
-        <translation type="unfinished"></translation>
+        <translation>对所选剪辑进行变调</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="734"/>
         <source>&amp;Reverse...</source>
-        <translation type="unfinished"></translation>
+        <translation>反转...(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="737"/>
         <location filename="../qtractorAudioEditorForm.ui" line="740"/>
         <source>Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>反转</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="743"/>
         <source>Reverse selection</source>
-        <translation type="unfinished"></translation>
+        <translation>反转所选内容</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="751"/>
@@ -1829,18 +1829,18 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="859"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定工具栏(&amp;K)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="862"/>
         <location filename="../qtractorAudioEditorForm.ui" line="865"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定工具栏位置</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="868"/>
         <source>Lock/unlock midi window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定/解锁 midi 窗口工具栏位置</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="876"/>
@@ -1908,34 +1908,34 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="933"/>
         <source>Ma&amp;ximize</source>
-        <translation type="unfinished"></translation>
+        <translation>最大化(&amp;X)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="936"/>
         <source>Zoom Maximize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最大</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="939"/>
         <location filename="../qtractorAudioEditorForm.ui" line="942"/>
         <source>Zoom maximize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最大</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="950"/>
         <source>Mi&amp;nimize</source>
-        <translation type="unfinished"></translation>
+        <translation>最小化(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="953"/>
         <source>Zoom Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最小</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="956"/>
         <location filename="../qtractorAudioEditorForm.ui" line="959"/>
         <source>Zoom minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最小</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="967"/>
@@ -2043,18 +2043,18 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1069"/>
         <source>&amp;Fade In/Out</source>
-        <translation type="unfinished"></translation>
+        <translation>淡入/淡出(&amp;F)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1072"/>
         <location filename="../qtractorAudioEditorForm.ui" line="1075"/>
         <source>Fade in/out</source>
-        <translation type="unfinished"></translation>
+        <translation>淡入/淡出</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1078"/>
         <source>Fade in/out controls</source>
-        <translation type="unfinished"></translation>
+        <translation>淡入/淡出控件</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1083"/>
@@ -2268,7 +2268,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1300"/>
         <source>&amp;Record</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Record</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1303"/>
@@ -2418,23 +2418,23 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="198"/>
         <source>Audio clip name</source>
-        <translation type="unfinished"></translation>
+        <translation>音频剪辑名称</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="206"/>
         <source>Audio file name</source>
-        <translation type="unfinished"></translation>
+        <translation>音频文件名称</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="211"/>
         <location filename="../qtractorAudioEditorForm.cpp" line="2072"/>
         <source>MOD</source>
-        <translation type="unfinished"></translation>
+        <translation>MOD</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="214"/>
         <source>Audio modification state</source>
-        <translation type="unfinished"></translation>
+        <translation>音频修改状态</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="219"/>
@@ -2445,7 +2445,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="222"/>
         <source>Audio clip mute state</source>
-        <translation type="unfinished"></translation>
+        <translation>音频剪辑静音状态</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="227"/>
@@ -2455,7 +2455,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="230"/>
         <source>Audio clip duration</source>
-        <translation type="unfinished"></translation>
+        <translation>音频剪辑持续时间</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="622"/>
@@ -2469,12 +2469,16 @@ Length:	%3</source>
 &quot;%1&quot;
 
 Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>当前音频剪辑已更改：
+
+“%1”
+
+您想保存更改吗？</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="917"/>
         <source>Save Audio Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>保存音频剪辑</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="920"/>
@@ -2489,17 +2493,17 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1040"/>
         <source>Audio clip export: &quot;%1&quot; started...</source>
-        <translation type="unfinished"></translation>
+        <translation>音频剪辑导出：“%1”已开始...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1155"/>
         <source>Audio clip export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>音频剪辑导出：“%1”已完成。</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1990"/>
         <source>Audio Editor Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>音频编辑器快捷键</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="2065"/>
@@ -2600,7 +2604,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="34"/>
         <source>Audio Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>音频工具</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="63"/>
@@ -2621,12 +2625,12 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorAudioToolsForm.ui" line="127"/>
         <location filename="../qtractorAudioToolsForm.ui" line="145"/>
         <source>&amp;Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>增益(&amp;G)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="142"/>
         <source>Apply gain to selected audio</source>
-        <translation type="unfinished"></translation>
+        <translation>为所选音频应用增益</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="168"/>
@@ -2635,38 +2639,38 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorAudioToolsForm.ui" line="513"/>
         <location filename="../qtractorAudioToolsForm.ui" line="628"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>值：</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="184"/>
         <source>Gain value in dBfs</source>
-        <translation type="unfinished"></translation>
+        <translation>增益值（dBfs）</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="187"/>
         <location filename="../qtractorAudioToolsForm.ui" line="417"/>
         <source> dBfs</source>
-        <translation type="unfinished"></translation>
+        <translation> dBfs</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="242"/>
         <source>P&amp;anning</source>
-        <translation type="unfinished"></translation>
+        <translation>声像(&amp;A)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="257"/>
         <source>Apply panning to selected audio</source>
-        <translation type="unfinished"></translation>
+        <translation>为所选音频设置声像</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="260"/>
         <source>&amp;Panning</source>
-        <translation type="unfinished"></translation>
+        <translation>声像(&amp;P)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="299"/>
         <source>Panning balance (-100=L, 0=C, +100=R)</source>
-        <translation type="unfinished"></translation>
+        <translation>声像平衡（-100=L，0=C，+100=R）</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="302"/>
@@ -2683,52 +2687,52 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="372"/>
         <source>Normalize selected audio to target level</source>
-        <translation type="unfinished"></translation>
+        <translation>将所选音频标准化为目标电平</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="414"/>
         <source>Normalize peak level in dBfs</source>
-        <translation type="unfinished"></translation>
+        <translation>以 dBfs 为单位标准化峰值电平</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="472"/>
         <source>&amp;TimeStretch</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;TimeStretch</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="487"/>
         <source>Time-stretch selected audio</source>
-        <translation type="unfinished"></translation>
+        <translation>对所选音频进行时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="490"/>
         <source>&amp;Time-stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Time-stretch</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="529"/>
         <source>Time-stretch amount in percentage</source>
-        <translation type="unfinished"></translation>
+        <translation>时间拉伸量（百分比）</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="587"/>
         <source>&amp;PitchShift</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;PitchShift</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="602"/>
         <source>Pitch-shift selected audio</source>
-        <translation type="unfinished"></translation>
+        <translation>对所选音频进行变调</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="605"/>
         <source>&amp;Pitch-shift</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pitch-shift</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="644"/>
         <source>Pitch-shift in semitones</source>
-        <translation type="unfinished"></translation>
+        <translation>变调量（半音）</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="650"/>
@@ -2744,17 +2748,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="717"/>
         <source>Reverse selected audio</source>
-        <translation type="unfinished"></translation>
+        <translation>反转所选音频</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="220"/>
         <source>gain</source>
-        <translation type="unfinished"></translation>
+        <translation>增益</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="222"/>
         <source>panning</source>
-        <translation type="unfinished"></translation>
+        <translation>声像</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="224"/>
@@ -2764,17 +2768,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="226"/>
         <source>time-stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="228"/>
         <source>pitch-shift</source>
-        <translation type="unfinished"></translation>
+        <translation>音调移位</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="230"/>
         <source>reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>反转</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="429"/>
@@ -2995,7 +2999,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorBusForm.ui" line="483"/>
         <source>Current total input latency</source>
-        <translation type="unfinished"></translation>
+        <translation>当前总输入延迟</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="499"/>
@@ -3030,7 +3034,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorBusForm.ui" line="654"/>
         <source>Current total output latency</source>
-        <translation type="unfinished"></translation>
+        <translation>当前总输出延迟</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="685"/>
@@ -3497,7 +3501,12 @@ with the current clip contents when saved:
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>所选 MIDI 文件将被覆盖
+保存时使用当前剪辑内容：
+
+“%1”
+
+你确定吗？</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="597"/>
@@ -6329,127 +6338,127 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1803"/>
         <source>Clip Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>剪辑属性</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1806"/>
         <source>Clip properties</source>
-        <translation type="unfinished"></translation>
+        <translation>剪辑属性</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1809"/>
         <source>Edit current clip properties</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑当前剪辑属性</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1910"/>
         <source>&amp;Gain...</source>
-        <translation type="unfinished"></translation>
+        <translation>增益...(&amp;G)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1913"/>
         <source>Gain Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>设置片段增益</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1916"/>
         <source>Gain clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>为所选剪辑应用增益</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1919"/>
         <source>Gain current audio clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>为当前音频片段的所选部分应用增益</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1924"/>
         <source>P&amp;anning...</source>
-        <translation type="unfinished"></translation>
+        <translation>声像...(&amp;A)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1927"/>
         <source>Panning Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>设置片段声像</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1930"/>
         <source>Panning clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>为所选剪辑设置声像</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1933"/>
         <source>Panning current audio clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>为当前音频片段的所选部分设置声像</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1944"/>
         <source>Normalize clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>标准化剪辑选择</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1947"/>
         <source>Normalize current audio clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>标准化当前音频剪辑选择</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1952"/>
         <source>&amp;Time Stretch...</source>
-        <translation type="unfinished"></translation>
+        <translation>时间拉伸...(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1955"/>
         <source>Time stretch Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>时间拉伸片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1958"/>
         <source>Time stretch clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>对所选剪辑进行时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1961"/>
         <source>Time stretch current audio clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>对当前音频片段的所选部分进行时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1966"/>
         <source>&amp;Pitch Shift...</source>
-        <translation type="unfinished"></translation>
+        <translation>变调...(&amp;P)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1969"/>
         <source>Pitch Shift Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>变调片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1972"/>
         <source>Pitch shift clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>对所选剪辑进行变调</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1975"/>
         <source>Pitch shift current audio clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>对当前音频片段的所选部分进行变调</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1980"/>
         <source>&amp;Reverse...</source>
-        <translation type="unfinished"></translation>
+        <translation>反转...(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1983"/>
         <source>Reverse Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>反转片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1986"/>
         <source>Reverse clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>反转所选剪辑</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1989"/>
         <source>Reverse current audio clip selection</source>
-        <translation type="unfinished"></translation>
+        <translation>反转当前音频片段的所选部分</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2028"/>
@@ -6957,38 +6966,38 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2459"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定工具栏(&amp;K)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2462"/>
         <location filename="../qtractorMainForm.ui" line="2465"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定工具栏位置</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2468"/>
         <source>Lock/unlock main program window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定/解锁主程序窗口工具栏位置</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2479"/>
         <source>Session &amp;List</source>
-        <translation type="unfinished"></translation>
+        <translation>会话列表(&amp;L)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2482"/>
         <source>Session List</source>
-        <translation type="unfinished"></translation>
+        <translation>会话列表</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2485"/>
         <source>Session list</source>
-        <translation type="unfinished"></translation>
+        <translation>会话列表</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2488"/>
         <source>Show/hide the session list window</source>
-        <translation type="unfinished"></translation>
+        <translation>显示/隐藏会话列表窗口</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2499"/>
@@ -7145,34 +7154,34 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2662"/>
         <source>Ma&amp;ximize</source>
-        <translation type="unfinished"></translation>
+        <translation>最大化(&amp;X)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2665"/>
         <source>Zoom Maximize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最大</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2668"/>
         <location filename="../qtractorMainForm.ui" line="2671"/>
         <source>Zoom maximize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最大</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2679"/>
         <source>Mi&amp;nimize</source>
-        <translation type="unfinished"></translation>
+        <translation>最小化(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2682"/>
         <source>Zoom Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最小</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2685"/>
         <location filename="../qtractorMainForm.ui" line="2688"/>
         <source>Zoom minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最小</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2696"/>
@@ -12119,18 +12128,18 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1222"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定工具栏(&amp;K)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1225"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1228"/>
         <source>Lock Toolbar Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定工具栏位置</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1231"/>
         <source>Lock/unlock midi window toolbar positions</source>
-        <translation type="unfinished"></translation>
+        <translation>锁定/解锁 midi 窗口工具栏位置</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1259"/>
@@ -12355,34 +12364,34 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1419"/>
         <source>Ma&amp;ximize</source>
-        <translation type="unfinished"></translation>
+        <translation>最大化(&amp;X)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1422"/>
         <source>Zoom Maximize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最大</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1425"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1428"/>
         <source>Zoom maximize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最大</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1436"/>
         <source>Mi&amp;nimize</source>
-        <translation type="unfinished"></translation>
+        <translation>最小化(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1439"/>
         <source>Zoom Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最小</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1442"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1445"/>
         <source>Zoom minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>缩放至最小</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1453"/>
@@ -12490,18 +12499,18 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1555"/>
         <source>&amp;Fade In/Out</source>
-        <translation type="unfinished"></translation>
+        <translation>淡入/淡出(&amp;F)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1558"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1561"/>
         <source>Fade in/out</source>
-        <translation type="unfinished"></translation>
+        <translation>淡入/淡出</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1564"/>
         <source>Fade in/out controls</source>
-        <translation type="unfinished"></translation>
+        <translation>淡入/淡出控件</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1569"/>
@@ -13025,7 +13034,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="2607"/>
         <source>MIDI Editor Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI 编辑器快捷方式</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="2761"/>
@@ -15178,42 +15187,42 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4367"/>
         <source>Editor (GUI)</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor (GUI)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4391"/>
         <source>Open plugin&apos;s &amp;editor by default</source>
-        <translation type="unfinished"></translation>
+        <translation>默认打开插件编辑器(&amp;E)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4417"/>
         <source>Whether to keep all plugin editors (GUI) always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>是否让所有插件编辑器 (GUI) 始终位于最前面</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4420"/>
         <source>&amp;Keep plugin editors always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>保持插件编辑器始终位于最前面(&amp;K)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4433"/>
         <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>是否选择插件编辑器 (GUI)如果有多个可用，则键入</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4436"/>
         <source>&amp;Select plugin&apos;s editor type if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>如果有多个可用的插件编辑器类型，请选择(&amp;S)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4449"/>
         <source>Whether to reset plugin&apos;s editor (GUI) type if previously selected</source>
-        <translation type="unfinished"></translation>
+        <translation>如果先前选择了是否重置插件的编辑器 (GUI) 类型</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4452"/>
         <source>Rese&amp;t plugin&apos;s editor type</source>
-        <translation type="unfinished"></translation>
+        <translation>重置插件编辑器类型(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4481"/>
@@ -16518,7 +16527,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1897"/>
         <source>Supported files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>支持的文件 (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1898"/>
@@ -16890,17 +16899,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1069"/>
         <source>track</source>
-        <translation type="unfinished"></translation>
+        <translation>轨道</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1086"/>
         <source>clip</source>
-        <translation type="unfinished"></translation>
+        <translation>片段</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="1119"/>
         <source>bus</source>
-        <translation type="unfinished"></translation>
+        <translation>总线</translation>
     </message>
     <message>
         <location filename="../qtractorSessionList.cpp" line="825"/>
@@ -16910,7 +16919,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorSessionList.cpp" line="826"/>
         <source>Detail</source>
-        <translation type="unfinished"></translation>
+        <translation>详细信息</translation>
     </message>
 </context>
 <context>
@@ -17154,12 +17163,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
         <source>&amp;End:</source>
-        <translation type="unfinished"></translation>
+        <translation>结束(&amp;E)：</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="232"/>
         <source>Range end</source>
-        <translation type="unfinished"></translation>
+        <translation>范围结束</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="245"/>
@@ -18248,27 +18257,27 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="986"/>
         <source>gain</source>
-        <translation type="unfinished"></translation>
+        <translation>增益</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="987"/>
         <source>panning</source>
-        <translation type="unfinished"></translation>
+        <translation>声像</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="989"/>
         <source>time-stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="990"/>
         <source>pitch-shift</source>
-        <translation type="unfinished"></translation>
+        <translation>音调移位</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="991"/>
         <source>reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>反转</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1122"/>
