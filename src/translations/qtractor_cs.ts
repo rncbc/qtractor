@@ -1225,18 +1225,18 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="335"/>
         <source>&amp;Unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpo&amp;jit</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="338"/>
         <location filename="../qtractorAudioEditorForm.ui" line="341"/>
         <source>Unlink</source>
-        <translation type="unfinished">Zrušit odkaz</translation>
+        <translation>Zrušit odkaz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="344"/>
         <source>Unlink current audio clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit propojení aktuálního audio klipu</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="349"/>
@@ -1318,7 +1318,7 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="412"/>
         <source>F2</source>
-        <translation type="unfinished">F2</translation>
+        <translation>F2</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="417"/>
@@ -2483,7 +2483,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="920"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1002"/>
@@ -7054,17 +7054,17 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1803"/>
         <source>Clip Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastnosti klipu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1806"/>
         <source>Clip properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastnosti klipu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1809"/>
         <source>Edit current clip properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit vlastnosti aktuálního klipu</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1820"/>
@@ -11971,7 +11971,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="582"/>
         <source>F2</source>
-        <translation type="unfinished">F2</translation>
+        <translation>F2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="587"/>

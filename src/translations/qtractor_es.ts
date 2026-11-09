@@ -37,7 +37,7 @@ Audio:	%1 canales, %2 Hz</translation>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="1340"/>
         <source>Audio file save: &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar archivo de audio: &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2874"/>
@@ -104,7 +104,7 @@ Audio:	%1 canales, %2 Hz</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="163"/>
         <source>[Mute] </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="546"/>
@@ -373,7 +373,7 @@ Fin:	%3	Duración:	%4</translation>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3441"/>
         <source>Select plug-in&apos;s editor (GUI) type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona el tipo de editor (GUI) del plug-in:</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3453"/>
@@ -424,7 +424,7 @@ Fin:	%3	Duración:	%4</translation>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3507"/>
         <source>Reset plug-in&apos;s editor (GUI) type ?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Restablecer el tipo de editor (GUI) del plug-in?</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3903"/>
@@ -1148,7 +1148,7 @@ Duración:	%3</translation>
         <location filename="../qtractorAudioEditorForm.ui" line="143"/>
         <location filename="../qtractorAudioEditorForm.ui" line="808"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editar</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="147"/>
@@ -1163,7 +1163,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="174"/>
         <source>St&amp;ep</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;so</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="200"/>
@@ -1225,13 +1225,13 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="335"/>
         <source>&amp;Unlink</source>
-        <translation type="unfinished">Desvinc&amp;ular</translation>
+        <translation>Desvinc&amp;ular</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="338"/>
         <location filename="../qtractorAudioEditorForm.ui" line="341"/>
         <source>Unlink</source>
-        <translation type="unfinished">Desvincular</translation>
+        <translation>Desvincular</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="344"/>
@@ -1363,7 +1363,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="448"/>
         <source>&amp;Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportar...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="451"/>
@@ -1529,7 +1529,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="596"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eliminar</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="599"/>
@@ -1618,7 +1618,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="664"/>
         <source>&amp;Gain...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ganancia...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="667"/>
@@ -1634,7 +1634,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="678"/>
         <source>P&amp;anning...</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;anoramización...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="681"/>
@@ -1666,7 +1666,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="706"/>
         <source>&amp;Time Stretch...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Estiramiento de tiempo...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="709"/>
@@ -1686,7 +1686,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="720"/>
         <source>&amp;Pitch Shift...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cambio de tono...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="723"/>
@@ -1706,7 +1706,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="734"/>
         <source>&amp;Reverse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Invertir...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="737"/>
@@ -1829,7 +1829,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="859"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;loquear barras de herramientas</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="862"/>
@@ -1908,7 +1908,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="933"/>
         <source>Ma&amp;ximize</source>
-        <translation type="unfinished"></translation>
+        <translation>Ma&amp;ximizar</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="936"/>
@@ -1924,7 +1924,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="950"/>
         <source>Mi&amp;nimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Mi&amp;nimizar</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="953"/>
@@ -2043,7 +2043,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1069"/>
         <source>&amp;Fade In/Out</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fundido de entrada/salida</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1072"/>
@@ -2059,7 +2059,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1083"/>
         <source>&amp;Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Actualizar</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1086"/>
@@ -2469,7 +2469,11 @@ Duración:	%3</translation>
 &quot;%1&quot;
 
 Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>El clip de Audio actual ha cambiado:
+
+&quot;%1&quot;
+
+¿Deseas guardar los cambios?</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="917"/>
@@ -2489,12 +2493,12 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1040"/>
         <source>Audio clip export: &quot;%1&quot; started...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportación del clip de Audio: &quot;%1&quot; iniciada...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1155"/>
         <source>Audio clip export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportación del clip de Audio: &quot;%1&quot; completada.</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1990"/>
@@ -2621,7 +2625,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorAudioToolsForm.ui" line="127"/>
         <location filename="../qtractorAudioToolsForm.ui" line="145"/>
         <source>&amp;Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ganancia</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="142"/>
@@ -2646,12 +2650,12 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorAudioToolsForm.ui" line="187"/>
         <location filename="../qtractorAudioToolsForm.ui" line="417"/>
         <source> dBfs</source>
-        <translation type="unfinished"></translation>
+        <translation> dBfs</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="242"/>
         <source>P&amp;anning</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;anoramización</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="257"/>
@@ -2661,7 +2665,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="260"/>
         <source>&amp;Panning</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Panoramización</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="299"/>
@@ -2693,7 +2697,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="472"/>
         <source>&amp;TimeStretch</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Estiramiento de tiempo</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="487"/>
@@ -2703,7 +2707,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="490"/>
         <source>&amp;Time-stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Estiramiento de tiempo</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="529"/>
@@ -2713,7 +2717,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="587"/>
         <source>&amp;PitchShift</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cambio de tono</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="602"/>
@@ -2723,7 +2727,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="605"/>
         <source>&amp;Pitch-shift</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cambio de tono</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="644"/>
@@ -3430,7 +3434,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="602"/>
         <source>RubberBand &amp;formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>RubberBand: conservar &amp;formantes</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="615"/>
@@ -3450,7 +3454,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="634"/>
         <source>RubberBand R&amp;3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor R&amp;3 de RubberBand de mayor precisión</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="646"/>
@@ -3497,7 +3501,12 @@ with the current clip contents when saved:
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo MIDI seleccionado se sobrescribirá
+con el contenido actual del clip al guardarlo:
+
+&quot;%1&quot;
+
+¿Seguro que deseas continuar?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="597"/>
@@ -4700,12 +4709,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="556"/>
         <source>Mo&amp;de</source>
-        <translation type="unfinished"></translation>
+        <translation>Mo&amp;do</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="565"/>
         <source>St&amp;ep</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;so</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="600"/>
@@ -5785,7 +5794,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1457"/>
         <source>&amp;Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Minimizar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1460"/>
@@ -6343,7 +6352,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1910"/>
         <source>&amp;Gain...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ganancia...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1913"/>
@@ -6363,7 +6372,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1924"/>
         <source>P&amp;anning...</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;anoramización...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1927"/>
@@ -6393,7 +6402,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1952"/>
         <source>&amp;Time Stretch...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Estiramiento de tiempo...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1955"/>
@@ -6413,7 +6422,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1966"/>
         <source>&amp;Pitch Shift...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cambio de tono...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1969"/>
@@ -6433,7 +6442,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1980"/>
         <source>&amp;Reverse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Invertir...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1983"/>
@@ -6543,7 +6552,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2092"/>
         <source>T&amp;empo ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampa de t&amp;empo...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2095"/>
@@ -6956,7 +6965,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2459"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;loquear barras de herramientas</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2462"/>
@@ -6972,7 +6981,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2479"/>
         <source>Session &amp;List</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lista de sesiones</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2482"/>
@@ -7144,7 +7153,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2662"/>
         <source>Ma&amp;ximize</source>
-        <translation type="unfinished"></translation>
+        <translation>Ma&amp;ximizar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2665"/>
@@ -7160,7 +7169,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2679"/>
         <source>Mi&amp;nimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Mi&amp;nimizar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2682"/>
@@ -8176,7 +8185,15 @@ erased from all its current data,
 when closing this session.
 
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>El directorio contiene un archivo extraído:
+
+&quot;%1&quot;
+
+Este directorio se eliminará,
+con todos sus datos actuales,
+al cerrar esta sesión.
+
+¿Deseas continuar?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2922"/>
@@ -8586,7 +8603,7 @@ Guardar en otro archivo de sesión es muy recomendable.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8827"/>
         <source>Don&apos;t show this again</source>
-        <translation type="unfinished"></translation>
+        <translation>No volver a mostrar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="9291"/>
@@ -9415,7 +9432,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMidiControlPluginWidget.ui" line="125"/>
         <source>&amp;Bipolar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bipolar</translation>
     </message>
 </context>
 <context>
@@ -11231,12 +11248,12 @@ Datos: </translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="254"/>
         <source>&amp;Note</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nota</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="261"/>
         <source>St&amp;ep</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;so</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="289"/>
@@ -11783,7 +11800,7 @@ Datos: </translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="914"/>
         <source>&amp;Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;so</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="917"/>
@@ -11937,7 +11954,7 @@ Datos: </translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1046"/>
         <source>T&amp;empo ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampa de t&amp;empo...</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1049"/>
@@ -12115,7 +12132,7 @@ Datos: </translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1222"/>
         <source>Loc&amp;k Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;loquear barras de herramientas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1225"/>
@@ -12351,7 +12368,7 @@ Datos: </translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1419"/>
         <source>Ma&amp;ximize</source>
-        <translation type="unfinished"></translation>
+        <translation>Ma&amp;ximizar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1422"/>
@@ -12367,7 +12384,7 @@ Datos: </translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1436"/>
         <source>Mi&amp;nimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Mi&amp;nimizar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1439"/>
@@ -12486,7 +12503,7 @@ Datos: </translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1555"/>
         <source>&amp;Fade In/Out</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fundido de entrada/salida</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1558"/>
@@ -13677,7 +13694,7 @@ Lo siento.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="660"/>
         <source>&amp;Compress</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Comprimir</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="684"/>
@@ -13759,7 +13776,7 @@ Lo siento.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1054"/>
         <source>&amp;Legato:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Legato:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1067"/>
@@ -13804,12 +13821,12 @@ Lo siento.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1134"/>
         <source>&amp;Join</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Unir</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1141"/>
         <source>&amp;Split:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dividir:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1148"/>
@@ -13916,7 +13933,7 @@ Editar los marcadores de cabeza/cola (azul) definen el rango de desplazamiento.<
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1565"/>
         <source>T&amp;empo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampa de t&amp;empo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1577"/>
@@ -14456,7 +14473,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
         <source>Default &amp;Fade In:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fundido de entrada predeterminado:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="552"/>
@@ -14466,7 +14483,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="581"/>
         <source>Default &amp;Fade Out:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fundido de salida predeterminado:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="597"/>
@@ -14476,7 +14493,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="859"/>
         <source>&amp;Latency:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Latencia:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="875"/>
@@ -14506,7 +14523,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="915"/>
         <source> frames</source>
-        <translation type="unfinished"></translation>
+        <translation> muestras</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="943"/>
@@ -14594,7 +14611,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1163"/>
         <source>RubberBand &amp;formant preserve</source>
-        <translation type="unfinished"></translation>
+        <translation>RubberBand: conservar &amp;formantes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1176"/>
@@ -14614,7 +14631,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1195"/>
         <source>RubberBand R&amp;3 finer engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Motor R&amp;3 de RubberBand de mayor precisión</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1208"/>
@@ -14649,7 +14666,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1274"/>
         <source>&amp;Warn about self-connections</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Avisar de conexiones a sí mismo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1316"/>
@@ -14974,7 +14991,7 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="2712"/>
         <location filename="../qtractorOptionsForm.ui" line="2802"/>
         <source> ticks</source>
-        <translation type="unfinished"></translation>
+        <translation> ticks</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2599"/>
@@ -15119,7 +15136,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3260"/>
         <source>&amp;Icons theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema de &amp;iconos:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3276"/>
@@ -15134,7 +15151,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3337"/>
         <source>St&amp;yle sheet:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoja de esti&amp;lo:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3353"/>
@@ -15159,7 +15176,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4391"/>
         <source>Open plugin&apos;s &amp;editor by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir el &amp;editor del plug-in de forma predeterminada</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4417"/>
@@ -15169,27 +15186,27 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4420"/>
         <source>&amp;Keep plugin editors always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mantener siempre encima los editores de plug-ins</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4433"/>
         <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica si se debe seleccionar el tipo de editor (GUI) del plug-in cuando haya más de uno disponible</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4436"/>
         <source>&amp;Select plugin&apos;s editor type if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Seleccionar el tipo de editor del plug-in si hay más de uno disponible</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4449"/>
         <source>Whether to reset plugin&apos;s editor (GUI) type if previously selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Indica si se debe restablecer el tipo de editor (GUI) del plug-in si se había seleccionado anteriormente</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4452"/>
         <source>Rese&amp;t plugin&apos;s editor type</source>
-        <translation type="unfinished"></translation>
+        <translation>Res&amp;tablecer el tipo de editor del plug-in</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4481"/>
@@ -15234,7 +15251,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4682"/>
         <source>&amp;OSC</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4700"/>
@@ -15249,12 +15266,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4718"/>
         <source>Enable &amp;OSC server/listener</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar servidor/receptor &amp;OSC</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4744"/>
         <source>&amp;URL: osc.udp://localhost:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;URL: osc.udp://localhost:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4760"/>
@@ -15304,7 +15321,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4880"/>
         <source>&amp;Check</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Marcar</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4902"/>
@@ -15314,7 +15331,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4905"/>
         <source>U&amp;ncheck</source>
-        <translation type="unfinished"></translation>
+        <translation>D&amp;esmarcar</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4940"/>
@@ -15437,7 +15454,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1721"/>
         <source>Dedicated audio &amp;metronome outputs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Salidas de &amp;metrónomo de audio dedicadas:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3029"/>
@@ -16347,7 +16364,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1625"/>
         <source>Aux Send: </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1970"/>
@@ -16411,7 +16428,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="2127"/>
         <source>Add &amp;Controller</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir &amp;controlador</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="2156"/>
@@ -17161,12 +17178,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="146"/>
         <source>R&amp;eset</source>
-        <translation type="unfinished"></translation>
+        <translation>R&amp;establecer</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
         <source>&amp;End:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fin:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="232"/>
