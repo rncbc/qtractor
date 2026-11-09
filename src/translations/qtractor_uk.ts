@@ -1618,7 +1618,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="664"/>
         <source>&amp;Gain...</source>
-        <translation>Підсилення...(&amp;G)</translation>
+        <translation>&amp;Підсилення...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="667"/>
@@ -1634,7 +1634,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="678"/>
         <source>P&amp;anning...</source>
-        <translation>Панорамування...(&amp;A)</translation>
+        <translation>П&amp;анорамування...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="681"/>
@@ -1666,7 +1666,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="706"/>
         <source>&amp;Time Stretch...</source>
-        <translation>Розтягнення часу...(&amp;T)</translation>
+        <translation>Розтягнення &amp;часу...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="709"/>
@@ -1686,7 +1686,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="720"/>
         <source>&amp;Pitch Shift...</source>
-        <translation>Зсув висоти тону...(&amp;P)</translation>
+        <translation>Зс&amp;ув висоти тону...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="723"/>
@@ -1706,7 +1706,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="734"/>
         <source>&amp;Reverse...</source>
-        <translation>Реверс...(&amp;R)</translation>
+        <translation>&amp;Реверс...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="737"/>
@@ -6307,7 +6307,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1910"/>
         <source>&amp;Gain...</source>
-        <translation>Підсилення...(&amp;G)</translation>
+        <translation>&amp;Підсилення...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1913"/>
@@ -6327,7 +6327,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1924"/>
         <source>P&amp;anning...</source>
-        <translation>Панорамування...(&amp;A)</translation>
+        <translation>П&amp;анорамування...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1927"/>
@@ -6357,7 +6357,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1952"/>
         <source>&amp;Time Stretch...</source>
-        <translation>Розтягнення часу...(&amp;T)</translation>
+        <translation>Розтягнення &amp;часу...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1955"/>
@@ -6377,7 +6377,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1966"/>
         <source>&amp;Pitch Shift...</source>
-        <translation>Зсув висоти тону...(&amp;P)</translation>
+        <translation>Зс&amp;ув висоти тону...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1969"/>
@@ -6397,7 +6397,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1980"/>
         <source>&amp;Reverse...</source>
-        <translation>Реверс...(&amp;R)</translation>
+        <translation>&amp;Реверс...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1983"/>
