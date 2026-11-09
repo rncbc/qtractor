@@ -203,8 +203,11 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 			iFadeInLength = long(fTimeStretch * float(iFadeInLength));
 		else
 			iFadeInLength += long(pClip->clipStart()) - long(iClipStart);
-		if (iFadeInLength > 0)
-			pItem->fadeInLength = iFadeInLength;
+		if (iFadeInLength > iClipLength)
+			iFadeInLength = iClipLength - pSession->frameFromPixel(8);
+		if (iFadeInLength < 0)
+			iFadeInLength = 0;
+		pItem->fadeInLength = iFadeInLength;
 	}
 
 	long iFadeOutLength = long(pClip->fadeOutLength());
@@ -214,8 +217,11 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 		else
 			iFadeOutLength += long(iClipStart + iClipLength)
 				- long(pClip->clipStart() + pClip->clipLength());
-		if (iFadeOutLength > 0)
-			pItem->fadeOutLength = iFadeOutLength;
+		if (iFadeOutLength > iClipLength)
+			iFadeOutLength = iClipLength - pSession->frameFromPixel(8);
+		if (iFadeOutLength < 0)
+			iFadeOutLength = 0;
+		pItem->fadeOutLength = iFadeOutLength;
 	}
 
 	if (fTimeStretch > 0.0f) {
@@ -241,6 +247,7 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 
 	if (fPitchShift > 0.0f)
 		pItem->pitchShift = fPitchShift;
+
 	m_items.append(pItem);
 
 	if (isAudioClip(pClip) || pItem->editCommand == nullptr)
@@ -284,7 +291,17 @@ void qtractorClipCommand::fadeInClip ( qtractorClip *pClip,
 	unsigned long iFadeInLength, qtractorClip::FadeType fadeInType )
 {
 	Item *pItem = new Item(FadeInClip, pClip, pClip->track());
-	pItem->fadeInLength = iFadeInLength;
+
+	long iFadeInLength2 = iFadeInLength;
+	const unsigned long iClipLength = pClip->clipLength();
+	if (iFadeInLength2 > iClipLength) {
+		qtractorSession *pSession = (pClip->track())->session();
+		iFadeInLength2 = iClipLength - pSession->frameFromPixel(8);
+		if (iFadeInLength2 < 0)
+			iFadeInLength2 = 0;
+	}
+
+	pItem->fadeInLength = iFadeInLength2;
 	pItem->fadeInType = fadeInType;
 	m_items.append(pItem);
 }
@@ -294,7 +311,17 @@ void qtractorClipCommand::fadeOutClip ( qtractorClip *pClip,
 	unsigned long iFadeOutLength, qtractorClip::FadeType fadeOutType )
 {
 	Item *pItem = new Item(FadeOutClip, pClip, pClip->track());
-	pItem->fadeOutLength = iFadeOutLength;
+
+	long iFadeOutLength2 = iFadeOutLength;
+	const unsigned long iClipLength = pClip->clipLength();
+	if (iFadeOutLength2 > iClipLength) {
+		qtractorSession *pSession = (pClip->track())->session();
+		iFadeOutLength2 = iClipLength - pSession->frameFromPixel(8);
+		if (iFadeOutLength2 < 0)
+			iFadeOutLength2 = 0;
+	}
+
+	pItem->fadeOutLength = iFadeOutLength2;
 	pItem->fadeOutType = fadeOutType;
 	m_items.append(pItem);
 }
