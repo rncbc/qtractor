@@ -956,7 +956,11 @@ void qtractorAudioClip::process_export (
 void qtractorAudioClip::draw (
 	QPainter& painter, const QRect& clipRect, unsigned long iClipOffset )
 {
-	qtractorSession *pSession = track()->session();
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == nullptr)
 		return;
 
@@ -1020,7 +1024,7 @@ void qtractorAudioClip::draw (
 	}
 
 	// Close, draw and free the polygons...
-	QColor fg(track()->foreground());
+	QColor fg(pTrack->foreground());
 	fg.setAlpha(200);
 	painter.setPen(fg.lighter(140));
 	painter.setBrush(fg);
@@ -1031,23 +1035,25 @@ void qtractorAudioClip::draw (
 		delete pPolyMax[k];
 	}
 
-	// Show that we may have hard clip limits...
-	const unsigned long iClipLength = clipOffset() + clipLength();
-	const unsigned long iFileLength = fileLength();
-	if (iClipLength > iFileLength) {
-		x = clipRect.x();
-		if (iFileLength > iClipOffset)
-			x += pSession->pixelFromFrame(iFileLength - iClipOffset);
-		if (x < clipRect.right()) {
-			QRect rect(clipRect);
-			rect.setLeft(x);
-			painter.fillRect(rect, QBrush(fg, Qt::BDiagPattern));
-		}
-	}
-
 	// Done on polygons.
 	delete [] pPolyRms;
 	delete [] pPolyMax;
+
+	// Show that we may have hard clip limits...
+	if (pTrack->clipRecord() != this) {
+		const unsigned long iClipLength = clipOffset() + clipLength();
+		const unsigned long iFileLength = fileLength();
+		if (iClipLength > iFileLength) {
+			x = clipRect.x();
+			if (iFileLength > iClipOffset)
+				x += pSession->pixelFromFrame(iFileLength - iClipOffset);
+			if (x < clipRect.right()) {
+				QRect rect(clipRect);
+				rect.setLeft(x);
+				painter.fillRect(rect, QBrush(fg, Qt::BDiagPattern));
+			}
+		}
+	}
 }
 
 
