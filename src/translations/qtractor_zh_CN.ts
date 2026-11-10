@@ -1363,7 +1363,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="448"/>
         <source>&amp;Export...</source>
-        <translation>导出...(&amp;E)</translation>
+        <translation>导出(&amp;E)...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="451"/>
@@ -1618,7 +1618,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="664"/>
         <source>&amp;Gain...</source>
-        <translation>增益...(&amp;G)</translation>
+        <translation>增益(&amp;G)...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="667"/>
@@ -1634,7 +1634,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="678"/>
         <source>P&amp;anning...</source>
-        <translation>声像...(&amp;A)</translation>
+        <translation>声像(&amp;A)...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="681"/>
@@ -1666,7 +1666,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="706"/>
         <source>&amp;Time Stretch...</source>
-        <translation>时间拉伸...(&amp;T)</translation>
+        <translation>时间拉伸(&amp;T)...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="709"/>
@@ -1686,7 +1686,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="720"/>
         <source>&amp;Pitch Shift...</source>
-        <translation>变调...(&amp;P)</translation>
+        <translation>变调(&amp;P)...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="723"/>
@@ -1706,7 +1706,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="734"/>
         <source>&amp;Reverse...</source>
-        <translation>反转...(&amp;R)</translation>
+        <translation>反转(&amp;R)...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="737"/>
@@ -2644,7 +2644,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="184"/>
         <source>Gain value in dBfs</source>
-        <translation>增益值（dBfs）</translation>
+        <translation>增益值(dBfs)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="187"/>
@@ -2670,7 +2670,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="299"/>
         <source>Panning balance (-100=L, 0=C, +100=R)</source>
-        <translation>声像平衡（-100=L，0=C，+100=R）</translation>
+        <translation>声像平衡(-100=L，0=C，+100=R)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="302"/>
@@ -2712,7 +2712,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="529"/>
         <source>Time-stretch amount in percentage</source>
-        <translation>时间拉伸量（百分比）</translation>
+        <translation>时间拉伸量(百分比)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="587"/>
@@ -2732,7 +2732,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="644"/>
         <source>Pitch-shift in semitones</source>
-        <translation>变调量（半音）</translation>
+        <translation>变调量(半音)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="650"/>
@@ -6353,7 +6353,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1910"/>
         <source>&amp;Gain...</source>
-        <translation>增益...(&amp;G)</translation>
+        <translation>增益(&amp;G)...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1913"/>
@@ -6373,7 +6373,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1924"/>
         <source>P&amp;anning...</source>
-        <translation>声像...(&amp;A)</translation>
+        <translation>声像(&amp;A)...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1927"/>
@@ -6403,7 +6403,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1952"/>
         <source>&amp;Time Stretch...</source>
-        <translation>时间拉伸...(&amp;T)</translation>
+        <translation>时间拉伸(&amp;T)...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1955"/>
@@ -6423,7 +6423,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1966"/>
         <source>&amp;Pitch Shift...</source>
-        <translation>变调...(&amp;P)</translation>
+        <translation>变调(&amp;P)...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1969"/>
@@ -6443,7 +6443,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1980"/>
         <source>&amp;Reverse...</source>
-        <translation>反转...(&amp;R)</translation>
+        <translation>反转(&amp;R)...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1983"/>
