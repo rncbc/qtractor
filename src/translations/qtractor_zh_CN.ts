@@ -99,7 +99,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorClip.cpp" line="171"/>
         <source> (take %1/%2)</source>
-        <translation> (片段 %1/%2)</translation>
+        <translation> (第 %1/%2 遍)</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="163"/>
@@ -126,32 +126,32 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="961"/>
         <source>take %1</source>
-        <translation>片段 %1</translation>
+        <translation>第 %1 遍</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="963"/>
         <source>reset takes</source>
-        <translation>重置片段</translation>
+        <translation>重置遍次</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1254"/>
         <source>clip save</source>
-        <translation>保存剪辑</translation>
+        <translation>保存片段</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1295"/>
         <source>clip unlink</source>
-        <translation>取消链接剪辑</translation>
+        <translation>取消链接片段</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1345"/>
         <source>clip tool %1</source>
-        <translation>剪辑工具 %1</translation>
+        <translation>片段工具 %1</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1538"/>
         <source>clip record</source>
-        <translation>录制剪辑</translation>
+        <translation>录制片段</translation>
     </message>
     <message>
         <location filename="../qtractorCurveCommand.cpp" line="113"/>
@@ -1005,7 +1005,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.cpp" line="1042"/>
         <source>clip tempo</source>
-        <translation>剪辑速度</translation>
+        <translation>片段速度</translation>
     </message>
 </context>
 <context>
@@ -1184,7 +1184,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="299"/>
         <source>Save current audio clip to existing file name</source>
-        <translation>将当前音频剪辑保存到现有文件名</translation>
+        <translation>将当前音频片段保存到现有文件名</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="304"/>
@@ -1204,7 +1204,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="313"/>
         <source>Save current audio clip with another file name</source>
-        <translation>使用另一个文件名保存当前音频剪辑</translation>
+        <translation>使用另一个文件名保存当前音频片段</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="321"/>
@@ -1220,7 +1220,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="330"/>
         <source>Mute current audio clip</source>
-        <translation>将当前音频剪辑静音</translation>
+        <translation>将当前音频片段静音</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="335"/>
@@ -1256,7 +1256,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="358"/>
         <source>Show current audio clip/track input bus connections</source>
-        <translation>显示当前音频剪辑/轨道输入总线连接</translation>
+        <translation>显示当前音频片段/轨道输入总线连接</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="363"/>
@@ -1276,7 +1276,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="372"/>
         <source>Show current audio clip/track output bus connections</source>
-        <translation>显示当前音频剪辑/轨道输出总线连接</translation>
+        <translation>显示当前音频片段/轨道输出总线连接</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="380"/>
@@ -1297,7 +1297,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="389"/>
         <source>Edit current audio clip/track properties</source>
-        <translation>编辑当前音频剪辑/轨道属性</translation>
+        <translation>编辑当前音频片段/轨道属性</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="392"/>
@@ -1313,7 +1313,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="409"/>
         <source>Edit current audio clip properties</source>
-        <translation>编辑当前音频剪辑属性</translation>
+        <translation>编辑当前音频片段属性</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="412"/>
@@ -1328,17 +1328,17 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="420"/>
         <source>Clip Range</source>
-        <translation>剪辑范围</translation>
+        <translation>片段范围</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="423"/>
         <source>Clip range</source>
-        <translation>剪辑范围</translation>
+        <translation>片段范围</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="426"/>
         <source>Set edit-range from clip extents</source>
-        <translation>从剪辑边界设置编辑范围</translation>
+        <translation>从片段边界设置编辑范围</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="434"/>
@@ -1348,17 +1348,17 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="437"/>
         <source>Clip Loop</source>
-        <translation>剪辑循环</translation>
+        <translation>片段循环</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="440"/>
         <source>Clip loop</source>
-        <translation>剪辑循环</translation>
+        <translation>片段循环</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="443"/>
         <source>Set loop-range from clip extents</source>
-        <translation>从剪辑边界设置循环范围</translation>
+        <translation>从片段边界设置循环范围</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="448"/>
@@ -1378,7 +1378,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="457"/>
         <source>Export current clip selection</source>
-        <translation>导出当前所选剪辑</translation>
+        <translation>导出当前所选片段</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="462"/>
@@ -1394,7 +1394,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="471"/>
         <source>Close this audio clip editor</source>
-        <translation>关闭此音频剪辑编辑器</translation>
+        <translation>关闭此音频片段编辑器</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="479"/>
@@ -1494,7 +1494,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="568"/>
         <source>Paste local clipboard contents into the current audio clip</source>
-        <translation>将本地剪贴板内容粘贴到当前音频剪辑中</translation>
+        <translation>将本地剪贴板内容粘贴到当前音频片段中</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="571"/>
@@ -1519,7 +1519,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="585"/>
         <source>Paste/repeat local clipboard contents into the current audio clip</source>
-        <translation>将本地剪贴板内容粘贴/重复到当前音频剪辑中</translation>
+        <translation>将本地剪贴板内容粘贴/重复到当前音频片段中</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="588"/>
@@ -1629,7 +1629,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="673"/>
         <source>Gain selection</source>
-        <translation>为所选剪辑应用增益</translation>
+        <translation>为所选片段应用增益</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="678"/>
@@ -1645,7 +1645,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="687"/>
         <source>Panning selection</source>
-        <translation>为所选剪辑设置声像</translation>
+        <translation>为所选片段设置声像</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="692"/>
@@ -1681,7 +1681,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="715"/>
         <source>Time stretch selection</source>
-        <translation>对所选剪辑进行时间拉伸</translation>
+        <translation>对所选片段进行时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="720"/>
@@ -1701,7 +1701,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="729"/>
         <source>Pitch shift selection</source>
-        <translation>对所选剪辑进行变调</translation>
+        <translation>对所选片段进行变调</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="734"/>
@@ -2418,7 +2418,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="198"/>
         <source>Audio clip name</source>
-        <translation>音频剪辑名称</translation>
+        <translation>音频片段名称</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="206"/>
@@ -2445,7 +2445,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="222"/>
         <source>Audio clip mute state</source>
-        <translation>音频剪辑静音状态</translation>
+        <translation>音频片段静音状态</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="227"/>
@@ -2455,7 +2455,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="230"/>
         <source>Audio clip duration</source>
-        <translation>音频剪辑持续时间</translation>
+        <translation>音频片段持续时间</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="622"/>
@@ -2469,7 +2469,7 @@ Length:	%3</source>
 &quot;%1&quot;
 
 Do you want to save the changes?</source>
-        <translation>当前音频剪辑已更改：
+        <translation>当前音频片段已更改：
 
 “%1”
 
@@ -2478,7 +2478,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="917"/>
         <source>Save Audio Clip</source>
-        <translation>保存音频剪辑</translation>
+        <translation>保存音频片段</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="920"/>
@@ -2493,12 +2493,12 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1040"/>
         <source>Audio clip export: &quot;%1&quot; started...</source>
-        <translation>音频剪辑导出：“%1”已开始...</translation>
+        <translation>音频片段导出：“%1”已开始...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1155"/>
         <source>Audio clip export: &quot;%1&quot; complete.</source>
-        <translation>音频剪辑导出：“%1”已完成。</translation>
+        <translation>音频片段导出：“%1”已完成。</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1990"/>
@@ -2508,7 +2508,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="2065"/>
         <source>[modified]</source>
-        <translation>[已修改]</translation>
+        <translation>[修改]</translation>
     </message>
 </context>
 <context>
@@ -3241,7 +3241,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="56"/>
         <source>Clip name</source>
-        <translation>剪辑名称</translation>
+        <translation>片段名称</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="63"/>
@@ -3251,12 +3251,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="73"/>
         <source>Clip filename</source>
-        <translation>剪辑文件名</translation>
+        <translation>片段文件名</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="98"/>
         <source>Browse for clip file</source>
-        <translation>浏览剪辑文件</translation>
+        <translation>浏览片段文件</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="121"/>
@@ -3266,13 +3266,13 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="140"/>
         <source>Clip track/channel</source>
-        <translation>剪辑轨道/通道</translation>
+        <translation>片段轨道/通道</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="214"/>
         <location filename="../qtractorClipForm.ui" line="281"/>
         <source>Clip gain/volume</source>
-        <translation>剪辑增益/音量</translation>
+        <translation>片段增益/音量</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="147"/>
@@ -3282,12 +3282,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="175"/>
         <source>Clip start</source>
-        <translation>剪辑起点</translation>
+        <translation>片段起点</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="255"/>
         <source>Clip offset</source>
-        <translation>剪辑偏移</translation>
+        <translation>片段偏移</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="262"/>
@@ -3297,7 +3297,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="322"/>
         <source>Clip length</source>
-        <translation>剪辑长度</translation>
+        <translation>片段长度</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="239"/>
@@ -3317,7 +3317,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="37"/>
         <source>Clip</source>
-        <translation>剪辑</translation>
+        <translation>片段</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="329"/>
@@ -3357,12 +3357,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="395"/>
         <source>Clip fade-in length</source>
-        <translation>剪辑淡入长度</translation>
+        <translation>片段淡入长度</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="402"/>
         <source>Clip fade-in type</source>
-        <translation>剪辑淡入类型</translation>
+        <translation>片段淡入类型</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="428"/>
@@ -3372,12 +3372,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="444"/>
         <source>Clip fade-out length</source>
-        <translation>剪辑淡出长度</translation>
+        <translation>片段淡出长度</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="451"/>
         <source>Clip fade-out type</source>
-        <translation>剪辑淡出类型</translation>
+        <translation>片段淡出类型</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="461"/>
@@ -3393,7 +3393,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="502"/>
         <source>Clip time-stretch percentage</source>
-        <translation>剪辑时间拉伸百分比</translation>
+        <translation>片段时间拉伸百分比</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="508"/>
@@ -3409,7 +3409,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="549"/>
         <source>Clip pitch-shift in semitones</source>
-        <translation>剪辑移调 (半音)</translation>
+        <translation>片段移调 (半音)</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="555"/>
@@ -3480,12 +3480,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.cpp" line="436"/>
         <source>new clip</source>
-        <translation>新建剪辑</translation>
+        <translation>新建片段</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="486"/>
         <source>edit clip</source>
-        <translation>编辑剪辑</translation>
+        <translation>编辑片段</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="374"/>
@@ -3502,7 +3502,7 @@ with the current clip contents when saved:
 
 Are you sure?</source>
         <translation>所选 MIDI 文件将被覆盖
-保存时使用当前剪辑内容：
+保存时使用当前片段内容：
 
 “%1”
 
@@ -3535,7 +3535,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorClipForm.cpp" line="722"/>
         <source>%1 Clip File</source>
-        <translation>%1 剪辑文件</translation>
+        <translation>%1 片段文件</translation>
     </message>
 </context>
 <context>
@@ -3717,7 +3717,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="133"/>
         <source>Clip start</source>
-        <translation>剪辑起点</translation>
+        <translation>片段起点</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="156"/>
@@ -3727,7 +3727,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="172"/>
         <source>Clip offset</source>
-        <translation>剪辑偏移</translation>
+        <translation>片段偏移</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="227"/>
@@ -3797,12 +3797,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="201"/>
         <source>Apply to clips in range</source>
-        <translation>应用到范围内的剪辑</translation>
+        <translation>应用到范围内的片段</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="204"/>
         <source>Cl&amp;ips</source>
-        <translation>剪辑(&amp;I)</translation>
+        <translation>片段(&amp;I)</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="217"/>
@@ -3839,7 +3839,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorEditor.cpp" line="836"/>
         <source>clip %1</source>
-        <translation>剪辑 %1</translation>
+        <translation>片段 %1</translation>
     </message>
     <message>
         <location filename="../qtractorEditor.cpp" line="838"/>
@@ -3857,7 +3857,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorExportForm.cpp" line="978"/>
         <source>%1 %2 Clips</source>
-        <translation>%1 %2 剪辑</translation>
+        <translation>%1 %2 片段</translation>
     </message>
 </context>
 <context>
@@ -5014,22 +5014,22 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorMainForm.ui" line="332"/>
         <location filename="../qtractorMainForm.ui" line="866"/>
         <source>&amp;Clip</source>
-        <translation>剪辑(&amp;C)</translation>
+        <translation>片段(&amp;C)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="869"/>
         <source>Clip</source>
-        <translation>剪辑</translation>
+        <translation>片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="872"/>
         <source>Select clip</source>
-        <translation>选择剪辑</translation>
+        <translation>选择片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="875"/>
         <source>Clip selection mode</source>
-        <translation>剪辑选择模式</translation>
+        <translation>片段选择模式</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="886"/>
@@ -6125,17 +6125,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1766"/>
         <source>New Clip</source>
-        <translation>新建剪辑</translation>
+        <translation>新建片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1769"/>
         <source>New clip</source>
-        <translation>新建剪辑</translation>
+        <translation>新建片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1772"/>
         <source>Create new clip</source>
-        <translation>创建新剪辑</translation>
+        <translation>创建新片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1780"/>
@@ -6145,17 +6145,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1783"/>
         <source>Edit Clip</source>
-        <translation>编辑剪辑</translation>
+        <translation>编辑片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1786"/>
         <source>Edit clip</source>
-        <translation>编辑剪辑</translation>
+        <translation>编辑片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1789"/>
         <source>Edit current clip</source>
-        <translation>编辑当前剪辑</translation>
+        <translation>编辑当前片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1792"/>
@@ -6165,17 +6165,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1820"/>
         <source>Mute Clip</source>
-        <translation>静音剪辑</translation>
+        <translation>静音片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1823"/>
         <source>Mute clip</source>
-        <translation>静音剪辑</translation>
+        <translation>静音片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1826"/>
         <source>Mute current clip</source>
-        <translation>将当前剪辑静音</translation>
+        <translation>将当前片段静音</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1834"/>
@@ -6185,17 +6185,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1837"/>
         <source>Unlink Clip</source>
-        <translation>取消链接剪辑</translation>
+        <translation>取消链接片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1840"/>
         <source>Unlink clip</source>
-        <translation>取消链接剪辑</translation>
+        <translation>取消链接片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1843"/>
         <source>Unlink current clip</source>
-        <translation>取消链接当前剪辑</translation>
+        <translation>取消链接当前片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1854"/>
@@ -6205,17 +6205,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1857"/>
         <source>Record Clip</source>
-        <translation>录制剪辑</translation>
+        <translation>录制片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1860"/>
         <source>Record clip</source>
-        <translation>录制剪辑</translation>
+        <translation>录制片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1863"/>
         <source>Record current clip (overdub)</source>
-        <translation>录制当前剪辑 (叠加)</translation>
+        <translation>录制当前片段 (叠加)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1868"/>
@@ -6225,17 +6225,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1871"/>
         <source>Split Clip</source>
-        <translation>分割剪辑</translation>
+        <translation>分割片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1874"/>
         <source>Split clip</source>
-        <translation>分割剪辑</translation>
+        <translation>分割片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1877"/>
         <source>Split current clip at playhead</source>
-        <translation>在播放头处分割当前剪辑</translation>
+        <translation>在播放头处分割当前片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1882"/>
@@ -6245,17 +6245,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1885"/>
         <source>Merge Clips</source>
-        <translation>合并剪辑</translation>
+        <translation>合并片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1888"/>
         <source>Merge clips</source>
-        <translation>合并剪辑</translation>
+        <translation>合并片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1891"/>
         <source>Merge selected clips</source>
-        <translation>合并选中的剪辑</translation>
+        <translation>合并选中的片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1896"/>
@@ -6267,17 +6267,17 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorMainForm.ui" line="1941"/>
         <location filename="../qtractorMainForm.ui" line="2025"/>
         <source>Normalize Clip</source>
-        <translation>标准化剪辑</translation>
+        <translation>标准化片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1902"/>
         <source>Normalize clip</source>
-        <translation>标准化剪辑</translation>
+        <translation>标准化片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1905"/>
         <source>Normalize current clip (gain/volume)</source>
-        <translation>标准化当前剪辑 (增益/音量)</translation>
+        <translation>标准化当前片段 (增益/音量)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1994"/>
@@ -6287,17 +6287,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1997"/>
         <source>Quantize Clip</source>
-        <translation>量化剪辑</translation>
+        <translation>量化片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2000"/>
         <source>Quantize clip events</source>
-        <translation>量化剪辑事件</translation>
+        <translation>量化片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2003"/>
         <source>Quantize current MIDI clip events</source>
-        <translation>量化当前 MIDI 剪辑事件</translation>
+        <translation>量化当前 MIDI 片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2008"/>
@@ -6307,17 +6307,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2011"/>
         <source>Transpose Clip</source>
-        <translation>移调剪辑</translation>
+        <translation>移调片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2014"/>
         <source>Transpose clip events</source>
-        <translation>移调剪辑事件</translation>
+        <translation>移调片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2017"/>
         <source>Transpose current MIDI clip events</source>
-        <translation>移调当前 MIDI 剪辑事件</translation>
+        <translation>移调当前 MIDI 片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1938"/>
@@ -6338,17 +6338,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1803"/>
         <source>Clip Properties</source>
-        <translation>剪辑属性</translation>
+        <translation>片段属性</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1806"/>
         <source>Clip properties</source>
-        <translation>剪辑属性</translation>
+        <translation>片段属性</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1809"/>
         <source>Edit current clip properties</source>
-        <translation>编辑当前剪辑属性</translation>
+        <translation>编辑当前片段属性</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1910"/>
@@ -6363,7 +6363,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1916"/>
         <source>Gain clip selection</source>
-        <translation>为所选剪辑应用增益</translation>
+        <translation>为所选片段应用增益</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1919"/>
@@ -6383,7 +6383,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1930"/>
         <source>Panning clip selection</source>
-        <translation>为所选剪辑设置声像</translation>
+        <translation>为所选片段设置声像</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1933"/>
@@ -6393,12 +6393,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1944"/>
         <source>Normalize clip selection</source>
-        <translation>标准化剪辑选择</translation>
+        <translation>标准化片段选择</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1947"/>
         <source>Normalize current audio clip selection</source>
-        <translation>标准化当前音频剪辑选择</translation>
+        <translation>标准化当前音频片段选择</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1952"/>
@@ -6413,7 +6413,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1958"/>
         <source>Time stretch clip selection</source>
-        <translation>对所选剪辑进行时间拉伸</translation>
+        <translation>对所选片段进行时间拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1961"/>
@@ -6433,7 +6433,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1972"/>
         <source>Pitch shift clip selection</source>
-        <translation>对所选剪辑进行变调</translation>
+        <translation>对所选片段进行变调</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1975"/>
@@ -6453,7 +6453,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1986"/>
         <source>Reverse clip selection</source>
-        <translation>反转所选剪辑</translation>
+        <translation>反转所选片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1989"/>
@@ -6463,12 +6463,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2028"/>
         <source>Normalize clip events</source>
-        <translation>标准化剪辑事件</translation>
+        <translation>标准化片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2031"/>
         <source>Normalize current MIDI clip events</source>
-        <translation>标准化当前 MIDI 剪辑事件</translation>
+        <translation>标准化当前 MIDI 片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2036"/>
@@ -6478,17 +6478,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2039"/>
         <source>Randomize Clip</source>
-        <translation>随机化剪辑</translation>
+        <translation>随机化片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2042"/>
         <source>Randomize clip events</source>
-        <translation>随机化剪辑事件</translation>
+        <translation>随机化片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2045"/>
         <source>Randomize current MIDI clip events</source>
-        <translation>随机化当前 MIDI 剪辑事件</translation>
+        <translation>随机化当前 MIDI 片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2050"/>
@@ -6498,17 +6498,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2053"/>
         <source>Resize Clip</source>
-        <translation>调整剪辑</translation>
+        <translation>调整片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2056"/>
         <source>Resize clip events</source>
-        <translation>调整剪辑事件</translation>
+        <translation>调整片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2059"/>
         <source>Resize current MIDI clip events</source>
-        <translation>调整当前 MIDI 剪辑事件</translation>
+        <translation>调整当前 MIDI 片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2064"/>
@@ -6518,17 +6518,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2067"/>
         <source>Rescale Clip</source>
-        <translation>缩放剪辑</translation>
+        <translation>缩放片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2070"/>
         <source>Rescale clip events</source>
-        <translation>缩放剪辑事件</translation>
+        <translation>缩放片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2073"/>
         <source>Rescale current MIDI clip events</source>
-        <translation>缩放当前 MIDI 剪辑事件</translation>
+        <translation>缩放当前 MIDI 片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2078"/>
@@ -6538,17 +6538,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2081"/>
         <source>Timeshift Clip</source>
-        <translation>时间偏移剪辑</translation>
+        <translation>时间偏移片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2084"/>
         <source>Timeshift clip events</source>
-        <translation>时间偏移剪辑事件</translation>
+        <translation>时间偏移片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2087"/>
         <source>Timeshift current MIDI clip events</source>
-        <translation>时间偏移当前 MIDI 剪辑事件</translation>
+        <translation>时间偏移当前 MIDI 片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2092"/>
@@ -6558,17 +6558,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2095"/>
         <source>Tempo ramp Clip</source>
-        <translation>速度渐变剪辑</translation>
+        <translation>速度渐变片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2098"/>
         <source>Tempo ramp clip events</source>
-        <translation>速度渐变剪辑事件</translation>
+        <translation>速度渐变片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2101"/>
         <source>Tempo ramp current MIDI clip events</source>
-        <translation>速度渐变当前 MIDI 剪辑事件</translation>
+        <translation>速度渐变当前 MIDI 片段事件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2106"/>
@@ -6584,7 +6584,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2115"/>
         <source>Adjust session tempo from current clip selection</source>
-        <translation>从当前剪辑选择调整工程速度</translation>
+        <translation>从当前片段选择调整工程速度</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2118"/>
@@ -6599,17 +6599,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2126"/>
         <source>Clip Cross-fade</source>
-        <translation>剪辑交叉淡化</translation>
+        <translation>片段交叉淡化</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2129"/>
         <source>Clip cross-fade</source>
-        <translation>剪辑交叉淡化</translation>
+        <translation>片段交叉淡化</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2132"/>
         <source>Cross-fade current overlapped clips</source>
-        <translation>交叉淡化当前重叠的剪辑</translation>
+        <translation>交叉淡化当前重叠的片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2137"/>
@@ -6619,17 +6619,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2140"/>
         <source>Clip Range</source>
-        <translation>剪辑范围</translation>
+        <translation>片段范围</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2143"/>
         <source>Clip range</source>
-        <translation>剪辑范围</translation>
+        <translation>片段范围</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2146"/>
         <source>Set edit-range from current clip extents</source>
-        <translation>从当前剪辑边界设置编辑范围</translation>
+        <translation>从当前片段边界设置编辑范围</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2154"/>
@@ -6639,17 +6639,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2157"/>
         <source>Clip Loop</source>
-        <translation>剪辑循环</translation>
+        <translation>片段循环</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2160"/>
         <source>Clip loop</source>
-        <translation>剪辑循环</translation>
+        <translation>片段循环</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2163"/>
         <source>Set loop-range from current clip extents</source>
-        <translation>从当前剪辑边界设置循环范围</translation>
+        <translation>从当前片段边界设置循环范围</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2168"/>
@@ -6659,17 +6659,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2171"/>
         <source>Import Clip</source>
-        <translation>导入剪辑</translation>
+        <translation>导入片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2174"/>
         <source>Import clip</source>
-        <translation>导入剪辑</translation>
+        <translation>导入片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2177"/>
         <source>Import clip from file(s)</source>
-        <translation>从文件导入剪辑</translation>
+        <translation>从文件导入片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2182"/>
@@ -6679,62 +6679,62 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2185"/>
         <source>Export Clip</source>
-        <translation>导出剪辑</translation>
+        <translation>导出片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2188"/>
         <source>Export clip</source>
-        <translation>导出剪辑</translation>
+        <translation>导出片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2191"/>
         <source>Export current clip to file</source>
-        <translation>将当前剪辑导出到文件</translation>
+        <translation>将当前片段导出到文件</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2199"/>
         <source>First Take</source>
-        <translation>第一个片段</translation>
+        <translation>第一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2202"/>
         <source>First take</source>
-        <translation>第一个片段</translation>
+        <translation>第一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2205"/>
         <source>Select current clip first take</source>
-        <translation>选择当前剪辑的第一个片段</translation>
+        <translation>选择当前片段的第一个片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2213"/>
         <source>Previous Take</source>
-        <translation>上一个片段</translation>
+        <translation>上一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2216"/>
         <source>Previous take</source>
-        <translation>上一个片段</translation>
+        <translation>上一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2219"/>
         <source>Select current clip previous take</source>
-        <translation>选择当前剪辑的上一个片段</translation>
+        <translation>选择当前片段的上一个片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2227"/>
         <source>Next Take</source>
-        <translation>下一个片段</translation>
+        <translation>下一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2230"/>
         <source>Next take</source>
-        <translation>下一个片段</translation>
+        <translation>下一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2233"/>
         <source>Select current clip next take</source>
-        <translation>选择当前剪辑的下一个片段</translation>
+        <translation>选择当前片段的下一个片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2236"/>
@@ -6744,32 +6744,32 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2244"/>
         <source>Last Take</source>
-        <translation>最后一个片段</translation>
+        <translation>最后一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2247"/>
         <source>Last take</source>
-        <translation>最后一个片段</translation>
+        <translation>最后一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2250"/>
         <source>Select current clip last take</source>
-        <translation>选择当前剪辑的最后一个片段</translation>
+        <translation>选择当前片段的最后一个片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2258"/>
         <source>Reset Takes</source>
-        <translation>重置片段</translation>
+        <translation>重置遍次</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2261"/>
         <source>Reset takes</source>
-        <translation>重置片段</translation>
+        <translation>重置遍次</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2264"/>
         <source>Reset (unfold) current clip takes</source>
-        <translation>重置(展开)当前剪辑的片段</translation>
+        <translation>重置(展开)当前片段的片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2269"/>
@@ -6779,17 +6779,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2272"/>
         <source>Take Range</source>
-        <translation>片段范围</translation>
+        <translation>遍次范围</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2275"/>
         <source>Take range</source>
-        <translation>片段范围</translation>
+        <translation>遍次范围</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2278"/>
         <source>Range (fold) current clip into takes</source>
-        <translation>将当前剪辑折叠为片段</translation>
+        <translation>将当前片段折叠为片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2286"/>
@@ -8246,7 +8246,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5320"/>
         <source>take range</source>
-        <translation>片段范围</translation>
+        <translation>遍次范围</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5986"/>
@@ -8538,12 +8538,12 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6979"/>
         <source>record clip</source>
-        <translation>录制剪辑</translation>
+        <translation>录制片段</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7141"/>
         <source>[modified]</source>
-        <translation>[已修改]</translation>
+        <translation>[修改]</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7381"/>
@@ -8621,7 +8621,7 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8295"/>
         <source>Take %1</source>
-        <translation>片段 %1</translation>
+        <translation>第 %1 遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="3248"/>
@@ -11278,7 +11278,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="449"/>
         <source>Save current MIDI clip to existing file name</source>
-        <translation>将当前 MIDI 剪辑保存到已有文件名</translation>
+        <translation>将当前 MIDI 片段保存到已有文件名</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="454"/>
@@ -11298,7 +11298,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="463"/>
         <source>Save current MIDI clip with another file name</source>
-        <translation>用另一个文件名保存当前 MIDI 剪辑</translation>
+        <translation>用另一个文件名保存当前 MIDI 片段</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="471"/>
@@ -11314,7 +11314,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="480"/>
         <source>Mute current MIDI clip</source>
-        <translation>将当前 MIDI 剪辑静音</translation>
+        <translation>将当前 MIDI 片段静音</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="485"/>
@@ -11330,7 +11330,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="494"/>
         <source>Unlink current MIDI clip</source>
-        <translation>取消链接当前 MIDI 剪辑</translation>
+        <translation>取消链接当前 MIDI 片段</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="505"/>
@@ -11340,7 +11340,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="514"/>
         <source>Record current MIDI clip (overdub)</source>
-        <translation>录制当前 MIDI 剪辑 (叠加)</translation>
+        <translation>录制当前 MIDI 片段 (叠加)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="519"/>
@@ -11360,7 +11360,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="528"/>
         <source>Show current MIDI clip/track input bus connections</source>
-        <translation>显示当前 MIDI 剪辑/轨道输入总线连接</translation>
+        <translation>显示当前 MIDI 片段/轨道输入总线连接</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="533"/>
@@ -11380,7 +11380,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="542"/>
         <source>Show current MIDI clip/track output bus connections</source>
-        <translation>显示当前 MIDI 剪辑/轨道输出总线连接</translation>
+        <translation>显示当前 MIDI 片段/轨道输出总线连接</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="550"/>
@@ -11401,7 +11401,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="559"/>
         <source>Edit current MIDI clip/track properties</source>
-        <translation>编辑当前 MIDI 剪辑/轨道属性</translation>
+        <translation>编辑当前 MIDI 片段/轨道属性</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="562"/>
@@ -11417,7 +11417,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="579"/>
         <source>Edit current MIDI clip properties</source>
-        <translation>编辑当前 MIDI 剪辑属性</translation>
+        <translation>编辑当前 MIDI 片段属性</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="587"/>
@@ -11427,17 +11427,17 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="590"/>
         <source>Clip Range</source>
-        <translation>剪辑范围</translation>
+        <translation>片段范围</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="593"/>
         <source>Clip range</source>
-        <translation>剪辑范围</translation>
+        <translation>片段范围</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="596"/>
         <source>Set edit-range from clip extents</source>
-        <translation>从剪辑边界设置编辑范围</translation>
+        <translation>从片段边界设置编辑范围</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="604"/>
@@ -11447,17 +11447,17 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="607"/>
         <source>Clip Loop</source>
-        <translation>剪辑循环</translation>
+        <translation>片段循环</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="610"/>
         <source>Clip loop</source>
-        <translation>剪辑循环</translation>
+        <translation>片段循环</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="613"/>
         <source>Set loop-range from clip extents</source>
-        <translation>从剪辑边界设置循环范围</translation>
+        <translation>从片段边界设置循环范围</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="618"/>
@@ -11473,7 +11473,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="627"/>
         <source>Close this MIDI clip editor</source>
-        <translation>关闭此 MIDI 剪辑编辑器</translation>
+        <translation>关闭此 MIDI 片段编辑器</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="635"/>
@@ -11573,7 +11573,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="724"/>
         <source>Paste local clipboard contents into the current MIDI clip</source>
-        <translation>将本地剪贴板内容粘贴到当前 MIDI 剪辑</translation>
+        <translation>将本地剪贴板内容粘贴到当前 MIDI 片段</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="727"/>
@@ -11598,7 +11598,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="741"/>
         <source>Paste/repeat local clipboard contents into the current MIDI clip</source>
-        <translation>将本地剪贴板内容粘贴/重复到当前 MIDI 剪辑</translation>
+        <translation>将本地剪贴板内容粘贴/重复到当前 MIDI 片段</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="744"/>
@@ -12943,7 +12943,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="339"/>
         <source>MIDI clip name</source>
-        <translation>MIDI 剪辑名称</translation>
+        <translation>MIDI 片段名称</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="347"/>
@@ -12975,7 +12975,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="371"/>
         <source>MIDI clip record state</source>
-        <translation>MIDI 剪辑录音状态</translation>
+        <translation>MIDI 片段录音状态</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="376"/>
@@ -12986,7 +12986,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="379"/>
         <source>MIDI clip mute state</source>
-        <translation>MIDI 剪辑静音状态</translation>
+        <translation>MIDI 片段静音状态</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="384"/>
@@ -12996,7 +12996,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="387"/>
         <source>MIDI clip duration</source>
-        <translation>MIDI 剪辑时长</translation>
+        <translation>MIDI 片段时长</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="959"/>
@@ -13010,7 +13010,7 @@ Data: </source>
 &quot;%1&quot;
 
 Do you want to save the changes?</source>
-        <translation>当前 MIDI 剪辑已更改：
+        <translation>当前 MIDI 片段已更改：
 
 &quot;%1&quot;
 
@@ -13019,7 +13019,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1319"/>
         <source>Save MIDI Clip</source>
-        <translation>保存 MIDI 剪辑</translation>
+        <translation>保存 MIDI 片段</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1321"/>
@@ -13049,7 +13049,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="2771"/>
         <source>[modified]</source>
-        <translation>[已修改]</translation>
+        <translation>[修改]</translation>
     </message>
 </context>
 <context>
@@ -14403,12 +14403,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="734"/>
         <source>&amp;Loop recording mode (takes):</source>
-        <translation>循环录制模式 (片段)(&amp;L)：</translation>
+        <translation>循环录制模式 (遍次)(&amp;L)：</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="753"/>
         <source>Loop recording mode (takes)</source>
-        <translation>循环录制模式 (片段)</translation>
+        <translation>循环录制模式 (遍次)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="762"/>
@@ -14563,7 +14563,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="521"/>
         <source>Clips</source>
-        <translation>剪辑</translation>
+        <translation>片段</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
@@ -14573,7 +14573,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="552"/>
         <source>Default clip fade-in type</source>
-        <translation>默认剪辑淡入类型</translation>
+        <translation>默认片段淡入类型</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="581"/>
@@ -14583,7 +14583,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="597"/>
         <source>Default clip fade-out type</source>
-        <translation>默认剪辑淡出类型</translation>
+        <translation>默认片段淡出类型</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="859"/>
@@ -17070,12 +17070,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="136"/>
         <source>Clip start</source>
-        <translation>剪辑起点</translation>
+        <translation>片段起点</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="37"/>
         <source>Take Range</source>
-        <translation>片段范围</translation>
+        <translation>遍次范围</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="52"/>
@@ -17085,7 +17085,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="149"/>
         <source>Clip offset</source>
-        <translation>剪辑偏移</translation>
+        <translation>片段偏移</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="182"/>
@@ -17095,7 +17095,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="200"/>
         <source>Current take</source>
-        <translation>当前片段</translation>
+        <translation>当前遍</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="210"/>
@@ -17115,7 +17115,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTakeRangeForm.cpp" line="250"/>
         <source>Take %1</source>
-        <translation>片段 %1</translation>
+        <translation>第 %1 遍</translation>
     </message>
 </context>
 <context>
@@ -18121,7 +18121,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTrackView.cpp" line="1663"/>
         <source>add clip</source>
-        <translation>添加剪辑</translation>
+        <translation>添加片段</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3294"/>
@@ -18135,7 +18135,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3599"/>
         <source>clip %1</source>
-        <translation>剪辑 %1</translation>
+        <translation>片段 %1</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3600"/>
@@ -18150,18 +18150,18 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3730"/>
         <source>clip stretch</source>
-        <translation>剪辑拉伸</translation>
+        <translation>片段拉伸</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3730"/>
         <source>clip resize</source>
-        <translation>剪辑调整</translation>
+        <translation>片段调整</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="3815"/>
         <location filename="../qtractorTrackView.cpp" line="3923"/>
         <source>clip repeat</source>
-        <translation>剪辑重复</translation>
+        <translation>片段重复</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4838"/>
@@ -18171,7 +18171,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTrackView.cpp" line="4911"/>
         <source>%1 clip</source>
-        <translation>%1 剪辑</translation>
+        <translation>%1 片段</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="5561"/>
@@ -18203,12 +18203,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTrackView.cpp" line="5283"/>
         <source>move clip</source>
-        <translation>移动剪辑</translation>
+        <translation>移动片段</translation>
     </message>
     <message>
         <location filename="../qtractorTrackView.cpp" line="5418"/>
         <source>paste clip</source>
-        <translation>粘贴剪辑</translation>
+        <translation>粘贴片段</translation>
     </message>
 </context>
 <context>
@@ -18221,22 +18221,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="603"/>
         <source>new clip</source>
-        <translation>新建剪辑</translation>
+        <translation>新建片段</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="674"/>
         <source>mute clip</source>
-        <translation>静音剪辑</translation>
+        <translation>静音片段</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="790"/>
         <source>split clip</source>
-        <translation>分割剪辑</translation>
+        <translation>分割片段</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="880"/>
         <source>clip normalize</source>
-        <translation>剪辑标准化</translation>
+        <translation>片段标准化</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1132"/>
@@ -18302,7 +18302,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="1281"/>
         <source>clip import</source>
-        <translation>剪辑导入</translation>
+        <translation>片段导入</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1309"/>
@@ -18335,7 +18335,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="1386"/>
         <source>clip merge</source>
-        <translation>剪辑合并</translation>
+        <translation>片段合并</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1478"/>
@@ -18346,37 +18346,37 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="1491"/>
         <source>Merge/Export Audio Clip</source>
-        <translation>合并/导出音频剪辑</translation>
+        <translation>合并/导出音频片段</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1556"/>
         <source>Audio clip merge/export: &quot;%1&quot; started...</source>
-        <translation>音频剪辑合并/导出：&quot;%1&quot; 已开始...</translation>
+        <translation>音频片段合并/导出：&quot;%1&quot; 已开始...</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1704"/>
         <source>Audio clip merge/export: &quot;%1&quot; complete.</source>
-        <translation>音频剪辑合并/导出：&quot;%1&quot; 完成。</translation>
+        <translation>音频片段合并/导出：&quot;%1&quot; 完成。</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1790"/>
         <source>Merge/Export MIDI Clip</source>
-        <translation>合并/导出 MIDI 剪辑</translation>
+        <translation>合并/导出 MIDI 片段</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1856"/>
         <source>MIDI clip merge/export: &quot;%1&quot; started...</source>
-        <translation>MIDI 剪辑合并/导出：&quot;%1&quot; 已开始...</translation>
+        <translation>MIDI 片段合并/导出：&quot;%1&quot; 已开始...</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1994"/>
         <source>MIDI clip merge/export: &quot;%1&quot; complete.</source>
-        <translation>MIDI 剪辑合并/导出：&quot;%1&quot; 完成。</translation>
+        <translation>MIDI 片段合并/导出：&quot;%1&quot; 完成。</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2123"/>
         <source>clip cross-fade</source>
-        <translation>剪辑交叉淡化</translation>
+        <translation>片段交叉淡化</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2408"/>
