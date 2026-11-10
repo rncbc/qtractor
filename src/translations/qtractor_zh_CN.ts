@@ -37,7 +37,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="1340"/>
         <source>Audio file save: &quot;%1&quot;.</source>
-        <translation>音频文件保存：“%1”。</translation>
+        <translation>音频文件保存：&quot;%1&quot;。</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2874"/>
@@ -104,7 +104,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorClip.cpp" line="163"/>
         <source>[Mute] </source>
-        <translation>[静音]</translation>
+        <translation>[静音] </translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="546"/>
@@ -1840,7 +1840,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="868"/>
         <source>Lock/unlock midi window toolbar positions</source>
-        <translation>锁定/解锁 midi 窗口工具栏位置</translation>
+        <translation>锁定/解锁 MIDI 窗口工具栏位置</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="876"/>
@@ -2268,7 +2268,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1300"/>
         <source>&amp;Record</source>
-        <translation></translation>
+        <translation>录制(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="1303"/>
@@ -2429,7 +2429,7 @@ Length:	%3</source>
         <location filename="../qtractorAudioEditorForm.cpp" line="211"/>
         <location filename="../qtractorAudioEditorForm.cpp" line="2072"/>
         <source>MOD</source>
-        <translation></translation>
+        <translation>修改</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="214"/>
@@ -2471,7 +2471,7 @@ Length:	%3</source>
 Do you want to save the changes?</source>
         <translation>当前音频片段已更改：
 
-“%1”
+&quot;%1&quot;
 
 您想保存更改吗？</translation>
     </message>
@@ -2493,12 +2493,12 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1040"/>
         <source>Audio clip export: &quot;%1&quot; started...</source>
-        <translation>音频片段导出：“%1”已开始...</translation>
+        <translation>音频片段导出：&quot;%1&quot;已开始...</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1155"/>
         <source>Audio clip export: &quot;%1&quot; complete.</source>
-        <translation>音频片段导出：“%1”已完成。</translation>
+        <translation>音频片段导出：&quot;%1&quot;已完成。</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.cpp" line="1990"/>
@@ -2697,7 +2697,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="472"/>
         <source>&amp;TimeStretch</source>
-        <translation></translation>
+        <translation>时间拉伸(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="487"/>
@@ -2707,7 +2707,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="490"/>
         <source>&amp;Time-stretch</source>
-        <translation></translation>
+        <translation>时间拉伸(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="529"/>
@@ -2717,7 +2717,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="587"/>
         <source>&amp;PitchShift</source>
-        <translation></translation>
+        <translation>变调(&amp;P)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="602"/>
@@ -2727,7 +2727,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="605"/>
         <source>&amp;Pitch-shift</source>
-        <translation></translation>
+        <translation>变调(&amp;P)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.ui" line="644"/>
@@ -2773,7 +2773,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="228"/>
         <source>pitch-shift</source>
-        <translation>音调移位</translation>
+        <translation>变调</translation>
     </message>
     <message>
         <location filename="../qtractorAudioToolsForm.cpp" line="230"/>
@@ -2815,7 +2815,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorBusForm.ui" line="77"/>
         <source>Ch</source>
-        <translation>声道</translation>
+        <translation>通道</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="82"/>
@@ -3409,7 +3409,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="549"/>
         <source>Clip pitch-shift in semitones</source>
-        <translation>片段移调 (半音)</translation>
+        <translation>片段变调量 (半音)</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="555"/>
@@ -3504,7 +3504,7 @@ Are you sure?</source>
         <translation>所选 MIDI 文件将被覆盖
 保存时使用当前片段内容：
 
-“%1”
+&quot;%1&quot;
 
 你确定吗？</translation>
     </message>
@@ -4673,7 +4673,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="373"/>
         <source>Ta&amp;ke</source>
-        <translation>录音(&amp;K)</translation>
+        <translation>遍次(&amp;K)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="479"/>
@@ -5480,7 +5480,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorMainForm.ui" line="1667"/>
         <location filename="../qtractorMainForm.ui" line="3085"/>
         <source>&amp;Record</source>
-        <translation>录音(&amp;R)</translation>
+        <translation>录制(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1235"/>
@@ -6704,7 +6704,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2205"/>
         <source>Select current clip first take</source>
-        <translation>选择当前片段的第一个片段</translation>
+        <translation>选择当前片段的第一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2213"/>
@@ -6719,7 +6719,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2219"/>
         <source>Select current clip previous take</source>
-        <translation>选择当前片段的上一个片段</translation>
+        <translation>选择当前片段的上一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2227"/>
@@ -6734,7 +6734,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2233"/>
         <source>Select current clip next take</source>
-        <translation>选择当前片段的下一个片段</translation>
+        <translation>选择当前片段的下一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2236"/>
@@ -6754,7 +6754,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2250"/>
         <source>Select current clip last take</source>
-        <translation>选择当前片段的最后一个片段</translation>
+        <translation>选择当前片段的最后一遍</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2258"/>
@@ -6769,7 +6769,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2264"/>
         <source>Reset (unfold) current clip takes</source>
-        <translation>重置(展开)当前片段的片段</translation>
+        <translation>重置(展开)当前片段的遍次</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2269"/>
@@ -6789,7 +6789,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2278"/>
         <source>Range (fold) current clip into takes</source>
-        <translation>将当前片段折叠为片段</translation>
+        <translation>将当前片段折叠为遍次</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2286"/>
@@ -6982,17 +6982,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2479"/>
         <source>Session &amp;List</source>
-        <translation>会话列表(&amp;L)</translation>
+        <translation>工程列表(&amp;L)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2482"/>
         <source>Session List</source>
-        <translation>会话列表</translation>
+        <translation>工程列表</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2485"/>
         <source>Session list</source>
-        <translation>会话列表</translation>
+        <translation>工程列表</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2488"/>
@@ -7871,7 +7871,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorMainForm.cpp" line="667"/>
         <location filename="../qtractorMainForm.cpp" line="7242"/>
         <source>MOD</source>
-        <translation>已修改</translation>
+        <translation>修改</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="670"/>
@@ -8303,7 +8303,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6711"/>
         <source>Pitch-shifting support (librubberband) disabled.</source>
-        <translation>移调支持 (librubberband) 已禁用。</translation>
+        <translation>变调支持 (librubberband) 已禁用。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6714"/>
@@ -10332,7 +10332,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="508"/>
         <source>Chromatic</source>
-        <translation></translation>
+        <translation>半音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="509"/>
@@ -10347,253 +10347,254 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="511"/>
         <source>Melodic Minor (Asc)</source>
-        <translation></translation>
+        <translation>旋律小调(上行)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="512"/>
         <source>Melodic Minor (Desc)</source>
-        <translation></translation>
+        <translation>旋律小调(下行)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="513"/>
         <source>Whole Tone</source>
-        <translation></translation>
+        <translation>全音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="514"/>
         <source>Pentatonic Major</source>
-        <translation></translation>
+        <translation>大调五声音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="515"/>
         <source>Pentatonic Minor</source>
-        <translation></translation>
+        <translation>小调五声音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="516"/>
         <source>Pentatonic Blues</source>
-        <translation></translation>
+        <translation>布鲁斯五声音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="517"/>
         <source>Pentatonic Neutral</source>
-        <translation></translation>
+        <translation>中性五声音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="518"/>
         <source>Octatonic (H-W)</source>
-        <translation></translation>
+        <translation>八音阶(半-全)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="519"/>
         <source>Octatonic (W-H)</source>
-        <translation></translation>
+        <translation>八音阶(全-半)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="520"/>
         <source>Ionian</source>
-        <translation></translation>
+        <translatorcomment>教会调式，按大陆教材译名</translatorcomment>
+        <translation>伊奥尼亚</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="521"/>
         <source>Dorian</source>
-        <translation></translation>
+        <translation>多利亚</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="522"/>
         <source>Phrygian</source>
-        <translation></translation>
+        <translation>弗里几亚</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="523"/>
         <source>Lydian</source>
-        <translation></translation>
+        <translation>利底亚</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="524"/>
         <source>Mixolydian</source>
-        <translation></translation>
+        <translation>混合利底亚</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="525"/>
         <source>Aeolian</source>
-        <translation></translation>
+        <translation>爱奥利亚</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="526"/>
         <source>Locrian</source>
-        <translation></translation>
+        <translation>洛克里亚</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="527"/>
         <source>Egyptian</source>
-        <translation></translation>
+        <translation>埃及音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="528"/>
         <location filename="../qtractorMidiEditor.cpp" line="551"/>
         <source>Eight Tone Spanish</source>
-        <translation></translation>
+        <translation>西班牙八音音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="529"/>
         <source>Hawaiian</source>
-        <translation></translation>
+        <translation>夏威夷音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="530"/>
         <source>Hindu</source>
-        <translation></translation>
+        <translation>印度音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="531"/>
         <source>Hirajoshi</source>
-        <translation></translation>
+        <translation>平调子音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="532"/>
         <source>Hungarian Major</source>
-        <translation></translation>
+        <translation>匈牙利大调音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="533"/>
         <source>Hungarian Minor</source>
-        <translation></translation>
+        <translation>匈牙利小调音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="534"/>
         <source>Hungarian Gypsy</source>
-        <translation></translation>
+        <translation>匈牙利吉普赛音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="535"/>
         <source>Japanese (A)</source>
-        <translation></translation>
+        <translation>日本音阶 (A)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="536"/>
         <source>Japanese (B)</source>
-        <translation></translation>
+        <translation>日本音阶 (B)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="537"/>
         <source>Jewish (Adonai Malakh)</source>
-        <translation></translation>
+        <translation>犹太音阶(Adonai Malakh)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="538"/>
         <source>Jewish (Ahaba Rabba)</source>
-        <translation></translation>
+        <translation>犹太音阶(Ahaba Rabba)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="539"/>
         <source>Jewish (Magen Abot)</source>
-        <translation></translation>
+        <translation>犹太音阶(Magen Abot)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="540"/>
         <source>Oriental (A)</source>
-        <translation></translation>
+        <translation>东方音阶 (A)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="541"/>
         <source>Oriental (B)</source>
-        <translation></translation>
+        <translation>东方音阶 (B)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="542"/>
         <source>Oriental (C)</source>
-        <translation></translation>
+        <translation>东方音阶 (C)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="543"/>
         <source>Roumanian Minor</source>
-        <translation></translation>
+        <translation>罗马尼亚小调音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="544"/>
         <source>Neapolitan</source>
-        <translation></translation>
+        <translation>那不勒斯音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="545"/>
         <source>Neapolitan Major</source>
-        <translation></translation>
+        <translation>那不勒斯大调音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="546"/>
         <source>Neapolitan Minor</source>
-        <translation></translation>
+        <translation>那不勒斯小调音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="548"/>
         <source>Overtone</source>
-        <translation></translation>
+        <translation>泛音音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="552"/>
         <source>Leading Whole Tone</source>
-        <translation></translation>
+        <translation>导音全音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="553"/>
         <source>Nine Tone Scale</source>
-        <translation></translation>
+        <translation>九音音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="554"/>
         <source>Dominant Seventh</source>
-        <translation></translation>
+        <translation>属七音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="555"/>
         <source>Augmented</source>
-        <translation></translation>
+        <translation>增音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="556"/>
         <source>Algerian</source>
-        <translation></translation>
+        <translation>阿尔及利亚音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="557"/>
         <source>Arabian (A)</source>
-        <translation></translation>
+        <translation>阿拉伯音阶 (A)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="558"/>
         <source>Arabian (B)</source>
-        <translation></translation>
+        <translation>阿拉伯音阶 (B)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="560"/>
         <source>Balinese</source>
-        <translation></translation>
+        <translation>巴厘岛音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="565"/>
         <source>Chinese</source>
-        <translation></translation>
+        <translation>中国音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="567"/>
         <source>Diminished</source>
-        <translation></translation>
+        <translation>减音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="573"/>
         <source>Japanese (Ichikosucho)</source>
-        <translation></translation>
+        <translation>日本音阶(市子调)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="574"/>
         <source>Japanese (Taishikicho)</source>
-        <translation></translation>
+        <translation>日本音阶(大食调)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="575"/>
         <source>Javaneese</source>
-        <translation></translation>
+        <translation>爪哇音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="580"/>
@@ -10603,6 +10604,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="582"/>
         <source>Mela Bhavapriya</source>
+        <translatorcomment>卡纳提克 Melakarta 音阶，保留原文不译</translatorcomment>
         <translation></translation>
     </message>
     <message>
@@ -10853,7 +10855,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="656"/>
         <source>Persian</source>
-        <translation></translation>
+        <translation>波斯音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="657"/>
@@ -10863,7 +10865,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="658"/>
         <source>Spanish Gypsy</source>
-        <translation></translation>
+        <translation>西班牙吉普赛音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="659"/>
@@ -10873,117 +10875,117 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="663"/>
         <source>Enigmatic</source>
-        <translation></translation>
+        <translation>谜之音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="664"/>
         <source>Kumoi</source>
-        <translation></translation>
+        <translation>云井音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="665"/>
         <source>Lydian Augmented</source>
-        <translation></translation>
+        <translation>利底亚增音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="666"/>
         <source>Pelog</source>
-        <translation></translation>
+        <translation>培罗格音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="667"/>
         <source>Prometheus</source>
-        <translation></translation>
+        <translation>普罗米修斯音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="668"/>
         <source>Prometheus Neapolitan</source>
-        <translation></translation>
+        <translation>普罗米修斯那不勒斯音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="669"/>
         <source>Six Tone Symmetrical</source>
-        <translation></translation>
+        <translation>六音对称音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="670"/>
         <source>Super Locrian</source>
-        <translation></translation>
+        <translation>超级洛克里亚音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="671"/>
         <source>Lydian Minor</source>
-        <translation></translation>
+        <translation>利底亚小调音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="672"/>
         <source>Lydian Diminished</source>
-        <translation></translation>
+        <translation>利底亚减音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="676"/>
         <source>Half Diminished</source>
-        <translation></translation>
+        <translation>半减音阶</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="677"/>
         <source>Bhairav</source>
-        <translation></translation>
+        <translation>拜拉夫</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="678"/>
         <source>Yaman</source>
-        <translation></translation>
+        <translation>雅曼</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="679"/>
         <source>Todi</source>
-        <translation></translation>
+        <translation>托迪</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="680"/>
         <source>Jog</source>
-        <translation></translation>
+        <translation>乔格</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="681"/>
         <source>Multani</source>
-        <translation></translation>
+        <translation>穆尔塔尼</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="682"/>
         <source>Darbari</source>
-        <translation></translation>
+        <translation>达尔巴里</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="683"/>
         <source>Malkauns</source>
-        <translation></translation>
+        <translation>马尔考恩斯</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="684"/>
         <source>Bhoopali</source>
-        <translation></translation>
+        <translation>布帕利</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="685"/>
         <source>Shivaranjani</source>
-        <translation></translation>
+        <translation>希瓦兰贾尼</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="686"/>
         <source>Marwa</source>
-        <translation></translation>
+        <translation>马尔瓦</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="688"/>
         <source>Minor 5</source>
-        <translation></translation>
+        <translation>小调五声</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="689"/>
         <source>Major 5</source>
-        <translation></translation>
+        <translation>大调五声</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="690"/>
@@ -11728,7 +11730,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="863"/>
         <source>&amp;Invert</source>
-        <translation>反转(&amp;I)</translation>
+        <translation>反选(&amp;I)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="866"/>
@@ -11813,7 +11815,7 @@ Data: </source>
         <location filename="../qtractorMidiEditorForm.ui" line="926"/>
         <source>Right</source>
         <translatorcomment>DO NOT TRANSLATE</translatorcomment>
-        <translation>右</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="934"/>
@@ -12139,7 +12141,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1231"/>
         <source>Lock/unlock midi window toolbar positions</source>
-        <translation>锁定/解锁 midi 窗口工具栏位置</translation>
+        <translation>锁定/解锁 MIDI 窗口工具栏位置</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1259"/>
@@ -12275,7 +12277,7 @@ Data: </source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1601"/>
         <source>Preview notes while editing (scrub)</source>
-        <translation>编辑时预览音符 (擦除)</translation>
+        <translation>编辑时预览音符 (拖动试听)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1615"/>
@@ -13924,7 +13926,10 @@ Sorry.</source>
 P &gt; 0 : accelerating shift.
 P &lt; 0 : slowing down shift.
 Edit head/tail (blue) markers define the shift range.</source>
-        <translation>P = 0：无变化。\nP &gt; 0：加速偏移。\nP &lt; 0：减速偏移。\n编辑头/尾 (蓝色) 标记定义渐变范围。</translation>
+        <translation>P = 0：无变化。
+P &gt; 0：加速偏移。
+P &lt; 0：减速偏移。
+编辑头/尾 (蓝色) 标记定义渐变范围。</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1541"/>
@@ -15187,7 +15192,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4367"/>
         <source>Editor (GUI)</source>
-        <translation></translation>
+        <translation>编辑器 (GUI)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4391"/>
@@ -15207,7 +15212,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4433"/>
         <source>Whether to select plugin&apos;s editor (GUI) type if more than one are available</source>
-        <translation>是否选择插件编辑器 (GUI)如果有多个可用，则键入</translation>
+        <translation>当存在多个可用插件编辑器时，是否选择其 (GUI) 类型</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4436"/>
@@ -15217,7 +15222,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4449"/>
         <source>Whether to reset plugin&apos;s editor (GUI) type if previously selected</source>
-        <translation>如果先前选择了是否重置插件的编辑器 (GUI) 类型</translation>
+        <translation>是否重置此前已选择过的插件编辑器 (GUI) 类型</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4452"/>
@@ -15287,7 +15292,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4744"/>
         <source>&amp;URL: osc.udp://localhost:</source>
-        <translation>URL(&amp;U)：osc.udp://localhost：</translation>
+        <translation>URL(&amp;U)：osc.udp://localhost:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="4760"/>
@@ -15557,7 +15562,7 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="3493"/>
         <location filename="../qtractorOptionsForm.ui" line="3612"/>
         <source>Back</source>
-        <translation>返回</translation>
+        <translation>背景</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3864"/>
@@ -17431,7 +17436,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="87"/>
         <source>Key</source>
-        <translation>调性</translation>
+        <translation>调号</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="218"/>
@@ -18031,7 +18036,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTrackList.cpp" line="180"/>
         <source>Ch</source>
-        <translation>声道</translation>
+        <translation>通道</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="181"/>
@@ -18272,7 +18277,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="1003"/>
         <source>pitch-shift</source>
-        <translation>音调移位</translation>
+        <translation>变调</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1004"/>
