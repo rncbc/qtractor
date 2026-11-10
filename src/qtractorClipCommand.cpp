@@ -197,31 +197,35 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	pItem->clipOffset = iClipOffset;
 	pItem->clipLength = iClipLength;
 
-	long iFadeInLength = long(pClip->fadeInLength());
-	if (iFadeInLength > 0) {
+	long iFadeInLength2 = long(pClip->fadeInLength());
+	if (iFadeInLength2 > 0) {
 		if (fTimeStretch > 0.0f)
-			iFadeInLength = long(fTimeStretch * float(iFadeInLength));
+			iFadeInLength2 = long(fTimeStretch * float(iFadeInLength2));
 		else
-			iFadeInLength += long(pClip->clipStart()) - long(iClipStart);
-		if (iFadeInLength > iClipLength)
-			iFadeInLength = iClipLength - pSession->frameFromPixel(8);
-		if (iFadeInLength < 0)
-			iFadeInLength = 0;
-		pItem->fadeInLength = iFadeInLength;
+			iFadeInLength2 += long(pClip->clipStart()) - long(iClipStart);
+		const long iClipLength2
+			= iClipLength - pSession->frameFromPixel(8);
+		if (iFadeInLength2 > iClipLength2)
+			iFadeInLength2 = iClipLength2;
+		if (iFadeInLength2 < 0)
+			iFadeInLength2 = 0;
+		pItem->fadeInLength = iFadeInLength2;
 	}
 
-	long iFadeOutLength = long(pClip->fadeOutLength());
-	if (iFadeOutLength > 0) {
+	long iFadeOutLength2 = long(pClip->fadeOutLength());
+	if (iFadeOutLength2 > 0) {
 		if (fTimeStretch > 0.0f)
-			iFadeOutLength = long(fTimeStretch * float(iFadeOutLength));
+			iFadeOutLength2 = long(fTimeStretch * float(iFadeOutLength2));
 		else
-			iFadeOutLength += long(iClipStart + iClipLength)
+			iFadeOutLength2 += long(iClipStart + iClipLength)
 				- long(pClip->clipStart() + pClip->clipLength());
-		if (iFadeOutLength > iClipLength)
-			iFadeOutLength = iClipLength - pSession->frameFromPixel(8);
-		if (iFadeOutLength < 0)
-			iFadeOutLength = 0;
-		pItem->fadeOutLength = iFadeOutLength;
+		const long iClipLength2
+			= iClipLength - pSession->frameFromPixel(8);
+		if (iFadeOutLength2 > iClipLength2)
+			iFadeOutLength2 = iClipLength2;
+		if (iFadeOutLength2 < 0)
+			iFadeOutLength2 = 0;
+		pItem->fadeOutLength = iFadeOutLength2;
 	}
 
 	if (fTimeStretch > 0.0f) {
@@ -293,10 +297,10 @@ void qtractorClipCommand::fadeInClip ( qtractorClip *pClip,
 	Item *pItem = new Item(FadeInClip, pClip, pClip->track());
 
 	long iFadeInLength2 = iFadeInLength;
-	const unsigned long iClipLength = pClip->clipLength();
-	if (iFadeInLength2 > iClipLength) {
-		qtractorSession *pSession = (pClip->track())->session();
-		iFadeInLength2 = iClipLength - pSession->frameFromPixel(8);
+	const long iClipLength2 = pClip->clipLength()
+		- (pClip->track())->session()->frameFromPixel(8);
+	if (iFadeInLength2 > iClipLength2) {
+		iFadeInLength2 = iClipLength2;
 		if (iFadeInLength2 < 0)
 			iFadeInLength2 = 0;
 	}
@@ -313,10 +317,10 @@ void qtractorClipCommand::fadeOutClip ( qtractorClip *pClip,
 	Item *pItem = new Item(FadeOutClip, pClip, pClip->track());
 
 	long iFadeOutLength2 = iFadeOutLength;
-	const unsigned long iClipLength = pClip->clipLength();
-	if (iFadeOutLength2 > iClipLength) {
-		qtractorSession *pSession = (pClip->track())->session();
-		iFadeOutLength2 = iClipLength - pSession->frameFromPixel(8);
+	const long iClipLength2 = pClip->clipLength()
+		- (pClip->track())->session()->frameFromPixel(8);
+	if (iFadeOutLength2 > iClipLength2) {
+		iFadeOutLength2 = iClipLength2;
 		if (iFadeOutLength2 < 0)
 			iFadeOutLength2 = 0;
 	}
