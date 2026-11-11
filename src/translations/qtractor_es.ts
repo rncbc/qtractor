@@ -1080,22 +1080,22 @@ Duración:	%3</translation>
         <translation>Editor de audio</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="874"/>
+        <location filename="../qtractorAudioEditor.cpp" line="875"/>
         <source>cut audio</source>
         <translation>cortar audio</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="881"/>
+        <location filename="../qtractorAudioEditor.cpp" line="882"/>
         <source>delete audio</source>
         <translation>eliminar audio</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="893"/>
+        <location filename="../qtractorAudioEditor.cpp" line="894"/>
         <source>move audio</source>
         <translation>mover audio</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="1423"/>
+        <location filename="../qtractorAudioEditor.cpp" line="1424"/>
         <source>paste audio</source>
         <translation>pegar audio</translation>
     </message>

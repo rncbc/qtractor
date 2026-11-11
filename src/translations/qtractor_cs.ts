@@ -1081,22 +1081,22 @@ Délka:	%3</translation>
         <translation>Editor zvuku</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="874"/>
+        <location filename="../qtractorAudioEditor.cpp" line="875"/>
         <source>cut audio</source>
         <translation>Vyjmout zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="881"/>
+        <location filename="../qtractorAudioEditor.cpp" line="882"/>
         <source>delete audio</source>
         <translation>Smazat zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="893"/>
+        <location filename="../qtractorAudioEditor.cpp" line="894"/>
         <source>move audio</source>
         <translation>Přesunout zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="1423"/>
+        <location filename="../qtractorAudioEditor.cpp" line="1424"/>
         <source>paste audio</source>
         <translation>Vložit zvuk</translation>
     </message>
