@@ -4102,7 +4102,7 @@ qtractorVst3Plugin::Param::Param (
 					m_pImpl = new Impl(paramInfo);
 					setName(fromTChar(paramInfo.title));
 					setMinValue(0.0f);
-					setMaxValue(paramInfo.stepCount > 1 ? float(paramInfo.stepCount) : 1.0f);
+					setMaxValue(1.0f);
 					setDefaultValue(float(controller->getParamNormalized(paramInfo.id)));
 				}
 			}
