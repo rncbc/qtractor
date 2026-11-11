@@ -666,7 +666,8 @@ bool qtractorAudioEditor::isClipboard (void) const
 	if (pFile == nullptr)
 		return false;
 
-	return (g_clipboard.sampleRate == pFile->sampleRate());
+	return g_clipboard.sampleRate == pFile->sampleRate()
+		&& g_clipboard.channels   == pFile->channels();
 }
 
 
