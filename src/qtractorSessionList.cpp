@@ -39,6 +39,8 @@
 
 #include "qtractorTrackCommand.h"
 
+#include <QAbstractItemModel>
+
 #include <QHeaderView>
 #include <QPainter>
 #include <QStyledItemDelegate>
@@ -820,14 +822,10 @@ QVariant
 qtractorSessionListView::ItemModel::headerData (
 	int section, Qt::Orientation orientation, int role ) const
 {
-	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-		switch (section) {
-			case 0: return tr("Name");
-			case 1: return tr("Detail");
-			default: break;
-		}
-	}
-	return QVariant();
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+		return qtractorSessionList::headerText(section);
+	else
+		return QVariant();
 }
 
 
@@ -2105,6 +2103,17 @@ bool qtractorSessionList::restoreState ( const QByteArray& state )
 	}
 
 	return (i > 0);
+}
+
+
+// Header text helper (for translation) [static]
+QString qtractorSessionList::headerText ( int section )
+{
+	switch (section) {
+		case 0:  return tr("Name");
+		case 1:  return tr("Detail");
+		default: return QString();
+	}
 }
 
 

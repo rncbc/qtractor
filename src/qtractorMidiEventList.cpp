@@ -31,6 +31,7 @@
 #include "qtractorSpinBox.h"
 
 #include <QAbstractItemModel>
+
 #include <QItemDelegate>
 
 #include <QHeaderView>
@@ -38,6 +39,39 @@
 #include <QSpinBox>
 
 #include <QContextMenuEvent>
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiEventListView::ItemDelegate -- Custom (tree) list item delegate.
+
+class qtractorMidiEventListView::ItemDelegate : public QItemDelegate
+{
+public:
+
+	// Constructor.
+	ItemDelegate(QObject *pParent = nullptr);
+
+	// QItemDelegate Interface...
+
+	void paint(QPainter *pPainter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	QSize sizeHint(
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	QWidget *createEditor(QWidget *pParent,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	void setEditorData(QWidget *pEditor,
+		const QModelIndex& index) const;
+
+	void setModelData(QWidget *pEditor,
+		QAbstractItemModel *pModel,
+		const QModelIndex& index) const;
+};
 
 
 //----------------------------------------------------------------------------
@@ -89,9 +123,6 @@ protected:
 
 private:
 
-	// Model variables.
-	QStringList m_headers;
-
 	qtractorMidiEditor   *m_pEditor;
 	qtractorMidiSequence *m_pSeq;
 
@@ -102,42 +133,6 @@ private:
 };
 
 
-//----------------------------------------------------------------------------
-// qtractorMidiEventListView::ItemDelegate -- Custom (tree) list item delegate.
-
-class qtractorMidiEventListView::ItemDelegate : public QItemDelegate
-{
-public:
-
-	// Constructor.
-	ItemDelegate(QObject *pParent = nullptr);
-
-	// QItemDelegate Interface...
-
-	void paint(QPainter *pPainter,
-		const QStyleOptionViewItem& option,
-		const QModelIndex& index) const;
-
-	QSize sizeHint(
-		const QStyleOptionViewItem& option,
-		const QModelIndex& index) const;
-
-	QWidget *createEditor(QWidget *pParent,
-		const QStyleOptionViewItem& option,
-		const QModelIndex& index) const;
-
-	void setEditorData(QWidget *pEditor,
-		const QModelIndex& index) const;
-
-	void setModelData(QWidget *pEditor,
-		QAbstractItemModel *pModel,
-		const QModelIndex& index) const;
-};
-
-
-//----------------------------------------------------------------------------
-// qtractorMidiEventListView::ItemModel -- List model.
-
 // Constructor.
 qtractorMidiEventListView::ItemModel::ItemModel (
 	qtractorMidiEditor *pEditor, QObject *pParent )
@@ -145,13 +140,6 @@ qtractorMidiEventListView::ItemModel::ItemModel (
 		m_pSeq(nullptr), m_iTimeOffset(0),
 		m_pEvent(nullptr), m_iEvent(0)
 {
-	m_headers
-		<< tr("Time")
-		<< tr("Type")
-		<< tr("Name")
-		<< tr("Value")
-		<< tr("Duration/Data");
-
 	reset();
 }
 
@@ -166,7 +154,7 @@ int qtractorMidiEventListView::ItemModel::rowCount (
 int qtractorMidiEventListView::ItemModel::columnCount (
 	const QModelIndex& /*parent*/ ) const
 {
-	return m_headers.count();
+	return 5;
 }
 
 
@@ -177,19 +165,7 @@ QVariant qtractorMidiEventListView::ItemModel::headerData (
 	if (orient == Qt::Horizontal) {
 		switch (role) {
 		case Qt::DisplayRole:
-		#if 0
-			if (section == 0) {
-				switch ((m_pEditor->timeScale())->displayFormat()) {
-				case qtractorTimeScale::Frames:
-					return tr("Frame");
-				case qtractorTimeScale::Time:
-					return tr("Time");
-				case qtractorTimeScale::BBT:
-					return tr("BBT");
-				}
-			}
-		#endif
-			return m_headers.at(section);
+			return qtractorMidiEventList::headerText(section);
 		case Qt::TextAlignmentRole:
 			return columnAlignment(section);
 		default:
@@ -1178,6 +1154,32 @@ void qtractorMidiEventList::changeNotifySlot ( QObject * )
 #endif
 
 	refresh();
+}
+
+
+// Header text helper (for translation) [static]
+QString qtractorMidiEventList::headerText ( int section )
+{
+#if 0
+	if (section == 0) {
+		switch ((m_pEditor->timeScale())->displayFormat()) {
+		case qtractorTimeScale::Frames:
+			return tr("Frame");
+		case qtractorTimeScale::Time:
+			return tr("Time");
+		case qtractorTimeScale::BBT:
+			return tr("BBT");
+		}
+	}
+#endif
+	switch (section) {
+		case 0: return tr("Time");
+		case 1: return tr("Type");
+		case 2: return tr("Name");
+		case 3: return tr("Value");
+		case 4: return tr("Duration/Data");
+		default: return QString();
+	};
 }
 
 
