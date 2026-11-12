@@ -810,22 +810,22 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Spur-Instrument</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="109"/>
+        <location filename="../qtractorTrackList.cpp" line="110"/>
         <source>Automation (%1)</source>
         <translation>Automatisierung (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="117"/>
+        <location filename="../qtractorTrackList.cpp" line="118"/>
         <source>none</source>
         <translation>keiner</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="251"/>
+        <location filename="../qtractorTrackList.cpp" line="235"/>
         <source>Automation</source>
         <translation>Automatisierung</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="550"/>
+        <location filename="../qtractorTrackList.cpp" line="534"/>
         <source>Unknown</source>
         <translation>Unbenannt</translation>
     </message>
@@ -13046,15 +13046,51 @@ Möchten Sie die Änderungen speichern?</translation>
 <context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="983"/>
+        <location filename="../qtractorMidiEventList.cpp" line="959"/>
         <source>Events</source>
         <translation>Elemente</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1167"/>
+        <source>Frame</source>
+        <translation>Rahmen</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1169"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1176"/>
+        <source>Time</source>
+        <translation>Zeit</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1171"/>
+        <source>BBT</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1177"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1178"/>
+        <source>Name</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1179"/>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1180"/>
+        <source>Duration/Data</source>
+        <translation>Dauer/Daten</translation>
     </message>
 </context>
 <context>
     <name>qtractorMidiEventListView::ItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="734"/>
+        <location filename="../qtractorMidiEventList.cpp" line="710"/>
         <source>edit %1</source>
         <translation>bearbeite %1</translation>
     </message>
@@ -13062,103 +13098,67 @@ Möchten Sie die Änderungen speichern?</translation>
 <context>
     <name>qtractorMidiEventListView::ItemModel</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="149"/>
-        <location filename="../qtractorMidiEventList.cpp" line="186"/>
-        <source>Time</source>
-        <translation>Zeit</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="150"/>
-        <source>Type</source>
-        <translation>Typ</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="151"/>
-        <source>Name</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="152"/>
-        <source>Value</source>
-        <translation>Wert</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="153"/>
-        <source>Duration/Data</source>
-        <translation>Dauer/Daten</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="184"/>
-        <source>Frame</source>
-        <translation>Rahmen</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="188"/>
-        <source>BBT</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="402"/>
+        <location filename="../qtractorMidiEventList.cpp" line="378"/>
         <source>Note On (%1)</source>
         <translation>Note an (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="404"/>
+        <location filename="../qtractorMidiEventList.cpp" line="380"/>
         <source>Note Off (%1)</source>
         <translation>Note aus (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="406"/>
+        <location filename="../qtractorMidiEventList.cpp" line="382"/>
         <source>Key Press (%1)</source>
         <translation>Tastendruck (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="408"/>
+        <location filename="../qtractorMidiEventList.cpp" line="384"/>
         <source>Controller (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="410"/>
+        <location filename="../qtractorMidiEventList.cpp" line="386"/>
         <source>Control 14 (%1)</source>
         <translation>Steuerung 14 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="412"/>
+        <location filename="../qtractorMidiEventList.cpp" line="388"/>
         <source>RPN (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="414"/>
+        <location filename="../qtractorMidiEventList.cpp" line="390"/>
         <source>NRPN (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="416"/>
+        <location filename="../qtractorMidiEventList.cpp" line="392"/>
         <source>Pgm Change</source>
         <translation>Programmwechsel</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="418"/>
+        <location filename="../qtractorMidiEventList.cpp" line="394"/>
         <source>Chan Press</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="420"/>
+        <location filename="../qtractorMidiEventList.cpp" line="396"/>
         <source>Pitch Bend</source>
         <translation>Tonhöhenbeugung</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="422"/>
+        <location filename="../qtractorMidiEventList.cpp" line="398"/>
         <source>SysEx</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="424"/>
+        <location filename="../qtractorMidiEventList.cpp" line="400"/>
         <source>Meta (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="428"/>
+        <location filename="../qtractorMidiEventList.cpp" line="404"/>
         <source>Unknown (%1)</source>
         <translation>Unbekannt (%1)</translation>
     </message>
@@ -16839,22 +16839,32 @@ Wollen Sie diese übernehmen?</translation>
 <context>
     <name>qtractorSessionList</name>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1745"/>
+        <location filename="../qtractorSessionList.cpp" line="2113"/>
+        <source>Name</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="2114"/>
+        <source>Detail</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1743"/>
         <source>Session</source>
         <translation>Sitzung</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1864"/>
+        <location filename="../qtractorSessionList.cpp" line="1862"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Eingänge</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1874"/>
+        <location filename="../qtractorSessionList.cpp" line="1872"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Ausgänge</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1880"/>
+        <location filename="../qtractorSessionList.cpp" line="1878"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Busse...</translation>
     </message>
@@ -16862,54 +16872,44 @@ Wollen Sie diese übernehmen?</translation>
 <context>
     <name>qtractorSessionListView::ItemModel</name>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1028"/>
-        <source>Inputs</source>
-        <translation>Eingänge</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="1041"/>
-        <source>Tracks</source>
-        <translation>Spuren</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="1050"/>
-        <source>Outputs</source>
-        <translation>Ausgänge</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="149"/>
+        <location filename="../qtractorSessionList.cpp" line="151"/>
         <source>Audio</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="152"/>
+        <location filename="../qtractorSessionList.cpp" line="154"/>
         <source>MIDI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1069"/>
+        <location filename="../qtractorSessionList.cpp" line="1026"/>
+        <source>Inputs</source>
+        <translation>Eingänge</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1039"/>
+        <source>Tracks</source>
+        <translation>Spuren</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1048"/>
+        <source>Outputs</source>
+        <translation>Ausgänge</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1067"/>
         <source>track</source>
         <translation>Schiene</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1086"/>
+        <location filename="../qtractorSessionList.cpp" line="1084"/>
         <source>clip</source>
         <translation>Clip</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1119"/>
+        <location filename="../qtractorSessionList.cpp" line="1117"/>
         <source>bus</source>
         <translation>Bus</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="825"/>
-        <source>Name</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="826"/>
-        <source>Detail</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -17999,32 +17999,32 @@ Wollen Sie diese übernehmen?</translation>
 <context>
     <name>qtractorTrackList</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="177"/>
+        <location filename="../qtractorTrackList.cpp" line="2062"/>
         <source>Nr</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="178"/>
+        <location filename="../qtractorTrackList.cpp" line="2064"/>
         <source>Track Name</source>
         <translation>Spurname</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="179"/>
+        <location filename="../qtractorTrackList.cpp" line="2066"/>
         <source>Bus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="180"/>
+        <location filename="../qtractorTrackList.cpp" line="2068"/>
         <source>Ch</source>
         <translation>Kanal</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="181"/>
+        <location filename="../qtractorTrackList.cpp" line="2070"/>
         <source>Patch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="182"/>
+        <location filename="../qtractorTrackList.cpp" line="2072"/>
         <source>Instrument</source>
         <translation></translation>
     </message>
