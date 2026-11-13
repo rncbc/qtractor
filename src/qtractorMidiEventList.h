@@ -31,8 +31,6 @@ class qtractorMidiEditor;
 class qtractorMidiSequence;
 class qtractorMidiEvent;
 
-class QAbstractItemModel;
-
 
 //----------------------------------------------------------------------------
 // qtractorMidiEventListView -- Custom (tree) list view.
@@ -106,6 +104,9 @@ public:
 
 	// Event list view refreshner.
 	void refresh();
+
+	// Header text helper (for translation context)
+	static QString headerText(int section);
 
 protected:
 

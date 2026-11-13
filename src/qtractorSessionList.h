@@ -22,7 +22,6 @@
 #ifndef __qtractorSessionList_h
 #define __qtractorSessionList_h
 
-#include <QAbstractItemModel>
 #include <QDockWidget>
 #include <QTreeView>
 #include <QHash>
@@ -127,6 +126,9 @@ public:
 	// State saver/loader.
 	QByteArray saveState() const;
 	bool restoreState(const QByteArray& state);
+
+	// Header text helper (for translation context)
+	static QString headerText(int section);
 
 protected slots:
 
