@@ -630,6 +630,19 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 	if (pClip == nullptr)
 		return false;
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return false;
+
+	// Edit clip: we must have a session name...
+	if (pSession->sessionName().isEmpty()) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm == nullptr)
+			return false;
+		if (!pMainForm->editSession())
+			return false;
+	}
+
 	// Assume all else hasn't failed...
 	return pClip->startEditor(qtractorMainForm::getInstance());
 }

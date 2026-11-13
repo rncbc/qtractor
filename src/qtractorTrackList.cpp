@@ -56,8 +56,9 @@
 
 #include "qtractorOptions.h"
 
+#include <QAbstractItemModel>
+
 #include <QHeaderView>
-#include <QAbstractListModel>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -154,7 +155,7 @@ class qtractorTrackList::HeaderModel : public QAbstractListModel
 public:
 
 	// Constructor.
-	HeaderModel(QObject *pParent = 0);
+	HeaderModel(QObject *pParent = 0) : QAbstractListModel(pParent) {}
 
 	QVariant headerData(int section, Qt::Orientation orient, int role) const;
 
@@ -162,29 +163,10 @@ public:
 		{ return 0; }
 
 	int columnCount(const QModelIndex&) const
-		{ return m_headerText.count(); }
+		{ return 6; }
 
 	QVariant data(const QModelIndex&, int) const
 		{ return QVariant(); }
-
-private:
-
-	// Model variables.
-	QStringList m_headerText;
-};
-
-
-// Constructor.
-qtractorTrackList::HeaderModel::HeaderModel ( QObject *pParent )
-	: QAbstractListModel(pParent)
-{
-	m_headerText
-		<< tr("Nr")
-		<< tr("Track Name")
-		<< tr("Bus")
-		<< tr("Ch")
-		<< tr("Patch")
-		<< tr("Instrument");
 };
 
 
@@ -194,8 +176,10 @@ QVariant qtractorTrackList::HeaderModel::headerData (
 {
 	if (orient == Qt::Horizontal) {
 		switch (role) {
-		case Qt::DisplayRole:
-			return m_headerText.at(section);
+		case Qt::DisplayRole: {
+			return qtractorTrackList::headerText(section);
+			break;
+		}
 		case Qt::TextAlignmentRole:
 			if (section == qtractorTrackList::Number ||
 				section == qtractorTrackList::Channel)
@@ -2072,6 +2056,28 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		qtractorScrollView::keyPressEvent(pKeyEvent);
 		break;
 	}
+}
+
+
+// Header text helper (for translation) [static]
+QString qtractorTrackList::headerText ( int section )
+{
+	switch (section) {
+	case qtractorTrackList::Number:
+		return tr("Nr");
+	case qtractorTrackList::Name:
+		return tr("Track Name");
+	case qtractorTrackList::Bus:
+		return tr("Bus");
+	case qtractorTrackList::Channel:
+		return tr("Ch");
+	case qtractorTrackList::Patch:
+		return tr("Patch");
+	case qtractorTrackList::Instrument:
+		return tr("Instrument");
+	default:
+		return QString();
+	};
 }
 
 
