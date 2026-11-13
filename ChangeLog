@@ -4,14 +4,31 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.7.0  2026-11-14  A Mid-Fall'26 Release.
 
-- Audio clips may also be unlinked. (EXPERIMENTAL)
+- Features a brand-new, basic audio clip editor (Clip/Edit).
+  CAVEAT: Although it is possible to edit large audio files,
+  doing so can consume considerable time and disk space.
 
-- Featuring brand new but basic audio clip editor (Clip/Edit...);
-  new Clip/Properties... on the main menu for the old common clip
-  properties dialog. (EXPERIMENTAL)
- 
+- The new audio clip editor includes a small set of audio tools,
+  which are also available from the main menu (Clip/Audio/Tools):
+  Gain, Panning, Normalize, Time Stretch, Pitch Shift, Reverse,
+  all can be applied to the entire audio file or to a selected
+  region.
+
+- Added Clip/Properties... to the main menu to open the common
+  and familiar clip properties dialog.
+
+- Audio clips can now be unlinked (Clip/Unlink).
+
+- Audio clips: draw a hatched pattern to mark a region with no
+  audio samples.
+
+- Prevent fade-in/out handles from moving off the clip when
+  either edge is resized.
+
+- VST3 plug-ins: ensure that all parameter values are normalized.
+
 
 1.6.5  2026-10-31  A Halloween'26 Release.
 

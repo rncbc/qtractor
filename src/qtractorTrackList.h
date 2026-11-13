@@ -166,6 +166,9 @@ public:
 	QList<qtractorTrack *> selectedTracks(
 		qtractorTrack *pTrackEx = nullptr, bool bAllTracks = false) const;
 
+	// Header text helper (for translation context)
+	static QString headerText(int section);
+
 protected:
 
 	// Resize event handler.

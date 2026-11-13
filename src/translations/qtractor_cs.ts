@@ -515,22 +515,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nástroj stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="109"/>
+        <location filename="../qtractorTrackList.cpp" line="110"/>
         <source>Automation (%1)</source>
         <translation>Automatizace (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="117"/>
+        <location filename="../qtractorTrackList.cpp" line="118"/>
         <source>none</source>
         <translation>Žádná</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="251"/>
+        <location filename="../qtractorTrackList.cpp" line="235"/>
         <source>Automation</source>
         <translation>Automatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="550"/>
+        <location filename="../qtractorTrackList.cpp" line="534"/>
         <source>Unknown</source>
         <translation>Neznámý</translation>
     </message>
@@ -1081,22 +1081,22 @@ Délka:	%3</translation>
         <translation>Editor zvuku</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="874"/>
+        <location filename="../qtractorAudioEditor.cpp" line="875"/>
         <source>cut audio</source>
         <translation>Vyjmout zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="881"/>
+        <location filename="../qtractorAudioEditor.cpp" line="882"/>
         <source>delete audio</source>
         <translation>Smazat zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="893"/>
+        <location filename="../qtractorAudioEditor.cpp" line="894"/>
         <source>move audio</source>
         <translation>Přesunout zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditor.cpp" line="1423"/>
+        <location filename="../qtractorAudioEditor.cpp" line="1424"/>
         <source>paste audio</source>
         <translation>Vložit zvuk</translation>
     </message>
@@ -13056,15 +13056,51 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="983"/>
+        <location filename="../qtractorMidiEventList.cpp" line="959"/>
         <source>Events</source>
         <translation>Události</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1167"/>
+        <source>Frame</source>
+        <translation>Snímek</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1169"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1176"/>
+        <source>Time</source>
+        <translation>Čas</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1171"/>
+        <source>BBT</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1177"/>
+        <source>Type</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1178"/>
+        <source>Name</source>
+        <translation>Název</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1179"/>
+        <source>Value</source>
+        <translation>Hodnota</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="1180"/>
+        <source>Duration/Data</source>
+        <translation>Doba trvání/Data</translation>
     </message>
 </context>
 <context>
     <name>qtractorMidiEventListView::ItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="734"/>
+        <location filename="../qtractorMidiEventList.cpp" line="710"/>
         <source>edit %1</source>
         <translation>Upravit %1</translation>
     </message>
@@ -13072,103 +13108,67 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiEventListView::ItemModel</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="149"/>
-        <location filename="../qtractorMidiEventList.cpp" line="186"/>
-        <source>Time</source>
-        <translation>Čas</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="150"/>
-        <source>Type</source>
-        <translation>Typ</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="151"/>
-        <source>Name</source>
-        <translation>Název</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="152"/>
-        <source>Value</source>
-        <translation>Hodnota</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="153"/>
-        <source>Duration/Data</source>
-        <translation>Doba trvání/Data</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="184"/>
-        <source>Frame</source>
-        <translation>Snímek</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="188"/>
-        <source>BBT</source>
-        <translation>TDT (takty-doby-tiky)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="402"/>
+        <location filename="../qtractorMidiEventList.cpp" line="378"/>
         <source>Note On (%1)</source>
         <translation>Nota zapnuta (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="404"/>
+        <location filename="../qtractorMidiEventList.cpp" line="380"/>
         <source>Note Off (%1)</source>
         <translation>Nota vypnuta (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="406"/>
+        <location filename="../qtractorMidiEventList.cpp" line="382"/>
         <source>Key Press (%1)</source>
         <translation>Stisknutí klávesy (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="408"/>
+        <location filename="../qtractorMidiEventList.cpp" line="384"/>
         <source>Controller (%1)</source>
         <translation>Ovladač (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="410"/>
+        <location filename="../qtractorMidiEventList.cpp" line="386"/>
         <source>Control 14 (%1)</source>
         <translation>Ovladač 14 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="412"/>
+        <location filename="../qtractorMidiEventList.cpp" line="388"/>
         <source>RPN (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="414"/>
+        <location filename="../qtractorMidiEventList.cpp" line="390"/>
         <source>NRPN (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="416"/>
+        <location filename="../qtractorMidiEventList.cpp" line="392"/>
         <source>Pgm Change</source>
         <translation>Změna Pgm</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="418"/>
+        <location filename="../qtractorMidiEventList.cpp" line="394"/>
         <source>Chan Press</source>
         <translation>Stisknutí kanálu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="420"/>
+        <location filename="../qtractorMidiEventList.cpp" line="396"/>
         <source>Pitch Bend</source>
         <translation>Změna výšky tónu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="422"/>
+        <location filename="../qtractorMidiEventList.cpp" line="398"/>
         <source>SysEx</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="424"/>
+        <location filename="../qtractorMidiEventList.cpp" line="400"/>
         <source>Meta (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="428"/>
+        <location filename="../qtractorMidiEventList.cpp" line="404"/>
         <source>Unknown (%1)</source>
         <translation>Neznámý (%1)</translation>
     </message>
@@ -16854,22 +16854,32 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorSessionList</name>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1745"/>
+        <location filename="../qtractorSessionList.cpp" line="2113"/>
+        <source>Name</source>
+        <translation>Název</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="2114"/>
+        <source>Detail</source>
+        <translation>Podrobnosti</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1743"/>
         <source>Session</source>
         <translation>Sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1864"/>
+        <location filename="../qtractorSessionList.cpp" line="1862"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1874"/>
+        <location filename="../qtractorSessionList.cpp" line="1872"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1880"/>
+        <location filename="../qtractorSessionList.cpp" line="1878"/>
         <source>&amp;Buses...</source>
         <translation>S&amp;běrnice...</translation>
     </message>
@@ -16877,54 +16887,44 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorSessionListView::ItemModel</name>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1028"/>
-        <source>Inputs</source>
-        <translation>Vstupy</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="1041"/>
-        <source>Tracks</source>
-        <translation>Stopy</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="1050"/>
-        <source>Outputs</source>
-        <translation>Výstupy</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="149"/>
+        <location filename="../qtractorSessionList.cpp" line="151"/>
         <source>Audio</source>
         <translation>Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="152"/>
+        <location filename="../qtractorSessionList.cpp" line="154"/>
         <source>MIDI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1069"/>
+        <location filename="../qtractorSessionList.cpp" line="1026"/>
+        <source>Inputs</source>
+        <translation>Vstupy</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1039"/>
+        <source>Tracks</source>
+        <translation>Stopy</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1048"/>
+        <source>Outputs</source>
+        <translation>Výstupy</translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1067"/>
         <source>track</source>
         <translation>Stopa</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1086"/>
+        <location filename="../qtractorSessionList.cpp" line="1084"/>
         <source>clip</source>
         <translation>Záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1119"/>
+        <location filename="../qtractorSessionList.cpp" line="1117"/>
         <source>bus</source>
         <translation>Sběrnice</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="825"/>
-        <source>Name</source>
-        <translation>Název</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="826"/>
-        <source>Detail</source>
-        <translation>Podrobnosti</translation>
     </message>
 </context>
 <context>
@@ -18019,32 +18019,32 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTrackList</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="177"/>
+        <location filename="../qtractorTrackList.cpp" line="2062"/>
         <source>Nr</source>
         <translation>Č.</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="178"/>
+        <location filename="../qtractorTrackList.cpp" line="2064"/>
         <source>Track Name</source>
         <translation>Název stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="179"/>
+        <location filename="../qtractorTrackList.cpp" line="2066"/>
         <source>Bus</source>
         <translation>Sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="180"/>
+        <location filename="../qtractorTrackList.cpp" line="2068"/>
         <source>Ch</source>
         <translation>Kanál</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="181"/>
+        <location filename="../qtractorTrackList.cpp" line="2070"/>
         <source>Patch</source>
         <translation>Políčko</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="182"/>
+        <location filename="../qtractorTrackList.cpp" line="2072"/>
         <source>Instrument</source>
         <translation>Nástroj</translation>
     </message>
@@ -18229,32 +18229,32 @@ Délka:	%3</translation>
         <translation>Nový záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="777"/>
+        <location filename="../qtractorTracks.cpp" line="790"/>
         <source>split clip</source>
         <translation>Rozdělení záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="867"/>
+        <location filename="../qtractorTracks.cpp" line="880"/>
         <source>clip normalize</source>
         <translation>Normalizace záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1126"/>
+        <location filename="../qtractorTracks.cpp" line="1139"/>
         <source>tempo ramp</source>
         <translation>tempový nájezd</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1268"/>
+        <location filename="../qtractorTracks.cpp" line="1281"/>
         <source>clip import</source>
         <translation>Zavedení záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2938"/>
+        <location filename="../qtractorTracks.cpp" line="2951"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2939"/>
+        <location filename="../qtractorTracks.cpp" line="2952"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -18267,194 +18267,194 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1119"/>
+        <location filename="../qtractorTracks.cpp" line="1132"/>
         <source>quantize</source>
         <translation>Kvantizovat</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="661"/>
+        <location filename="../qtractorTracks.cpp" line="674"/>
         <source>mute clip</source>
         <translation>Ztlumit záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1120"/>
+        <location filename="../qtractorTracks.cpp" line="1133"/>
         <source>transpose</source>
         <translation>Převést</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="988"/>
-        <location filename="../qtractorTracks.cpp" line="1121"/>
+        <location filename="../qtractorTracks.cpp" line="1001"/>
+        <location filename="../qtractorTracks.cpp" line="1134"/>
         <source>normalize</source>
         <translation>Normalizovat</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="986"/>
+        <location filename="../qtractorTracks.cpp" line="999"/>
         <source>gain</source>
         <translation>Zesílení</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="987"/>
+        <location filename="../qtractorTracks.cpp" line="1000"/>
         <source>panning</source>
         <translation>Vyvažování</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="989"/>
+        <location filename="../qtractorTracks.cpp" line="1002"/>
         <source>time-stretch</source>
         <translation>Protažení času</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="990"/>
+        <location filename="../qtractorTracks.cpp" line="1003"/>
         <source>pitch-shift</source>
         <translation>Posunutí výšky tónu</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="991"/>
+        <location filename="../qtractorTracks.cpp" line="1004"/>
         <source>reverse</source>
         <translation>Obrátit</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1122"/>
+        <location filename="../qtractorTracks.cpp" line="1135"/>
         <source>randomize</source>
         <translation>Vybrat náhodně</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1123"/>
+        <location filename="../qtractorTracks.cpp" line="1136"/>
         <source>resize</source>
         <translation>Změnit velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1124"/>
+        <location filename="../qtractorTracks.cpp" line="1137"/>
         <source>rescale</source>
         <translation>Změnit měřítko</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1125"/>
+        <location filename="../qtractorTracks.cpp" line="1138"/>
         <source>timeshift</source>
         <translation>Časový posun</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1296"/>
-        <location filename="../qtractorTracks.cpp" line="3325"/>
+        <location filename="../qtractorTracks.cpp" line="1309"/>
+        <location filename="../qtractorTracks.cpp" line="3338"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Zavedení zvukového souboru &quot;%1&quot; do %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1301"/>
-        <location filename="../qtractorTracks.cpp" line="3330"/>
+        <location filename="../qtractorTracks.cpp" line="1314"/>
+        <location filename="../qtractorTracks.cpp" line="3343"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Zavedení zvukového souboru: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1332"/>
-        <location filename="../qtractorTracks.cpp" line="3179"/>
+        <location filename="../qtractorTracks.cpp" line="1345"/>
+        <location filename="../qtractorTracks.cpp" line="3192"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>Zavedení MIDI souboru: &quot;%1&quot;, stopa-kanál %2 %3 %4.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1373"/>
+        <location filename="../qtractorTracks.cpp" line="1386"/>
         <source>clip merge</source>
         <translation>Sloučení záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1465"/>
-        <location filename="../qtractorTracks.cpp" line="1764"/>
+        <location filename="../qtractorTracks.cpp" line="1478"/>
+        <location filename="../qtractorTracks.cpp" line="1777"/>
         <source>Merge/Export</source>
         <translation>Sloučit/Vyvést</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1478"/>
+        <location filename="../qtractorTracks.cpp" line="1491"/>
         <source>Merge/Export Audio Clip</source>
         <translation>Sloučit/Vyvést zvukový záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1543"/>
+        <location filename="../qtractorTracks.cpp" line="1556"/>
         <source>Audio clip merge/export: &quot;%1&quot; started...</source>
         <translation>Sloučení/Vyvedení zvukového záběru: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1691"/>
+        <location filename="../qtractorTracks.cpp" line="1704"/>
         <source>Audio clip merge/export: &quot;%1&quot; complete.</source>
         <translation>Sloučení/Vyvedení zvukového záběru: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1777"/>
+        <location filename="../qtractorTracks.cpp" line="1790"/>
         <source>Merge/Export MIDI Clip</source>
         <translation>Sloučit/Vyvést záběr MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1779"/>
+        <location filename="../qtractorTracks.cpp" line="1792"/>
         <source>MIDI files (*.mid *.smf *.midi)</source>
         <translation>Soubory MIDI (*.mid *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1780"/>
+        <location filename="../qtractorTracks.cpp" line="1793"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1843"/>
+        <location filename="../qtractorTracks.cpp" line="1856"/>
         <source>MIDI clip merge/export: &quot;%1&quot; started...</source>
         <translation>Sloučení/Vyvedení záběru MIDI: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1981"/>
+        <location filename="../qtractorTracks.cpp" line="1994"/>
         <source>MIDI clip merge/export: &quot;%1&quot; complete.</source>
         <translation>Sloučení/Vyvedení záběru MIDI: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2110"/>
+        <location filename="../qtractorTracks.cpp" line="2123"/>
         <source>clip cross-fade</source>
         <translation>Prolínání záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2395"/>
+        <location filename="../qtractorTracks.cpp" line="2408"/>
         <source>Insert Range</source>
         <translation>Vložit rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2416"/>
+        <location filename="../qtractorTracks.cpp" line="2429"/>
         <source>insert track range</source>
         <translation>Vložit rozsah stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2620"/>
+        <location filename="../qtractorTracks.cpp" line="2633"/>
         <source>Remove Range</source>
         <translation>Odstranit rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2415"/>
+        <location filename="../qtractorTracks.cpp" line="2428"/>
         <source>insert range</source>
         <translation>Vložit rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2640"/>
+        <location filename="../qtractorTracks.cpp" line="2653"/>
         <source>remove range</source>
         <translation>Odstranit rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2641"/>
+        <location filename="../qtractorTracks.cpp" line="2654"/>
         <source>remove track range</source>
         <translation>Odstranit rozsah stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3436"/>
+        <location filename="../qtractorTracks.cpp" line="3449"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Zavedení MIDI souboru &quot;%1&quot; do %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3441"/>
+        <location filename="../qtractorTracks.cpp" line="3454"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Zavedení MIDI souboru: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1338"/>
-        <location filename="../qtractorTracks.cpp" line="3185"/>
+        <location filename="../qtractorTracks.cpp" line="1351"/>
+        <location filename="../qtractorTracks.cpp" line="3198"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Zavedení MIDI souboru: &quot;%1&quot;, stopa-kanál: %2.</translation>
     </message>
