@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2025, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -271,9 +271,9 @@ void qtractorPluginSelectForm::rescan (void)
 				m_ui.PluginTypeComboBox->itemText(iTypeHint));
 		if (QApplication::keyboardModifiers()
 			& (Qt::ShiftModifier | Qt::ControlModifier))
-			pPluginFactory->clearAll(typeHint);
-		else
 			pPluginFactory->clear();
+		else
+			pPluginFactory->clearAll(typeHint);
 		pPluginFactory->setRescan(true);
 	}
 
