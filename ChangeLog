@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Reversed the Shift/Ctrl modifier behavior of the Rescan button
+  on whether to perform a full rescan or simply a cache refreshe.
+
+
 1.7.0  2026-11-14  A Mid-Fall'26 Release.
 
 - Features a brand-new, basic audio clip editor (Clip/Edit).
