@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Audio clip editor: avoid working with read-only audio file types
+  (eg. MP3).
+
 - Reversed the Shift/Ctrl modifier behavior of the Rescan button
   on whether to perform a full rescan or simply a cache refreshe.
 
