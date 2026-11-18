@@ -483,7 +483,12 @@ QString qtractorAudioClip::createFilePathRevision ( bool bForce )
 
 	if (revision() == 0 || bForce) {
 		const QFileInfo info(sFilename);
-		QString sExt = info.suffix();
+		QString sExt = info.suffix().toLower();
+		qtractorAudioFileFactory::FileFormat *pFileFormat
+			= qtractorAudioFileFactory::types().value(sExt, nullptr);
+		if (pFileFormat == nullptr ||
+			pFileFormat->type == qtractorAudioFileFactory::MadFile)
+			sExt.clear();
 		if (sExt.isEmpty())
 			sExt = qtractorAudioFileFactory::defaultExt();
 		sFilename = pSession->createFilePathEx(info.completeBaseName(), sExt);
