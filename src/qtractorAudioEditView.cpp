@@ -410,42 +410,28 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 	//
 	// Draw the clip(s) contents...
 	//
-
 	const int w1 = pTimeScale->pixelFromFrame(f0 + m_pEditor->length()) - dx;
-	const int w2 = qMin(w, w1);
-	if (w2 > 0) {
-		const QRect clipRect(0, 2, w2, h);
-		painter.setRenderHint(QPainter::Antialiasing, true);
-		drawAudioPeak(painter, dx, clipRect);
-		m_pEditor->drawFadeInOut(painter, dx, clipRect);
-		painter.setRenderHint(QPainter::Antialiasing, false);
-	}
+	const QRect clipRect(0, 2, qMin(w, w1), h);
+	painter.setRenderHint(QPainter::Antialiasing, true);
+	drawAudioPeak(painter, dx, clipRect);
+	m_pEditor->drawFadeInOut(painter, dx, clipRect);
+	painter.setRenderHint(QPainter::Antialiasing, false);
 
 	// Show that we may have clip limits...
-	const unsigned long iClipLength = m_pEditor->length();
-	if (iClipLength > 0) {
-		int x1 = pTimeScale->pixelFromFrame(iClipLength) - cx;
-		if (x1 < 0)
-			x1 = 0;
-		if (x1 < w)
-			painter.fillRect(x1, 0, w - x1, h, QColor(0, 0, 0, 80));
-		const unsigned long iFileLength = m_pEditor->fileLength();
-		if (iClipLength > iFileLength) {
-			int x2 = pTimeScale->pixelFromFrame(iFileLength) - cx;
-			if (x2 < 0)
-				x2 = 0;
-			if (x2 < w) {
-				const bool bDark = (rgbBase.value() < 0x7f);
-				painter.fillRect(x2, 0, x1 - x2, h, QBrush(
-					bDark ? rgbLight.lighter() : rgbLight.darker(),
-					Qt::BDiagPattern));
-			}
-		}
+	const QBrush shade(QColor(0, 0, 0, 60));
+	if (w1 < w)
+		painter.fillRect(w1, 0, w - w1, h, shade);
+
+	const int w2 = pTimeScale->pixelFromFrame(f0 + m_pEditor->fileLength()) - dx;
+	if (w1 > w2 && w2 < w) {
+		const bool bDark = (rgbBase.value() < 0x7f);
+		painter.fillRect(w2, 0, w1 - w2, h, QBrush(
+			bDark ? rgbLight.lighter() : rgbLight.darker(),
+			Qt::BDiagPattern));
 	}
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
-		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkCyan);
 		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - dx;
 		if (x >= w)
@@ -467,7 +453,6 @@ void qtractorAudioEditView::updatePixmap ( int cx, int /*cy*/ )
 
 	// Draw punch boundaries, if applicable...
 	if (pSession->isPunching()) {
-		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkMagenta);
 		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - dx;
 		if (x >= w)
@@ -530,8 +515,7 @@ void qtractorAudioEditView::drawAudioPeak (
 	if (pPeakFrames == nullptr)
 		return;
 
-	const int w2 = clipRect.width();
-	const unsigned int iPeakLength = (pPeak->peakLength() * w2) / w;
+	const unsigned int iPeakLength = pPeak->peakLength();
 	if (iPeakLength < 1)
 		return;
 
@@ -555,7 +539,7 @@ void qtractorAudioEditView::drawAudioPeak (
 	// Build polygonal vertexes...
 	const int n2 = int(iPeakLength);
 	for (int n = 0; n < n2; ++n) {
-		x = clipRect.x() + (n * w2) / n2;
+		x = clipRect.x() + (n * w) / n2;
 		y = clipRect.y() + h2;
 		for (k = 0; k < iChannels; ++k) {
 			const qtractorAudioClip::FractGain& fractGain = pFractGains[k];

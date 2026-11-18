@@ -139,6 +139,7 @@ protected slots:
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarTime(bool bOn);
+	void viewToolbarThumb(bool bOn);
 	void viewToolbarLocked(bool bOn);
 	void viewZoomIn();
 	void viewZoomOut();
