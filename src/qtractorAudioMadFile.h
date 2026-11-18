@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,7 +81,9 @@ private:
 	unsigned int      m_iBitRate;
 	unsigned short    m_iChannels;
 	unsigned int      m_iSampleRate;
-	unsigned long     m_iFramesEst;
+
+	mutable unsigned long m_iFramesEst;
+
 	bool              m_bEndOfStream;
 
 #ifdef CONFIG_LIBMAD
