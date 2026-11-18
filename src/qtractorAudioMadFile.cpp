@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2026, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -92,16 +92,6 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 		return false;
 	}
 
-	// We've been here before we'll the total decoded length of the file...
-	unsigned long iFramesEst = 0;
-
-	g_mutex.lock();
-
-	if (m_pFrameList->count() > 0)
-		iFramesEst = m_pFrameList->last().iOutputOffset;
-
-	g_mutex.unlock();
-
 #ifdef CONFIG_LIBMAD
 	mad_stream_init(&m_madStream);
 	mad_frame_init(&m_madFrame);
@@ -134,16 +124,17 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 	}
 #endif  // CONFIG_LIBMAD
 
+	// Get a first estimate of the total decoded length...
+	const unsigned long iFramesEst = frames();
+
 	// Do the very first frame decoding...
 	m_bEndOfStream = !decode();
 
 	// Get a rough estimate of the total decoded length of the file...
 	if (iFramesEst < 1 && m_iBitRate > 0) {
-		iFramesEst = (m_bEndOfStream ? m_curr.iOutputOffset : (unsigned long)
-			((float) m_iSampleRate * st.st_size * 8.0f / (float) m_iBitRate));
+		m_iFramesEst = (unsigned long) (
+			(float) m_iSampleRate * st.st_size * 8.0f / (float) m_iBitRate);
 	}
-
-	m_iFramesEst = iFramesEst;
 
 #ifdef DEBUG_0
 	qDebug("qtractorAudioMadFile::open(\"%s\", %d) bit_rate=%u farmes_est=%lu",
@@ -505,6 +496,12 @@ unsigned short qtractorAudioMadFile::channels (void) const
 // Estimated number of frames specialty (aprox. 8secs).
 unsigned long qtractorAudioMadFile::frames (void) const
 {
+	if (!m_bEndOfStream && g_mutex.tryLock()) {
+		if (m_pFrameList && m_pFrameList->count() > 0)
+			m_iFramesEst = m_pFrameList->last().iOutputOffset;
+		g_mutex.unlock();
+	}
+
 	return m_iFramesEst;
 }
 
