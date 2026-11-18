@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Improved MP3 audio file length estimation. (EXPERIMENTAL)
+
 - Audio clip editor: avoid working with read-only audio file types
   (eg. MP3).
 
