@@ -594,7 +594,7 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 
 	if (revision() == 0 || bForce) {
 		const QFileInfo info(sFilename);
-		QString sExt = info.suffix();
+		QString sExt = info.suffix().toLower();
 		if (sExt.isEmpty())
 			sExt = "mid";
 		sFilename = pSession->createFilePathEx(info.completeBaseName(), sExt);
