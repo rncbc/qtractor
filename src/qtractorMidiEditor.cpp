@@ -2429,7 +2429,8 @@ void qtractorMidiEditor::updateContents (void)
 	m_pEditView->updateContents();
 	m_pEditEvent->updateContents();
 
-	m_pThumbView->updateContents();
+	if (m_pThumbView->isVisible())
+		m_pThumbView->updateContents();
 }
 
 
@@ -2473,7 +2474,8 @@ void qtractorMidiEditor::centerContents (void)
 	m_pEditView->updateContents();
 	m_pEditEvent->updateContents();
 
-	m_pThumbView->updateContents();
+	if (m_pThumbView->isVisible())
+		m_pThumbView->updateContents();
 }
 
 
@@ -2561,7 +2563,8 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	m_pEditView->updateContents();
 	m_pEditEvent->updateContents();
 
-	m_pThumbView->updateContents();
+	if (m_pThumbView->isVisible())
+		m_pThumbView->updateContents();
 }
 
 

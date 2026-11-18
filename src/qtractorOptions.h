@@ -319,6 +319,7 @@ public:
 	bool bAudioViewToolbar;
 	bool bAudioTransportToolbar;
 	bool bAudioTimeToolbar;
+	bool bAudioThumbToolbar;
 	bool bAudioLockedToolbar;
 	int  iAudioDisplayFormat;
 	bool bAudioFollow;

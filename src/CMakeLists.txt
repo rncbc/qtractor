@@ -31,6 +31,7 @@ set (HEADERS
   qtractorAudioMonitor.h
   qtractorAudioPeak.h
   qtractorAudioSndFile.h
+  qtractorAudioThumbView.h
   qtractorAudioVorbisFile.h
   qtractorClapPlugin.h
   qtractorClip.h
@@ -182,6 +183,7 @@ set (SOURCES
   qtractorAudioMonitor.cpp
   qtractorAudioPeak.cpp
   qtractorAudioSndFile.cpp
+  qtractorAudioThumbView.cpp
   qtractorAudioVorbisFile.cpp
   qtractorClapPlugin.cpp
   qtractorClip.cpp
