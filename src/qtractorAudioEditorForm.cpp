@@ -43,6 +43,8 @@
 #include "qtractorTimeScale.h"
 #include "qtractorCommand.h"
 
+#include "qtractorAudioThumbView.h"
+
 #include "qtractorExportForm.h"
 
 #include "qtractorTimeScaleCommand.h"
@@ -91,6 +93,11 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	// Set our central widget.
 	m_pAudioEditor = new qtractorAudioEditor(this);
 	setCentralWidget(m_pAudioEditor);
+
+	// Toolbar thumbnail view...
+	m_ui.thumbViewToolbar->addWidget(m_pAudioEditor->thumbView());
+	m_ui.thumbViewToolbar->setAllowedAreas(
+		Qt::TopToolBarArea | Qt::BottomToolBarArea);
 
 	// Editable toolbar widgets special palette.
 	QPalette pal;
@@ -362,6 +369,12 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 	QObject::connect(m_ui.viewToolbarTimeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarTime(bool)));
+	QObject::connect(m_ui.viewToolbarThumbAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarThumb(bool)));
+	QObject::connect(m_ui.viewToolbarLockedAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarLocked(bool)));
 	QObject::connect(m_ui.viewZoomInAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomIn()));
@@ -463,6 +476,7 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bAudioEditToolbar);
 		m_ui.viewToolbarTransportAction->setChecked(pOptions->bAudioTransportToolbar);
 		m_ui.viewToolbarTimeAction->setChecked(pOptions->bAudioTimeToolbar);
+		m_ui.viewToolbarThumbAction->setChecked(pOptions->bAudioThumbToolbar);
 		m_ui.viewToolbarLockedAction->setChecked(pOptions->bAudioLockedToolbar);
 		m_ui.transportFollowAction->setChecked(pOptions->bAudioFollow);
 		m_ui.viewSnapZebraAction->setChecked(pOptions->bAudioSnapZebra);
@@ -476,6 +490,7 @@ qtractorAudioEditorForm::qtractorAudioEditorForm (
 		viewToolbarEdit(pOptions->bAudioEditToolbar);
 		viewToolbarTransport(pOptions->bAudioTransportToolbar);
 		viewToolbarTime(pOptions->bAudioTimeToolbar);
+		viewToolbarThumb(pOptions->bAudioThumbToolbar);
 		viewToolbarLocked(pOptions->bAudioLockedToolbar);
 		m_pAudioEditor->setZoomMode(pOptions->iAudioZoomMode);
 		m_pAudioEditor->setHorizontalZoom(pOptions->iAudioHorizontalZoom);
@@ -642,6 +657,7 @@ void qtractorAudioEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bAudioEditToolbar = m_ui.editToolbar->isVisible();
 		pOptions->bAudioTransportToolbar = m_ui.transportToolbar->isVisible();
 		pOptions->bAudioTimeToolbar = m_ui.timeToolbar->isVisible();
+		pOptions->bAudioThumbToolbar = m_ui.thumbViewToolbar->isVisible();
 		pOptions->bAudioLockedToolbar = m_ui.viewToolbarLockedAction->isChecked();
 		pOptions->iAudioZoomMode = m_pAudioEditor->zoomMode();
 		pOptions->iAudioHorizontalZoom = m_pAudioEditor->horizontalZoom();
@@ -1530,6 +1546,13 @@ void qtractorAudioEditorForm::viewToolbarTime( bool bOn )
 }
 
 
+// Show/hide the thumb-view toolbar.
+void qtractorAudioEditorForm::viewToolbarThumb ( bool bOn )
+{
+	m_ui.thumbViewToolbar->setVisible(bOn);
+}
+
+
 // Lock/unlock window toolbar positions.
 void qtractorAudioEditorForm::viewToolbarLocked ( bool bOn )
 {
@@ -1537,6 +1560,7 @@ void qtractorAudioEditorForm::viewToolbarLocked ( bool bOn )
 	m_ui.editToolbar->setMovable(!bOn);
 	m_ui.transportToolbar->setMovable(!bOn);
 	m_ui.timeToolbar->setMovable(!bOn);
+	m_ui.thumbViewToolbar->setMovable(!bOn);
 }
 
 
@@ -2135,6 +2159,10 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 				&& iClipEnd   == pSession->loopEnd());
 		}
 	}
+
+	// Stabilize thumb-view...
+	m_pAudioEditor->thumbView()->update();
+	m_pAudioEditor->thumbView()->updateThumb();
 }
 
 
@@ -2142,6 +2170,7 @@ void qtractorAudioEditorForm::stabilizeForm (void)
 void qtractorAudioEditorForm::updatePlayHead ( unsigned long iPlayHead )
 {
 	m_pTimeSpinBox->setValue(iPlayHead, false);
+	m_pAudioEditor->thumbView()->updatePlayHead(iPlayHead);
 
 	// Tricky stuff: node's non-null iif tempo changes...
 	qtractorTimeScale *pTimeScale = m_pAudioEditor->timeScale();
