@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Audio clip editor: introducing the local thumb view and toolbar.
+  (View/Toolbars/Thumb)
+
 - Improved MP3 audio file length estimation. (EXPERIMENTAL)
 
 - Audio clip editor: avoid working with read-only audio file types

@@ -1680,7 +1680,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions->loadActionControls(this);
 
 	// Initial thumb-view background (empty)
-	m_pThumbView->updateContents();
+	if (m_pThumbView->isVisible())
+		m_pThumbView->updateContents();
 
 	// Some special defaults...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
@@ -5666,7 +5667,7 @@ void qtractorMainForm::viewRefresh (void)
 		m_pMixer->updateTracks();
 	}
 
-	if (m_pThumbView)
+	if (m_pThumbView->isVisible())
 		m_pThumbView->updateContents();
 
 	// Update other editors contents...
@@ -9970,7 +9971,8 @@ void qtractorMainForm::contentsChanged (void)
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
-	m_pThumbView->updateContents();
+	if (m_pThumbView->isVisible())
+		m_pThumbView->updateContents();
 
 	if (m_pSessionList && m_pSessionList->isVisible())
 		m_pSessionList->refresh(false);

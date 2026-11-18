@@ -34,6 +34,8 @@ class qtractorAudioEditTime;
 class qtractorAudioEditView;
 class qtractorAudioEditViewScale;
 
+class qtractorAudioThumbView;
+
 class qtractorAudioClip;
 class qtractorAudioPeak;
 class qtractorAudioPeakFactory;
@@ -76,6 +78,8 @@ public:
 	// Child widgets accessors.
 	qtractorAudioEditTime *editTime() const;
 	qtractorAudioEditView *editView() const;
+
+	qtractorAudioThumbView *thumbView() const;
 
 	// Zoom ratio accessors.
 	void setHorizontalZoom(unsigned short iHorizontalZoom);
@@ -189,12 +193,8 @@ public:
 	// Reset drag/select/move state.
 	void resetDragState(qtractorScrollView *pScrollView);
 
-	// Audio-peak factory accessor (singleton)
-	static qtractorAudioPeakFactory *audioPeakFactory()
-		{ return g_pAudioPeakFactory; }
-
 	// Audio-peak reset method.
-	void resetAudioPeak() { createAudioPeak(); }
+	void resetAudioPeak();
 
 	// Command list accessor.
 	qtractorCommandList *commands() const;
@@ -339,6 +339,8 @@ private:
 	qtractorAudioEditViewScale *m_pEditViewScale;
 	QFrame *m_pEditViewHeader;
 
+	qtractorAudioThumbView *m_pThumbView;
+
 	// Pre-zoom-min/max.holders.
 	int m_iOldHorizontalZoom;
 	int m_iOldVerticalZoom;
@@ -372,8 +374,8 @@ private:
 	qtractorRubberBand **m_ppRubberBand;
 
 	// Audio-peak stuff.
-	static qtractorAudioPeakFactory   *g_pAudioPeakFactory;
-	static unsigned int                g_iAudioPeakRefCount;
+	static qtractorAudioPeakFactory *g_pAudioPeakFactory;
+	static unsigned int              g_iAudioPeakRefCount;
 
 	static Clipboard g_clipboard;
 };
