@@ -27,6 +27,8 @@
 #include "qtractorAudioEditTime.h"
 #include "qtractorAudioEditView.h"
 
+#include "qtractorAudioThumbView.h"
+
 #include "qtractorAudioClip.h"
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioFile.h"
@@ -109,6 +111,8 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 	m_pEditView = new qtractorAudioEditView(this, pVBoxRight);
 	m_pEditViewScale = new qtractorAudioEditViewScale(this, pVBoxLeft);
 
+	m_pThumbView = new qtractorAudioThumbView(this);
+
 	// Create child box layouts...
 	QVBoxLayout *pVBoxLeftLayout = new QVBoxLayout(pVBoxLeft);
 	pVBoxLeftLayout->setContentsMargins(0, 0, 0, 0);
@@ -139,6 +143,10 @@ qtractorAudioEditor::qtractorAudioEditor ( QWidget *pParent )
 	// To have all views in positional sync.
 	QObject::connect(m_pEditView, SIGNAL(contentsMoving(int,int)),
 		m_pEditTime, SLOT(contentsXMovingSlot(int,int)));
+
+	QObject::connect(m_pEditView,
+		SIGNAL(contentsMoving(int,int)),
+		m_pThumbView, SLOT(updateThumb()));
 
 	// Audio-peak factory singleton initialization...
 	if (++g_iAudioPeakRefCount == 1 && g_pAudioPeakFactory == nullptr) {
@@ -270,6 +278,16 @@ void qtractorAudioEditor::setVerticalZoom ( unsigned short iVerticalZoom )
 }
 
 
+// Audio-peak reset method.
+void qtractorAudioEditor::resetAudioPeak (void)
+{
+	createAudioPeak();
+
+	if (m_pThumbView->isVisible())
+		m_pThumbView->updateContents();
+}
+
+
 // Audio-peak life-cycle methods.
 void qtractorAudioEditor::createAudioPeak (void)
 {
@@ -375,6 +393,12 @@ qtractorAudioEditTime *qtractorAudioEditor::editTime (void) const
 qtractorAudioEditView *qtractorAudioEditor::editView (void) const
 {
 	return m_pEditView;
+}
+
+
+qtractorAudioThumbView *qtractorAudioEditor::thumbView (void) const
+{
+	return m_pThumbView;
 }
 
 
@@ -1064,6 +1088,9 @@ void qtractorAudioEditor::updateContents (void)
 	// Trigger a complete view update...
 	m_pEditTime->updateContents();
 	m_pEditView->updateContents();
+
+	if (m_pThumbView->isVisible())
+		m_pThumbView->updateContents();
 }
 
 
@@ -1504,6 +1531,9 @@ void qtractorAudioEditor::zoomCenterPost ( const ZoomCenter& zc )
 	// Trigger a complete view update...
 	m_pEditTime->updateContents();
 	m_pEditView->updateContents();
+
+	if (m_pThumbView->isVisible())
+		m_pThumbView->updateContents();
 }
 
 

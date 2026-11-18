@@ -1753,7 +1753,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		break;
 	case DragResize: {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
+		if (pMainForm && pMainForm->thumbView()->isVisible())
 			pMainForm->thumbView()->updateContents();
 		break;
 	}
