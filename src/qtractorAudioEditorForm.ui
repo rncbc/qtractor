@@ -86,6 +86,7 @@
      <addaction name="viewToolbarEditAction"/>
      <addaction name="viewToolbarTransportAction"/>
      <addaction name="viewToolbarTimeAction"/>
+     <addaction name="viewToolbarThumbAction"/>
      <addaction name="separator"/>
      <addaction name="viewToolbarLockedAction"/>
     </widget>
@@ -277,6 +278,17 @@
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="thumbViewToolbar">
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>BottomToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
@@ -849,6 +861,23 @@
    </property>
    <property name="statusTip">
     <string>Show/hide the time toolbar</string>
+   </property>
+  </action>
+  <action name="viewToolbarThumbAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Thum&amp;b</string>
+   </property>
+   <property name="iconText">
+    <string>Thumb Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Thumb toolbar</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide the thumb view toolbar</string>
    </property>
   </action>
   <action name="viewToolbarLockedAction">

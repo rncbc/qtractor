@@ -371,6 +371,7 @@ void qtractorOptions::loadOptions (void)
 	bAudioViewToolbar = m_settings.value("/ViewToolbar", true).toBool();
 	bAudioTransportToolbar = m_settings.value("/TransportToolbar", false).toBool();
 	bAudioTimeToolbar = m_settings.value("/TimeToolbar", false).toBool();
+	bAudioThumbToolbar = m_settings.value("/ThumbToolbar", false).toBool();
 	bAudioLockedToolbar = m_settings.value("/LockedToolbar", false).toBool();
 	iAudioDisplayFormat = m_settings.value("/DisplayFormat", 1).toInt();
 	bAudioFollow      = m_settings.value("/Follow", false).toBool();
@@ -723,6 +724,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ViewToolbar", bAudioViewToolbar);
 	m_settings.setValue("/TransportToolbar", bAudioTransportToolbar);
 	m_settings.setValue("/TimeToolbar", bAudioTimeToolbar);
+	m_settings.setValue("/ThumbToolbar", bAudioThumbToolbar);
 	m_settings.setValue("/LockedToolbar", bAudioLockedToolbar);
 	m_settings.setValue("/DisplayFormat", iAudioDisplayFormat);
 	m_settings.setValue("/Follow", bAudioFollow);
