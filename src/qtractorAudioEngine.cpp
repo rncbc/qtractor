@@ -2487,7 +2487,7 @@ void qtractorAudioEngine::transport_locate ( unsigned long iFrame )
 // Audio I/O latency callbacks.
 void qtractorAudioEngine::updateLatency_in (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioEngine::updateLatency_in()");
 #endif
 
@@ -2502,7 +2502,7 @@ void qtractorAudioEngine::updateLatency_in (void)
 
 void qtractorAudioEngine::updateLatency_out (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioEngine::updateLatency_out()");
 #endif
 
