@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a potential issue with the validation of MIDI file header
+  'division' field (ticks-per-beat; SMF).
+
 - Audio clip editor: introducing the local thumb view and toolbar.
   (View/Toolbars/Thumb)
 

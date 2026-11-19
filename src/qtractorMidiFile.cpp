@@ -34,7 +34,6 @@
 #define SMF_MTHD "MThd"
 #define SMF_MTRK "MTrk"
 
-
 // - Bank-select (controller) types...
 #define BANK_MSB  0x00
 #define BANK_LSB  0x20
@@ -180,6 +179,14 @@ bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 	m_iFormat = (unsigned short) readInt(2);
 	m_iTracks = (unsigned short) readInt(2);
 	m_iTicksPerBeat = (unsigned short) readInt(2);
+
+	// There must be a valid divisor, otherwise the file is unsupported..
+	if (m_iTicksPerBeat < qtractorTimeScale::TICKS_PER_BEAT_MIN ||
+		m_iTicksPerBeat > qtractorTimeScale::TICKS_PER_BEAT_MAX) {
+		close();
+		return false;
+	}
+
 	// Should skip any extra bytes...
 	while (iMThdLength > 6) {
 		if (::fgetc(m_pFile) < 0) {
