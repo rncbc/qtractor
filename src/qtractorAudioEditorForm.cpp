@@ -1380,13 +1380,6 @@ void qtractorAudioEditorForm::editRedo (void)
 }
 
 
-// Open audio tools dialog.
-void qtractorAudioEditorForm::editTools (void)
-{
-	m_pAudioEditor->executeTool(0);
-}
-
-
 // Cut current selection to clipboard.
 void qtractorAudioEditorForm::editCut (void)
 {

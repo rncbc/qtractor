@@ -115,7 +115,6 @@ protected slots:
 
 	void editUndo();
 	void editRedo();
-	void editTools();
 	void editCut();
 	void editCopy();
 	void editPaste();
