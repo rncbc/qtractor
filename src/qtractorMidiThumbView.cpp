@@ -458,7 +458,7 @@ void qtractorMidiThumbView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_dragState = DragMove;
 			QFrame::setCursor(QCursor(Qt::SizeHorCursor));
 		}
-		if (m_dragState == DragMove && rect().contains(pos)) {
+		if (m_dragState == DragMove/* && rect().contains(pos)*/) {
 			updateView(pos.x() - m_posDrag.x());
 			m_posDrag.setX(pos.x());
 		}
