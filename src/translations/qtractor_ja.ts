@@ -1109,7 +1109,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="50"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="803"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="804"/>
         <source>&amp;File</source>
         <translation>ファイル(&amp;F)</translation>
     </message>
@@ -1119,1298 +1119,1298 @@ Length:	%3</source>
         <translation>トラック(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="79"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="80"/>
         <source>&amp;View</source>
         <translation>表示(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="83"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="84"/>
         <source>&amp;Toolbars</source>
         <translation>ツールバー(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="95"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="96"/>
         <source>&amp;Zoom</source>
         <translation>ズーム(&amp;Z)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="114"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="115"/>
         <source>S&amp;nap</source>
         <translation>スナップ(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="133"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="134"/>
         <source>&amp;Tools</source>
         <translation>ツール(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="144"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="820"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="145"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="821"/>
         <source>&amp;Edit</source>
         <translation>編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="148"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="149"/>
         <source>&amp;Select</source>
         <translation>選択(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="171"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="172"/>
         <source>T&amp;ransport</source>
         <translation>トランスポート(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="175"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="176"/>
         <source>St&amp;ep</source>
         <translation>ステップ(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="201"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="202"/>
         <source>&amp;Help</source>
         <translation>ヘルプ(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="302"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="303"/>
         <source>&amp;Save</source>
         <translation>保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="305"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="308"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="306"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="309"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="311"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="312"/>
         <source>Save current audio clip to existing file name</source>
         <translation>現在のオーディオ クリップを既存のファイル名で保存します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="316"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="317"/>
         <source>Save &amp;As...</source>
         <translation>名前を付けて保存(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="319"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="320"/>
         <source>Save As</source>
         <translation>名前を付けて保存</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="322"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="323"/>
         <source>Save as</source>
         <translation>名前を付けて保存</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="325"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="326"/>
         <source>Save current audio clip with another file name</source>
         <translation>現在のオーディオ クリップを別のファイル名で保存します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="333"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="334"/>
         <source>&amp;Mute</source>
         <translation>ミュート(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="336"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="339"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="337"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="340"/>
         <source>Mute</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="342"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="343"/>
         <source>Mute current audio clip</source>
         <translation>現在のオーディオ クリップをミュートします</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="347"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="348"/>
         <source>&amp;Unlink</source>
         <translation>リンク解除(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="350"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="353"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="351"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="354"/>
         <source>Unlink</source>
         <translation>リンク解除</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="356"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="357"/>
         <source>Unlink current audio clip</source>
         <translation>現在のオーディオ クリップのリンクを解除</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="361"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="362"/>
         <source>&amp;Inputs</source>
         <translation>入力(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="364"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="365"/>
         <source>Track Inputs</source>
         <translation>トラック入力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="367"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="368"/>
         <source>Track inputs</source>
         <translation>トラック入力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="370"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="371"/>
         <source>Show current audio clip/track input bus connections</source>
         <translation>現在のオーディオ クリップ/トラック入力バス接続を表示</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="375"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="376"/>
         <source>&amp;Outputs</source>
         <translation>出力(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="378"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="379"/>
         <source>Track Outputs</source>
         <translation>トラック出力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="381"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="382"/>
         <source>Track outputs</source>
         <translation>トラック出力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="384"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="385"/>
         <source>Show current audio clip/track output bus connections</source>
         <translation>現在のオーディオ クリップ/トラック出力バス接続を表示</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="392"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="412"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="393"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="413"/>
         <source>&amp;Properties...</source>
         <translation>プロパティ(&amp;P)...</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="395"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="396"/>
         <source>Track Properties</source>
         <translation>トラックのプロパティ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="398"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="399"/>
         <source>Track properties</source>
         <translation>トラックのプロパティ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="401"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="402"/>
         <source>Edit current audio clip/track properties</source>
         <translation>現在の Audio クリップ/Track のプロパティを編集</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="404"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="405"/>
         <source>Shift+F2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="415"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="418"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="416"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="419"/>
         <source>Properties</source>
         <translation>プロパティ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="421"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="422"/>
         <source>Edit current audio clip properties</source>
         <translation>現在の Audio クリップのプロパティを編集</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="424"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="425"/>
         <source>F2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="429"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="430"/>
         <source>&amp;Range Set</source>
         <translation>範囲設定(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="432"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="433"/>
         <source>Clip Range</source>
         <translation>クリップレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="435"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="436"/>
         <source>Clip range</source>
         <translation>クリップレンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="438"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="439"/>
         <source>Set edit-range from clip extents</source>
         <translation>現在のクリップの長さをレンジにします</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="446"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="447"/>
         <source>&amp;Loop Set</source>
         <translation>ループ設定(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="449"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="450"/>
         <source>Clip Loop</source>
         <translation>クリップループ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="452"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="453"/>
         <source>Clip loop</source>
         <translation>クリップループ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="455"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="456"/>
         <source>Set loop-range from clip extents</source>
         <translation>現在のクリップの長さだけループレンジを設定します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="460"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="461"/>
         <source>&amp;Export...</source>
         <translation>エクスポート...(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="463"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="464"/>
         <source>Clip Export</source>
         <translation>クリップのエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="466"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="467"/>
         <source>Clip export</source>
         <translation>クリップのエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="469"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="470"/>
         <source>Export current clip selection</source>
         <translation>現在のクリップ選択をエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="474"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="475"/>
         <source>&amp;Close</source>
         <translation>閉じる(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="477"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="480"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="478"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="481"/>
         <source>Close</source>
         <translation>閉じる</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="483"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="484"/>
         <source>Close this audio clip editor</source>
         <translation>このオーディオ クリップ エディタを閉じる</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="491"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="492"/>
         <source>&amp;Undo</source>
         <translation>元に戻す(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="494"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="497"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="495"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="498"/>
         <source>Undo</source>
         <translation>元に戻す</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="500"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="501"/>
         <source>Undo last edit operation</source>
         <translation>最後の編集操作を元に戻します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="503"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="504"/>
         <source>Ctrl+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="511"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="512"/>
         <source>&amp;Redo</source>
         <translation>やり直す(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="514"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="517"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="515"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="518"/>
         <source>Redo</source>
         <translation>やり直す</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="520"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="521"/>
         <source>Redo last edit operation</source>
         <translation>最後の編集操作をやり直します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="523"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="524"/>
         <source>Ctrl+Shift+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="531"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="532"/>
         <source>Cu&amp;t</source>
         <translation>切り取り(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="534"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="537"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="535"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="538"/>
         <source>Cut</source>
         <translation>切り取り</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="540"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="541"/>
         <source>Cut current selection into the local clipboard</source>
         <translation>現在の選択をローカルクリップボードへ切り取ります</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="543"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="544"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="551"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="552"/>
         <source>&amp;Copy</source>
         <translation>コピー(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="554"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="557"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="555"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="558"/>
         <source>Copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="560"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="561"/>
         <source>Copy current selection to the local clipboard</source>
         <translation>現在の選択をローカルクリップボードへコピーします</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="563"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="564"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="571"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="572"/>
         <source>&amp;Paste</source>
         <translation>貼り付け(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="574"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="577"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="575"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="578"/>
         <source>Paste</source>
         <translation>貼り付け</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="580"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="581"/>
         <source>Paste local clipboard contents into the current audio clip</source>
         <translation>ローカルのクリップボードの内容を現在のオーディオ クリップに貼り付けます</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="583"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="584"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="588"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="589"/>
         <source>Past&amp;e Repeat...</source>
         <translation>貼り付け 繰り返し...(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="591"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="592"/>
         <source>Paste Repeat</source>
         <translation>繰り返し貼り付け</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="594"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="595"/>
         <source>Paste repeat</source>
         <translation>繰り返し貼り付け</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="597"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="598"/>
         <source>Paste/repeat local clipboard contents into the current audio clip</source>
         <translation>ローカルのクリップボードの内容を現在のオーディオ クリップに貼り付け/繰り返します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="600"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="601"/>
         <source>Ctrl+Shift+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="608"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="609"/>
         <source>&amp;Delete</source>
         <translation>削除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="611"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="614"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="612"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="615"/>
         <source>Delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="617"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="618"/>
         <source>Delete current selection</source>
         <translation>現在の選択を削除します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="620"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="621"/>
         <source>Del</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="625"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1030"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="626"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1031"/>
         <source>&amp;All</source>
         <translation>すべて(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="628"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="629"/>
         <source>Select All</source>
         <translation>すべてを選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="631"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="634"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="632"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="635"/>
         <source>Select all</source>
         <translation>すべて選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="637"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="638"/>
         <source>Ctrl+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="642"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="643"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="645"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="646"/>
         <source>Select None</source>
         <translation>選択解除</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="648"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="651"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="649"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="652"/>
         <source>Select none</source>
         <translation>何も選択しません</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="654"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="655"/>
         <source>Ctrl+Shift+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="659"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="660"/>
         <source>&amp;Range</source>
         <translation>レンジ(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="662"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="663"/>
         <source>Select Range</source>
         <translation>範囲選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="665"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="666"/>
         <source>Select range</source>
         <translation>レンジを選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="668"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="669"/>
         <source>Mark range as selected</source>
         <translation>レンジを選択済みにします</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="671"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="672"/>
         <source>Ctrl+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="676"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="677"/>
         <source>&amp;Gain...</source>
         <translation>ゲイン...(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="679"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="682"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="680"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="683"/>
         <source>Gain</source>
         <translation>ゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="685"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="686"/>
         <source>Gain selection</source>
         <translation>ゲイン選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="690"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="691"/>
         <source>P&amp;anning...</source>
         <translation>パン...(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="693"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="696"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="694"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="697"/>
         <source>Panning</source>
         <translation>パン</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="699"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="700"/>
         <source>Panning selection</source>
         <translation>パン選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="704"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="705"/>
         <source>&amp;Normalize...</source>
         <translation>ノーマライズ(&amp;N)...</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="707"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="710"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="708"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="711"/>
         <source>Normalize</source>
         <translation>ノーマライズ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="713"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="714"/>
         <source>Normalize selection</source>
         <translation>選択をノーマライズします</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="718"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="719"/>
         <source>&amp;Time Stretch...</source>
         <translation>タイムストレッチ...(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="721"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="722"/>
         <source>Time Stretch</source>
         <translation>タイムストレッチ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="724"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="725"/>
         <source>Time stretch</source>
         <translation>タイムストレッチ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="727"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="728"/>
         <source>Time stretch selection</source>
         <translation>タイムストレッチの選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="732"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="733"/>
         <source>&amp;Pitch Shift...</source>
         <translation>ピッチシフト...(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="735"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="736"/>
         <source>Pitch Shift</source>
         <translation>ピッチシフト</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="738"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="739"/>
         <source>Pitch shift</source>
         <translation>ピッチシフト</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="741"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="742"/>
         <source>Pitch shift selection</source>
         <translation>ピッチシフト選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="746"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="747"/>
         <source>&amp;Reverse...</source>
         <translation>リバース...(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="749"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="752"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="750"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="753"/>
         <source>Reverse</source>
         <translation>リバース</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="755"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="756"/>
         <source>Reverse selection</source>
         <translation>リバース選択</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="763"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="764"/>
         <source>&amp;Menubar</source>
         <translation>メニューバー(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="766"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="769"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="767"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="770"/>
         <source>Menubar</source>
         <translation>メニューバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="772"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="773"/>
         <source>Show/hide the menubar</source>
         <translation>メインウィンドウのメニューバーを表示/隠します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="775"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="776"/>
         <source>Ctrl+M</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="783"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="784"/>
         <source>&amp;Statusbar</source>
         <translation>ステータスバー(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="786"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="789"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="787"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="790"/>
         <source>Statusbar</source>
         <translation>ステータスバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="792"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="793"/>
         <source>Show/hide the statusbar</source>
         <translation>メインウィンドウのステータスバーを表示/隠します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="806"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="807"/>
         <source>File Toolbar</source>
         <translation>ファイルツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="809"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="810"/>
         <source>File toolbar</source>
         <translation>ファイルツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="812"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="813"/>
         <source>Show/hide the file toolbar</source>
         <translation>メインウィンドウのファイルツールバーを表示/隠します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="823"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="824"/>
         <source>Edit Toolbar</source>
         <translation>エディットツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="826"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="827"/>
         <source>Edit toolbar</source>
         <translation>エディットツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="829"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="830"/>
         <source>Show/hide the edit toolbar</source>
         <translation>エディットツールバーを表示/隠します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="837"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="838"/>
         <source>&amp;Transport</source>
         <translation>トランスポート(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="840"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="841"/>
         <source>Transport Toolbar</source>
         <translation>トランスポートツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="843"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="844"/>
         <source>Transport toolbar</source>
         <translation>トランスポートツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="846"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="847"/>
         <source>Show/hide the transport toolbar</source>
         <translation>トランスポートツールバーを表示/隠します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="854"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="855"/>
         <source>T&amp;ime</source>
         <translation>時間(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="857"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="858"/>
         <source>Time Toolbar</source>
         <translation>時間ツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="860"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="861"/>
         <source>Time toolbar</source>
         <translation>時間ツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="863"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="864"/>
         <source>Show/hide the time toolbar</source>
         <translation>時間ツールバーの表示切り替え</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="871"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="872"/>
         <source>Thum&amp;b</source>
         <translation type="unfinished">縮小表示(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="874"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="875"/>
         <source>Thumb Toolbar</source>
         <translation type="unfinished">縮小表示ツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="877"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="878"/>
         <source>Thumb toolbar</source>
         <translation type="unfinished">縮小表示ツールバー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="880"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="881"/>
         <source>Show/hide the thumb view toolbar</source>
         <translation type="unfinished">縮小表示ツールバーの有効/無効</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="888"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="889"/>
         <source>Loc&amp;k Toolbars</source>
         <translation>ツールバーをロック(&amp;K)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="891"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="894"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="892"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="895"/>
         <source>Lock Toolbar Positions</source>
         <translation>ツールバーの位置をロック</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="897"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="898"/>
         <source>Lock/unlock midi window toolbar positions</source>
         <translation>MIDI ウィンドウのツールバーの位置をロック/ロック解除</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="905"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="906"/>
         <source>&amp;In</source>
         <translation>イン(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="908"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="909"/>
         <source>Zoom In</source>
         <translation>ズームイン</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="911"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="914"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="912"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="915"/>
         <source>Zoom in</source>
         <translation>ズームイン</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="917"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="918"/>
         <source>Ctrl++</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="925"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="926"/>
         <source>&amp;Out</source>
         <translation>アウト(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="928"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="929"/>
         <source>Zoom Out</source>
         <translation>ズームアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="931"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="934"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="932"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="935"/>
         <source>Zoom out</source>
         <translation>ズームアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="937"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="938"/>
         <source>Ctrl+-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="942"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="943"/>
         <source>&amp;Reset</source>
         <translation>リセット(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="945"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="946"/>
         <source>Zoom Reset</source>
         <translation>ズームリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="948"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="951"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="949"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="952"/>
         <source>Zoom reset</source>
         <translation>ズームリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="954"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="955"/>
         <source>Ctrl+1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="962"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="963"/>
         <source>Ma&amp;ximize</source>
         <translation>最大化(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="965"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="966"/>
         <source>Zoom Maximize</source>
         <translation>ズーム 最大化</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="968"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="971"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="969"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="972"/>
         <source>Zoom maximize</source>
         <translation>最大化</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="979"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="980"/>
         <source>Mi&amp;nimize</source>
         <translation>最小化(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="982"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="983"/>
         <source>Zoom Minimize</source>
         <translation>ズーム 最小化</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="985"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="988"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="986"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="989"/>
         <source>Zoom minimize</source>
         <translation>ズーム最小化</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="996"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="997"/>
         <source>&amp;Horizontal</source>
         <translation>水平方向(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="999"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1000"/>
         <source>Horizontal Zoom</source>
         <translation>水平方向ズーム</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1002"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1003"/>
         <source>Horizontal zoom</source>
         <translation>水平方向ズーム</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1005"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1006"/>
         <source>Horizontal zoom mode</source>
         <translation>水平方向にズームするモードです</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1013"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1014"/>
         <source>&amp;Vertical</source>
         <translation>垂直方向(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1016"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1017"/>
         <source>Vertical Zoom</source>
         <translation>垂直方向ズーム</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1019"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1020"/>
         <source>Vertical zoom</source>
         <translation>垂直方向ズーム</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1022"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1023"/>
         <source>Vertical zoom mode</source>
         <translation>垂直方向にズームするモードです</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1033"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1034"/>
         <source>All Zoom</source>
         <translation>垂直水平ズーム</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1036"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1037"/>
         <source>All zoom</source>
         <translation>垂直水平ズーム</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1039"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1040"/>
         <source>All zoom mode</source>
         <translation>全ズームモード</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1047"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1048"/>
         <source>&amp;Zebra</source>
         <translation>ゼブラ(&amp;Z)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1050"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1053"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1051"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1054"/>
         <source>Zebra</source>
         <translation>ゼブラ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1056"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1057"/>
         <source>Bar zebra view mode</source>
         <translation>バーゼブラビューモード</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1064"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1065"/>
         <source>&amp;Grid</source>
         <translation>グリッド(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1067"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1070"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1068"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1071"/>
         <source>Grid</source>
         <translation>グリッド</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1073"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1074"/>
         <source>Snap grid view mode</source>
         <translation>スナップグリッドビューモード</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1081"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1082"/>
         <source>Too&amp;l Tips</source>
         <translation>ツールチップ(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1084"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1087"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1085"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1088"/>
         <source>Tool tips</source>
         <translation>ツールチップ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1090"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1091"/>
         <source>Floating tool tips view mode</source>
         <translation>ツールチップをフローティング表示します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1098"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1099"/>
         <source>&amp;Fade In/Out</source>
         <translation>フェードイン/アウト(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1101"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1104"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1102"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1105"/>
         <source>Fade in/out</source>
         <translation>フェードイン/アウト</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1107"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1108"/>
         <source>Fade in/out controls</source>
         <translation>フェードイン/アウトコントロール</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1112"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1113"/>
         <source>&amp;Refresh</source>
         <translation>更新(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1115"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1118"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1116"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1119"/>
         <source>Refresh</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1121"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1122"/>
         <source>Refresh views</source>
         <translation>ビューを更新</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1124"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1125"/>
         <source>F5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1132"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1215"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1133"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1216"/>
         <source>&amp;Backward</source>
         <translation>先頭へ(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1135"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1138"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1136"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1139"/>
         <source>Backward</source>
         <translation>先頭へ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1141"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1142"/>
         <source>Transport backward</source>
         <translation>トランスポートを先頭へ移動します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1144"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1145"/>
         <source>Backspace</source>
         <translation>バックスペース</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1155"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1156"/>
         <source>Re&amp;wind</source>
         <translation>逆再生(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1158"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1161"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1159"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1162"/>
         <source>Rewind</source>
         <translation>逆再生</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1164"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1165"/>
         <source>Transport rewind</source>
         <translation>トランスポートを逆再生します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1178"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1179"/>
         <source>F&amp;ast Forward</source>
         <translation>早送り(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1181"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1182"/>
         <source>Fast Forward</source>
         <translation>早送り</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1184"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1185"/>
         <source>Fast forward</source>
         <translation>早送り</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1187"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1188"/>
         <source>Transport fast forward</source>
         <translation>トランスポートを早送りします</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1198"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1229"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1199"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1230"/>
         <source>&amp;Forward</source>
         <translation>末尾へ(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1201"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1204"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1202"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1205"/>
         <source>Forward</source>
         <translation>末尾へ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1207"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1208"/>
         <source>Transport forward</source>
         <translation>トランスポートを末尾へ移動します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1218"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1219"/>
         <source>Step Backward</source>
         <translation>1 ステップ後退</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1221"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1222"/>
         <source>Step backward</source>
         <translation>1 ステップ後退</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1224"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1225"/>
         <source>Transport step backward</source>
         <translation>トランスポートを 1 ステップ後退</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1232"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1233"/>
         <source>Step Forward</source>
         <translation>1 ステップ前進</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1235"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1236"/>
         <source>Step forward</source>
         <translation>1 ステップ前進</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1238"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1239"/>
         <source>Transport step forward</source>
         <translation>トランスポートを 1 ステップ前進</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1249"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1250"/>
         <source>&amp;Loop</source>
         <translation>ループ(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1252"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1255"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1253"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1256"/>
         <source>Loop</source>
         <translation>ループ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1258"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1259"/>
         <source>Transport loop</source>
         <translation>トランスポートをループします</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1261"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1262"/>
         <source>Ctrl+Shift+L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1266"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1267"/>
         <source>Loop &amp;Set</source>
         <translation>ループセット(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1269"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1270"/>
         <source>Loop Set</source>
         <translation>ループセット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1272"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1273"/>
         <source>Loop set</source>
         <translation>ループセット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1275"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1276"/>
         <source>Transport loop set</source>
         <translation>ループセットをトランスポートします</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1278"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1279"/>
         <source>Ctrl+L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1286"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1287"/>
         <source>&amp;Stop</source>
         <translation>停止(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1289"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1292"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1290"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1293"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1295"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1296"/>
         <source>Transport stop</source>
         <translation>トランスポートを停止します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1306"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1307"/>
         <source>&amp;Play</source>
         <translation>再生(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1309"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1312"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1310"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1313"/>
         <source>Play</source>
         <translation>再生</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1315"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1316"/>
         <source>Transport play/pause</source>
         <translation>トランスポートを再生/一時停止します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1318"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1319"/>
         <source>Space</source>
         <translation>スペース</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1329"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1330"/>
         <source>&amp;Record</source>
         <translation>録音(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1332"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1335"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1333"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1336"/>
         <source>Record</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1338"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1339"/>
         <source>Transport record</source>
         <translation>トランスポートを録音します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1352"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1353"/>
         <source>&amp;Punch</source>
         <translation>パンチ(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1355"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1356"/>
         <source>Punch</source>
         <translation>パンチ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1358"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1359"/>
         <source>Punch in/out</source>
         <translation>パンチイン/アウト</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1361"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1362"/>
         <source>Transport punch in/out</source>
         <translation>トランスポートにパンチイン/アウトを設定します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1364"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1365"/>
         <source>Ctrl+Shift+P</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1369"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1370"/>
         <source>Punch Se&amp;t</source>
         <translation>パンチセット(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1372"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1373"/>
         <source>Punch Set</source>
         <translation>パンチセット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1375"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1376"/>
         <source>Punch in/out set</source>
         <translation>パンチイン/アウトセット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1378"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1379"/>
         <source>Transport punch in/out set</source>
         <translation>トランスポートパンチイン/アウトセット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1381"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1382"/>
         <source>Ctrl+P</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1392"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1393"/>
         <source>F&amp;ollow Playhead</source>
         <translation>再生に追随(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1395"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1396"/>
         <source>Follow Playhead</source>
         <translation>再生に追随</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1398"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1401"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1399"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1402"/>
         <source>Follow playhead</source>
         <translation>再生ヘッドをフォロー</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1412"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1413"/>
         <source>&amp;Shortcuts...</source>
         <translation>ショートカット(&amp;S)...</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1415"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1418"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1416"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1419"/>
         <source>Shortcuts</source>
         <translation>ショートカット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1421"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1422"/>
         <source>Keyboard shortcuts</source>
         <translation>キーボードショートカット</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1429"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1430"/>
         <source>&amp;About...</source>
         <translation>Qtractorについて(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1432"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1435"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1433"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1436"/>
         <source>About</source>
         <translation>Qtractor について</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1438"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1439"/>
         <source>Show information about this application program</source>
         <translation>このソフトウェアに関する情報を表示します</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1446"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1447"/>
         <source>About &amp;Qt...</source>
         <translation>Qtについて(&amp;Q)...</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1449"/>
-        <location filename="../qtractorAudioEditorForm.ui" line="1452"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1450"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1453"/>
         <source>About Qt</source>
         <translation>Qtについて</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEditorForm.ui" line="1455"/>
+        <location filename="../qtractorAudioEditorForm.ui" line="1456"/>
         <source>Show information about the Qt toolkit</source>
         <translation>Qtツールキットに関する情報を表示します</translation>
     </message>
