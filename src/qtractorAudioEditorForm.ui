@@ -68,6 +68,7 @@
     <addaction name="separator"/>
     <addaction name="fileRangeSetAction"/>
     <addaction name="fileLoopSetAction"/>
+    <addaction name="separator"/>
     <addaction name="fileExportAction"/>
     <addaction name="separator"/>
     <addaction name="fileTrackMenu"/>
