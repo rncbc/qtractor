@@ -212,7 +212,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 			m_ui.AudioExportQualitySpinBox->setValue(iAudioExportQuality);
 			m_sExportExt = m_ui.AudioExportTypeComboBox->currentExt();
 			m_ui.AddTrackCheckBox->setChecked(pOptions->bExportAddTrack);
-			m_ui.AddTrackCheckBox->show();
+		//	m_ui.AddTrackCheckBox->show();
 			break;
 		}
 		case qtractorTrack::Midi: {
