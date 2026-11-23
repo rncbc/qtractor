@@ -1828,22 +1828,22 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="872"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished">&amp;Miniatura</translation>
+        <translation>&amp;Miniatura</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="875"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished">Barra de Herramientas de Miniatura</translation>
+        <translation>Barra de Herramientas de Miniatura</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="878"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished">Barra de herramientas de miniatura</translation>
+        <translation>Barra de herramientas de miniatura</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="881"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished">Mostrar/ocultar la barra de herramientas de miniatura</translation>
+        <translation>Mostrar/ocultar la barra de herramientas de miniatura</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="889"/>
@@ -2623,7 +2623,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioThumbView.cpp" line="76"/>
         <source>Audio Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista general de audio</translation>
     </message>
 </context>
 <context>

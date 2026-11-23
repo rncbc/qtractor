@@ -1829,22 +1829,22 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="872"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished">Ná&amp;hled</translation>
+        <translation>Ná&amp;hled</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="875"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished">Nástrojový pruh pro náhled</translation>
+        <translation>Nástrojový pruh pro náhled</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="878"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished">Nástrojový pruh pro náhled</translation>
+        <translation>Nástrojový pruh pro náhled</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="881"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished">Ukázat/Skrýt nástrojový pruh pro náhled</translation>
+        <translation>Ukázat/Skrýt nástrojový pruh pro náhled</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="889"/>
@@ -2624,7 +2624,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorAudioThumbView.cpp" line="76"/>
         <source>Audio Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio přehled</translation>
     </message>
 </context>
 <context>
