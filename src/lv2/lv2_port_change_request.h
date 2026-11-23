@@ -36,8 +36,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#else
-#include <stdbool.h>
 #endif
 
 /** A status code for LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_URI functions. */

@@ -74,9 +74,10 @@ qtractorClipForm::qtractorClipForm ( QWidget *pParent )
 	m_ui.FadeInTypeComboBox->clear();
 	m_ui.FadeOutTypeComboBox->clear();
 
-	const qtractorClip::FadeTypes& fadeTypes = qtractorClip::fadeTypes();
+	const qtractorClipForm::FadeTypes& fadeTypes
+		= qtractorClipForm::fadeTypes();
 	for (int i = 0; i < fadeTypes.count(); ++i) {
-		const qtractorClip::FadeTypeInfo& info = fadeTypes.value(i);
+		const qtractorClipForm::FadeTypeInfo& info = fadeTypes.value(i);
 		m_ui.FadeInTypeComboBox->addItem(info.iconFadeIn, info.name);
 		m_ui.FadeOutTypeComboBox->addItem(info.iconFadeOut, info.name);
 	}
@@ -346,6 +347,40 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 qtractorClip *qtractorClipForm::clip (void) const
 {
 	return m_pClip;
+}
+
+
+qtractorClipForm::FadeTypes& qtractorClipForm::fadeTypes (void)
+{
+	static const char *s_aFadeTypeNames[] = {
+
+		QT_TR_NOOP("Linear"),		// Linear (obvious:)
+		QT_TR_NOOP("Quadratic 1"),	// InQuad
+		QT_TR_NOOP("Quadratic 2"),	// OutQuad
+		QT_TR_NOOP("Quadratic 3"),	// InOutQuad
+		QT_TR_NOOP("Cubic 1"),		// InCubic
+		QT_TR_NOOP("Cubic 2"),		// OutCubic
+		QT_TR_NOOP("Cubic 3"),		// InOutCubic
+
+		nullptr
+	};
+
+	static FadeTypes s_fadeTypes;
+
+	if (s_fadeTypes.isEmpty()) {
+		const QPixmap& pmFadeIn
+			= QIcon::fromTheme("fadeIn").pixmap(7 * 16, 16);
+		const QPixmap& pmFadeOut
+			= QIcon::fromTheme("fadeOut").pixmap(7 * 16, 16);
+		for (int i = 0; s_aFadeTypeNames[i]; ++i) {
+			FadeTypeInfo& info = s_fadeTypes[i];
+			info.name = QObject::tr(s_aFadeTypeNames[i]);
+			info.iconFadeIn  = pmFadeIn.copy(i << 4, 0, 16, 16);
+			info.iconFadeOut = pmFadeOut.copy(i << 4, 0, 16, 16);
+		}
+	}
+
+	return s_fadeTypes;
 }
 
 
