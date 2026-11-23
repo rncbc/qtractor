@@ -1829,22 +1829,22 @@ Lunghezza: %3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="872"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Anteprima</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="875"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra degli strumenti delle anteprime</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="878"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra degli strumenti delle anteprime</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="881"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished">Mostra/nascondi barra degli strumenti delle anteprime</translation>
+        <translation>Mostra/nascondi barra degli strumenti delle anteprime</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="889"/>
@@ -2624,7 +2624,7 @@ Vuoi applicare le modifiche?</translation>
     <message>
         <location filename="../qtractorAudioThumbView.cpp" line="76"/>
         <source>Audio Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>Panoramica audio</translation>
     </message>
 </context>
 <context>
