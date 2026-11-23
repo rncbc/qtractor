@@ -140,52 +140,18 @@ public:
 	QModelIndex indexOfBus(qtractorBus *pBus, int busMode) const;
 	int busModeOfIndex(const QModelIndex& index) const;
 
+	// Forward declaration of the internal node type.
+	struct Node;
+
 protected:
 
-	// Helper functions.
-	QString trackTypeText(qtractorTrack::TrackType trackType) const
-	{
-		QString sText;
-		switch (trackType) {
-		case qtractorTrack::Audio:
-			sText = tr("Audio");
-			break;
-		case qtractorTrack::Midi:
-			sText = tr("MIDI");
-			break;
-		default:
-			break;
-		}
-		return sText;
-	}
-
-	QIcon trackTypeIcon(qtractorTrack::TrackType trackType) const
-	{
-		QIcon icon;
-		switch (trackType) {
-		case qtractorTrack::Audio:
-			icon = QIcon::fromTheme("trackAudio");
-			break;
-		case qtractorTrack::Midi:
-			icon = QIcon::fromTheme("trackMidi");
-			break;
-		default:
-			break;
-		}
-		return icon;
-	}
-
 	// Live item data roles.
-	QVariant dataDisplayRole(const QModelIndex& index) const;
 	QVariant dataDecorationRole(const QModelIndex& index) const;
 	QVariant dataUserRole(const QModelIndex& index) const;
 	QVariant dataFontRole(const QModelIndex& index) const;
 	QVariant dataForegroundRole(const QModelIndex& index) const;
 
 private:
-
-	// Forward declaration of the internal node type.
-	struct Node;
 
 	// Build helpers.
 	Node *nodeForTrack(Node *pGroupNode, qtractorTrack *pTrack) const;
@@ -201,7 +167,6 @@ private:
 
 	// Per-engine bus helpers (call once per engine, audio then MIDI).
 	void addBusKeys(qtractorEngine *pEngine, QSet<void *>& keys) const;
-	int countBusesByMode(qtractorEngine *pEngine, int busMode) const;
 	QModelIndex indexOfBusRow(qtractorEngine *pEngine,
 		Node *pGroupNode, int busMode, int row, int& iRow, int column) const;
 	QModelIndex indexOfBusPtr(qtractorEngine *pEngine,
@@ -566,24 +531,6 @@ void qtractorSessionListView::ItemModel::addBusKeys (
 }
 
 
-// Count buses of the given mode in one engine.
-int qtractorSessionListView::ItemModel::countBusesByMode (
-	qtractorEngine *pEngine, int busMode ) const
-{
-	if (pEngine == nullptr)
-		return 0;
-
-	const qtractorBus::BusMode bm
-		= qtractorBus::BusMode(busMode);
-
-	int n = 0;
-	for (qtractorBus *p = pEngine->buses().first(); p; p = p->next())
-		if (p->busMode() & bm) ++n;
-
-	return n;
-}
-
-
 // Search one engine for the bus at ordinal position row (within the merged
 // list).  iRow is the running counter across successive engine calls; it is
 // updated in place so the caller can pass it unchanged into the next call.
@@ -761,12 +708,12 @@ int qtractorSessionListView::ItemModel::rowCount (
 			return pSession->tracks().count();
 		case ItemInputs:
 		case ItemOutputs: {
-			const qtractorBus::BusMode bm
+			const qtractorBus::BusMode busMode
 				= (pNode->type == ItemInputs)
 				? qtractorBus::Input
 				: qtractorBus::Output;
-			return countBusesByMode(pSession->audioEngine(), bm)
-				+  countBusesByMode(pSession->midiEngine(),  bm);
+			return countBusesByMode(pSession->audioEngine(), busMode)
+				+  countBusesByMode(pSession->midiEngine(),  busMode);
 		}
 		default:
 			return 0;
@@ -801,7 +748,7 @@ qtractorSessionListView::ItemModel::data (
 	switch (role) {
 	case Qt::DisplayRole:
 	case Qt::ToolTipRole:
-		return dataDisplayRole(index);
+		return qtractorSessionListView::dataText(index);
 	case Qt::DecorationRole:
 		return dataDecorationRole(index);
 	case Qt::UserRole:
@@ -823,7 +770,7 @@ qtractorSessionListView::ItemModel::headerData (
 	int section, Qt::Orientation orientation, int role ) const
 {
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-		return qtractorSessionList::headerText(section);
+		return qtractorSessionListView::headerText(section);
 	else
 		return QVariant();
 }
@@ -1013,123 +960,6 @@ int qtractorSessionListView::ItemModel::busModeOfIndex (
 // Live item data roles.
 //
 QVariant
-qtractorSessionListView::ItemModel::dataDisplayRole (
-	const QModelIndex& index ) const
-{
-	Node *pNode = static_cast<Node *> (index.internalPointer());
-
-	QString sText;
-
-	switch (pNode->type) {
-	case ItemInputs:
-		if (index.column() == 0) {
-			sText = tr("Inputs");
-		} else {
-			qtractorSession *pSession = qtractorSession::getInstance();
-			if (pSession) {
-				const int iInputsCount
-					= countBusesByMode(pSession->audioEngine(), qtractorBus::Input)
-					+ countBusesByMode(pSession->midiEngine(),  qtractorBus::Input);
-				sText = QString("[%1]").arg(iInputsCount);
-			}
-		}
-		break;
-	case ItemTracks:
-		if (index.column() == 0) {
-			sText = tr("Tracks");
-		} else {
-			qtractorSession *pSession = qtractorSession::getInstance();
-			if (pSession)
-				sText = QString("[%1]").arg(pSession->tracks().count());
-		}
-		break;
-	case ItemOutputs:
-		if (index.column() == 0) {
-			sText = tr("Outputs");
-		} else {
-			qtractorSession *pSession = qtractorSession::getInstance();
-			if (pSession) {
-				const int iOutputsCount
-					= countBusesByMode(pSession->audioEngine(), qtractorBus::Output)
-					+ countBusesByMode(pSession->midiEngine(),  qtractorBus::Output);
-				sText = QString("[%1]").arg(iOutputsCount);
-			}
-		}
-		break;
-	case ItemTrack: {
-		qtractorTrack *pTrack = static_cast<qtractorTrack *> (pNode->data);
-		if (pTrack) {
-			if (index.column() == 0) {
-				sText = pTrack->shortTrackName();
-			} else {
-				sText  = trackTypeText(pTrack->trackType());
-				sText += ' ';
-				sText += tr("track");
-				sText += ' ';
-				sText += QString("[%1]").arg(pTrack->clips().count());
-			}
-		}
-		break;
-	}
-	case ItemClip: {
-		qtractorClip *pClip = static_cast<qtractorClip *> (pNode->data);
-		if (pClip) {
-			if (index.column() == 0) {
-				sText = pClip->clipName();
-			} else {
-				qtractorTrack *pTrack = pClip->track();
-				if (pTrack)
-					sText = trackTypeText(pTrack->trackType());
-				sText += ' ';
-				sText += tr("clip");
-			}
-		}
-		break;
-	}
-	case ItemBus: {
-		qtractorBus *pBus = reinterpret_cast<qtractorBus *> (
-			reinterpret_cast<quintptr> (pNode->data) & ~quintptr(0x3));
-		if (pBus) {
-			if (index.column() == 0) {
-				sText = pBus->busName();
-			} else {
-				unsigned short iChannels = 0;
-				switch (pBus->busType()) {
-				case qtractorTrack::Audio: {
-					qtractorAudioBus *pAudioBus
-						= static_cast<qtractorAudioBus *> (pBus);
-					if (pAudioBus)
-						iChannels = pAudioBus->channels();
-					break;
-				}
-				case qtractorTrack::Midi: {
-					qtractorMidiBus *pMidiBus
-						= static_cast<qtractorMidiBus *> (pBus);
-					if (pMidiBus)
-						iChannels = 16;
-					break;
-				}
-				default:
-					break;
-				}
-				sText = trackTypeText(pBus->busType());
-				sText += ' ';
-				sText += tr("bus");
-				sText += ' ';
-				sText += QString("(%1)").arg(iChannels);
-			}
-		}
-		break;
-	}
-	default:
-		break;
-	}
-
-	return sText;
-}
-
-
-QVariant
 qtractorSessionListView::ItemModel::dataDecorationRole (
 	const QModelIndex& index ) const
 {
@@ -1148,7 +978,7 @@ qtractorSessionListView::ItemModel::dataDecorationRole (
 			if (!sTrackIcon.isEmpty())
 				icon = QIcon::fromTheme(sTrackIcon);
 			if (icon.isNull())
-				icon = trackTypeIcon(pTrack->trackType());
+				icon = qtractorSessionListView::trackTypeIcon(pTrack->trackType());
 		}
 		break;
 	}
@@ -1156,7 +986,7 @@ qtractorSessionListView::ItemModel::dataDecorationRole (
 		qtractorBus *pBus = reinterpret_cast<qtractorBus *> (
 			reinterpret_cast<quintptr> (pNode->data) & ~quintptr(0x3));
 		if (pBus)
-			icon = trackTypeIcon(pBus->busType());
+			icon = qtractorSessionListView::trackTypeIcon(pBus->busType());
 		break;
 	}
 	default:
@@ -1732,6 +1562,186 @@ void qtractorSessionListView::ensureVisibleItem ( const QModelIndex& index )
 }
 
 
+
+
+// Count buses of the given mode in one engine.
+int qtractorSessionListView::countBusesByMode (
+	qtractorEngine *pEngine, int iBusMode )
+{
+	if (pEngine == nullptr)
+		return 0;
+
+	const qtractorBus::BusMode busMode
+		= qtractorBus::BusMode(iBusMode);
+
+	int n = 0;
+	for (qtractorBus *p = pEngine->buses().first(); p; p = p->next())
+		if (p->busMode() & busMode) ++n;
+
+	return n;
+}
+
+
+// Header text helper (for translation) [static]
+QString qtractorSessionListView::headerText ( int iSection )
+{
+	switch (iSection) {
+	case 0:  return tr("Name");
+	case 1:  return tr("Detail");
+	default: return QString();
+	}
+}
+
+
+QString qtractorSessionListView::dataText ( const QModelIndex& index )
+{
+	ItemModel::Node *pNode = static_cast<ItemModel::Node *> (index.internalPointer());
+
+	QString sText;
+
+	switch (pNode->type) {
+	case ItemModel::ItemInputs:
+		if (index.column() == 0) {
+			sText = tr("Inputs");
+		} else {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				const int iInputsCount
+					= countBusesByMode(pSession->audioEngine(), qtractorBus::Input)
+					  + countBusesByMode(pSession->midiEngine(),  qtractorBus::Input);
+				sText = QString("[%1]").arg(iInputsCount);
+			}
+		}
+		break;
+	case ItemModel::ItemTracks:
+		if (index.column() == 0) {
+			sText = tr("Tracks");
+		} else {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession)
+				sText = QString("[%1]").arg(pSession->tracks().count());
+		}
+		break;
+	case ItemModel::ItemOutputs:
+		if (index.column() == 0) {
+			sText = tr("Outputs");
+		} else {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				const int iOutputsCount
+					= countBusesByMode(pSession->audioEngine(), qtractorBus::Output)
+					  + countBusesByMode(pSession->midiEngine(),  qtractorBus::Output);
+				sText = QString("[%1]").arg(iOutputsCount);
+			}
+		}
+		break;
+	case ItemModel::ItemTrack: {
+		qtractorTrack *pTrack = static_cast<qtractorTrack *> (pNode->data);
+		if (pTrack) {
+			if (index.column() == 0) {
+				sText = pTrack->shortTrackName();
+			} else {
+				sText  = trackTypeText(pTrack->trackType());
+				sText += ' ';
+				sText += tr("track");
+				sText += ' ';
+				sText += QString("[%1]").arg(pTrack->clips().count());
+			}
+		}
+		break;
+	}
+	case ItemModel::ItemClip: {
+		qtractorClip *pClip = static_cast<qtractorClip *> (pNode->data);
+		if (pClip) {
+			if (index.column() == 0) {
+				sText = pClip->clipName();
+			} else {
+				qtractorTrack *pTrack = pClip->track();
+				if (pTrack)
+					sText = trackTypeText(pTrack->trackType());
+				sText += ' ';
+				sText += tr("clip");
+			}
+		}
+		break;
+	}
+	case ItemModel::ItemBus: {
+		qtractorBus *pBus = reinterpret_cast<qtractorBus *> (
+			reinterpret_cast<quintptr> (pNode->data) & ~quintptr(0x3));
+		if (pBus) {
+			if (index.column() == 0) {
+				sText = pBus->busName();
+			} else {
+				unsigned short iChannels = 0;
+				switch (pBus->busType()) {
+				case qtractorTrack::Audio: {
+					qtractorAudioBus *pAudioBus
+						= static_cast<qtractorAudioBus *> (pBus);
+					if (pAudioBus)
+						iChannels = pAudioBus->channels();
+					break;
+				}
+				case qtractorTrack::Midi: {
+					qtractorMidiBus *pMidiBus
+						= static_cast<qtractorMidiBus *> (pBus);
+					if (pMidiBus)
+						iChannels = 16;
+					break;
+				}
+				default:
+					break;
+				}
+				sText = trackTypeText(pBus->busType());
+				sText += ' ';
+				sText += tr("bus");
+				sText += ' ';
+				sText += QString("(%1)").arg(iChannels);
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+
+	return sText;
+}
+
+
+// Helper functions.
+QString qtractorSessionListView::trackTypeText ( int iTrackType )
+{
+	QString sText;
+	switch (qtractorTrack::TrackType(iTrackType)) {
+	case qtractorTrack::Audio:
+		sText = tr("Audio");
+		break;
+	case qtractorTrack::Midi:
+		sText = tr("MIDI");
+		break;
+	default:
+		break;
+	}
+	return sText;
+}
+
+QIcon qtractorSessionListView::trackTypeIcon ( int iTrackType )
+{
+	QIcon icon;
+	switch (qtractorTrack::TrackType(iTrackType)) {
+	case qtractorTrack::Audio:
+		icon = QIcon::fromTheme("trackAudio");
+		break;
+	case qtractorTrack::Midi:
+		icon = QIcon::fromTheme("trackMidi");
+		break;
+	default:
+		break;
+	}
+	return icon;
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorSessionList -- Session overview dockable window.
 
@@ -2103,17 +2113,6 @@ bool qtractorSessionList::restoreState ( const QByteArray& state )
 	}
 
 	return (i > 0);
-}
-
-
-// Header text helper (for translation) [static]
-QString qtractorSessionList::headerText ( int section )
-{
-	switch (section) {
-		case 0:  return tr("Name");
-		case 1:  return tr("Detail");
-		default: return QString();
-	}
 }
 
 
