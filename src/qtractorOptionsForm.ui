@@ -1810,7 +1810,7 @@
           </font>
          </property>
          <property name="title">
-          <string>Capture / Export</string>
+          <string>Capture / Export / Import</string>
          </property>
          <property name="flat">
           <bool>true</bool>
@@ -1859,6 +1859,38 @@
            </spacer>
           </item>
           <item row="0" column="4">
+           <widget class="QPushButton" name="MidiImportPushButton">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Change defaults for MIDI import</string>
+            </property>
+            <property name="text">
+             <string>&amp;Import Settings...</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+1             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="6">
            <widget class="QLabel" name="MidiCaptureQuantizeTextLabel">
             <property name="font">
              <font>
@@ -1877,7 +1909,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
+          <item row="0" column="7">
            <widget class="QComboBox" name="MidiCaptureQuantizeComboBox">
             <property name="maximumSize">
              <size>
@@ -5040,6 +5072,7 @@
   <tabstop>AudioMetroBusCheckBox</tabstop>
   <tabstop>AudioMetroAutoConnectCheckBox</tabstop>
   <tabstop>AudioMetroOffsetSpinBox</tabstop>
+  <tabstop>MidiImportPushButton</tabstop>
   <tabstop>MidiCaptureFormatComboBox</tabstop>
   <tabstop>MidiCaptureQuantizeComboBox</tabstop>
   <tabstop>MidiQueueTimerComboBox</tabstop>

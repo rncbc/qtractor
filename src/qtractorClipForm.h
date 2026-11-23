@@ -44,6 +44,18 @@ public:
 	void setClip(qtractorClip *pClip);
 	qtractorClip *clip() const;
 
+	// Clip fade-in/out types helpers
+	//
+	struct FadeTypeInfo {
+		QString name;
+		QIcon iconFadeIn;
+		QIcon iconFadeOut;
+	};
+
+	typedef QHash<int, FadeTypeInfo> FadeTypes;
+
+	static FadeTypes& fadeTypes();
+
 protected slots:
 
 	void accept();

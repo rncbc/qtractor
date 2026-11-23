@@ -28,6 +28,7 @@
 
 
 // Forward decls.
+class qtractorEngine;
 class qtractorTrack;
 class qtractorClip;
 class qtractorBus;
@@ -40,6 +41,8 @@ class QRubberBand;
 
 class qtractorSessionListView : public QTreeView
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
@@ -53,6 +56,14 @@ public:
 
 	// Clear the underlying model.
 	void clear();
+
+	// Header/data text helper (for translation context)
+	static QString headerText(int section);
+	static QString dataText(const QModelIndex& index);
+
+	// Helper functions.
+	static QString trackTypeText(int iTrackType);
+	static QIcon trackTypeIcon(int iTrackType);
 
 	// Forward decls.
 	class ItemModel;
@@ -84,6 +95,9 @@ protected:
 
 	void moveRubberBand(const QModelIndex& index);
 	void ensureVisibleItem(const QModelIndex& index);
+
+	// Count buses of the given mode in one engine.
+	static int countBusesByMode(qtractorEngine *pEngine, int iBusMode);
 
 private:
 
@@ -126,9 +140,6 @@ public:
 	// State saver/loader.
 	QByteArray saveState() const;
 	bool restoreState(const QByteArray& state);
-
-	// Header text helper (for translation context)
-	static QString headerText(int section);
 
 protected slots:
 

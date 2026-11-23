@@ -96,29 +96,29 @@ Audio :	%1 canaux, %2 Hz</translation>
         <translation>Rien</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="171"/>
+        <location filename="../qtractorClip.cpp" line="169"/>
         <source> (take %1/%2)</source>
         <translation> (prise %1/%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="163"/>
+        <location filename="../qtractorClip.cpp" line="161"/>
         <source>[Mute] </source>
         <translation>[Muet] </translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="546"/>
+        <location filename="../qtractorClip.cpp" line="544"/>
         <source>Name:	%1</source>
         <translation>Nom :	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="554"/>
+        <location filename="../qtractorClip.cpp" line="552"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Début :	%1	Décalage :	%2
 Fin :	%3	Longueur :	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="562"/>
+        <location filename="../qtractorClip.cpp" line="560"/>
         <source>File:	%1</source>
         <translation>Fichier :	%1</translation>
     </message>
@@ -3219,44 +3219,6 @@ Voulez-vous abandonner les changements ?</translation>
     </message>
 </context>
 <context>
-    <name>qtractorClip</name>
-    <message>
-        <location filename="../qtractorClip.cpp" line="1282"/>
-        <source>Linear</source>
-        <translation>Linéaire</translation>
-    </message>
-    <message>
-        <location filename="../qtractorClip.cpp" line="1283"/>
-        <source>Quadratic 1</source>
-        <translation>Quadratique 1</translation>
-    </message>
-    <message>
-        <location filename="../qtractorClip.cpp" line="1284"/>
-        <source>Quadratic 2</source>
-        <translation>Quadratique 2</translation>
-    </message>
-    <message>
-        <location filename="../qtractorClip.cpp" line="1285"/>
-        <source>Quadratic 3</source>
-        <translation>Quadratique 3</translation>
-    </message>
-    <message>
-        <location filename="../qtractorClip.cpp" line="1286"/>
-        <source>Cubic 1</source>
-        <translation>Cubique 1</translation>
-    </message>
-    <message>
-        <location filename="../qtractorClip.cpp" line="1287"/>
-        <source>Cubic 2</source>
-        <translation>Cubique 2</translation>
-    </message>
-    <message>
-        <location filename="../qtractorClip.cpp" line="1288"/>
-        <source>Cubic 3</source>
-        <translation>Cubique 3</translation>
-    </message>
-</context>
-<context>
     <name>qtractorClipForm</name>
     <message>
         <location filename="../qtractorClipForm.ui" line="46"/>
@@ -3406,7 +3368,7 @@ Voulez-vous abandonner les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="461"/>
-        <location filename="../qtractorClipForm.cpp" line="701"/>
+        <location filename="../qtractorClipForm.cpp" line="736"/>
         <source>Audio</source>
         <translation></translation>
     </message>
@@ -3422,7 +3384,7 @@ Voulez-vous abandonner les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="508"/>
-        <location filename="../qtractorClipForm.cpp" line="300"/>
+        <location filename="../qtractorClipForm.cpp" line="301"/>
         <source> %</source>
         <translation></translation>
     </message>
@@ -3488,38 +3450,73 @@ Voulez-vous abandonner les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="195"/>
-        <location filename="../qtractorClipForm.cpp" line="255"/>
+        <location filename="../qtractorClipForm.cpp" line="256"/>
         <source>&amp;Gain:</source>
         <translation>&amp;Gain :</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="256"/>
+        <location filename="../qtractorClipForm.cpp" line="257"/>
         <source> dB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="299"/>
+        <location filename="../qtractorClipForm.cpp" line="300"/>
         <source>&amp;Volume:</source>
         <translation>&amp;Volume :</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="436"/>
+        <location filename="../qtractorClipForm.cpp" line="471"/>
         <source>new clip</source>
         <translation>nouveau clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="486"/>
+        <location filename="../qtractorClipForm.cpp" line="521"/>
         <source>edit clip</source>
         <translation>éditer le clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="374"/>
-        <location filename="../qtractorClipForm.cpp" line="596"/>
+        <location filename="../qtractorClipForm.cpp" line="409"/>
+        <location filename="../qtractorClipForm.cpp" line="631"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="375"/>
+        <location filename="../qtractorClipForm.cpp" line="357"/>
+        <source>Linear</source>
+        <translation>Linéaire</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.cpp" line="358"/>
+        <source>Quadratic 1</source>
+        <translation>Quadratique 1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.cpp" line="359"/>
+        <source>Quadratic 2</source>
+        <translation>Quadratique 2</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.cpp" line="360"/>
+        <source>Quadratic 3</source>
+        <translation>Quadratique 3</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.cpp" line="361"/>
+        <source>Cubic 1</source>
+        <translation>Cubique 1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.cpp" line="362"/>
+        <source>Cubic 2</source>
+        <translation>Cubique 2</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.cpp" line="363"/>
+        <source>Cubic 3</source>
+        <translation>Cubique 3</translation>
+    </message>
+    <message>
+        <location filename="../qtractorClipForm.cpp" line="410"/>
         <source>The selected MIDI file will be overwritten
 with the current clip contents when saved:
 
@@ -3534,7 +3531,7 @@ par le contenu actuel du clip lors de la sauvegarde :
 Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="597"/>
+        <location filename="../qtractorClipForm.cpp" line="632"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -3543,22 +3540,22 @@ Do you want to apply the changes?</source>
 Voulez vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="706"/>
+        <location filename="../qtractorClipForm.cpp" line="741"/>
         <source>MIDI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="708"/>
+        <location filename="../qtractorClipForm.cpp" line="743"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Fichiers MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="709"/>
+        <location filename="../qtractorClipForm.cpp" line="744"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="722"/>
+        <location filename="../qtractorClipForm.cpp" line="757"/>
         <source>%1 Clip File</source>
         <translation>%1 fichier clip</translation>
     </message>
@@ -13082,43 +13079,43 @@ Voulez-vous sauvegarder les changements ?</translation>
 <context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="959"/>
+        <location filename="../qtractorMidiEventList.cpp" line="866"/>
         <source>Events</source>
         <translation>Evènements</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="1167"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1074"/>
         <source>Frame</source>
         <translation>Trame</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="1169"/>
-        <location filename="../qtractorMidiEventList.cpp" line="1176"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1076"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1083"/>
         <source>Time</source>
         <translation>Temps</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="1171"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1078"/>
         <source>BBT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="1177"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1084"/>
         <source>Type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="1178"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1085"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="1179"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1086"/>
         <source>Value</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="1180"/>
+        <location filename="../qtractorMidiEventList.cpp" line="1087"/>
         <source>Duration/Data</source>
         <translation>Durée/donnée</translation>
     </message>
@@ -13126,7 +13123,7 @@ Voulez-vous sauvegarder les changements ?</translation>
 <context>
     <name>qtractorMidiEventListView::ItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="710"/>
+        <location filename="../qtractorMidiEventList.cpp" line="617"/>
         <source>edit %1</source>
         <translation>éditer %1</translation>
     </message>
@@ -13134,67 +13131,67 @@ Voulez-vous sauvegarder les changements ?</translation>
 <context>
     <name>qtractorMidiEventListView::ItemModel</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="378"/>
+        <location filename="../qtractorMidiEventList.cpp" line="285"/>
         <source>Note On (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="380"/>
+        <location filename="../qtractorMidiEventList.cpp" line="287"/>
         <source>Note Off (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="382"/>
+        <location filename="../qtractorMidiEventList.cpp" line="289"/>
         <source>Key Press (%1)</source>
         <translation>Touche appuyée (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="384"/>
+        <location filename="../qtractorMidiEventList.cpp" line="291"/>
         <source>Controller (%1)</source>
         <translation>Contrôleur (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="386"/>
+        <location filename="../qtractorMidiEventList.cpp" line="293"/>
         <source>Control 14 (%1)</source>
         <translation>Contrôle 14 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="388"/>
+        <location filename="../qtractorMidiEventList.cpp" line="295"/>
         <source>RPN (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="390"/>
+        <location filename="../qtractorMidiEventList.cpp" line="297"/>
         <source>NRPN (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="392"/>
+        <location filename="../qtractorMidiEventList.cpp" line="299"/>
         <source>Pgm Change</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="394"/>
+        <location filename="../qtractorMidiEventList.cpp" line="301"/>
         <source>Chan Press</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="396"/>
+        <location filename="../qtractorMidiEventList.cpp" line="303"/>
         <source>Pitch Bend</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="398"/>
+        <location filename="../qtractorMidiEventList.cpp" line="305"/>
         <source>SysEx</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="400"/>
+        <location filename="../qtractorMidiEventList.cpp" line="307"/>
         <source>Meta (%1)</source>
         <translation>Méta (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="404"/>
+        <location filename="../qtractorMidiEventList.cpp" line="311"/>
         <source>Unknown (%1)</source>
         <translation>Inconnu (%1)</translation>
     </message>
@@ -15126,7 +15123,7 @@ existantes :</translation>
         <location filename="../qtractorOptionsForm.ui" line="3243"/>
         <location filename="../qtractorOptionsForm.ui" line="3283"/>
         <location filename="../qtractorOptionsForm.ui" line="3360"/>
-        <location filename="../qtractorOptionsForm.cpp" line="103"/>
+        <location filename="../qtractorOptionsForm.cpp" line="104"/>
         <source>(default)</source>
         <translation>(défaut)</translation>
     </message>
@@ -15728,32 +15725,32 @@ existantes :</translation>
         <translation>Si on doit ouvrir l&apos;éditeur (interface graphique) du greffon par défaut</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="85"/>
+        <location filename="../qtractorOptionsForm.cpp" line="86"/>
         <source>XML Default (*.%1)</source>
         <translation>Défaut XML (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="86"/>
+        <location filename="../qtractorOptionsForm.cpp" line="87"/>
         <source>XML Regular (*.%1)</source>
         <translation>Régulier XML (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="87"/>
+        <location filename="../qtractorOptionsForm.cpp" line="88"/>
         <source>ZIP Archive (*.%1)</source>
         <translation>Archive ZIP (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="203"/>
+        <location filename="../qtractorOptionsForm.cpp" line="204"/>
         <source>(Any)</source>
         <translation>(Tout)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1278"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1279"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1279"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1280"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -15762,95 +15759,95 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1343"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1344"/>
         <source>%1 ms</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1356"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1357"/>
         <source>Metronome Bar Audio File</source>
         <translation>Fichier audio métronome - barre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1370"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1371"/>
         <source>Metronome Beat Audio File</source>
         <translation>Fichier audio métronome - battement</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1504"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1505"/>
         <source>Open Style Sheet</source>
         <translation>Ouvrir la feuille de style</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1507"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1508"/>
         <source>Style Sheet files (*.%1)</source>
         <translation>Fichiers de feuilles de style (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1553"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1554"/>
         <source>Icons Theme Directory</source>
         <translation>Répertoire de thèmes d&apos;icônes</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1639"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1640"/>
         <source>Audio Meter Color</source>
         <translation>Couleur Audiomètre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1661"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1662"/>
         <source>MIDI Meter Color</source>
         <translation>Couleur MIDImètre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1764"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1765"/>
         <source>Plug-in Directory</source>
         <translation>Répertoire Greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="2048"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2049"/>
         <source>LV2 Presets Directory</source>
         <translation>Répertoire des préréglage LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="2100"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2101"/>
         <source>Plug-in Blacklist</source>
         <translation>Liste noire de greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="2109"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2110"/>
         <source>Plug-in files (*.%1)</source>
         <translation>Fichiers de greffon (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="2225"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2226"/>
         <source>Messages Font</source>
         <translation>Police de messages</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="2253"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2254"/>
         <source>Messages Log</source>
         <translation>Journal des messages</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="2256"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2257"/>
         <source>Log files (*.%1)</source>
         <translation>Fichiers journal (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1508"/>
-        <location filename="../qtractorOptionsForm.cpp" line="2110"/>
-        <location filename="../qtractorOptionsForm.cpp" line="2257"/>
-        <location filename="../qtractorOptionsForm.cpp" line="2303"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1509"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2111"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2258"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2304"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="2299"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2300"/>
         <source>Session Template</source>
         <translation>Modèle de session</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="2302"/>
+        <location filename="../qtractorOptionsForm.cpp" line="2303"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Fichiers de modèle de session (*.qtr *.qts *.%1)</translation>
     </message>
@@ -16880,76 +16877,76 @@ Voulez-vous appliquer les changements ?</translation>
 <context>
     <name>qtractorSessionList</name>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="2113"/>
-        <source>Name</source>
-        <translation>Nom</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="2114"/>
-        <source>Detail</source>
-        <translation>Détail</translation>
-    </message>
-    <message>
-        <location filename="../qtractorSessionList.cpp" line="1743"/>
+        <location filename="../qtractorSessionList.cpp" line="1753"/>
         <source>Session</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1862"/>
+        <location filename="../qtractorSessionList.cpp" line="1872"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1872"/>
+        <location filename="../qtractorSessionList.cpp" line="1882"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1878"/>
+        <location filename="../qtractorSessionList.cpp" line="1888"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Bus...</translation>
     </message>
 </context>
 <context>
-    <name>qtractorSessionListView::ItemModel</name>
+    <name>qtractorSessionListView</name>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="151"/>
-        <source>Audio</source>
-        <translation></translation>
+        <location filename="../qtractorSessionList.cpp" line="1589"/>
+        <source>Name</source>
+        <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="154"/>
-        <source>MIDI</source>
-        <translation></translation>
+        <location filename="../qtractorSessionList.cpp" line="1590"/>
+        <source>Detail</source>
+        <translation>Détail</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1026"/>
+        <location filename="../qtractorSessionList.cpp" line="1605"/>
         <source>Inputs</source>
         <translation>Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1039"/>
+        <location filename="../qtractorSessionList.cpp" line="1618"/>
         <source>Tracks</source>
         <translation>Pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1048"/>
+        <location filename="../qtractorSessionList.cpp" line="1627"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1067"/>
+        <location filename="../qtractorSessionList.cpp" line="1646"/>
         <source>track</source>
         <translation>piste</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1084"/>
+        <location filename="../qtractorSessionList.cpp" line="1663"/>
         <source>clip</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionList.cpp" line="1117"/>
+        <location filename="../qtractorSessionList.cpp" line="1696"/>
         <source>bus</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1717"/>
+        <source>Audio</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionList.cpp" line="1720"/>
+        <source>MIDI</source>
         <translation></translation>
     </message>
 </context>

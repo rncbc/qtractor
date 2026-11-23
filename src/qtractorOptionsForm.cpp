@@ -37,11 +37,13 @@
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
 
-#include "qtractorPluginSelectForm.h"
 #include "qtractorMidiImportForm.h"
 #include "qtractorMidiImportExtender.h"
 
+#include "qtractorClipForm.h"
+
 #include "qtractorPaletteForm.h"
+
 
 #ifdef CONFIG_OSC
 #include "qtractorOscControl.h"
@@ -180,9 +182,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	}
 
 	// Populate the fade-in/out types combo-boxes.
-	const qtractorClip::FadeTypes& fadeTypes = qtractorClip::fadeTypes();
+	const qtractorClipForm::FadeTypes& fadeTypes = qtractorClipForm::fadeTypes();
 	for (int i = 0; i < fadeTypes.count(); ++i) {
-		const qtractorClip::FadeTypeInfo& info = fadeTypes.value(i);
+		const qtractorClipForm::FadeTypeInfo& info = fadeTypes.value(i);
 		m_ui.ClipFadeInTypeComboBox->addItem(info.iconFadeIn, info.name);
 		m_ui.ClipFadeOutTypeComboBox->addItem(info.iconFadeOut, info.name);
 	}
