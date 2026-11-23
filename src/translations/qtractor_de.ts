@@ -1829,22 +1829,22 @@ Länge:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="872"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished">Miniaturansicht</translation>
+        <translation>Miniaturansicht</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="875"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished">Miniatur-Symbolleiste</translation>
+        <translation>Miniatur-Symbolleiste</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="878"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished">Miniatur-Symbolleiste</translation>
+        <translation>Miniatur-Symbolleiste</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="881"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished">Symbolleiste der Miniaturansicht ein-/ausblenden</translation>
+        <translation>Symbolleiste der Miniaturansicht ein-/ausblenden</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="889"/>
@@ -2623,7 +2623,7 @@ Wollen Sie diese übernehmen?</translation>
     <message>
         <location filename="../qtractorAudioThumbView.cpp" line="76"/>
         <source>Audio Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio-Übersicht</translation>
     </message>
 </context>
 <context>

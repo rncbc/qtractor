@@ -1828,22 +1828,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="872"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished">縮小表示(&amp;B)</translation>
+        <translation>縮小表示(&amp;B)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="875"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished">縮小表示ツールバー</translation>
+        <translation>縮小表示ツールバー</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="878"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished">縮小表示ツールバー</translation>
+        <translation>縮小表示ツールバー</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="881"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished">縮小表示ツールバーの有効/無効</translation>
+        <translation>縮小表示ツールバーの表示/非表示</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="889"/>
@@ -2623,7 +2623,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioThumbView.cpp" line="76"/>
         <source>Audio Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>オーディオ縮小表示</translation>
     </message>
 </context>
 <context>
