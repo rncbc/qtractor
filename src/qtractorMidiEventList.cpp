@@ -30,10 +30,6 @@
 
 #include "qtractorSpinBox.h"
 
-#include <QAbstractItemModel>
-
-#include <QItemDelegate>
-
 #include <QHeaderView>
 #include <QComboBox>
 #include <QSpinBox>
@@ -42,96 +38,7 @@
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiEventListView::ItemDelegate -- Custom (tree) list item delegate.
-
-class qtractorMidiEventListView::ItemDelegate : public QItemDelegate
-{
-public:
-
-	// Constructor.
-	ItemDelegate(QObject *pParent = nullptr);
-
-	// QItemDelegate Interface...
-
-	void paint(QPainter *pPainter,
-		const QStyleOptionViewItem& option,
-		const QModelIndex& index) const;
-
-	QSize sizeHint(
-		const QStyleOptionViewItem& option,
-		const QModelIndex& index) const;
-
-	QWidget *createEditor(QWidget *pParent,
-		const QStyleOptionViewItem& option,
-		const QModelIndex& index) const;
-
-	void setEditorData(QWidget *pEditor,
-		const QModelIndex& index) const;
-
-	void setModelData(QWidget *pEditor,
-		QAbstractItemModel *pModel,
-		const QModelIndex& index) const;
-};
-
-
-//----------------------------------------------------------------------------
 // qtractorMidiEventListView::ItemModel -- List model.
-
-class qtractorMidiEventListView::ItemModel : public QAbstractItemModel
-{
-public:
-
-	// Constructor.
-	ItemModel(qtractorMidiEditor *pEditor, QObject *pParent = nullptr);
-
-	// Concretizers (virtual).
-	int rowCount(const QModelIndex& parent = QModelIndex()) const;
-	int columnCount(const QModelIndex& parent = QModelIndex()) const;
-
-	QVariant headerData(int section, Qt::Orientation orient, int role) const;
-	QVariant data(const QModelIndex& index, int role) const;
-
-	Qt::ItemFlags flags(const QModelIndex& index ) const;
-
-	QModelIndex index(int row, int column,
-		const QModelIndex& parent = QModelIndex()) const;
-
-	QModelIndex parent(const QModelIndex&) const;
-
-	void reset();
-
-	// Specifics.
-	qtractorMidiEvent *eventOfIndex(const QModelIndex& index) const;
-	QModelIndex indexOfEvent(qtractorMidiEvent *pEvent) const;
-
-	QModelIndex indexFromTick(unsigned long iTick) const;
-	unsigned long tickFromIndex(const QModelIndex& index) const;
-
-	QModelIndex indexFromFrame(unsigned long iFrame) const;
-	unsigned long frameFromIndex(const QModelIndex& index) const;
-
-	qtractorMidiEditor *editor() const;
-
-protected:
-
-	qtractorMidiEvent *eventAt(int i) const;
-
-	QString itemDisplay(const QModelIndex& index) const;
-	QString itemToolTip(const QModelIndex& index) const;
-
-	int columnAlignment(int column) const;
-
-private:
-
-	qtractorMidiEditor   *m_pEditor;
-	qtractorMidiSequence *m_pSeq;
-
-	unsigned long m_iTimeOffset;
-
-	mutable qtractorMidiEvent *m_pEvent;
-	mutable int m_iEvent;
-};
-
 
 // Constructor.
 qtractorMidiEventListView::ItemModel::ItemModel (
