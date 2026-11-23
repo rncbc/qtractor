@@ -2415,18 +2415,12 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 	if (pClip == nullptr)
 		pClip = clipAt(pos, true);
 
-<<<<<<< HEAD
-	if (pClip && pClip->clipStart0() == 0)
-		m_pTracks->editClip(pClip);
-	else
-=======
-	if (pClip)  {
+	if (pClip && pClip->clipStart0() == 0) {
 		if (pMouseEvent->modifiers() & (Qt::ShiftModifier|Qt::ControlModifier))
 			m_pTracks->editClipProperties(pClip);
 		else
 			m_pTracks->editClip(pClip);
 	} else {
->>>>>>> main
 		m_pTracks->selectCurrentTrack();
 	}
 }
