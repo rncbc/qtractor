@@ -1826,22 +1826,22 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="872"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished">V&amp;ignette</translation>
+        <translation>V&amp;ignette</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="875"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished">Barre d&apos;outils Vignette</translation>
+        <translation>Barre d&apos;outils Vignette</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="878"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished">Barre d&apos;outils vignette</translation>
+        <translation>Barre d&apos;outils vignette</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="881"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished">Montrer/cacher la barre d&apos;outils vignette</translation>
+        <translation>Montrer/cacher la barre d&apos;outils vignette</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="889"/>
@@ -2621,7 +2621,7 @@ Souhaitez-vous appliquer ces modifications ?</translation>
     <message>
         <location filename="../qtractorAudioThumbView.cpp" line="76"/>
         <source>Audio Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue miniature audio</translation>
     </message>
 </context>
 <context>
