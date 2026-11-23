@@ -1829,22 +1829,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="872"/>
         <source>Thum&amp;b</source>
-        <translation type="unfinished">О&amp;бзор проекта</translation>
+        <translation>О&amp;бзор проекта</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="875"/>
         <source>Thumb Toolbar</source>
-        <translation type="unfinished">Панель обзора проекта</translation>
+        <translation>Панель обзора проекта</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="878"/>
         <source>Thumb toolbar</source>
-        <translation type="unfinished">Панель обзора проекта</translation>
+        <translation>Панель обзора проекта</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="881"/>
         <source>Show/hide the thumb view toolbar</source>
-        <translation type="unfinished">Показать/скрыть панель инструментов просмотра в виде большого пальца</translation>
+        <translation>Показать/скрыть панель обзора проекта</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEditorForm.ui" line="889"/>
@@ -2624,7 +2624,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorAudioThumbView.cpp" line="76"/>
         <source>Audio Thumb view</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор аудио</translation>
     </message>
 </context>
 <context>
