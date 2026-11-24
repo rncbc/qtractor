@@ -426,23 +426,24 @@ void qtractorThumbView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	m_dragState = DragNone;
 
-	// Only expected behavior with left-button pressed...
+	const QPoint& pos = pMouseEvent->pos();
+	const QRect& rect = m_pRubberBand->geometry();
+
+	// Only expected behavior with left/middle-button pressed...
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		QFrame::setCursor(QCursor(Qt::PointingHandCursor));
-		m_posDrag = pMouseEvent->pos();
-		const QRect& rect = m_pRubberBand->geometry();
-		if (rect.contains(pMouseEvent->pos())) {
+		m_posDrag = pos;
+		if (rect.contains(pos))
 			m_dragState = DragStart;
-		} else {
+		else
 			m_dragState = DragClick;
-		}
+		updateView(pos.x() - rect.center().x());
 	}
 	else
 	if (pMouseEvent->button() == Qt::MiddleButton) {
+		updateView(pos.x() - rect.center().x());
 		// Make it change playhead?...
-		if (pMouseEvent->modifiers()
-			& (Qt::ShiftModifier | Qt::ControlModifier))
-			setPlayHeadX(pMouseEvent->pos().x());
+		setPlayHeadX(pos.x());
 	}
 
 	QFrame::mousePressEvent(pMouseEvent);
@@ -477,13 +478,12 @@ void qtractorThumbView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	// Only expected behavior with left-button pressed...
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		const QPoint& pos = pMouseEvent->pos();
-		if (m_dragState == DragMove)
+		if (m_dragState == DragMove) {
 			updateView(pos.x() - m_posDrag.x());
-		else {
+		} else {
 			if (m_dragState == DragStart || m_dragState == DragClick) {
 				const QRect& rect = m_pRubberBand->geometry();
-				m_posDrag.setX(((rect.left() + rect.right()) >> 1));
-				updateView(pos.x() - m_posDrag.x());
+				updateView(pos.x() - rect.center().x());
 			}
 			// Make it change playhead?...
 			if (pMouseEvent->modifiers()
