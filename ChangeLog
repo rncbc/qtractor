@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- VST3 Plug-ins: fix heap-use-after-free in DataExchange freeBlock
+  lambda; fixed state-machine violations on session reload (VST3
+  Host Checker plugin).
+
 - Fixed a potential issue with the validation of MIDI file header
   'division' field (ticks-per-beat; SMF).
 

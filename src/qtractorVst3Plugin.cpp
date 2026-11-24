@@ -67,6 +67,7 @@
 #include <QRegularExpression>
 
 #include <limits>
+#include <memory>
 #include <time.h>
 
 #ifdef CONFIG_VST3_XCB
@@ -196,13 +197,17 @@ private:
 	struct DataExchangeQueue
 	{
 		DataExchangeQueue()	: processor(nullptr), receiver(nullptr),
-			userContextID(0), blockSize(0), alignment(0) {}
+			userContextID(0), blockSize(0), alignment(0),
+			open(std::make_shared<bool>(true)) {}
 
 		Vst::IAudioProcessor          *processor;
 		Vst::IDataExchangeReceiver    *receiver;  // edit-controller side
 		Vst::DataExchangeUserContextID userContextID;
 		uint32                         blockSize;
 		uint32                         alignment;
+		// Shared lifetime guard: set to false before the receiver is destroyed,
+		// so that any already-queued freeBlock lambdas skip the callback.
+		std::shared_ptr<bool>          open;
 
 		struct Block
 		{
@@ -878,6 +883,10 @@ tresult qtractorVst3PluginHost::closeQueue (
 	if (!queue)
 		return kResultFalse;
 
+	// Invalidate the lifetime guard so that any pending freeBlock lambdas
+	// already posted to the main thread skip the receiver callback.
+	*queue->open = false;
+
 	// Notify the edit-controller that the queue is closing (main thread).
 	if (queue->receiver)
 		queue->receiver->queueClosed(queue->userContextID);
@@ -932,13 +941,19 @@ tresult qtractorVst3PluginHost::freeBlock (
 	if (sendToController && queue->receiver) {
 		// Copy the block data here in the RT thread, then schedule
 		// delivery to the edit-controller on the main/UI thread.
+		// Capture the shared lifetime guard so that if the queue (and its
+		// receiver) is closed/destroyed before this lambda fires, the
+		// callback is skipped and no use-after-free occurs.
 		const uint32 sz = queue->blockSize;
 		QByteArray copy(reinterpret_cast<const char *> (b.data), int(sz));
 		Vst::IDataExchangeReceiver *receiver = queue->receiver;
 		const Vst::DataExchangeUserContextID ctxID = queue->userContextID;
+		std::shared_ptr<bool> isOpen = queue->open;
 		QMetaObject::invokeMethod(
 			QCoreApplication::instance(),
-			[receiver, ctxID, copy]() mutable {
+			[receiver, ctxID, copy, isOpen]() mutable {
+				if (!*isOpen)
+					return;
 				Vst::DataExchangeBlock blk;
 				blk.data    = copy.data();
 				blk.size    = uint32(copy.size());
@@ -1214,6 +1229,8 @@ void qtractorVst3PluginHost::clear (void)
 
 	// Clean up any leaked data-exchange queues.
 	foreach (DataExchangeQueue *queue, m_dataExchangeQueues) {
+		// Invalidate the guard so that pending freeBlock lambdas skip the receiver.
+		*queue->open = false;
 		foreach (const DataExchangeQueue::Block& block, queue->blocks)
 			::free(block.data);
 		delete queue;
@@ -2115,6 +2132,7 @@ private:
 	Vst::IAudioProcessor *m_processor;
 
 	volatile bool m_processing;
+	bool          m_initialized;
 
 	ParamChanges m_params_in;
 //	ParamChanges m_params_out;
@@ -2506,7 +2524,7 @@ IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3Plugin::Stream, IBStream, IBStream::iid)
 // Constructor.
 qtractorVst3Plugin::Impl::Impl ( qtractorVst3Plugin *pPlugin )
 	: m_pPlugin(pPlugin), m_handler(nullptr), m_plugView(nullptr),
-		m_processor(nullptr), m_processing(false)
+		m_processor(nullptr), m_processing(false), m_initialized(false)
 {
 	initialize();
 }
@@ -2522,6 +2540,8 @@ qtractorVst3Plugin::Impl::~Impl (void)
 // Plugin module initializer.
 void qtractorVst3Plugin::Impl::initialize (void)
 {
+	m_initialized = false;
+
 	clear();
 
 	qtractorVst3PluginType *pType
@@ -2622,6 +2642,8 @@ void qtractorVst3Plugin::Impl::initialize (void)
 // Plugin module (de)initializer.
 void qtractorVst3Plugin::Impl::deinitialize (void)
 {
+	m_initialized = false;
+
 	closeEditor();
 
 	deactivate();
@@ -2656,6 +2678,14 @@ void qtractorVst3Plugin::Impl::deinitialize (void)
 // Do the actual (de)activation.
 void qtractorVst3Plugin::Impl::activate (void)
 {
+	// Guard against setActive(true) before setupProcessing() has been called.
+	// This can happen when setActivated() is called from loadPlugin() while
+	// the plugin list still has zero channels (and therefore process_reset()
+	// / setupProcessing() have not run yet).  The VST3 state machine requires
+	// Initialized → setupProcessing() → Setup Done before setActive(true).
+	if (!m_initialized)
+		return;
+
 	qtractorVst3PluginType *pType
 		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
 	if (pType) {
@@ -2854,6 +2884,12 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	}
 
 //	activate();
+
+	// Mark that setupProcessing() has been called successfully; activate()
+	// checks this flag before issuing setActive(true) to avoid a VST3 state
+	// machine violation when the plugin is activated before process_reset()
+	// has had a chance to run (e.g. during session reload with a 0-channel list).
+	m_initialized = true;
 
 	return true;
 }
@@ -3393,9 +3429,13 @@ void qtractorVst3Plugin::initialize (void)
 		snd_midi_event_new(c_iMaxMidiData, &m_pMidiParser) == 0)
 		snd_midi_event_no_status(m_pMidiParser, 1);
 
-	freezeConfigs();
-
 	// Instantiate each instance properly...
+	// NB. freezeConfigs() must NOT be called here: it invokes
+	// IComponent::getState() before setupProcessing() (which happens
+	// inside setChannels → process_reset), violating the VST3 state
+	// machine (Initialized → Setup Done transition would be skipped).
+	// Any saved state stored in m_configs is applied by realizeConfigs()
+	// inside setChannels() after setupProcessing() completes.
 	setChannels(channels());
 }
 
